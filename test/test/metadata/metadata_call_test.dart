@@ -1,5 +1,5 @@
 import 'package:blockchain_utils/binary/utils.dart';
-import 'package:polkadot_dart/substrate.dart';
+import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:test/test.dart';
 import 'v14_metadata_hex.dart';
 

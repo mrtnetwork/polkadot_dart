@@ -1,6 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:example/json_rpc_example.dart';
-import 'package:polkadot_dart/substrate.dart';
+import 'package:polkadot_dart/polkadot_dart.dart';
 
 /// https://rococo-rpc.polkadot.io
 /// /rococo-asset-hub-rpc.polkadot.io

@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:polkadot_dart/substrate.dart';
+import 'package:polkadot_dart/polkadot_dart.dart';
 
 class SubstrateHttpService with SubstrateRPCService {
   SubstrateHttpService(this.url,

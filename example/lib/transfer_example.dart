@@ -1,5 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/substrate.dart';
+import 'package:polkadot_dart/polkadot_dart.dart';
 import 'json_rpc_example.dart';
 
 void main() async {
