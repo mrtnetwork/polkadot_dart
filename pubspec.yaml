@@ -5,11 +5,11 @@ homepage: "https://github.com/mrtnetwork/polkadot_dart"
 repository: "https://github.com/mrtnetwork/polkadot_dart"
 Author: mrhaydari.t@gmail.com
 topics:
-  - cryptography
-  - schnorrkel
   - substrate
-  - blockchain
-  - bip
+  - polkadot
+  - kusama
+  - parachains
+  - metadata
 
 environment:
   sdk: '>=2.15.0 <4.0.0'
