@@ -21,4 +21,5 @@ class SubstrateRPCStateGetReadProof
     return [keys, atBlockHash];
   }
 }
+
 /// getReadProof(keys: Vec<StorageKey>, at?: BlockHash): ReadProof

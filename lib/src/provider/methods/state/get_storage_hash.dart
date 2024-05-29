@@ -21,4 +21,5 @@ class SubstrateRPCStateGetStorageHash
     return [key, atBlockHash];
   }
 }
+
 /// getStorageHash(key: StorageKey, at?: BlockHash): Hash

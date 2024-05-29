@@ -98,4 +98,5 @@ void main() async {
   await provider.request(
       SubstrateRPCAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
 }
+
 /// https://westend.subscan.io/extrinsic/0xdb7c22ac4f66fda76e053ce06dc56bda9f67bf9e2ce9311adff693e5614955c6

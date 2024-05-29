@@ -20,4 +20,5 @@ class SubstrateRPCStateGetStorageSize extends SubstrateRPCRequest<int, int> {
     return [key, atBlockHash];
   }
 }
+
 /// getStorageHash(key: StorageKey, at?: BlockHash): Hash
