@@ -1,6 +1,6 @@
 name: polkadot_dart
 description: "This package facilitates Substrate interactions: create, sign, send transactions (ECDSA, ED25519, SR25519), query, runtime calls, JSON-RPC for seamless Substrate operations."
-version: 0.0.1
+version: 0.0.2
 homepage: "https://github.com/mrtnetwork/polkadot_dart"
 repository: "https://github.com/mrtnetwork/polkadot_dart"
 Author: mrhaydari.t@gmail.com

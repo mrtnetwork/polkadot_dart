@@ -31,6 +31,15 @@ mixin LatestMetadataInterface {
     return decode;
   }
 
+  List<int> encodeLookup(
+      {required int id, required Object? value, required bool fromTemplate}) {
+    final Object? correctValue =
+        registry.getValue(id: id, value: value, fromTemplate: fromTemplate);
+    final layout = registry.typeDefLayout(id, correctValue);
+    final toBytes = layout.serialize(correctValue);
+    return toBytes;
+  }
+
   /// Converts a name or index to a pallet index.
   int _toPalletIndex(String nameOrIndex) {
     int? index = int.tryParse(nameOrIndex);
@@ -227,5 +236,13 @@ mixin LatestMetadataInterface {
           "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}");
     }
     throw UnimplementedError();
+  }
+
+  List<String> getPaths(int lookupid) {
+    return registry.scaleType(lookupid).path;
+  }
+
+  List<String> getDocs(int lookupid) {
+    return registry.scaleType(lookupid).docs;
   }
 }

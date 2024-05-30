@@ -72,9 +72,9 @@ class MetadataCastingUtils {
     if (val == null) {
       throw MetadataException("Invalid value provided.", details: {
         "value": value,
-        "type": type.name,
+        "type": primitive?.name ?? type.name,
         "lookup_id": lookupId,
-        "from_template": fromTemplate
+        "from_template": fromTemplate,
       });
     }
     return val;

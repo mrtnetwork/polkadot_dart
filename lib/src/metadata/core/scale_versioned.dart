@@ -23,6 +23,8 @@ abstract class ScaleInfoVersioned {
   /// The scale type definition.
   abstract final ScaleTypeDef def;
 
+  abstract final List<String> docs;
+
   /// Returns the template for the type definition for the given [registry] and [id].
   TypeTemlate typeTemplate(PortableRegistry registry, int id);
 

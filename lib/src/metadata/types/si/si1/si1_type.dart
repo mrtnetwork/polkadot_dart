@@ -17,6 +17,7 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>>
   @override
   late final ScaleTypeDef def;
   final List<Si1TypeParameter> params;
+  @override
   final List<String> docs;
 
   Si1Type({

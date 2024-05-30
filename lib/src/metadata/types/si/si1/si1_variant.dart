@@ -128,12 +128,13 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
       return registry.getValue(
           id: fields[0].type, value: value, fromTemplate: fromTemplate);
     }
-    Object? data = MetadataCastingUtils.getValue(
-        value: value,
-        type: Si1TypeDefsIndexesConst.variant,
-        fromTemplate: fromTemplate,
-        lookupId: 0);
+
     if (fields[0].hasName) {
+      Object? data = MetadataCastingUtils.getValue(
+          value: value,
+          type: Si1TypeDefsIndexesConst.variant,
+          fromTemplate: fromTemplate,
+          lookupId: 0);
       final mapValue = MetadataCastingUtils.isMap<String, dynamic>(data);
       final Map<String, dynamic> values = {};
       for (final i in fields) {
@@ -144,7 +145,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
       return values;
     }
     final listValue =
-        MetadataCastingUtils.hasList(value: data, length: fields.length);
+        MetadataCastingUtils.hasList(value: value, length: fields.length);
     final List<Object?> values = [];
     Map<String, dynamic> mapValues = {};
     final bool isStruct = fields[0].hasName;
