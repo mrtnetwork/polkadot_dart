@@ -297,13 +297,15 @@ void _test(MetadataV15 api) {
           "value": [
             {
               "key": "PreRuntime",
-              "value": [
-                {
-                  "type": "[U8;4]",
-                  "value": [1, 2, 3, 4]
-                },
-                {"type": "Vec<U8>", "value": List<int>.filled(1, 0)}
-              ],
+              "value": {
+                "value": [
+                  {
+                    "type": "[U8;4]",
+                    "value": [1, 2, 3, 4]
+                  },
+                  {"type": "Vec<U8>", "value": List<int>.filled(1, 0)}
+                ]
+              },
             }
           ]
         }
