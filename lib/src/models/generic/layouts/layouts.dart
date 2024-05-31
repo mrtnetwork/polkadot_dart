@@ -13,8 +13,8 @@ class GenericLayouts {
 
   static StructLayout spWeightsWeightV2Weight({String? property}) {
     return LayoutConst.struct([
-      LayoutConst.compactBigintU64(property: "refTime"),
-      LayoutConst.compactBigintU64(property: "proofSize"),
+      LayoutConst.compactBigintU64(property: "ref_time"),
+      LayoutConst.compactBigintU64(property: "proof_size"),
     ], property: property);
   }
 
@@ -43,6 +43,52 @@ class GenericLayouts {
       accountIndex(property: GenericConstants.indexIndexKey),
       accountRaw(property: GenericConstants.rawIndexKey),
       LayoutConst.fixedBlob32(property: GenericConstants.address32IndexKey),
+    ], property: property);
+  }
+
+  static StructLayout multisigTimepoint({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.u32(property: "height"),
+      LayoutConst.u32(property: "index"),
+    ], property: property);
+  }
+
+  static StructLayout account({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.u32(property: "nonce"),
+      LayoutConst.u32(property: "consumers"),
+      LayoutConst.u32(property: "providers"),
+      LayoutConst.i32(property: "sufficients"),
+      accountData(property: "data")
+    ], property: property);
+  }
+
+  static StructLayout accountData({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.u128(property: "free"),
+      LayoutConst.u128(property: "reserved"),
+      LayoutConst.u128(property: "frozen"),
+      LayoutConst.u128(property: "flags"),
+    ], property: property);
+  }
+
+  static Layout<List> runtimeVersionApi({String? property}) {
+    return LayoutConst.tuple([
+      LayoutConst.fixedBlobN(8),
+      LayoutConst.u32(),
+    ], property: property);
+  }
+
+  static Layout<List> runtimeVersion({String? property}) {
+    return LayoutConst.tuple([
+      LayoutConst.compactString(property: "spec_name"),
+      LayoutConst.compactString(property: "impl_name"),
+      LayoutConst.u32(property: "authoring_version"),
+      LayoutConst.u32(property: "spec_version"),
+      LayoutConst.u32(property: "impl_version"),
+      LayoutConst.compactVec(runtimeVersionApi(), property: "abis"),
+      LayoutConst.u32(property: "transaction_version"),
+      LayoutConst.u8(property: "state_version"),
     ], property: property);
   }
 }

@@ -27,7 +27,7 @@ void _test(MetadataApi api) {
             "key": "Id",
             "value": {"type": "[U8;32]", "value": destination.toBytes()},
           },
-          "value": {"type": "U128", "value": SubstrateHelper.toWsd("0.1")}
+          "value": {"type": "U128", "value": SubstrateHelper.toWSD("0.1")}
         }
       },
     };

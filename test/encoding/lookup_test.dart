@@ -119,7 +119,6 @@ void _test(MetadataV15 api) {
             id: lookupid, value: "string", fromTemplate: false),
         throwsA(isA<MetadataException>()));
   });
-
   test("ID-9", () {
     const lookupid = 9;
     final templateValue = {
@@ -190,7 +189,6 @@ void _test(MetadataV15 api) {
             fromTemplate: true),
         throwsA(isA<MetadataException>()));
   });
-
   test("ID-13", () {
     const lookupid = 13;
     final templateValue = {"type": "[U8;32]", "value": List<int>.filled(32, 1)};
@@ -253,7 +251,6 @@ void _test(MetadataV15 api) {
             fromTemplate: false),
         throwsA(isA<MetadataException>()));
   });
-
   test("ID-15", () {
     const lookupid = 15;
     final templateValue = {
@@ -367,5 +364,308 @@ void _test(MetadataV15 api) {
     });
     expect(decode, simpleValue);
     expect(encodeSimple.toHex(), "040030010101010101010101010101");
+  });
+  test("ID-21", () {
+    const lookupid = 21;
+    final templateValue = {
+      "type": "Enum",
+      "key": "Indices",
+      "value": {
+        "type": "Enum",
+        "key": "IndexAssigned",
+        "value": {
+          "type": "Map",
+          "value": {
+            "who": {
+              "type": "[U8;32]",
+              "value": List<int>.filled(32, 1).toHex()
+            },
+            "index": {"type": "U32", "value": 255}
+          }
+        },
+      }
+    };
+    final simpleValue = api.registry
+        .getValue(id: lookupid, value: templateValue, fromTemplate: true);
+    final encodeSimple =
+        api.encodeLookup(id: lookupid, value: simpleValue, fromTemplate: false);
+
+    final encodeTemplate = api.encodeLookup(
+        id: lookupid, value: templateValue, fromTemplate: true);
+    expect(encodeSimple.toHex(), encodeTemplate.toHex());
+    final decode = api.decodeLookup(lookupid, encodeTemplate);
+    expect(decode, {
+      "Indices": {
+        "IndexAssigned": {"who": List<int>.filled(32, 1), "index": 255}
+      }
+    });
+    expect(encodeSimple.toHex(),
+        "05000101010101010101010101010101010101010101010101010101010101010101ff000000");
+  });
+
+  test("ID-21_2", () {
+    const lookupid = 21;
+    Map<String, dynamic> createTemolate(
+        {Object? from, Object? to, Object? amount}) {
+      return {
+        "type": "Enum",
+        "key": "Balances",
+        "value": {
+          "type": "Enum",
+          "key": "ReserveRepatriated",
+          "value": {
+            "type": "Map",
+            "value": {
+              "from": {
+                "type": "[U8;32]",
+                "value": from ?? List<int>.filled(32, 1)
+              },
+              "to": {"type": "[U8;32]", "value": to ?? List<int>.filled(32, 2)},
+              "amount": {
+                "type": "U128",
+                "value": amount ?? BigInt.from(2222222)
+              },
+              "destination_status": {
+                "type": "Enum",
+                "key": "Reserved",
+                "value": null,
+                "variants": {"Free": null, "Reserved": null}
+              }
+            }
+          }
+        }
+      };
+    }
+
+    final templateValue = createTemolate();
+    final simpleValue = api.registry
+        .getValue(id: lookupid, value: templateValue, fromTemplate: true);
+    final encodeSimple =
+        api.encodeLookup(id: lookupid, value: simpleValue, fromTemplate: false);
+
+    final encodeTemplate = api.encodeLookup(
+        id: lookupid, value: templateValue, fromTemplate: true);
+    expect(encodeSimple.toHex(), encodeTemplate.toHex());
+    final decode = api.decodeLookup(lookupid, encodeTemplate);
+    final value = {
+      "Balances": {
+        "ReserveRepatriated": {
+          "from": List<int>.filled(32, 1),
+          "to": List<int>.filled(32, 2),
+          "amount": BigInt.from(2222222),
+          "destination_status": {"Reserved": null}
+        }
+      }
+    };
+    expect(decode, value);
+
+    expect(encodeSimple.toHex(),
+        "0606010101010101010101010101010101010101010101010101010101010101010102020202020202020202020202020202020202020202020202020202020202028ee8210000000000000000000000000001");
+    final templateValue2 = createTemolate(
+        from: List<int>.filled(32, 1).toHex(),
+        to: List<int>.filled(32, 2).toHex(),
+        amount: 2222222);
+
+    final encodeTemolate2 = api.encodeLookup(
+        id: lookupid, value: templateValue2, fromTemplate: true);
+    expect(encodeTemolate2.toHex(),
+        "0606010101010101010101010101010101010101010101010101010101010101010102020202020202020202020202020202020202020202020202020202020202028ee8210000000000000000000000000001");
+
+    Map<String, dynamic> wrongTemplate = createTemolate(
+        from: List<int>.filled(32, 1).toHex(),
+        //33 bytes. 32 bytes [u8;32] excepted
+        to: List<int>.filled(33, 3).toHex(),
+        amount: 2222222);
+    expect(
+        () => api.encodeLookup(
+            id: lookupid, value: wrongTemplate, fromTemplate: true),
+        throwsA(isA<MetadataException>()));
+    wrongTemplate = createTemolate(
+        from: List<int>.filled(32, 1).toHex(),
+        to: List<int>.filled(32, 3).toHex(),
+
+        /// not unsigned value
+        amount: -1);
+    expect(
+        () => api.encodeLookup(
+            id: lookupid, value: wrongTemplate, fromTemplate: true),
+        throwsA(isA<MetadataException>()));
+  });
+
+  test("ID-110", () {
+    const lookupid = 110;
+    final templateValue = {
+      "type": "Enum",
+      "key": "TicketBought",
+      "value": {
+        "type": "Map",
+        "value": {
+          "who": {"type": "[U8;32]", "value": List<int>.filled(32, 5).toHex()},
+          "call_index": {
+            "type": "Tuple(U8, U8)",
+            "value": [
+              {"type": "U8", "value": 1},
+              {"type": "U8", "value": 2}
+            ]
+          }
+        }
+      },
+    };
+    final simpleValue = api.registry
+        .getValue(id: lookupid, value: templateValue, fromTemplate: true);
+    final encodeSimple =
+        api.encodeLookup(id: lookupid, value: simpleValue, fromTemplate: false);
+
+    final encodeTemplate = api.encodeLookup(
+        id: lookupid, value: templateValue, fromTemplate: true);
+    expect(encodeSimple.toHex(), encodeTemplate.toHex());
+    final decode = api.decodeLookup(lookupid, encodeTemplate);
+    expect(decode, {
+      "TicketBought": {
+        "who": List<int>.filled(32, 5),
+        "call_index": [1, 2]
+      }
+    });
+    expect(encodeSimple.toHex(),
+        "0305050505050505050505050505050505050505050505050505050505050505050102");
+    expect(
+        () => api.encodeLookup(
+            id: lookupid,
+            value: {
+              "TicketBought": {
+                "who": List<int>.filled(32, 5),
+
+                /// not u8
+                "call_index": [1, 257]
+              }
+            },
+            fromTemplate: false),
+        throwsA(isA<MetadataException>()));
+  });
+
+  test("ID-111", () {
+    const lookupid = 111;
+    final templateValue = {
+      "type": "Tuple(U8, U8)",
+      "value": [
+        {"type": "U8", "value": 1},
+        {"type": "U8", "value": 2}
+      ]
+    };
+    final simpleValue = api.registry
+        .getValue(id: lookupid, value: templateValue, fromTemplate: true);
+    final encodeSimple =
+        api.encodeLookup(id: lookupid, value: simpleValue, fromTemplate: false);
+
+    final encodeTemplate = api.encodeLookup(
+        id: lookupid, value: templateValue, fromTemplate: true);
+    expect(encodeSimple.toHex(), encodeTemplate.toHex());
+    final decode = api.decodeLookup(lookupid, encodeTemplate);
+    expect(decode, [1, 2]);
+    expect(encodeSimple.toHex(), "0102");
+    expect(
+        () => api.encodeLookup(
+            id: lookupid,
+
+            /// not u8
+            value: [1, 257],
+            fromTemplate: false),
+        throwsA(isA<MetadataException>()));
+    expect(
+        () => api.encodeLookup(
+            id: lookupid,
+
+            /// three values
+            value: [1, 2, 3],
+            fromTemplate: false),
+        throwsA(isA<MetadataException>()));
+  });
+
+  test("ID-200", () {
+    const lookupid = 200;
+    final templateValue = {
+      "type": "Vec<T>",
+      "value": [
+        {
+          "type": "Tuple(U32, [Tuple(U16, U16);8], U16)",
+          "value": [
+            {"type": "U32", "value": 2222},
+            {
+              "type": "[Tuple(U16, U16);8]",
+              "value": List.generate(
+                  8,
+                  (index) => {
+                        "type": "Tuple(U16, U16)",
+                        "value": [
+                          {"type": "U16", "value": index},
+                          {"type": "U16", "value": index * 2}
+                        ]
+                      })
+            },
+            {"type": "U16", "value": 22}
+          ]
+        },
+        {
+          "type": "Tuple(U32, [Tuple(U16, U16);8], U16)",
+          "value": [
+            {"type": "U32", "value": 0},
+            {
+              "type": "[Tuple(U16, U16);8]",
+              "value": List.generate(
+                  8,
+                  (index) => {
+                        "type": "Tuple(U16, U16)",
+                        "value": [
+                          {"type": "U16", "value": index + index},
+                          {"type": "U16", "value": index * index}
+                        ]
+                      })
+            },
+            {"type": "U16", "value": 1200}
+          ]
+        }
+      ]
+    };
+    final simpleValue = api.registry
+        .getValue(id: lookupid, value: templateValue, fromTemplate: true);
+    final encodeSimple =
+        api.encodeLookup(id: lookupid, value: simpleValue, fromTemplate: false);
+
+    final encodeTemplate = api.encodeLookup(
+        id: lookupid, value: templateValue, fromTemplate: true);
+    expect(encodeSimple.toHex(), encodeTemplate.toHex());
+    final decode = api.decodeLookup(lookupid, encodeTemplate);
+    expect(decode, [
+      [
+        2222,
+        [
+          [0, 0],
+          [1, 2],
+          [2, 4],
+          [3, 6],
+          [4, 8],
+          [5, 10],
+          [6, 12],
+          [7, 14]
+        ],
+        22
+      ],
+      [
+        0,
+        [
+          [0, 0],
+          [2, 1],
+          [4, 4],
+          [6, 9],
+          [8, 16],
+          [10, 25],
+          [12, 36],
+          [14, 49]
+        ],
+        1200
+      ]
+    ]);
+    expect(encodeSimple.toHex(),
+        "08b9220000040808100c181020142818301c385800000008041010182420402864309038c4c112");
   });
 }

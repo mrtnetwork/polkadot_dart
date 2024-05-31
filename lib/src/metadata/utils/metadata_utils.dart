@@ -1,4 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_option.dart';
@@ -105,5 +106,10 @@ class MetadataUtils {
           details: {"exceptedPrefix": prefixHash, "prefix": queryPrefix});
     }
     return queryBytes.sublist(_queryMethodPrefixLength);
+  }
+
+  static bool supportedTemplate(List<String> path) {
+    if (path.isEmpty) return true;
+    return !MetadataConstant.unsuportedTemplatePath.contains(path.last);
   }
 }

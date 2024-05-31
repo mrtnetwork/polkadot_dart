@@ -1,13 +1,7 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
-import 'package:polkadot_dart/src/substrate.dart';
 
-import 'http_service.dart';
-import 'metadata/v14_metadata_hex.dart';
-
-extension ToHex on List<int> {
-  String toHex() => BytesUtils.toHexString(this);
-}
+import 'json_rpc_example.dart';
 
 void main() async {
   /// Define constants for network format and threshold
@@ -52,9 +46,11 @@ void main() async {
   final provider =
       SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
+  final currentMetadata =
+      await provider.request(const SubstrateRPCStateGetMetadata());
+
   /// Load API metadata
-  final api = VersionedMetadata.fromBytes(BytesUtils.fromHexString(metadataV14))
-      .toApi();
+  final api = currentMetadata.toApi();
 
   /// Fetch the genesis hash
   final String genesisHash =

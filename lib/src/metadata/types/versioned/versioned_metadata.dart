@@ -1,8 +1,10 @@
 import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/unsuported_metadata.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/metadata_v14.dart';
@@ -69,4 +71,15 @@ class VersionedMetadata<T extends SubstrateMetadata>
 
   bool get supportedByApi =>
       MetadataConstant.supportedMetadataVersion.contains(version);
+
+  MetadataApi toApi() {
+    if (!supportedByApi) {
+      throw MetadataException("metadata does not supported by API", details: {
+        "version": version,
+        "api_support_versions":
+            MetadataConstant.supportedMetadataVersion.join(", ")
+      });
+    }
+    return MetadataApi(metadata as LatestMetadataInterface);
+  }
 }

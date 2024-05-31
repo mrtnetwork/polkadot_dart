@@ -9,10 +9,6 @@ export 'rpc/rpc_methods.dart';
 export 'payment/fee_details.dart';
 export 'payment/includs_fee.dart';
 
-/// state
-export 'state/runtime_version.dart';
-export 'state/runtime_version_api.dart';
-
 /// system
 export 'system/chain_properties.dart';
 export 'system/health.dart';

@@ -8,10 +8,8 @@ import 'package:polkadot_dart/polkadot_dart.dart';
 void main() async {
   final provider = SubstrateRPC(
       SubstrateHttpService("https://sys.ibp.network/bridgehub-westend"));
-  final mt = await provider.request(const SubstrateRPCStateGetMetadata());
-  final metadata =
-      VersionedMetadata<MetadataV14>.fromBytes(BytesUtils.fromHexString(mt))
-          .metadata;
+  final VersionedMetadata metadata =
+      await provider.request(const SubstrateRPCStateGetMetadata());
 
   List<int> seedBytes = List<int>.filled(32, 12);
   final privateKey = SubstratePrivateKey.fromSeed(
@@ -29,11 +27,9 @@ void main() async {
 
   final destination = privateKey2.toAddress();
 
-  final api = MetadataApi(metadata);
+  final api = metadata.toApi();
 
   final version = api.runtimeVersion();
-  final int transactionVersion = version["transaction_version"];
-  final int specVersion = version["spec_version"];
 
   final genesisHash =
       await provider.request(const SubstrateRPCChainGetBlockHash(number: 0));
@@ -66,7 +62,7 @@ void main() async {
           "key": "Id",
           "value": {"type": "[U8;32]", "value": destination.toBytes()},
         },
-        "value": {"type": "U128", "value": SubstrateHelper.toWsd("0.1")}
+        "value": {"type": "U128", "value": SubstrateHelper.toWSD("0.1")}
       }
     },
   };
@@ -78,8 +74,8 @@ void main() async {
       genesisHash: SubstrateBlockHash.hash(genesisHash),
       method: method,
       nonce: nonce,
-      specVersion: specVersion,
-      transactionVersion: transactionVersion,
+      specVersion: version.specVersion,
+      transactionVersion: version.transactionVersion,
       tip: BigInt.zero);
 
   final sig = privateKey.multiSignature(payload.serialize());

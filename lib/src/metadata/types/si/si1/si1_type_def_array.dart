@@ -41,7 +41,7 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
       return LayoutConst.array(layout, len, property: property);
     }
     final layouts =
-        listValue.map((e) => registry.typeDefLayout(type, value)).toList();
+        listValue.map((e) => registry.typeDefLayout(type, e)).toList();
 
     return LayoutConst.tuple(layouts, property: property);
   }

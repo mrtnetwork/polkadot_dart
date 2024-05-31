@@ -1,6 +1,6 @@
 name: polkadot_dart
 description: "This package facilitates Substrate interactions: create, sign, send transactions (ECDSA, ED25519, SR25519), query, runtime calls, JSON-RPC for seamless Substrate operations."
-version: 0.0.2
+version: 0.0.3
 homepage: "https://github.com/mrtnetwork/polkadot_dart"
 repository: "https://github.com/mrtnetwork/polkadot_dart"
 Author: mrhaydari.t@gmail.com
@@ -23,6 +23,7 @@ dev_dependencies:
   test: ^1.25.2
   lints: ^4.0.0
   flutter_lints: ^4.0.0
+  http: ^1.2.1
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

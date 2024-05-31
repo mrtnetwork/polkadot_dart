@@ -1,3 +1,4 @@
+import 'package:blockchain_utils/binary/utils.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/models/extrinsic/layouts/v4.dart';
 import 'package:polkadot_dart/src/models/generic/models/block_hash.dart';
@@ -13,15 +14,16 @@ class TransactionPayload extends SubstrateSerialization<Map<String, dynamic>> {
   final int nonce;
   final int specVersion;
   final int transactionVersion;
-  const TransactionPayload(
+  TransactionPayload(
       {required this.blockHash,
       required this.era,
       required this.genesisHash,
-      required this.method,
+      required List<int> method,
       required this.nonce,
       required this.specVersion,
       required this.transactionVersion,
-      this.tip});
+      this.tip})
+      : method = BytesUtils.toBytes(method, unmodifiable: true);
 
   @override
   StructLayout layout({String? property}) =>

@@ -1,10 +1,11 @@
 import 'package:blockchain_utils/binary/utils.dart';
+import 'package:blockchain_utils/layout/core/core/core.dart';
 import 'package:blockchain_utils/numbers/int_utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 import 'runtime_version_api.dart';
 
-class RuntimeVersion with JsonSerialization {
+class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
   final String specName;
   final String implName;
   final int authoringVersion;
@@ -23,6 +24,16 @@ class RuntimeVersion with JsonSerialization {
       required this.transactionVersion,
       required this.stateVersion})
       : apis = List<RuntimeVersionApi>.unmodifiable(apis);
+  RuntimeVersion.deserializeJson(Map<String, dynamic> json)
+      : specVersion = json["spec_version"],
+        implVersion = json["impl_version"],
+        authoringVersion = json["authoring_version"],
+        transactionVersion = json["transaction_version"],
+        stateVersion = json["state_version"],
+        apis = List<RuntimeVersionApi>.unmodifiable((json["apis"] as List)
+            .map((e) => RuntimeVersionApi.deserializeJson(e))),
+        implName = json["impl_name"],
+        specName = json["spec_name"];
   factory RuntimeVersion.fromJson(Map<String, dynamic> json) {
     return RuntimeVersion(
         specName: json["specName"],
@@ -39,7 +50,6 @@ class RuntimeVersion with JsonSerialization {
         stateVersion: IntUtils.parse(json["stateVersion"]));
   }
 
-  @override
   Map<String, dynamic> toJson() {
     return {
       "specName": specName,
@@ -53,6 +63,25 @@ class RuntimeVersion with JsonSerialization {
           .toList(),
       "transactionVersion": transactionVersion,
       "stateVersion": stateVersion
+    };
+  }
+
+  @override
+  Layout<Map<String, dynamic>> layout({String? property}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+    return {
+      "spec_name": specName,
+      "impl_name": implName,
+      "authoring_version": authoringVersion,
+      "impl_version": implVersion,
+      "apis": apis.map((e) => e.scaleJsonSerialize()).toList(),
+      "transaction_version": transactionVersion,
+      "state_version": stateVersion,
+      "spec_version": specVersion
     };
   }
 }

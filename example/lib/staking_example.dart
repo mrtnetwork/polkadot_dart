@@ -5,10 +5,11 @@ import 'json_rpc_example.dart';
 void main() async {
   final provider =
       SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
-  final mt = await provider.request(const SubstrateRPCStateGetMetadata());
-  final metadata =
-      VersionedMetadata<MetadataV14>.fromBytes(BytesUtils.fromHexString(mt))
-          .metadata;
+  final VersionedMetadata metadata =
+      await provider.request(const SubstrateRPCStateGetMetadata());
+  // final metadata =
+  //     VersionedMetadata<MetadataV14>.fromBytes(BytesUtils.fromHexString(mt))
+  //         .metadata;
 
   List<int> seedBytes = BytesUtils.fromHexString(
       "4bc884e0eb595d3c71dc4c62305380a43d7a820b9cf69753232196b34486a27c");
@@ -18,11 +19,9 @@ void main() async {
   /// 5GjQNXpyZoyYiQ8GdB5fgjRkZdh3EgELwGdEmPP44YDnMx43
   final signer = privateKey.toAddress();
 
-  final api = MetadataApi(metadata);
+  final api = metadata.toApi();
 
   final version = api.runtimeVersion();
-  final int transactionVersion = version["transaction_version"];
-  final int specVersion = version["spec_version"];
 
   final genesisHash =
       await provider.request(const SubstrateRPCChainGetBlockHash(number: 0));
@@ -48,7 +47,7 @@ void main() async {
     "value": {
       "type": "Map",
       "value": {
-        "value": {"type": "U128", "value": SubstrateHelper.toWsd("2")},
+        "value": {"type": "U128", "value": SubstrateHelper.toWSD("2")},
         "payee": {
           "type": "Enum",
           "key": "Controller",
@@ -65,8 +64,8 @@ void main() async {
       genesisHash: SubstrateBlockHash.hash(genesisHash),
       method: method,
       nonce: nonce,
-      specVersion: specVersion,
-      transactionVersion: transactionVersion,
+      specVersion: version.specVersion,
+      transactionVersion: version.transactionVersion,
       tip: BigInt.zero);
 
   final sig = privateKey.multiSignature(payload.serialize());

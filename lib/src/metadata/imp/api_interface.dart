@@ -1,6 +1,6 @@
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
-import 'package:polkadot_dart/src/provider/provider.dart';
+import 'package:polkadot_dart/src/models/generic/models/runtime_version.dart';
 
 /// Interface providing methods for interacting with metadata in the Substrate framework.
 mixin MetadataApiInterface {
@@ -102,7 +102,7 @@ mixin MetadataApiInterface {
       required List<int> bytes});
 
   /// Retrieves runtime version information.
-  Map<String, dynamic> runtimeVersion();
+  RuntimeVersion runtimeVersion();
 
   /// Retrieves the list of storage methods for a pallet.
   List<String> getPalletStorageMethods(String palletNameOrIndex);
@@ -130,10 +130,5 @@ mixin MetadataApiInterface {
       required String methodName,
       required List<int> bytes});
 
-  Future<T> runtimeCall<T>(
-      {required String apiName,
-      required String methodName,
-      required List<Object?> params,
-      required SubstrateRPC rpc,
-      bool fromTemplate = true});
+  int getCallLookupId(String palletNameOrIndex);
 }

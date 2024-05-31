@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/string/string.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si0/si0_type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
+import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/metadata/utils/utils.dart';
 
 class TypeTemlate {
@@ -23,6 +24,8 @@ class TypeTemlate {
   final List<TypeTemlate> children;
 
   final List<String> path;
+
+  bool get supported => MetadataUtils.supportedTemplate(path);
 
   const TypeTemlate({
     required this.lookupId,

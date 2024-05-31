@@ -76,19 +76,9 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>>
   /// Returns the type template using the provided [registry].
   @override
   TypeTemlate typeTemplate(PortableRegistry registry, int id) {
-    if (path.isNotEmpty && path.last == "RuntimeCall") {
+    if (!MetadataUtils.supportedTemplate(path)) {
       return TypeTemlate(
-        lookupId: id,
-        type: typeName,
-        typeName: "RuntimeCall",
-      );
-    }
-    if (path.isNotEmpty && path.last == "Instruction") {
-      return TypeTemlate(
-        lookupId: id,
-        type: typeName,
-        typeName: "Instruction",
-      );
+          lookupId: id, type: typeName, typeName: path.last, path: path);
     }
     return def.typeTemplate(registry, id).copyWith(path: path);
   }

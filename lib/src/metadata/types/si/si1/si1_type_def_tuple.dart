@@ -26,7 +26,8 @@ class Si1TypeDefTuple extends Si1TypeDef<List<int>> implements TypeDefTuple {
 
   /// Returns the serialization layout of the type definition using the provided [registry], [value], and optional [property].
   @override
-  Layout typeDefLayout(PortableRegistry registry, value, {String? property}) {
+  Layout typeDefLayout(PortableRegistry registry, Object? value,
+      {String? property}) {
     final listValue = MetadataUtils.isOf<List>(value);
     MetadataUtils.hasLen(listValue, values.length);
     final List<Layout> layouts = [];

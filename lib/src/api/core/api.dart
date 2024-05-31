@@ -1,15 +1,11 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/api/models/response.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/imp/api_interface.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/provider/provider.dart';
-
-const String _rpcJsonStorageChangesKey = "changes";
-const String _rpcJsonBlockKey = "block";
+import 'package:polkadot_dart/src/models/generic/generic.dart';
 
 class MetadataApi with MetadataApiInterface {
   final LatestMetadataInterface metadata;
@@ -211,137 +207,10 @@ class MetadataApi with MetadataApiInterface {
     return event.typeTemplate(registry, event.type);
   }
 
-  String _getStorageKey({
-    required String palletNameOrIndex,
-    required String methodName,
-    required Object? value,
-    required bool fromTemplate,
-  }) {
-    final queryKey = getStorageKey(
-        palletNameOrIndex: palletNameOrIndex,
-        methodName: methodName,
-        value: value,
-        fromTemplate: fromTemplate);
-    return BytesUtils.toHexString(queryKey, prefix: "0x");
-  }
-
-  Future<QueryStorageResponse<T>> getStorage<T>({
-    required QueryStorageRequest<T> request,
-    required SubstrateRPC rpc,
-    required bool fromTemplate,
-    String? atBlockHash,
-  }) async {
-    final storageKey = _getStorageKey(
-        methodName: request.methodName,
-        palletNameOrIndex: request.palletNameOrIndex,
-        value: request.input,
-        fromTemplate: fromTemplate);
-    final rpcMethod =
-        SubstrateRPCGetStorage(storageKey, atBlockHash: atBlockHash);
-    final response = await rpc.request(rpcMethod);
-    final List<int>? queryResponse = BytesUtils.tryFromHexString(response);
-    final storageData = decodeStorageResponse(
-        palletNameOrIndex: request.palletNameOrIndex,
-        methodName: request.methodName,
-        queryResponse: queryResponse);
-    return request.toResponse(storageData);
-  }
-
-  Future<QueryStorageRequestBlock> queryStorageAt(
-      {required List<QueryStorageRequest> requestes,
-      required SubstrateRPC rpc,
-      required bool fromTemplate,
-      String? atBlockHash}) async {
-    final result = await _queryStorage(
-        requestes: requestes,
-        rpc: rpc,
-        fromTemplate: fromTemplate,
-        atBlockHash: atBlockHash);
-    return result[0];
-  }
-
-  Future<List<QueryStorageRequestBlock>> queryStorage<T>(
-      {required List<QueryStorageRequest> requestes,
-      required SubstrateRPC rpc,
-      required String fromBlock,
-      required bool fromTemplate,
-      String? toBlock}) {
-    return _queryStorage(
-        requestes: requestes,
-        rpc: rpc,
-        fromBlock: fromBlock,
-        atBlockHash: toBlock,
-        fromTemplate: fromTemplate);
-  }
-
-  Future<List<QueryStorageRequestBlock>> _queryStorage<T>(
-      {required List<QueryStorageRequest> requestes,
-      required SubstrateRPC rpc,
-      required bool fromTemplate,
-      String? fromBlock,
-      String? atBlockHash}) async {
-    final List<String> storageKeys = [];
-    for (int i = 0; i < requestes.length; i++) {
-      final QueryStorageRequest request = requestes[i];
-
-      final storageKey = _getStorageKey(
-          methodName: request.methodName,
-          palletNameOrIndex: request.palletNameOrIndex,
-          value: request.input,
-          fromTemplate: fromTemplate);
-      storageKeys.add(storageKey);
-    }
-    final rpcMethod = fromBlock == null
-        ? SubstrateRPCQuerStateStorageAt([...storageKeys],
-            atBlockHash: atBlockHash)
-        : SubstrateRPCStateQueryStorage(
-            keys: [...storageKeys], fromBlock: fromBlock, toBlock: atBlockHash);
-    final List<QueryStorageRequestBlock> blockResult = [];
-    final response = await rpc.request(rpcMethod);
-    for (int i = 0; i < response.length; i++) {
-      final Map<String, dynamic> result = (response[i] as Map).cast();
-      final block = result[_rpcJsonBlockKey];
-      final changes = StorageChangeStateResponse(
-          (result[_rpcJsonStorageChangesKey] as List)
-              .map((e) => List<String?>.from(e))
-              .toList()
-              .cast());
-      final List<QueryStorageResponse> results = [];
-
-      for (int i = 0; i < requestes.length; i++) {
-        final QueryStorageRequest request = requestes[i];
-        final String storageKey = storageKeys[i];
-        final List<int>? queryResponse = changes.getValue(storageKey);
-        final T storageData = decodeStorageResponse(
-            palletNameOrIndex: request.palletNameOrIndex,
-            methodName: request.methodName,
-            queryResponse: queryResponse);
-        results.add(request.toResponse(storageData));
-      }
-      blockResult.add(QueryStorageRequestBlock(request: results, block: block));
-    }
-    return blockResult;
-  }
-
-  Future<QueryStorageResult<T>> getEvents<T>(SubstrateRPC rpc,
-      {String? palletIdOrIndex, String? atBlockHash}) async {
-    final List<int> storageKeyBytes = generateEventStorageKey();
-    final String storageKey =
-        BytesUtils.toHexString(storageKeyBytes, prefix: "0x");
-    final rpcMethod =
-        SubstrateRPCGetStorage(storageKey, atBlockHash: atBlockHash);
-    final response = await rpc.request(rpcMethod);
-    if (response == null) {
-      return QueryStorageResult(storageKey: storageKey, result: null as T);
-    }
-    final List<int> eventBytes = BytesUtils.fromHexString(response);
-    final events = decodeEvent(palletNameOrIndex: "0", bytes: eventBytes);
-    return QueryStorageResult(storageKey: storageKey, result: events);
-  }
-
   @override
-  Map<String, dynamic> runtimeVersion() {
-    return getConstant("System", "Version");
+  RuntimeVersion runtimeVersion() {
+    final version = getConstant<Map<String, dynamic>>("System", "Version");
+    return RuntimeVersion.deserializeJson(version);
   }
 
   @override
@@ -418,24 +287,7 @@ class MetadataApi with MetadataApiInterface {
   }
 
   @override
-  Future<T> runtimeCall<T>(
-      {required String apiName,
-      required String methodName,
-      required List<Object?> params,
-      required SubstrateRPC rpc,
-      bool fromTemplate = true}) async {
-    final method = getRuntimeApiMethod(apiName, methodName);
-    final encode = encodeRuntimeApiInputs(
-        apiName: apiName,
-        methodName: methodName,
-        params: params,
-        fromTemplate: fromTemplate);
-    final rpcMethod = SubstrateRPCStateCall(
-        method: method, data: BytesUtils.toHexString(encode, prefix: "0x"));
-    final response = await rpc.request(rpcMethod);
-    return decodeRuntimeApiOutput(
-        apiName: apiName,
-        methodName: methodName,
-        bytes: BytesUtils.fromHexString(response));
+  int getCallLookupId(String palletNameOrIndex) {
+    return metadata.getCallLookupId(palletNameOrIndex);
   }
 }

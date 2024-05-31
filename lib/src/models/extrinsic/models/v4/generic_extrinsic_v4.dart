@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/binary/utils.dart';
 import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/models/extrinsic/layouts/v4.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
@@ -31,10 +30,6 @@ class Extrinsic extends SubstrateSerialization<Map<String, dynamic>> {
       : ExtrinsicV4Layouts.genericExtrinssicUnsigned(property: property);
 
   String toHash() {
-    if (signature == null) {
-      throw const MessageException(
-          "Extrinsic hash cannot be obtained without a signature.");
-    }
     return BytesUtils.toHexString(QuickCrypto.blake2b256Hash(serialize()),
         prefix: "0x");
   }

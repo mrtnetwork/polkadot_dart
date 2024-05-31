@@ -30,8 +30,6 @@ void main() async {
 
   /// Retrieving runtime version information.
   final version = api.runtimeVersion();
-  final int transactionVersion = version["transaction_version"];
-  final int specVersion = version["spec_version"];
 
   /// Retrieving genesis hash and finalized block hash.
   final genesisHash =
@@ -64,7 +62,7 @@ void main() async {
           "key": "Id",
           "value": {"type": "[U8;32]", "value": destination.toBytes()},
         },
-        "value": {"type": "U128", "value": SubstrateHelper.toWsd("0.1")}
+        "value": {"type": "U128", "value": SubstrateHelper.toWSD("0.1")}
       }
     },
   };
@@ -78,8 +76,8 @@ void main() async {
       genesisHash: SubstrateBlockHash.hash(genesisHash),
       method: method,
       nonce: nonce,
-      specVersion: specVersion,
-      transactionVersion: transactionVersion,
+      specVersion: version.specVersion,
+      transactionVersion: version.transactionVersion,
       tip: BigInt.zero);
 
   /// Signing the transaction.

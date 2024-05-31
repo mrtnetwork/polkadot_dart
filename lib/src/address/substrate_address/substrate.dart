@@ -88,14 +88,14 @@ class SubstrateAddress {
   /// Creates an address from a list of Substrate addresses with a specified threshold.
   ///
   /// [addresses] is the list of Substrate addresses.
-  /// [thressHold] is the required number of signatures.
+  /// [thresHold] is the required number of signatures.
   /// [ss58Format] is the SS58 format identifier.
   factory SubstrateAddress.createMultiSigAddress(
       {required List<SubstrateAddress> addresses,
-      required int thressHold,
+      required int thresHold,
       required int ss58Format}) {
     return SubstrateAddressUtils.createMultiSigAddress(
-        addresses: addresses, thressHold: thressHold, ss58Format: ss58Format);
+        addresses: addresses, thresHold: thresHold, ss58Format: ss58Format);
   }
 
   /// Converts the address to a list of bytes.
@@ -129,6 +129,15 @@ class SubstrateAddress {
     return SubstrateAccountIndex(
         LayoutConst.u32().deserialize(toBytes()).value);
   }
+
+  @override
+  operator ==(other) {
+    if (other is! SubstrateAddress) return false;
+    return other.address == address && other.ss58Format == ss58Format;
+  }
+
+  @override
+  int get hashCode => address.hashCode ^ ss58Format.hashCode;
 
   @override
   String toString() {

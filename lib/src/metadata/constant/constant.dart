@@ -19,4 +19,10 @@ class MetadataConstant {
   static const int v15 = 15;
 
   static const List<int> supportRuntimeApi = [15];
+
+  /// unsuported template
+  static const List<String> unsuportedTemplatePath = [
+    "RuntimeCall",
+    "Instruction"
+  ];
 }

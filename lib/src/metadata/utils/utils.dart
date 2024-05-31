@@ -15,7 +15,7 @@ class MetadataTemplateBuilder {
 
   static String _getArrayType(List<TypeTemlate> children, int? length) {
     assert((children.isEmpty || children.length == 1) && length != null,
-        "Array must have length 1");
+        "Array types must accept one element");
     if (children.isEmpty) return "[]";
     final child = children[0];
     if (child.isPrimitive) return "[${child.primitive!.type.name};$length]";
@@ -24,25 +24,24 @@ class MetadataTemplateBuilder {
   }
 
   static String _getTuppleType(List<TypeTemlate> children) {
-    return "Tuple(${children.map((e) => _compactType(e.children)).join(", ")})";
+    return "Tuple(${children.map((e) => _correctType(e)).join(", ")})";
   }
 
-  static String _getSequanceType(TypeTemlate temlate) {
-    assert(temlate.children.length == 1 && temlate.length == null,
+  static String _getSequanceType(TypeTemlate template) {
+    assert(template.children.length == 1 && template.length == null,
         "Array must have length 1");
-    final child = temlate.children[0];
+    final child = template.children[0];
     if (child.isPrimitive) return "Vec<${child.primitive!.type.name}>";
-    if (temlate.typeName != null) return temlate.typeName!;
-    if (temlate.path.isNotEmpty) return "Vec<${temlate.path.last}>";
+    if (template.typeName != null) return template.typeName!;
+    if (template.path.isNotEmpty) return "Vec<${template.path.last}>";
     return "Vec<T>";
   }
 
-  static Map<String, dynamic> _createStructValue2(List<TypeTemlate> children) {
-    assert(children.isNotEmpty);
+  static Map<String, dynamic> _createStructValues(List<TypeTemlate> children) {
     if (children.length == 1 && !children[0].hasName) {
       return buildJson(children[0]);
     }
-    if (children[0].hasName) {
+    if (children.isNotEmpty && children[0].hasName) {
       Map<String, dynamic> valueTemplate = {};
       for (final i in children) {
         valueTemplate[i.name!] = buildJson(i);
@@ -61,22 +60,29 @@ class MetadataTemplateBuilder {
     if (children.length == 1) {
       return buildJson(children[0]);
     }
-    return _createStructValue2(children);
+    return _createStructValues(children);
   }
 
-  static Map<String, dynamic>? _createVariantsValues(TypeTemlate temlate) {
-    if (temlate.children.isEmpty) {
+  static Map<String, dynamic>? _createVariantsValues(TypeTemlate template) {
+    if (template.children.isEmpty) {
       return null;
     }
     return {
-      "type": _correctType(temlate),
-      ..._createVariantStruct(temlate.children)
+      "type": _correctType(template),
+      ..._createVariantStruct(template.children)
     };
   }
 
-  static Map<String, Object> _createVariantValue(TypeTemlate temlate) {
+  static Map<String, Object> _createVariantValue(TypeTemlate template) {
     final Map<String, dynamic> variants = {};
-    for (final i in temlate.children) {
+    if (!template.supported) {
+      return {
+        "variants":
+            "${template.typeName} does not support to build variants. please look at metadata json file",
+        "path": template.path
+      };
+    }
+    for (final i in template.children) {
       variants[i.name!] = _createVariantsValues(i);
     }
 
@@ -84,9 +90,9 @@ class MetadataTemplateBuilder {
   }
 
   static List<Map<String, dynamic>>? _createArrayAndSequanceValue(
-      TypeTemlate temlate) {
-    assert(temlate.children.length == 1);
-    final child = temlate.children[0];
+      TypeTemlate template) {
+    assert(template.children.length == 1);
+    final child = template.children[0];
     if (child.isPrimitive) return null;
     return [buildJson(child)];
   }
@@ -108,19 +114,19 @@ class MetadataTemplateBuilder {
     return _correctType(children[0]);
   }
 
-  static String _correctType(TypeTemlate temlate) {
-    if (temlate.type == null) return _getCompositeType(temlate.children);
-    switch (temlate.type) {
+  static String _correctType(TypeTemlate template) {
+    if (template.type == null) return _getCompositeType(template.children);
+    switch (template.type) {
       case Si1TypeDefsIndexesConst.composite:
-        return _getCompositeType(temlate.children);
+        return _getCompositeType(template.children);
       case Si1TypeDefsIndexesConst.array:
-        return _getArrayType(temlate.children, temlate.length);
+        return _getArrayType(template.children, template.length);
       case Si1TypeDefsIndexesConst.sequence:
-        return _getSequanceType(temlate);
+        return _getSequanceType(template);
       case Si1TypeDefsIndexesConst.primitive:
-        return temlate.primitive!.type.name;
+        return template.primitive!.type.name;
       case Si1TypeDefsIndexesConst.compact:
-        return _compactType(temlate.children);
+        return _compactType(template.children);
       case Si1TypeDefsIndexesConst.variant:
         return "Enum";
       case Si1TypeDefsIndexesConst.historicMetaCompat:
@@ -128,9 +134,9 @@ class MetadataTemplateBuilder {
       case Si1TypeDefsIndexesConst.bitSequence:
         return "[U8]";
       case Si1TypeDefsIndexesConst.option:
-        return "Option<${_correctType(temlate.children[0])}>";
+        return "Option<${_correctType(template.children[0])}>";
       default:
-        return _getTuppleType(temlate.children);
+        return _getTuppleType(template.children);
     }
   }
 
@@ -157,7 +163,7 @@ class MetadataTemplateBuilder {
   static Map<String, dynamic> buildJson(TypeTemlate template) {
     switch (template.type) {
       case Si1TypeDefsIndexesConst.composite:
-        return _createStructValue2(template.children);
+        return _createStructValues(template.children);
       case Si1TypeDefsIndexesConst.option:
         return _createOptionValue(template.children);
       default:
@@ -169,14 +175,14 @@ class MetadataTemplateBuilder {
     };
   }
 
-  static String _getArrayStringType(TypeTemlate temlate) {
+  static String _getArrayStringType(TypeTemlate template) {
     assert(
-        (temlate.children.isEmpty || temlate.children.length == 1) &&
-            temlate.length != null,
+        (template.children.isEmpty || template.children.length == 1) &&
+            template.length != null,
         "Array must have length 1");
-    if (temlate.children.isEmpty) return "[;${temlate.length}]";
-    final child = temlate.children[0];
-    return "[${buildString(child)};${temlate.length}]";
+    if (template.children.isEmpty) return "[;${template.length}]";
+    final child = template.children[0];
+    return "[${buildString(child)};${template.length}]";
   }
 
   static String _getSequanceStringType(TypeTemlate template) {
@@ -196,55 +202,64 @@ class MetadataTemplateBuilder {
     return "Tuple(${children.map((e) => buildString(e)).join(", ")})";
   }
 
-  static String _getCompositeStringType(TypeTemlate temlate) {
-    if (temlate.children.isEmpty) return "null";
-    final isStruct = temlate.children[0].hasName;
-    if (temlate.children.length == 1 && !isStruct) {
-      return buildString(temlate.children[0]);
+  static String _getCompositeStringType(TypeTemlate template) {
+    if (template.children.isEmpty) return "null";
+    final isStruct = template.children[0].hasName;
+    if (template.children.length == 1 && !isStruct) {
+      return buildString(template.children[0]);
     }
     if (isStruct) {
-      return "Map${{for (final i in temlate.children) i.name: buildString(i)}}";
+      return "Map${{
+        for (final i in template.children) i.name: buildString(i)
+      }}";
     }
-    return _tupleStringType(temlate.children);
+    return _tupleStringType(template.children);
   }
 
-  static String _getVariantStringType(TypeTemlate temlate) {
-    if (temlate.children.length == 1) {
-      return buildString(temlate.children[0]);
+  static String _getVariantStringType(TypeTemlate template) {
+    if (template.children.length == 1) {
+      return buildString(template.children[0]);
     }
-    return _getCompositeStringType(temlate);
+    return _getCompositeStringType(template);
   }
 
-  static String _getVariantsStringType(TypeTemlate temlate) {
+  static String _getVariantsStringType(TypeTemlate template) {
+    if (!template.supported) {
+      return "OneOf${{
+        "variants":
+            "${template.typeName} does not support to build variants. please look at metadata json file",
+        "path": template.path
+      }}";
+    }
     final values = {
-      for (final i in temlate.children) i.name: _getVariantStringType(i)
+      for (final i in template.children) i.name: _getVariantStringType(i)
     };
     return "OneOf$values";
   }
 
-  static String buildString(TypeTemlate temlate) {
-    if (temlate.type == null) return _getCompositeStringType(temlate);
-    switch (temlate.type) {
+  static String buildString(TypeTemlate template) {
+    if (template.type == null) return _getCompositeStringType(template);
+    switch (template.type) {
       case Si1TypeDefsIndexesConst.composite:
-        return _getCompositeStringType(temlate);
+        return _getCompositeStringType(template);
       case Si1TypeDefsIndexesConst.array:
-        return _getArrayStringType(temlate);
+        return _getArrayStringType(template);
       case Si1TypeDefsIndexesConst.sequence:
-        return _getSequanceStringType(temlate);
+        return _getSequanceStringType(template);
       case Si1TypeDefsIndexesConst.primitive:
-        return temlate.primitive!.type.name;
+        return template.primitive!.type.name;
       case Si1TypeDefsIndexesConst.compact:
-        return _compactStringType(temlate);
+        return _compactStringType(template);
       case Si1TypeDefsIndexesConst.variant:
-        return _getVariantsStringType(temlate);
+        return _getVariantsStringType(template);
       case Si1TypeDefsIndexesConst.historicMetaCompat:
         return "HistoricMetaCompat";
       case Si1TypeDefsIndexesConst.bitSequence:
         return "[U8]";
       case Si1TypeDefsIndexesConst.option:
-        return "Option<${buildString(temlate.children[0])}>";
+        return "Option<${buildString(template.children[0])}>";
       default:
-        return _tupleStringType(temlate.children);
+        return _tupleStringType(template.children);
     }
   }
 }
