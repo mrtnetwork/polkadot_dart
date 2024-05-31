@@ -51,7 +51,7 @@ class StakingPayee extends StakingPayeeOption {
 
 // class StakingPayee {
 //   final String option;
-//   final 
+//   final
 // }
 //  "Staked": null,
 //               "Stash": null,
