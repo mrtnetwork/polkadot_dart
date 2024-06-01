@@ -2,13 +2,16 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/models/response.dart';
+import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 const String _rpcJsonStorageChangesKey = "changes";
 const String _rpcJsonBlockKey = "block";
 
+/// Extension to assist with querying storage based on metadata
 extension QueryHelper on MetadataApi {
+  /// Function to generate storage key based on pallet name/index, method name, value, and template
   String _getStorageKey({
     required String palletNameOrIndex,
     required String methodName,
@@ -149,5 +152,25 @@ extension QueryHelper on MetadataApi {
         rpc: rpc,
         fromTemplate: false);
     return SubstrateAccountInfo.deserializeJson(data.result);
+  }
+
+  Future<FrameSupportDispatchPerDispatchClass> queryBlockWeight(
+    SubstrateRPC rpc, {
+    String? atBlockHash,
+  }) async {
+    final storageKey = _getStorageKey(
+        methodName: MetadataConstant.queryBlockWeightMethodName,
+        palletNameOrIndex: MetadataConstant.genericSystemPalletName,
+        value: [],
+        fromTemplate: false);
+    final rpcMethod =
+        SubstrateRPCGetStorage(storageKey, atBlockHash: atBlockHash);
+    final response = await rpc.request(rpcMethod);
+    final List<int>? queryResponse = BytesUtils.tryFromHexString(response);
+    final decodeResponse = decodeStorageResponse<Map<String, dynamic>>(
+        methodName: MetadataConstant.queryBlockWeightMethodName,
+        palletNameOrIndex: MetadataConstant.genericSystemPalletName,
+        queryResponse: queryResponse);
+    return FrameSupportDispatchPerDispatchClass.deserializeJson(decodeResponse);
   }
 }

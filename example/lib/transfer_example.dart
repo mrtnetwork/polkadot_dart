@@ -23,7 +23,7 @@ void main() async {
 
   /// Destination address for the transaction.
   final destination =
-      SubstrateAddress("5EepAwmzpwn2PK45i3og3emvXs4NFnqzHu4T2VbUGhvkU4yB");
+      SubstrateAddress("5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T");
 
   /// Initializing metadata API for further interaction.
   final api = MetadataApi(metadata);
@@ -62,7 +62,7 @@ void main() async {
           "key": "Id",
           "value": {"type": "[U8;32]", "value": destination.toBytes()},
         },
-        "value": {"type": "U128", "value": SubstrateHelper.toWSD("0.1")}
+        "value": {"type": "U128", "value": SubstrateHelper.toWSD("5")}
       }
     },
   };

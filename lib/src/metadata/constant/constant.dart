@@ -25,4 +25,6 @@ class MetadataConstant {
     "RuntimeCall",
     "Instruction"
   ];
+
+  static const String queryBlockWeightMethodName = "BlockWeight";
 }

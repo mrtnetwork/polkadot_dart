@@ -13,6 +13,7 @@ To effectively use this package, you should have a solid understanding of Substr
 - **Transaction Management**
   - Create, sign, and verify transactions using multiple key types: ECDSA, ED25519, and SR25519.
   - Support for generating and managing addresses for ECDSA, ED25519, and SR25519 keys.
+  - Introducing multi-signature (multi-sig) address feature for enhanced transaction security.
 
 - **Metadata Support**
   - Full support for Substrate metadata versions V14 and V15.
@@ -460,6 +461,10 @@ final blockHeader = await provider
   final derive = privateKey.derive("//mrtnetwork");
 
 ```
+
+### Resources
+
+- Comprehensive Testing: All functionalities have been thoroughly tested, ensuring reliability and accuracy.
 
 ## Contributing
 

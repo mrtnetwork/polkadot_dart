@@ -133,6 +133,7 @@ class MetadataApi with MetadataApiInterface {
     required Object? value,
   }) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);
+
     final prefixHash =
         metadata.getStoragePrefixHash(palletNameOrIndex, methodName);
     if (lookupId == null) return prefixHash;

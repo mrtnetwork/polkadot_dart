@@ -5,7 +5,9 @@ import 'package:polkadot_dart/src/metadata/types/types.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 
+/// Extension to help with transaction encoding based on metadata
 extension TransactionHelper on MetadataApi {
+  /// Encode transfer with allow death
   List<int> transferAllowDeath(BigInt value, SubstrateAddress destination) {
     final amount = MetadataCastingUtils.castingIntegerValue(
         value: value, type: PrimitiveTypes.u128);
@@ -25,6 +27,7 @@ extension TransactionHelper on MetadataApi {
     }
   }
 
+  /// Encode transfer with keep alive
   List<int> transferKeepAlive(BigInt value, SubstrateAddress destination) {
     final amount = MetadataCastingUtils.castingIntegerValue(
         value: value, type: PrimitiveTypes.u128);
@@ -44,6 +47,7 @@ extension TransactionHelper on MetadataApi {
     }
   }
 
+  /// Encode staking bond
   List<int> stakingBond(BigInt value, StakingPayeeOption payee) {
     final amount = MetadataCastingUtils.castingIntegerValue(
         value: value, type: PrimitiveTypes.u128);
@@ -62,6 +66,7 @@ extension TransactionHelper on MetadataApi {
     }
   }
 
+  /// Encode staking unbond
   List<int> stakingUnbond(BigInt value) {
     final amount = MetadataCastingUtils.castingIntegerValue(
         value: value, type: PrimitiveTypes.u128);
@@ -78,6 +83,7 @@ extension TransactionHelper on MetadataApi {
     }
   }
 
+  /// Encode approve as multi
   List<int> approveAsMulti(
       {required int thresHold,
       required List<SubstrateAddress> otherSignatories,
@@ -104,7 +110,8 @@ extension TransactionHelper on MetadataApi {
     }
   }
 
-  List<int> asMulti(
+  /// Encode as multi
+  List<int> encodeAsMulti(
       {required int thresHold,
       required List<SubstrateAddress> otherSignatories,
       MultisigTimepoint? maybeTimepoint,

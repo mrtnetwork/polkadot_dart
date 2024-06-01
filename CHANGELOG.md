@@ -1,3 +1,8 @@
+## 0.0.4
+
+- Introduced SubstrateHelper class to facilitate static methods for handling transactions.
+- Introduce multi-signature (multi-sig) address feature for enhanced transaction security.
+
 ## 0.0.3
 
 - Fixed various bugs to improve stability.

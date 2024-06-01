@@ -18,6 +18,14 @@ class GenericLayouts {
     ], property: property);
   }
 
+  static StructLayout frameSupportDispatchPerDispatchClass({String? property}) {
+    return LayoutConst.struct([
+      spWeightsWeightV2Weight(property: "normal"),
+      spWeightsWeightV2Weight(property: "operational"),
+      spWeightsWeightV2Weight(property: "mandatory"),
+    ], property: property);
+  }
+
   static Layout<Map<String, dynamic>> signature({String? property}) {
     return LayoutConst.rustEnum([
       LayoutConst.fixedBlobN(SubstrateConstant.signatureLength,
