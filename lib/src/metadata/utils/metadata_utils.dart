@@ -11,7 +11,7 @@ class MetadataUtils {
       Si1TypeDef def, List<String> path, List<int?> params) {
     if (params.length == 1 &&
         params[0] != null &&
-        iterableIsEqual(path, optionPath)) {
+        CompareUtils.iterableIsEqual(path, optionPath)) {
       return TypeDefOption(params[0]!, def);
     }
     return def;
@@ -100,7 +100,7 @@ class MetadataUtils {
     }
 
     final queryPrefix = queryBytes.sublist(0, _queryMethodPrefixLength);
-    if (!bytesEqual(queryBytes, prefixHash)) {
+    if (!BytesUtils.bytesEqual(queryBytes, prefixHash)) {
       throw MetadataException(
           "Invalid query bytes. Query bytes does not related to this storage",
           details: {"exceptedPrefix": prefixHash, "prefix": queryPrefix});

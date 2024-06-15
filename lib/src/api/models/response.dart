@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/binary/utils.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 
 class QueryStorageResult<T> {

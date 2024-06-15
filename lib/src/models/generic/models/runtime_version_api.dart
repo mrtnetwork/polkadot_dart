@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/binary/utils.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:blockchain_utils/layout/core/core/core.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';

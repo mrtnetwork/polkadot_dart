@@ -1,6 +1,5 @@
-import 'package:blockchain_utils/binary/utils.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/numbers/int_utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 import 'runtime_version_api.dart';

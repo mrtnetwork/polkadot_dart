@@ -462,7 +462,7 @@ final blockHeader = await provider
 
 ```
 
-### Resources
+## Resources
 
 - Comprehensive Testing: All functionalities have been thoroughly tested, ensuring reliability and accuracy.
 

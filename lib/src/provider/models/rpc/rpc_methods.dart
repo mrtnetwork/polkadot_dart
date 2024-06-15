@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/numbers/numbers.dart';
+import 'package:blockchain_utils/utils/numbers/utils/int_utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 class RpcMethods with JsonSerialization {

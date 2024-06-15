@@ -37,7 +37,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   PortableTypeV14 getLookupTByPath(List<String> paths) {
     final id = types.entries
         .firstWhere(
-          (element) => iterableIsEqual(element.value.type.path, paths),
+          (element) =>
+              CompareUtils.iterableIsEqual(element.value.type.path, paths),
           orElse: () => throw MetadataException("lookup id does not found.",
               details: {"path": paths.join(", ")}),
         )
@@ -48,7 +49,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   PortableTypeV14 getTypeByPath(List<String> paths) {
     final type = types.entries
         .firstWhere(
-          (element) => iterableIsEqual(element.value.type.path, paths),
+          (element) =>
+              CompareUtils.iterableIsEqual(element.value.type.path, paths),
           orElse: () => throw MetadataException("lookup id does not found.",
               details: {"path": paths.join(", ")}),
         )
@@ -101,7 +103,7 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
     }
     final eventPalle = types.entries
         .firstWhere(
-          (element) => iterableIsEqual(
+          (element) => CompareUtils.iterableIsEqual(
               element.value.type.path, MetadataConstant.eventPath),
           orElse: () => throw MetadataException("lookup id does not found."),
         )

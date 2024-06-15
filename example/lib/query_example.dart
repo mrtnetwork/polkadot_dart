@@ -1,6 +1,6 @@
 // ignore_for_file: unused_local_variable
 
-import 'package:blockchain_utils/binary/utils.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:example/repository/westend_v15.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'json_rpc_example.dart';

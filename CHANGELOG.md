@@ -1,3 +1,7 @@
+## 0.0.5
+
+- Update dependencies.
+
 ## 0.0.4
 
 - Introduced SubstrateHelper class to facilitate static methods for handling transactions.

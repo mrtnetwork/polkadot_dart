@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/binary/utils.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/versioned_metadata.dart';
 import 'package:polkadot_dart/src/provider/core/base.dart';
 import 'package:polkadot_dart/src/provider/core/methods.dart';
