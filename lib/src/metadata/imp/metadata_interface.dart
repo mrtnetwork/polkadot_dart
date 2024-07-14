@@ -178,6 +178,16 @@ mixin LatestMetadataInterface {
     return constants;
   }
 
+  /// Retrieves all constants for the given pallet.
+  Map<String, dynamic> getAllConstants() {
+    final Map<String, dynamic> constants = {};
+    for (final i in pallets.values) {
+      final palletConstants = getConstants(i.name);
+      constants[i.name] = palletConstants;
+    }
+    return constants;
+  }
+
   /// Decodes the storage output for the given pallet and method name.
   T decodeStorageOutput<T>(
       {required String palletNameOrIndex,

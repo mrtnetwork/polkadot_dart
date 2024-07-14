@@ -19,9 +19,12 @@ class Extrinsic extends SubstrateSerialization<Map<String, dynamic>> {
   bool get isSigned => signature != null;
 
   @override
-  List<int> serialize({String? property}) {
+  List<int> serialize({String? property, bool encodeLength = true}) {
     final encode = [...super.serialize(), ...methodBytes];
-    return [...LayoutSerializationUtils.encodeLength(encode), ...encode];
+    if (encodeLength) {
+      return [...LayoutSerializationUtils.encodeLength(encode), ...encode];
+    }
+    return encode;
   }
 
   @override

@@ -1,5 +1,5 @@
-import 'package:polkadot_dart/src/provider/core/base.dart';
-import 'package:polkadot_dart/src/provider/core/methods.dart';
+import 'package:polkadot_dart/src/provider/core/core/base.dart';
+import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns all pending extrinsics, potentially grouped by sender
 /// https://polkadot.js.org/docs/substrate/rpc/#author

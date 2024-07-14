@@ -1,32 +1,33 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 
+import 'private_key.dart';
+
 /// Represents a public key in the Substrate framework.
 class SubstratePublicKey {
   /// The underlying Substrate instance.
   final Substrate _substrate;
 
   /// Constructs a [SubstratePublicKey] instance from a Substrate object.
-  const SubstratePublicKey._(this._substrate);
+  const SubstratePublicKey._(this._substrate, this.algorithm);
 
   /// Constructs a [SubstratePublicKey] from a byte array.
   factory SubstratePublicKey.fromBytes({
     required List<int> pubkeyBytes,
     SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
   }) {
-    final substrate = Substrate.fromPublicKey(
-        pubkeyBytes, SubstrateCoins.polkadot,
-        curve: algorithm);
-    return SubstratePublicKey._(substrate);
+    final substrate =
+        Substrate.fromPublicKey(pubkeyBytes, algorithm.defaultCoin);
+    return SubstratePublicKey._(substrate, algorithm);
   }
 
   /// Retrieves the algorithm used for the public key.
-  SubstrateKeyAlgorithm get algorithm => _substrate.publicKey.algorithm;
+  final SubstrateKeyAlgorithm algorithm;
 
   /// Derives a new public key from the current one using the provided [path].
   SubstratePublicKey derive(String path) {
     final derive = _substrate.derivePath(path);
-    return SubstratePublicKey._(derive);
+    return SubstratePublicKey._(derive, algorithm);
   }
 
   /// Converts the public key to bytes.

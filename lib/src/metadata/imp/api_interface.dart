@@ -42,6 +42,9 @@ mixin MetadataApiInterface {
   /// Retrieves all constants for a pallet.
   Map<String, dynamic> getConstants(String palletNameOrIndex);
 
+  /// Retrieves all constants.
+  Map<String, dynamic> getAllConstants();
+
   /// Retrieves the list of pallet names.
   List<String> getPalletNames();
 

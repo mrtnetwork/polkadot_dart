@@ -1,5 +1,5 @@
-import 'package:polkadot_dart/src/provider/core/base.dart';
-import 'package:polkadot_dart/src/provider/core/methods.dart';
+import 'package:polkadot_dart/src/provider/core/core/base.dart';
+import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Remove a reserved peer
 /// This method is only active with appropriate flags

@@ -1,5 +1,5 @@
-import 'package:polkadot_dart/src/provider/core/base.dart';
-import 'package:polkadot_dart/src/provider/core/methods.dart';
+import 'package:polkadot_dart/src/provider/core/core/base.dart';
+import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 import 'package:polkadot_dart/src/provider/models/payment/fee_details.dart';
 
 /// Query the detailed fee of a given encoded extrinsic.

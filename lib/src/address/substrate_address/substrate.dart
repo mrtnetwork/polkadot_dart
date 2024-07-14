@@ -25,7 +25,6 @@ class SubstrateAddress {
   ///
   /// [address] is the address string.
   /// [ss58Format] is an optional SS58 format identifier.
-  /// throw [ArgumentException] if ss58Format provided and not equal to address
   factory SubstrateAddress(String address, {int? ss58Format}) {
     final decode = SubstrateGenericAddrDecoder()
         .decodeAddWithSS58(address, {"ss58_format": ss58Format});

@@ -1,0 +1,197 @@
+macbookpro@macbooks-MacBook-Pro pol % node e.js
+private key:  0c8ecfba39e5343fda983c2c5b8b0dcc7293fad84f05c5e4089088849ddf2fcf
+5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn
+come path:  1eb8b20a32f088056ca242b83cab08f98aa606f06c1d7ba4023613bb4c038bef
+bob:  5FhdmGm8ratWxaCSfrjf9cjhCPMSMRC2ARkPHsrJxHcwfhzc
+encode:  key:  nonce value:  10  bytes:  0a000000
+encode:  key:  consumers value:  0  bytes:  00000000
+encode:  key:  providers value:  1  bytes:  01000000
+encode:  key:  sufficients value:  0  bytes:  00000000
+encode:  key:  free value:  7,579,989,135,665  bytes:  31518fdae40600000000000000000000
+encode:  key:  reserved value:  0  bytes:  00000000000000000000000000000000
+encode:  key:  frozen value:  0  bytes:  00000000000000000000000000000000
+encode:  key:  flags value:  170,141,183,460,469,231,731,687,303,715,884,105,728  bytes:  00000000000000000000000000000080
+encode:  key:  data value:  {
+  free: '7,579,989,135,665',
+  reserved: '0',
+  frozen: '0',
+  flags: '170,141,183,460,469,231,731,687,303,715,884,105,728'
+}  bytes:  31518fdae40600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080
+encode:  key:  parentHash value:  0x6a552a503c003cffad1b4fff3ea866cb0ab63e1bfe88175a35948a3a2101060e  bytes:  6a552a503c003cffad1b4fff3ea866cb0ab63e1bfe88175a35948a3a2101060e
+l:  Uint8Array(4) [ 210, 196, 41, 5 ] <BN: 14a7134>
+encode:  key:  number value:  21,655,860  bytes:  d2c42905
+encode:  key:  stateRoot value:  0xeed70090e6483cec39521ce862ed625c655104e634749472175a80b5a2ebad44  bytes:  eed70090e6483cec39521ce862ed625c655104e634749472175a80b5a2ebad44
+encode:  key:  extrinsicsRoot value:  0x71bad9f98bc47acd7c9af6e2aebdb32b756d87f92564f42ddf3395fdac931382  bytes:  71bad9f98bc47acd7c9af6e2aebdb32b756d87f92564f42ddf3395fdac931382
+encode:  key:  logs value:  [
+  {
+    PreRuntime: [
+      'BABE',
+      '0x0307000000d92d181100000000d692e737c39e9ea71d890fa5219ca193e6fcbb303eef855ac7073e3fa22c106c6995c0e9c1edb7f2f2062abf4a657a29ef85d1568d0e32b6d11f4486956aad043ea7387efaf88f2765bc5ed21f0cae341b400030dcdf5d2fdb8e4a2d59eab905'
+    ]
+  },
+  {
+    Consensus: [
+      'BEEF',
+      '0x03da0a742c006254ad0afe065fdf756900eada904e434007e954501ef8a2d5131e'
+    ]
+  },
+  {
+    Seal: [
+      'BABE',
+      '0x8a4f8f68fdd8c6fb5ac45f050e1019f1ea6f6a49afed6f672fda4c481441bc2b9c035946a0d95728b38674aaa01957d86ab0677f8db10f8e2d50bac94059288a'
+    ]
+  }
+]  bytes:  0c0642414245b5010307000000d92d181100000000d692e737c39e9ea71d890fa5219ca193e6fcbb303eef855ac7073e3fa22c106c6995c0e9c1edb7f2f2062abf4a657a29ef85d1568d0e32b6d11f4486956aad043ea7387efaf88f2765bc5ed21f0cae341b400030dcdf5d2fdb8e4a2d59eab90504424545468403da0a742c006254ad0afe065fdf756900eada904e434007e954501ef8a2d5131e054241424501018a4f8f68fdd8c6fb5ac45f050e1019f1ea6f6a49afed6f672fda4c481441bc2b9c035946a0d95728b38674aaa01957d86ab0677f8db10f8e2d50bac94059288a
+encode:  key:  digest value:  {
+  logs: [
+    { PreRuntime: [Array] },
+    { Consensus: [Array] },
+    { Seal: [Array] }
+  ]
+}  bytes:  0c0642414245b5010307000000d92d181100000000d692e737c39e9ea71d890fa5219ca193e6fcbb303eef855ac7073e3fa22c106c6995c0e9c1edb7f2f2062abf4a657a29ef85d1568d0e32b6d11f4486956aad043ea7387efaf88f2765bc5ed21f0cae341b400030dcdf5d2fdb8e4a2d59eab90504424545468403da0a742c006254ad0afe065fdf756900eada904e434007e954501ef8a2d5131e054241424501018a4f8f68fdd8c6fb5ac45f050e1019f1ea6f6a49afed6f672fda4c481441bc2b9c035946a0d95728b38674aaa01957d86ab0677f8db10f8e2d50bac94059288a
+signature:  {
+  signer: { Id: '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' },
+  signature: {
+    Ed25519: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+  },
+  era: { ImmortalEra: '0x00' },
+  nonce: '0',
+  tip: '0',
+  mode: '0'
+} encode:  
+encode:  key:  signature value:  {
+  signer: { Id: '5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUpnhM' },
+  signature: {
+    Ed25519: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+  },
+  era: { ImmortalEra: '0x00' },
+  nonce: '0',
+  tip: '0',
+  mode: '0'
+}  bytes:  
+encode:  key:  callIndex value:  0x0400  bytes:  0400
+encode:  key:  dest value:  { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' }  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f520
+encode:  key:  value value:  21,231,231,231  bytes:  07ffe07af104
+encode:  key:  args value:  {
+  dest: { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' },
+  value: '21,231,231,231'
+}  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+encode:  key:  method value:  {
+  args: {
+    dest: { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' },
+    value: '21,231,231,231'
+  },
+  method: 'transferAllowDeath',
+  section: 'balances'
+}  bytes:  0400009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+encode:  key:  callIndex value:  0x0400  bytes:  0400
+encode:  key:  dest value:  { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' }  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f520
+encode:  key:  value value:  21,231,231,231  bytes:  07ffe07af104
+encode:  key:  args value:  {
+  dest: { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' },
+  value: '21,231,231,231'
+}  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+encode:  key:  signer value:  { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' }  bytes:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd9230
+encode:  key:  signature value:  {
+  Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+}  bytes:  0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101
+encode:  key:  era value:  { MortalEra: { period: '64', phase: '52' } }  bytes:  4503
+encode:  key:  nonce value:  10  bytes:  28
+encode:  key:  tip value:  0  bytes:  00
+encode:  key:  mode value:  0  bytes:  00
+signature:  {
+  signer: { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' },
+  signature: {
+    Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+  },
+  era: { MortalEra: { period: '64', phase: '52' } },
+  nonce: '10',
+  tip: '0',
+  mode: '0'
+} encode:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd923001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101014503280000
+encode:  key:  signer value:  { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' }  bytes:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd9230
+encode:  key:  signature value:  {
+  Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+}  bytes:  0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101
+encode:  key:  era value:  { MortalEra: { period: '64', phase: '52' } }  bytes:  4503
+encode:  key:  nonce value:  10  bytes:  28
+encode:  key:  tip value:  0  bytes:  00
+encode:  key:  mode value:  0  bytes:  00
+encode:  key:  signature value:  {
+  signer: { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' },
+  signature: {
+    Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+  },
+  era: { MortalEra: { period: '64', phase: '52' } },
+  nonce: '10',
+  tip: '0',
+  mode: '0'
+}  bytes:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd923001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101014503280000
+encode:  key:  callIndex value:  0x0400  bytes:  0400
+encode:  key:  dest value:  { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' }  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f520
+encode:  key:  value value:  21,231,231,231  bytes:  07ffe07af104
+encode:  key:  args value:  {
+  dest: { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' },
+  value: '21,231,231,231'
+}  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+encode:  key:  method value:  {
+  args: {
+    dest: { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' },
+    value: '21,231,231,231'
+  },
+  method: 'transferAllowDeath',
+  section: 'balances'
+}  bytes:  0400009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+u8:  45028400927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd9230010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010145032800000400009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+encode:  key:  signer value:  { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' }  bytes:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd9230
+encode:  key:  signature value:  {
+  Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+}  bytes:  0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101
+encode:  key:  era value:  { MortalEra: { period: '64', phase: '52' } }  bytes:  4503
+encode:  key:  nonce value:  10  bytes:  28
+encode:  key:  tip value:  0  bytes:  00
+encode:  key:  mode value:  0  bytes:  00
+signature:  {
+  signer: { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' },
+  signature: {
+    Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+  },
+  era: { MortalEra: { period: '64', phase: '52' } },
+  nonce: '10',
+  tip: '0',
+  mode: '0'
+} encode:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd923001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101014503280000
+encode:  key:  signer value:  { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' }  bytes:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd9230
+encode:  key:  signature value:  {
+  Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+}  bytes:  0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101
+encode:  key:  era value:  { MortalEra: { period: '64', phase: '52' } }  bytes:  4503
+encode:  key:  nonce value:  10  bytes:  28
+encode:  key:  tip value:  0  bytes:  00
+encode:  key:  mode value:  0  bytes:  00
+encode:  key:  signature value:  {
+  signer: { Id: '5FNmBnHEM6UkVEtMKEa6F6VyNwA8giXFA7mLaUfVmXwGRgPn' },
+  signature: {
+    Sr25519: '0x01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101'
+  },
+  era: { MortalEra: { period: '64', phase: '52' } },
+  nonce: '10',
+  tip: '0',
+  mode: '0'
+}  bytes:  00927a5369efce330b4ad6ab6ed0dbe36af54380fe4d218f867df1fbbfb3fd923001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101014503280000
+encode:  key:  callIndex value:  0x0400  bytes:  0400
+encode:  key:  dest value:  { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' }  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f520
+encode:  key:  value value:  21,231,231,231  bytes:  07ffe07af104
+encode:  key:  args value:  {
+  dest: { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' },
+  value: '21,231,231,231'
+}  bytes:  009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+encode:  key:  method value:  {
+  args: {
+    dest: { Id: '5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T' },
+    value: '21,231,231,231'
+  },
+  method: 'transferAllowDeath',
+  section: 'balances'
+}  bytes:  0400009e52088a1ab9eddfe428419a110e792a7457c9d66fea665b810b661830a8f52007ffe07af104
+macbookpro@macbooks-MacBook-Pro pol % 

@@ -1,3 +1,9 @@
+## 1.0.0
+
+- Add metadata has to payload and ExtrinsicSignature.
+- Update dependencies.
+
+
 ## 0.0.5
 
 - Update dependencies.

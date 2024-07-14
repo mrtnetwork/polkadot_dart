@@ -1,5 +1,5 @@
-import 'package:polkadot_dart/src/provider/core/base.dart';
-import 'package:polkadot_dart/src/provider/core/methods.dart';
+import 'package:polkadot_dart/src/provider/core/core/base.dart';
+import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 import 'package:polkadot_dart/src/provider/models/system/chain_properties.dart';
 
 /// Get a custom set of properties as a JSON object, defined in the chain spec.

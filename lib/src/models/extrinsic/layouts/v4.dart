@@ -8,10 +8,12 @@ class ExtrinsicV4Layouts {
       GenericLayouts.era(property: "era"),
       LayoutConst.compactIntU32(property: "nonce"),
       LayoutConst.compactBigintU128(property: "tip"),
+      LayoutConst.u8(property: "mode"),
       LayoutConst.u32(property: "specVersion"),
       LayoutConst.u32(property: "transactionVersion"),
       LayoutConst.fixedBlob32(property: "genesisHash"),
       LayoutConst.fixedBlob32(property: "blockHash"),
+      LayoutConst.optional(LayoutConst.fixedBlob32(), property: "metadataHash"),
     ], property: property);
   }
 
@@ -21,9 +23,10 @@ class ExtrinsicV4Layouts {
       GenericLayouts.signature(property: "signature"),
       GenericLayouts.era(property: "era"),
       LayoutConst.compactIntU32(property: "nonce"),
-      LayoutConst.compactBigintU128(property: "tip")
+      LayoutConst.compactBigintU128(property: "tip"),
+      LayoutConst.u8(property: "mode"),
     ], property: property);
-  }
+  } // metadataHash
 
   static StructLayout genericExtrinssicSigned({String? property}) {
     return LayoutConst.struct([

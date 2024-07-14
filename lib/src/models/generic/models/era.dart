@@ -79,7 +79,7 @@ class MortalEra extends SubstrateBaseEra {
       : index = MetadataCastingUtils.validateU8(index,
             max: _SubstrateEraConst.maximumEraIndex),
         era = MetadataCastingUtils.validateU8(era);
-  factory MortalEra.fromPhase({required int phase, required int period}) {
+  factory MortalEra.fromPhase({required int period, required int phase}) {
     final encode = _EraUtils.encodeEraPhase(phase: phase, period: period);
     return MortalEra(index: encode[0], era: encode[1]);
   }

@@ -1,8 +1,9 @@
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:blockchain_utils/layout/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
-import 'package:polkadot_dart/src/provider/core/methods.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
+import 'package:polkadot_dart/src/metadata/types/types.dart';
+import 'package:polkadot_dart/src/provider/core/core/base.dart';
+import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns the metadata at a given version
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata

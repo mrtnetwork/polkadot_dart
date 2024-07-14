@@ -1,9 +1,14 @@
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/models/extrinsic/layouts/v4.dart';
 import 'package:polkadot_dart/src/models/generic/models/block_hash.dart';
 import 'package:polkadot_dart/src/models/generic/models/era.dart';
+import 'package:polkadot_dart/src/models/generic/models/signature.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
+
+import 'generic_extrinsic_signature_v.dart';
+import 'generic_extrinsic_v4.dart';
 
 class TransactionPayload extends SubstrateSerialization<Map<String, dynamic>> {
   final SubstrateBlockHash blockHash;
@@ -14,6 +19,8 @@ class TransactionPayload extends SubstrateSerialization<Map<String, dynamic>> {
   final int nonce;
   final int specVersion;
   final int transactionVersion;
+  final int mode;
+  final List<int>? metadataHash;
   TransactionPayload(
       {required this.blockHash,
       required this.era,
@@ -22,12 +29,28 @@ class TransactionPayload extends SubstrateSerialization<Map<String, dynamic>> {
       required this.nonce,
       required this.specVersion,
       required this.transactionVersion,
+      List<int>? metadataHash,
+      this.mode = 0,
       this.tip})
-      : method = BytesUtils.toBytes(method, unmodifiable: true);
+      : method = BytesUtils.toBytes(method, unmodifiable: true),
+        metadataHash = BytesUtils.tryToBytes(metadataHash, unmodifiable: true);
 
   @override
   StructLayout layout({String? property}) =>
       ExtrinsicV4Layouts.payloadV4(property: property);
+
+  Extrinsic toExtrinsic(
+      {required SubstrateMultiSignature signature,
+      required SubstrateAddress signer}) {
+    final signatureExtrinsic = ExtrinsicSignature(
+        signature: signature,
+        address: signer.toMultiAddress(),
+        era: era,
+        tip: BigInt.zero,
+        nonce: nonce,
+        mode: mode);
+    return Extrinsic(signature: signatureExtrinsic, methodBytes: method);
+  }
 
   @override
   Map<String, dynamic> scaleJsonSerialize({String? property}) {
@@ -39,7 +62,9 @@ class TransactionPayload extends SubstrateSerialization<Map<String, dynamic>> {
       "specVersion": specVersion,
       "transactionVersion": transactionVersion,
       "genesisHash": genesisHash.scaleJsonSerialize(),
-      "blockHash": blockHash.scaleJsonSerialize()
+      "blockHash": blockHash.scaleJsonSerialize(),
+      "mode": mode,
+      "metadataHash": metadataHash,
     };
   }
 }

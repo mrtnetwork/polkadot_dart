@@ -1,6 +1,6 @@
 // core
-export 'core/base.dart';
-export 'core/service.dart';
+export 'core/core/base.dart';
+export 'core/core/service.dart';
 
 /// methods
 export 'methods/methods.dart';
@@ -10,3 +10,5 @@ export 'models/models.dart';
 
 /// provider
 export 'provider/provider.dart';
+
+export 'core/core.dart';

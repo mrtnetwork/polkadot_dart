@@ -4,22 +4,52 @@ import 'package:polkadot_dart/src/models/generic/models/signature.dart';
 
 import 'public_key.dart';
 
+class SubstrateKeyAlgorithm {
+  final EllipticCurveTypes curve;
+  final String name;
+  const SubstrateKeyAlgorithm._(this.curve, this.name);
+  static const SubstrateKeyAlgorithm sr25519 =
+      SubstrateKeyAlgorithm._(EllipticCurveTypes.sr25519, "sr25519");
+  static const SubstrateKeyAlgorithm secp256k1 =
+      SubstrateKeyAlgorithm._(EllipticCurveTypes.secp256k1, "secp256k1");
+  static const SubstrateKeyAlgorithm ed25519 =
+      SubstrateKeyAlgorithm._(EllipticCurveTypes.ed25519, "ed25519");
+
+  static const List<SubstrateKeyAlgorithm> values = [
+    sr25519,
+    secp256k1,
+    ed25519
+  ];
+
+  SubstrateCoins get defaultCoin {
+    switch (this) {
+      case SubstrateKeyAlgorithm.sr25519:
+        return SubstrateCoins.polkadotSr25519;
+      case SubstrateKeyAlgorithm.ed25519:
+        return SubstrateCoins.polkadotEd25519;
+      case SubstrateKeyAlgorithm.secp256k1:
+        return SubstrateCoins.polkadotSecp256k1;
+      default:
+        throw UnimplementedError();
+    }
+  }
+}
+
 /// Represents a private key in the Substrate framework.
 class SubstratePrivateKey {
   /// The underlying Substrate instance.
   final Substrate _substrate;
 
   /// Constructs a [SubstratePrivateKey] instance from a Substrate object.
-  const SubstratePrivateKey._(this._substrate);
+  const SubstratePrivateKey._(this._substrate, this.algorithm);
 
   /// Generates a [SubstratePrivateKey] from a seed.
   factory SubstratePrivateKey.fromSeed({
     required List<int> seedBytes,
     SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
   }) {
-    final substrate = Substrate.fromSeed(seedBytes, SubstrateCoins.polkadot,
-        curve: algorithm);
-    return SubstratePrivateKey._(substrate);
+    final substrate = Substrate.fromSeed(seedBytes, algorithm.defaultCoin);
+    return SubstratePrivateKey._(substrate, algorithm);
   }
 
   /// Constructs a [SubstratePrivateKey] from a private key.
@@ -27,31 +57,27 @@ class SubstratePrivateKey {
     required List<int> keyBytes,
     SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
   }) {
-    final substrate = Substrate.fromPrivateKey(
-        keyBytes, SubstrateCoins.polkadot,
-        curve: algorithm);
-    return SubstratePrivateKey._(substrate);
+    final substrate = Substrate.fromPrivateKey(keyBytes, algorithm.defaultCoin);
+    return SubstratePrivateKey._(substrate, algorithm);
   }
 
   /// Constructs a [SubstratePrivateKey] from a seed and path.
-  factory SubstratePrivateKey.fromSeedAndPath({
-    required List<int> seedBytes,
-    required String path,
-    SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
-  }) {
-    final substrate = Substrate.fromSeedAndPath(
-        seedBytes, path, SubstrateCoins.polkadot,
-        curve: algorithm);
-    return SubstratePrivateKey._(substrate);
+  factory SubstratePrivateKey.fromSeedAndPath(
+      {required List<int> seedBytes,
+      required String path,
+      SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519}) {
+    final substrate =
+        Substrate.fromSeedAndPath(seedBytes, path, algorithm.defaultCoin);
+    return SubstratePrivateKey._(substrate, algorithm);
   }
 
   /// Retrieves the algorithm used for the private key.
-  SubstrateKeyAlgorithm get algorithm => _substrate.publicKey.algorithm;
+  final SubstrateKeyAlgorithm algorithm;
 
   /// Derives a new private key from the current one using the provided [path].
   SubstratePrivateKey derive(String path) {
     final derive = _substrate.derivePath(path);
-    return SubstratePrivateKey._(derive);
+    return SubstratePrivateKey._(derive, algorithm);
   }
 
   /// Converts the private key to bytes.

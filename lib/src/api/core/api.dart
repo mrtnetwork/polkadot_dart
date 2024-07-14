@@ -79,6 +79,9 @@ class MetadataApi with MetadataApiInterface {
       metadata.getConstants(palletNameOrIndex);
 
   @override
+  Map<String, dynamic> getAllConstants() => metadata.getAllConstants();
+
+  @override
   TypeTemlate? getStorageInputTemplate(
       String palletNameOrIndex, String methodName) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);

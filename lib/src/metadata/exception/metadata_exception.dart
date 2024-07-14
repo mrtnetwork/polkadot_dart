@@ -7,6 +7,7 @@ class MetadataException extends BlockchainUtilsException {
   final String message;
 
   /// Additional details about the exception.
+  @override
   final Map<String, dynamic>? details;
 
   /// Creates a new MetadataException with the provided [message] and optional [details].

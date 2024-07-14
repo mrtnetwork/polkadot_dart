@@ -11,12 +11,14 @@ class ExtrinsicSignature extends SubstrateSerialization<Map<String, dynamic>> {
   final SubstrateBaseEra era;
   final BigInt? tip;
   final int nonce;
+  final int mode;
   const ExtrinsicSignature(
       {required this.signature,
       required this.address,
       required this.era,
       this.tip,
-      required this.nonce});
+      required this.nonce,
+      this.mode = 0});
 
   @override
   StructLayout layout({String? property}) =>
@@ -29,7 +31,8 @@ class ExtrinsicSignature extends SubstrateSerialization<Map<String, dynamic>> {
       "address": address.scaleJsonSerialize(),
       "era": era.scaleJsonSerialize(),
       "tip": tip ?? BigInt.zero,
-      "nonce": nonce
+      "nonce": nonce,
+      "mode": mode
     };
   }
 }

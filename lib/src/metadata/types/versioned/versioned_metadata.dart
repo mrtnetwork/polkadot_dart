@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/utils/binary/utils.dart';
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
@@ -20,6 +21,9 @@ class VersionedMetadata<T extends SubstrateMetadata>
       {required this.metadata,
       required this.version,
       required this.magicNumber});
+  factory VersionedMetadata.fromHex(String metadataHex) {
+    return VersionedMetadata.fromBytes(BytesUtils.fromHexString(metadataHex));
+  }
   factory VersionedMetadata.fromBytes(List<int> bytes) {
     if (bytes.length < MetadataConstant.metadataMagicNumberAndVersionLength) {
       throw MetadataException("Invalid metadata bytes");
