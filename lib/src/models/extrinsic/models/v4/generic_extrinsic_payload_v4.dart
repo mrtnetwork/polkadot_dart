@@ -6,9 +6,13 @@ import 'package:polkadot_dart/src/models/generic/models/block_hash.dart';
 import 'package:polkadot_dart/src/models/generic/models/era.dart';
 import 'package:polkadot_dart/src/models/generic/models/signature.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
-
 import 'generic_extrinsic_signature_v.dart';
 import 'generic_extrinsic_v4.dart';
+import 'package:blockchain_utils/crypto/quick_crypto.dart';
+
+class _TransactionPalyloadConst {
+  static const int requiredHashDigestLength = 256;
+}
 
 class TransactionPayload extends SubstrateSerialization<Map<String, dynamic>> {
   final SubstrateBlockHash blockHash;
@@ -50,6 +54,15 @@ class TransactionPayload extends SubstrateSerialization<Map<String, dynamic>> {
         nonce: nonce,
         mode: mode);
     return Extrinsic(signature: signatureExtrinsic, methodBytes: method);
+  }
+
+  /// the bytes must be sign
+  List<int> serialzeSign({String? property}) {
+    final digest = serialize(property: property);
+    if (digest.length > _TransactionPalyloadConst.requiredHashDigestLength) {
+      return QuickCrypto.blake2b256Hash(digest);
+    }
+    return digest;
   }
 
   @override

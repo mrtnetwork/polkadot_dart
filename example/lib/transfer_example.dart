@@ -81,7 +81,7 @@ void main() async {
       tip: BigInt.zero);
 
   /// Signing the transaction.
-  final sig = privateKey.multiSignature(payload.serialize());
+  final sig = privateKey.multiSignature(payload.serialzeSign());
 
   /// Constructing the extrinsic with the signature for submission.
   final signature = ExtrinsicSignature(

@@ -1,3 +1,7 @@
+## 1.1.0
+
+- The `serializeSign` method has been added to the `TransactionPayload` class to retrieve the transaction digest for signing.
+
 ## 1.0.0
 
 - Add metadata has to payload and ExtrinsicSignature.

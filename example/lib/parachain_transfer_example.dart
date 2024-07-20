@@ -77,7 +77,7 @@ void main() async {
       transactionVersion: version.transactionVersion,
       tip: BigInt.zero);
 
-  final sig = privateKey.multiSignature(payload.serialize());
+  final sig = privateKey.multiSignature(payload.serialzeSign());
 
   final signature = ExtrinsicSignature(
       signature: sig,

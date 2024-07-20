@@ -74,7 +74,7 @@ class SubstrateHelper {
     ExtrinsicSignature? signature;
     if (signer != null) {
       final SubstrateMultiSignature multiSignature =
-          signer.multiSignature(payload.serialize());
+          signer.multiSignature(payload.serialzeSign());
       signature = ExtrinsicSignature(
         signature: multiSignature,
         address: signer.toAddress().toMultiAddress(),
@@ -85,9 +85,8 @@ class SubstrateHelper {
     }
 
     return Extrinsic(
-      signature: signature,
-      methodBytes: methodBytes,
-      version: extrinsicVersion,
-    );
+        signature: signature,
+        methodBytes: methodBytes,
+        version: extrinsicVersion);
   }
 }
