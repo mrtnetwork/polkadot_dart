@@ -15,15 +15,16 @@ class SubstrateRPC {
   /// Finds the result in the JSON-RPC response data or throws an [RPCError]
   /// if an error is encountered.
   T _findResult<T>(Map<String, dynamic> data, SubstrateRequestDetails request) {
-    if (data["error"] != null) {
-      final code = int.tryParse(((data["error"]?['code']?.toString()) ?? "0"));
-      final message = data["error"]?['message'] ?? "";
+    final error = data["error"];
+    if (error != null) {
+      final code = int.tryParse(error['code']?.toString() ?? '');
+      final message = error['message'] ?? "";
       throw RPCError(
-        errorCode: code ?? 0,
-        message: message,
-        data: data["error"]?["data"],
-        request: data["request"] ?? StringUtils.toJson(request.toRequestBody()),
-      );
+          errorCode: code ?? 0,
+          message: message,
+          request:
+              data["request"] ?? StringUtils.toJson(request.toRequestBody()),
+          details: error);
     }
     return data["result"];
   }

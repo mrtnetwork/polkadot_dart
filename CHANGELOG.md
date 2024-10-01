@@ -1,3 +1,7 @@
+## 1.2.0
+
+- Update dependencies.
+
 ## 1.1.0
 
 - The `serializeSign` method has been added to the `TransactionPayload` class to retrieve the transaction digest for signing.
