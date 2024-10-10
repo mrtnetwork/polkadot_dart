@@ -31,7 +31,7 @@ class SubstrateHeaderResponse {
       "number": number,
       "stateRoot": stateRoot,
       "extrinsicsRoot": extrinsicsRoot,
-      "digest": digest
+      "digest": digest.toJson()
     };
   }
 

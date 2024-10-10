@@ -53,8 +53,8 @@ void main() async {
   final api = currentMetadata!.toApi();
 
   /// Fetch the genesis hash
-  final String genesisHash =
-      await provider.request(const SubstrateRPCChainGetBlockHash(number: 0));
+  final String genesisHash = await provider
+      .request(const SubstrateRPCChainGetBlockHash<String>(number: 0));
 
   /// Fetch the latest finalized block hash
   String blockHash =

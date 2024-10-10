@@ -3,11 +3,11 @@ import 'package:blockchain_utils/crypto/quick_crypto.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/models/extrinsic/layouts/v4.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/models/extrinsic/models/v4/generic_extrinsic_signature_v.dart';
+import 'package:polkadot_dart/src/models/extrinsic/models/v4/generic_extrinsic_signature.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
 class Extrinsic extends SubstrateSerialization<Map<String, dynamic>> {
-  final ExtrinsicSignature? signature;
+  final BaseExtrinsicSignature? signature;
   final List<int> methodBytes;
   const Extrinsic(
       {required this.signature,
@@ -28,9 +28,15 @@ class Extrinsic extends SubstrateSerialization<Map<String, dynamic>> {
   }
 
   @override
-  StructLayout layout({String? property}) => isSigned
-      ? ExtrinsicV4Layouts.genericExtrinssicSigned(property: property)
-      : ExtrinsicV4Layouts.genericExtrinssicUnsigned(property: property);
+  StructLayout layout({String? property}) {
+    if (isSigned) {
+      return LayoutConst.struct([
+        LayoutConst.u8(property: "version"),
+        signature!.layout(property: "signature")
+      ], property: property);
+    }
+    return ExtrinsicV4Layouts.genericExtrinssicUnsigned(property: property);
+  }
 
   String toHash() {
     return BytesUtils.toHexString(QuickCrypto.blake2b256Hash(serialize()),

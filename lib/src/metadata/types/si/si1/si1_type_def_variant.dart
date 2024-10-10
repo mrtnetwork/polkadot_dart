@@ -42,7 +42,7 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
     final mapValue = MetadataUtils.isOf<Map<String, dynamic>>(value);
 
     if (mapValue.length != 1) {
-      throw MetadataException(
+      throw const MetadataException(
           "The provided map for enum must contain exactly one key");
     }
     final enumName = mapValue.keys.first;
@@ -72,7 +72,7 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
   @override
   LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
     if (bytes.isEmpty) {
-      throw MetadataException("Invalid variant bytes");
+      throw const MetadataException("Invalid variant bytes");
     }
     final index = bytes[0];
     final variant = variants.firstWhere(
@@ -143,4 +143,7 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
       key: variant.getValue(registry, value: data, fromTemplate: fromTemplate)
     };
   }
+
+  List<String> get getVariantNames =>
+      variants.map((e) => "${e.name} ").toList();
 }

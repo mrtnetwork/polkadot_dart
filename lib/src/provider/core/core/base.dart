@@ -29,17 +29,17 @@ class SubstrateRequestDetails {
   }
 }
 
-/// An abstract class representing Substrate lookup block requests.
-abstract class LookupBlockRequest {
-  const LookupBlockRequest();
+// /// An abstract class representing Substrate lookup block requests.
+// abstract class LookupBlockRequest {
+//   const LookupBlockRequest();
 
-  /// Converts the request parameters to a JSON representation.
-  List<dynamic> toJson();
-}
+//   /// Converts the request parameters to a JSON representation.
+//   List<dynamic> toJson();
+// }
 
 /// An abstract class representing Ethereum JSON-RPC requests with generic response types.
 abstract class SubstrateRPCRequest<RPCRESPONSE, RPCRESULT>
-    extends LookupBlockRequest implements SubstrateRequestParams {
+    implements SubstrateRequestParams {
   const SubstrateRPCRequest() : super();
 
   /// A validation property (not used in this implementation).

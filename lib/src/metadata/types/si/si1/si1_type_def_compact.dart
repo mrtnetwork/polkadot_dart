@@ -36,7 +36,7 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
     if (parent is TupleLayout) {
       return LayoutConst.compactIntU32(property: property);
     }
-    throw LayoutException(
+    throw const LayoutException(
         "Somthing wrong. compact layout must be integer layout.");
   }
 

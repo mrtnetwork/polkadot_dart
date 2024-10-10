@@ -147,7 +147,7 @@ mixin LatestMetadataInterface {
       String palletNameOrIndex, String methodName) {
     final method = getStorageMethod(palletNameOrIndex, methodName).type;
     if (method is! StorageEntryTypeV14Map) {
-      throw MetadataException(
+      throw const MetadataException(
           "plain storage entery does not have hasher option");
     }
     return method.hashers.map((e) => e.option).toList();
@@ -255,4 +255,6 @@ mixin LatestMetadataInterface {
   List<String> getDocs(int lookupid) {
     return registry.scaleType(lookupid).docs;
   }
+
+  bool get isSupportMetadataHash;
 }

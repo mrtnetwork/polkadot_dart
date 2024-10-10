@@ -23,8 +23,8 @@ void main() async {
 
   final version = api.runtimeVersion();
 
-  final genesisHash =
-      await provider.request(const SubstrateRPCChainGetBlockHash(number: 0));
+  final genesisHash = await provider
+      .request(const SubstrateRPCChainGetBlockHash<String>(number: 0));
   final blockHash =
       await provider.request(const SubstrateRPCChainChainGetFinalizedHead());
   final blockHeader = await provider

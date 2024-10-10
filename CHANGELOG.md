@@ -1,3 +1,8 @@
+## 1.3.0
+
+- Implement a method to check the current extrinsic payload RFC-0078.
+- Impletemet class to serialize without Merkleized Metadata RFC-0078.
+
 ## 1.2.0
 
 - Update dependencies.

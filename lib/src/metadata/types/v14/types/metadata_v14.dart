@@ -58,4 +58,10 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
 
   @override
   int get version => MetadataConstant.v14;
+
+  @override
+  bool get isSupportMetadataHash {
+    return extrinsic.signedExtensions.any((e) =>
+        e.identifier == MetadataConstant.checkMetadataHashExtensionIdentifier);
+  }
 }

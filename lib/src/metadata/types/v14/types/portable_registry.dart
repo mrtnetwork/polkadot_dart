@@ -105,7 +105,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
         .firstWhere(
           (element) => CompareUtils.iterableIsEqual(
               element.value.type.path, MetadataConstant.eventPath),
-          orElse: () => throw MetadataException("lookup id does not found."),
+          orElse: () =>
+              throw const MetadataException("lookup id does not found."),
         )
         .value;
     return Si1TypeDefSequence(eventPalle.id);

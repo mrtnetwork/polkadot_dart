@@ -1,6 +1,7 @@
 // chain
 export 'chain/digest.dart';
 export 'chain/header.dart';
+export 'chain/block.dart';
 
 /// rpc
 export 'rpc/rpc_methods.dart';

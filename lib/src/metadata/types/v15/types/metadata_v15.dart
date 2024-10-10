@@ -138,4 +138,10 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
     final api = _getRuntimeMethod(apiName, methodName);
     return api.output;
   }
+
+  @override
+  bool get isSupportMetadataHash {
+    return extrinsic.signedExtensions.any((e) =>
+        e.identifier == MetadataConstant.checkMetadataHashExtensionIdentifier);
+  }
 }

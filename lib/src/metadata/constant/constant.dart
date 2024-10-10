@@ -27,4 +27,7 @@ class MetadataConstant {
   ];
 
   static const String queryBlockWeightMethodName = "BlockWeight";
+
+  static const String checkMetadataHashExtensionIdentifier =
+      "CheckMetadataHash";
 }

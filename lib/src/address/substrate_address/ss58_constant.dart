@@ -42,4 +42,7 @@ class SS58Const {
 
   /// SS58 format identifier for Stafi network.
   static const int stafi = 20;
+
+  /// SS58 format identifier for chainflip network.
+  static const int chainFlip = 2112;
 }

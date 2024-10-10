@@ -26,7 +26,7 @@ class VersionedMetadata<T extends SubstrateMetadata>
   }
   factory VersionedMetadata.fromBytes(List<int> bytes) {
     if (bytes.length < MetadataConstant.metadataMagicNumberAndVersionLength) {
-      throw MetadataException("Invalid metadata bytes");
+      throw const MetadataException("Invalid metadata bytes");
     }
     final getNumber = SubstrateMetadataLayouts.metadataMagicAndVersion()
         .deserialize(bytes.sublist(

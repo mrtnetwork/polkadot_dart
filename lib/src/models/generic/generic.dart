@@ -10,3 +10,4 @@ export 'models/account_data.dart';
 export 'models/runtime_version.dart';
 export 'models/runtime_version_api.dart';
 export 'models/frame_support_dispatch_per_dispatch_class.dart';
+export 'models/events.dart';

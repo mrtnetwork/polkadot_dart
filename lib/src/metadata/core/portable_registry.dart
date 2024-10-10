@@ -28,7 +28,7 @@ abstract class PortableRegistry {
   dynamic decode(int id, List<int> bytes, {String? property});
 
   /// Finds the lookup identifier for an event record sequence type definition.
-  ///
+  ///w
   /// [knownId] is an optional known identifier.
   Si1TypeDefSequence findEventRecordLookup({int? knownId});
 

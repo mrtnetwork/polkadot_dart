@@ -1,8 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
-import 'package:polkadot_dart/src/metadata/imp/api_interface.dart';
-import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
@@ -215,6 +213,11 @@ class MetadataApi with MetadataApiInterface {
   RuntimeVersion runtimeVersion() {
     final version = getConstant<Map<String, dynamic>>("System", "Version");
     return RuntimeVersion.deserializeJson(version);
+  }
+
+  int networkSS58Prefix() {
+    final prefix = getConstant<int>("System", "SS58Prefix");
+    return prefix;
   }
 
   @override
