@@ -1,3 +1,8 @@
+## 1.5.0
+
+- Update dependencies.
+- Important Notice: This is the final version supporting Dart v2. The next release will require Dart v3.3 or higher.
+
 ## 1.4.0
 
 - Update dependencies.

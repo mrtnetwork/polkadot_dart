@@ -83,7 +83,7 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
       required int self}) {
     final parent = registry.scaleType(type);
     final isPrimitive = parent.toPrimitive();
-    Object? data = MetadataCastingUtils.getValue(
+    final Object? data = MetadataCastingUtils.getValue(
         value: value,
         type: typeName,
         fromTemplate: fromTemplate,

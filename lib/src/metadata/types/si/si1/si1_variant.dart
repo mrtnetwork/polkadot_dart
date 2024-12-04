@@ -83,7 +83,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
           consumed: decode.consumed, value: {name: decode.value});
     }
 
-    Map<String, dynamic> mapResult = {};
+    final Map<String, dynamic> mapResult = {};
     final List tupleResult = [];
     final bool isStruct = fields[0].hasName;
     int consumed = 0;
@@ -128,7 +128,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
       return registry.getValue(
           id: fields[0].type, value: value, fromTemplate: fromTemplate);
     }
-    Object? data = MetadataCastingUtils.getValue(
+    final Object? data = MetadataCastingUtils.getValue(
         value: value,
         type: Si1TypeDefsIndexesConst.variant,
         fromTemplate: fromTemplate,
@@ -146,7 +146,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
     final listValue =
         MetadataCastingUtils.hasList(value: data, length: fields.length);
     final List<Object?> values = [];
-    Map<String, dynamic> mapValues = {};
+    final Map<String, dynamic> mapValues = {};
     final bool isStruct = fields[0].hasName;
     for (int i = 0; i < fields.length; i++) {
       final field = fields[i];

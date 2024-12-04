@@ -81,7 +81,7 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
       final decode = type.typeDefDecode(registry, bytes);
       return decode;
     }
-    Map<String, dynamic> mapResult = {};
+    final Map<String, dynamic> mapResult = {};
     final List tupleResult = [];
     final bool isStruct = fields[0].hasName;
     int consumed = 0;

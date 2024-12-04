@@ -75,7 +75,7 @@ class SubstrateAddressUtils {
     }
 
     // Convert addresses to bytes and sort them
-    List<List<int>> addressBytes = List<List<int>>.unmodifiable(
+    final List<List<int>> addressBytes = List<List<int>>.unmodifiable(
         addresses.map((e) => List<int>.unmodifiable(e.toBytes())).toList()
           ..sort((a, b) => BytesUtils.compareBytes(a, b)));
 

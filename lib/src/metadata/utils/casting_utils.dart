@@ -241,7 +241,7 @@ class MetadataCastingUtils {
       String? property}) {
     final sign = type.name.startsWith("I");
     final bitLength = int.parse(type.name.substring(1));
-    bool isBigInt = bitLength > 48;
+    final bool isBigInt = bitLength > 48;
     if (isBigInt) {
       return _castBigint(
           value: value, sign: sign, bitLength: bitLength, property: property);
