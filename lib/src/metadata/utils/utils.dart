@@ -42,7 +42,7 @@ class MetadataTemplateBuilder {
       return buildJson(children[0]);
     }
     if (children.isNotEmpty && children[0].hasName) {
-      Map<String, dynamic> valueTemplate = {};
+      final Map<String, dynamic> valueTemplate = {};
       for (final i in children) {
         valueTemplate[i.name!] = buildJson(i);
       }

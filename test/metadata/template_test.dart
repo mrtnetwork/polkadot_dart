@@ -116,7 +116,7 @@ void _test(PortableRegistry registry) {
 
   test("lookup-8", () {
     const int lookupId = 9;
-    Map<String, dynamic> template = {
+    final Map<String, dynamic> template = {
       "type": "Map",
       "value": {
         "normal": {
@@ -167,7 +167,7 @@ void _test(PortableRegistry registry) {
   });
   test("lookup-14", () {
     const int lookupId = 14;
-    Map<String, dynamic> template = {
+    final Map<String, dynamic> template = {
       "type": "Vec<U8>",
       "value": List<int>.filled(38, 12)
     };
@@ -180,7 +180,7 @@ void _test(PortableRegistry registry) {
   });
   test("lookup-17", () {
     const int lookupId = 17;
-    Map<String, dynamic> template = {
+    final Map<String, dynamic> template = {
       "type": "Enum",
       "key": "RuntimeEnvironmentUpdated",
       "value": null
@@ -197,7 +197,7 @@ void _test(PortableRegistry registry) {
   });
   test("lookup-17_2", () {
     const int lookupId = 17;
-    Map<String, dynamic> template = {
+    final Map<String, dynamic> template = {
       "type": "Enum",
       "key": "PreRuntime",
       "value": {
@@ -251,7 +251,7 @@ void _test(PortableRegistry registry) {
 
   test("lookup-17_3", () {
     const int lookupId = 17;
-    Map<String, dynamic> template = {
+    final Map<String, dynamic> template = {
       "type": "Enum",
       "key": "Other",
       "value": {
@@ -271,7 +271,7 @@ void _test(PortableRegistry registry) {
   });
   test("lookup-16", () {
     const int lookupId = 16;
-    Map<String, dynamic> template = {
+    final Map<String, dynamic> template = {
       "type": "Vec<T>",
       "value": [
         {
@@ -467,7 +467,7 @@ void _test(PortableRegistry registry) {
 
   test("lookup-100", () {
     const int lookupId = 100;
-    Map<String, dynamic> template = {
+    final Map<String, dynamic> template = {
       "type": "Enum",
       "key": "transfer",
       "value": {

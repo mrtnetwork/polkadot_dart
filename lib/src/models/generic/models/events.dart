@@ -18,7 +18,7 @@ class SubstrateEvent {
     final pallet = event.keys.first;
     event = (event[pallet] as Map).cast<String, dynamic>();
     final method = event.keys.first;
-    Object input = event[method];
+    final Object input = event[method];
     return SubstrateEvent(
         pallet: pallet,
         topic: (json["topics"] as List).cast(),
