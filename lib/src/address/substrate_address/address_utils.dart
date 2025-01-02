@@ -1,9 +1,6 @@
+import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:blockchain_utils/utils/utils.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 
 class _MultiSigAddressConst {
@@ -36,7 +33,7 @@ class SubstrateAddressUtils {
   /// [thresHold] is the required number of signatures to approve a transaction.
   /// [ss58Format] is the SS58 format identifier for the resulting address.
   ///
-  /// Throws a [MessageException] if the addresses have different SS58 formats,
+  /// Throws a [DartSubstratePluginException] if the addresses have different SS58 formats,
   /// if the threshold is invalid, or if the addresses list is empty.
   static SubstrateAddress createMultiSigAddress(
       {required List<SubstrateAddress> addresses,
@@ -46,7 +43,7 @@ class SubstrateAddressUtils {
     final hasDifferentSS58 =
         addresses.any((element) => element.ss58Format != ss58Format);
     if (hasDifferentSS58) {
-      throw MessageException(
+      throw DartSubstratePluginException(
         "Some provided addresses have different ss58 format with provided ss58Format",
         details: {
           "ss58Format": ss58Format,
@@ -58,7 +55,7 @@ class SubstrateAddressUtils {
 
     // Validate the threshold
     if (thresHold <= 0 || thresHold > addresses.length || thresHold > mask16) {
-      throw MessageException(
+      throw DartSubstratePluginException(
           "The number of accounts that must approve. Must be U16 and greater than 0 and less than or equal to the total number of addresses.",
           details: {
             "thresHold": thresHold,
@@ -68,10 +65,11 @@ class SubstrateAddressUtils {
 
     // Check if the addresses list is empty
     if (addresses.isEmpty) {
-      throw MessageException("The addresses must not be empty.", details: {
-        "thresHold": thresHold,
-        "addressesLength": addresses.length
-      });
+      throw DartSubstratePluginException("The addresses must not be empty.",
+          details: {
+            "thresHold": thresHold,
+            "addressesLength": addresses.length
+          });
     }
 
     // Convert addresses to bytes and sort them
@@ -101,24 +99,25 @@ class SubstrateAddressUtils {
   /// [address] is the list of Substrate addresses to sort.
   ///
   /// Returns a new list of Substrate addresses sorted by their byte values.
-  static List<SubstrateAddress> sortedAddress(List<SubstrateAddress> address) {
+  static List<BaseSubstrateAddress> sortedAddress(
+      List<BaseSubstrateAddress> address) {
     return List.from(address)
       ..sort((a, b) => BytesUtils.compareBytes(a.toBytes(), b.toBytes()));
   }
 
-  static List<SubstrateAddress> otherSignatories(
-      {required List<SubstrateAddress> addresses,
-      required SubstrateAddress signer}) {
-    final addressesSS58 = addresses.map((e) => e.ss58Format).toSet();
-    if (addressesSS58.length != 1) {
-      throw MessageException(
-        "Some provided addresses have different ss58 format with provided ss58Format",
-        details: {
-          "addresses": addresses.map((e) => e.address).join(", "),
-          "addressSS58Formats": addressesSS58.join(", ")
-        },
-      );
-    }
+  static List<BaseSubstrateAddress> otherSignatories(
+      {required List<BaseSubstrateAddress> addresses,
+      required BaseSubstrateAddress signer}) {
+    // final addressesSS58 = addresses.map((e) => e.ss58Format).toSet();
+    // if (addressesSS58.length != 1) {
+    //   throw DartSubstratePluginException(
+    //     "Some provided addresses have different ss58 format with provided ss58Format",
+    //     details: {
+    //       "addresses": addresses.map((e) => e.address).join(", "),
+    //       "addressSS58Formats": addressesSS58.join(", ")
+    //     },
+    //   );
+    // }
     final sorted = sortedAddress(addresses);
     return sorted..removeWhere((element) => element == signer);
   }

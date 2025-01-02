@@ -1,7 +1,7 @@
 import 'package:blockchain_utils/utils/binary/binary_operation.dart';
-import 'package:blockchain_utils/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
@@ -52,7 +52,7 @@ abstract class SubstrateBaseEra
     final eraIndex =
         int.tryParse(key.replaceFirst(_SubstrateEraConst.mortal, ''));
     if (eraIndex == null || eraIndex > 255 || eraIndex < 0) {
-      throw MessageException("Invalid provided era json.",
+      throw DartSubstratePluginException("Invalid provided era json.",
           details: {"value": key});
     }
     return MortalEra(

@@ -5,15 +5,15 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns the runtime metadata.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetMetadata
-    extends SubstrateRPCRequest<String, VersionedMetadata> {
-  const SubstrateRPCStateGetMetadata({this.atBlockHash});
+class SubstrateRequestStateGetMetadata
+    extends SubstrateRequest<String, VersionedMetadata> {
+  const SubstrateRequestStateGetMetadata({this.atBlockHash});
 
   final String? atBlockHash;
 
   /// state_getMetadata
   @override
-  String get rpcMethod => SubstrateRPCMethods.getMetadata.value;
+  String get rpcMethod => SubstrateRequestMethods.getMetadata.value;
 
   @override
   List<dynamic> toJson() {

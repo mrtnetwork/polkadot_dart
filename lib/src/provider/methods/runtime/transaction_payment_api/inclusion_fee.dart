@@ -8,11 +8,11 @@ import 'package:polkadot_dart/src/provider/models/runtime/query_fee_info.dart';
 
 /// Returns the metadata at a given version
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
-class SubstrateRPCRuntimeTransactionPaymentApiQueryFeeDetails
-    extends SubstrateRPCRequest<String, QueryFeeInfoFrame> {
-  const SubstrateRPCRuntimeTransactionPaymentApiQueryFeeDetails(
+class SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails
+    extends SubstrateRequest<String, QueryFeeInfoFrame> {
+  const SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails(
       {required this.data, this.atBlockHash});
-  factory SubstrateRPCRuntimeTransactionPaymentApiQueryFeeDetails.fromExtrinsic(
+  factory SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails.fromExtrinsic(
       {required Extrinsic exirce, String? atBlockHash}) {
     final exirceBytes = exirce.serialize(encodeLength: false);
     final length = LayoutConst.u32().serialize(exirceBytes.length);
@@ -21,7 +21,7 @@ class SubstrateRPCRuntimeTransactionPaymentApiQueryFeeDetails
       ...exirceBytes,
       ...length
     ];
-    return SubstrateRPCRuntimeTransactionPaymentApiQueryFeeDetails(
+    return SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails(
         data: BytesUtils.toHexString(data, prefix: "0x"),
         atBlockHash: atBlockHash);
   }
@@ -30,7 +30,7 @@ class SubstrateRPCRuntimeTransactionPaymentApiQueryFeeDetails
   final String? data;
 
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateCall.value;
+  String get rpcMethod => SubstrateRequestMethods.stateCall.value;
 
   @override
   List<dynamic> toJson() {

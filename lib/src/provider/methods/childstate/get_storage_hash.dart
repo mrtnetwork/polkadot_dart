@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns the hash of a child storage entry at a block state.
 /// https://polkadot.js.org/docs/substrate/rpc/#childstate
-class SubstrateRPCChildStateGetStorageHash
-    extends SubstrateRPCRequest<String?, String?> {
-  const SubstrateRPCChildStateGetStorageHash({
+class SubstrateRequestChildStateGetStorageHash
+    extends SubstrateRequest<String?, String?> {
+  const SubstrateRequestChildStateGetStorageHash({
     required this.childKey,
     required this.key,
     this.atBlockHash,
@@ -16,7 +16,7 @@ class SubstrateRPCChildStateGetStorageHash
 
   /// childstate_getStorageHash
   @override
-  String get rpcMethod => SubstrateRPCMethods.getStorageHash.value;
+  String get rpcMethod => SubstrateRequestMethods.getStorageHash.value;
 
   @override
   List<dynamic> toJson() {

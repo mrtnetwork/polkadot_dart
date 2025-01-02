@@ -5,14 +5,14 @@ import 'package:polkadot_dart/src/provider/core/core.dart';
 
 /// Returns the supported metadata versions.
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
-class SubstrateRPCRuntimeAccountBalances
-    extends SubstrateRPCRequest<String, List<int>> {
-  const SubstrateRPCRuntimeAccountBalances({required this.address});
+class SubstrateRequestRuntimeAccountBalances
+    extends SubstrateRequest<String, List<int>> {
+  const SubstrateRequestRuntimeAccountBalances({required this.address});
   final SubstrateAddress address;
 
   /// sync_state_genSyncSpec
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateCall.value;
+  String get rpcMethod => SubstrateRequestMethods.stateCall.value;
 
   @override
   List<dynamic> toJson() {

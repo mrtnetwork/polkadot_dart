@@ -136,11 +136,11 @@ The following example will show how both methods work.
 
   /// Setting up the provider to connect to the Substrate node.
   final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+      SubstrateProvider(SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
   /// Requesting metadata from the blockchain to determine its version.
   final requestMetadata =
-      await provider.request(const SubstrateRPCRuntimeGetMetadata(15));
+      await provider.request(const SubstrateRequestRuntimeGetMetadata(15));
   final metadata = requestMetadata!.metadata as MetadataV15;
 
   /// Generating a private key from a seed and deriving the corresponding address.
@@ -166,11 +166,11 @@ The following example will show how both methods work.
 
   /// Retrieving genesis hash and finalized block hash.
   final genesisHash =
-      await provider.request(const SubstrateRPCChainGetBlockHash(number: 0));
+      await provider.request(const SubstrateRequestChainGetBlockHash(number: 0));
   final blockHash =
-      await provider.request(const SubstrateRPCChainChainGetFinalizedHead());
+      await provider.request(const SubstrateRequestChainChainGetFinalizedHead());
   final blockHeader = await provider
-      .request(SubstrateRPCChainChainGetHeader(atBlockHash: blockHash));
+      .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
   /// Retrieving account information to determine the nonce for the transaction.
@@ -227,7 +227,7 @@ The following example will show how both methods work.
 
   /// Submitting the extrinsic to the blockchain.
   final hash = await provider.request(
-      SubstrateRPCAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
+      SubstrateRequestAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
 
 
 ```
@@ -264,7 +264,7 @@ like previously we just encoded staking bond method
 
   /// Setting up the provider to connect to the Substrate node.
   final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+      SubstrateProvider(SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
   /// Parsing the metadata and initializing the Metadata API.
   final metadata = VersionedMetadata<MetadataV14>.fromBytes(
@@ -333,7 +333,7 @@ like previously we just encoded staking bond method
 ```dart
   /// Setting up the provider to connect to the Westend Substrate node.
   final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+      SubstrateProvider(SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
   /// Parsing the metadata and initializing the Metadata API.
   final metadata = VersionedMetadata<MetadataV15>.fromBytes(
@@ -369,7 +369,7 @@ like previously we just encoded staking bond method
 ```dart
 
 /// Custom implementation of Substrate HTTP service.
-class MySubstrateHttpSerivce with SubstrateRPCService {
+class MySubstrateHttpSerivce with SubstrateRequestService {
   MySubstrateHttpSerivce(this.url,
       {Client? client, this.defaultTimeOut = const Duration(seconds: 30)})
       : client = client ?? Client();
@@ -403,19 +403,19 @@ class MySubstrateHttpSerivce with SubstrateRPCService {
 
 /// Creating a provider with custom Substrate HTTP service.
 final provider =
-    SubstrateRPC(MySubstrateHttpSerivce("https://westend-rpc.polkadot.io"));
+    SubstrateProvider(MySubstrateHttpSerivce("https://westend-rpc.polkadot.io"));
 
 /// Retrieving genesis hash from the blockchain.
 final genesisHash =
-    await provider.request(const SubstrateRPCChainGetBlockHash(number: 0));
+    await provider.request(const SubstrateRequestChainGetBlockHash(number: 0));
 
 /// Retrieving finalized block hash from the blockchain.
 final blockHash =
-    await provider.request(const SubstrateRPCChainChainGetFinalizedHead());
+    await provider.request(const SubstrateRequestChainChainGetFinalizedHead());
 
 /// Retrieving block header using the block hash.
 final blockHeader = await provider
-    .request(SubstrateRPCChainChainGetHeader(atBlockHash: blockHash));
+    .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
 
 
 ```

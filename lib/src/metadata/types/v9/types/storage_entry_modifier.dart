@@ -1,5 +1,5 @@
-import 'package:blockchain_utils/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
@@ -22,7 +22,7 @@ class StorageEntryModifierV9
   static StorageEntryModifierV9 fromValue(String? value) {
     return values.firstWhere(
       (element) => element.name == value,
-      orElse: () => throw MessageException(
+      orElse: () => throw DartSubstratePluginException(
           "No StorageEntryModifierV9 found matching the specified value",
           details: {"value": value}),
     );

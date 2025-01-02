@@ -1,17 +1,19 @@
-import 'package:blockchain_utils/exception/exception.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/core/storage_hasher.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
-import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/si/si.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_storage_metadata_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entery_type_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entry_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_metadata.dart';
+import 'package:polkadot_dart/src/metadata/types/versioned/pallet/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 
 /// Interface providing methods for interacting with the latest metadata in the Substrate framework.
-mixin LatestMetadataInterface {
+mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   abstract final int version;
 
   /// Retrieves the lookup for the given [id].
@@ -21,7 +23,9 @@ mixin LatestMetadataInterface {
   PortableRegistry get registry;
 
   /// Map containing pallet metadata for version 14.
-  abstract final Map<int, PalletMetadataV14> pallets;
+  abstract final Map<int, PALLET> pallets;
+
+  abstract final ExtrinsicMetadata extrinsic;
 
   /// Decodes a lookup.
   T decodeLookup<T>(int id, List<int> bytes) {
@@ -74,7 +78,7 @@ mixin LatestMetadataInterface {
   }
 
   /// Retrieves the pallet metadata by name or index.
-  PalletMetadataV14 getPallet(String nameOrIndex) {
+  PALLET getPallet(String nameOrIndex) {
     return pallets[_toPalletIndex(nameOrIndex)]!;
   }
 
@@ -158,11 +162,12 @@ mixin LatestMetadataInterface {
     final pallet = getPallet(palletNameOrIndex);
     final constant = pallet.constants.firstWhere(
       (element) => element.name.toLowerCase() == constantName.toLowerCase(),
-      orElse: () =>
-          throw MessageException("Constant does not exist.", details: {
-        "name": constantName,
-        "constants": pallet.constants.map((e) => e.name).join(", ")
-      }),
+      orElse: () => throw DartSubstratePluginException(
+          "Constant does not exist.",
+          details: {
+            "name": constantName,
+            "constants": pallet.constants.map((e) => e.name).join(", ")
+          }),
     );
     return decodeLookup(constant.type, constant.value);
   }
@@ -199,7 +204,7 @@ mixin LatestMetadataInterface {
       return null as T;
     }
     final lookupId = getStorageOutputId(palletNameOrIndex, methodName);
-    return decodeLookup(lookupId, queryResponse ?? storage.fallback);
+    return decodeLookup<T>(lookupId, queryResponse ?? storage.fallback);
   }
 
   /// Retrieves the list of storage methods for the given pallet.
@@ -254,6 +259,13 @@ mixin LatestMetadataInterface {
 
   List<String> getDocs(int lookupid) {
     return registry.scaleType(lookupid).docs;
+  }
+
+  List<Si1Variant> getCalls_(String palletNameOrIndex) {
+    final callId = getCallLookupId(palletNameOrIndex);
+    final type = getLookup(callId);
+    final variant = type.def.cast<Si1TypeDefVariant>().variants;
+    return variant;
   }
 
   bool get isSupportMetadataHash;

@@ -4,15 +4,15 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Get the runtime version.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetRuntimeVersion
-    extends SubstrateRPCRequest<Map<String, dynamic>, RuntimeVersion> {
-  const SubstrateRPCStateGetRuntimeVersion({this.blockHash});
+class SubstrateRequestStateGetRuntimeVersion
+    extends SubstrateRequest<Map<String, dynamic>, RuntimeVersion> {
+  const SubstrateRequestStateGetRuntimeVersion({this.blockHash});
 
   final String? blockHash;
 
   /// state_getRuntimeVersion
   @override
-  String get rpcMethod => SubstrateRPCMethods.getRuntimeVersion.value;
+  String get rpcMethod => SubstrateRequestMethods.getRuntimeVersion.value;
 
   @override
   List<dynamic> toJson() {

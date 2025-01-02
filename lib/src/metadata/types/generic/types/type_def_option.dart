@@ -5,10 +5,8 @@ import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dar
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
-class TypeDefOption<T> extends SubstrateSerialization<T>
-    implements ScaleTypeDef {
+class TypeDefOption<T> extends ScaleTypeDef<T> {
   final int optionType;
   final Si1TypeDef<T> def;
   TypeDefOption(this.optionType, this.def);

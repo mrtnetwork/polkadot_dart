@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns proof of storage for child key entries at a specific block state
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetChildReadProof
-    extends SubstrateRPCRequest<List<dynamic>, List<String>> {
-  const SubstrateRPCStateGetChildReadProof({
+class SubstrateRequestStateGetChildReadProof
+    extends SubstrateRequest<List<dynamic>, List<String>> {
+  const SubstrateRequestStateGetChildReadProof({
     required this.childStorageKey,
     required this.keys,
     this.atBlockHash,
@@ -16,7 +16,7 @@ class SubstrateRPCStateGetChildReadProof
 
   /// state_getChildReadProof
   @override
-  String get rpcMethod => SubstrateRPCMethods.getChildReadProof.value;
+  String get rpcMethod => SubstrateRequestMethods.getChildReadProof.value;
 
   @override
   List<dynamic> toJson() {

@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Retrieves the fee information for an encoded extrinsic.
 /// https://polkadot.js.org/docs/substrate/rpc/#payment
-class SubstrateRPCPaymentQueryInfo
-    extends SubstrateRPCRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRPCPaymentQueryInfo({
+class SubstrateRequestPaymentQueryInfo
+    extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
+  const SubstrateRequestPaymentQueryInfo({
     required this.extrinsic,
     this.atBlockHash,
   });
@@ -14,7 +14,7 @@ class SubstrateRPCPaymentQueryInfo
 
   /// payment_queryInfo
   @override
-  String get rpcMethod => SubstrateRPCMethods.queryInfo.value;
+  String get rpcMethod => SubstrateRequestMethods.queryInfo.value;
 
   @override
   List<dynamic> toJson() {

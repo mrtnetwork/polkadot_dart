@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns the keys with prefix from a child storage with pagination support
 /// https://polkadot.js.org/docs/substrate/rpc/#childstate
-class SubstrateRPCChildStateGetKeysPaged
-    extends SubstrateRPCRequest<List<dynamic>, List<String>> {
-  const SubstrateRPCChildStateGetKeysPaged({
+class SubstrateRequestChildStateGetKeysPaged
+    extends SubstrateRequest<List<dynamic>, List<String>> {
+  const SubstrateRequestChildStateGetKeysPaged({
     required this.childKey,
     required this.prefix,
     required this.count,
@@ -20,7 +20,7 @@ class SubstrateRPCChildStateGetKeysPaged
 
   /// childstate_getKeysPaged
   @override
-  String get rpcMethod => SubstrateRPCMethods.getKeysPaged.value;
+  String get rpcMethod => SubstrateRequestMethods.getKeysPaged.value;
 
   @override
   List<dynamic> toJson() {

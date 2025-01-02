@@ -3,16 +3,16 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Instructs the manual-seal authorship task to finalize a block
 /// https://polkadot.js.org/docs/substrate/rpc/#engine
-class SubstrateRPCEngineFinalizeBlock extends SubstrateRPCRequest<bool, bool> {
-  const SubstrateRPCEngineFinalizeBlock(
+class SubstrateRequestEngineFinalizeBlock extends SubstrateRequest<bool, bool> {
+  const SubstrateRequestEngineFinalizeBlock(
       {required this.hash, this.justification});
 
   final String hash;
   final String? justification;
 
-  /// SubstrateRPCMethods
+  /// SubstrateRequestMethods
   @override
-  String get rpcMethod => SubstrateRPCMethods.finalizeBlock.value;
+  String get rpcMethod => SubstrateRequestMethods.finalizeBlock.value;
 
   @override
   List<dynamic> toJson() {

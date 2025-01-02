@@ -10,7 +10,7 @@ extension RuntimeCallHelper on MetadataApi {
       {required String apiName,
       required String methodName,
       required List<Object?> params,
-      required SubstrateRPC rpc,
+      required SubstrateProvider rpc,
       bool fromTemplate = true}) async {
     final method = getRuntimeApiMethod(apiName, methodName);
     final encode = encodeRuntimeApiInputs(
@@ -19,7 +19,8 @@ extension RuntimeCallHelper on MetadataApi {
         params: params,
         fromTemplate: fromTemplate);
     final encodeInputs = BytesUtils.toHexString(encode, prefix: "0x");
-    final rpcMethod = SubstrateRPCStateCall(method: method, data: encodeInputs);
+    final rpcMethod =
+        SubstrateRequestStateCall(method: method, data: encodeInputs);
     final response = await rpc.request(rpcMethod);
     return decodeRuntimeApiOutput(
         apiName: apiName,
@@ -29,7 +30,7 @@ extension RuntimeCallHelper on MetadataApi {
 
   Future<BigInt> queriInfo({
     required Extrinsic extrinsic,
-    required SubstrateRPC rpc,
+    required SubstrateProvider rpc,
   }) async {
     final result = await runtimeCall<Map<String, dynamic>>(
         apiName: "TransactionPaymentApi",

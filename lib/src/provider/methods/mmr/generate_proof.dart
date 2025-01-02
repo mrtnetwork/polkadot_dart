@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Generate MMR proof for the given block numbers.
 /// https://polkadot.js.org/docs/substrate/rpc/#mmr
-class SubstrateRPCMMRGenerateProof
-    extends SubstrateRPCRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRPCMMRGenerateProof(
+class SubstrateRequestMMRGenerateProof
+    extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
+  const SubstrateRequestMMRGenerateProof(
       {required this.blockNumbers,
       this.bestKnownBlockNumber,
       this.atBlockHash});
@@ -16,7 +16,7 @@ class SubstrateRPCMMRGenerateProof
 
   /// mmr_generateProof
   @override
-  String get rpcMethod => SubstrateRPCMethods.generateProof.value;
+  String get rpcMethod => SubstrateRequestMethods.generateProof.value;
 
   @override
   List<dynamic> toJson() {

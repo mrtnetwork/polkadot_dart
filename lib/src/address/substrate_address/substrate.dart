@@ -1,23 +1,34 @@
-import 'package:blockchain_utils/bip/address/substrate_addr.dart';
-import 'package:blockchain_utils/ss58/ss58.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/models/account_id.dart';
 import 'package:polkadot_dart/src/models/generic/models/multi_address.dart';
 import 'address_utils.dart';
 import 'ss58_constant.dart';
 
+abstract class BaseSubstrateAddress {
+  /// The SS58 format identifier.
+  final String address;
+
+  const BaseSubstrateAddress._(this.address);
+
+  /// Converts the address to a list of bytes.
+  List<int> toBytes();
+
+  SubstrateMultiAddress toMultiAddress();
+}
+
 /// Represents a Substrate blockchain address with various factory constructors
 /// to initialize an address from different key types and functionalities to
 /// manipulate and encode/decode addresses.
-class SubstrateAddress {
-  /// The address string representation.
-  final String address;
+class SubstrateAddress extends BaseSubstrateAddress {
+  // /// The address string representation.
+  // final String address;
 
   /// The SS58 format identifier.
   final int ss58Format;
 
   /// Private constructor for initializing a SubstrateAddress.
-  const SubstrateAddress._(this.address, this.ss58Format);
+  const SubstrateAddress._(super.address, this.ss58Format) : super._();
 
   /// Factory constructor to create a SubstrateAddress from an address string.
   ///
@@ -100,6 +111,7 @@ class SubstrateAddress {
   /// Converts the address to a list of bytes.
   ///
   /// Decodes the address using the current SS58 format.
+  @override
   List<int> toBytes() {
     final decode = SubstrateGenericAddrDecoder()
         .decodeAddWithSS58(address, {"ss58_format": ss58Format});
@@ -114,13 +126,14 @@ class SubstrateAddress {
   }
 
   /// Converts the address to a SubstrateMultiAddress.
+  @override
   SubstrateMultiAddress toMultiAddress() {
     return SubstrateMultiAddress(toAccountId());
   }
 
   /// Converts the address to a SubstrateAccountId.
   SubstrateAccountId toAccountId() {
-    return SubstrateAccountId(this);
+    return SubstrateAccountId(toBytes());
   }
 
   /// Converts the address to a SubstrateAccountIndex.
@@ -137,6 +150,79 @@ class SubstrateAddress {
 
   @override
   int get hashCode => address.hashCode ^ ss58Format.hashCode;
+
+  @override
+  String toString() {
+    return address;
+  }
+}
+
+/// Represents a Substrate blockchain address with various factory constructors
+/// to initialize an address from different key types and functionalities to
+/// manipulate and encode/decode addresses.
+class MoonbeamAddress extends BaseSubstrateAddress {
+  /// Private constructor for initializing a SubstrateAddress.
+  const MoonbeamAddress._(super.address) : super._();
+
+  factory MoonbeamAddress.fromPublicKey(List<int> bytes) {
+    try {
+      final addr = EthAddrEncoder().encodeKey(bytes);
+      return MoonbeamAddress._(addr);
+    } catch (e) {
+      throw DartSubstratePluginException("Invalid moonbeam public key bytes.",
+          details: {
+            "bytes": BytesUtils.tryToHexString(bytes),
+            "error": e.toString()
+          });
+    }
+  }
+  factory MoonbeamAddress.fromBytes(List<int> addressBytes) {
+    try {
+      final checksumAddress =
+          EthAddrUtils.addressBytesToChecksumAddress(addressBytes);
+      return MoonbeamAddress._(checksumAddress);
+    } catch (e) {
+      throw DartSubstratePluginException("Invalid moonbeam address bytes.",
+          details: {
+            "addressBytes": BytesUtils.tryToHexString(addressBytes),
+            "error": e.toString()
+          });
+    }
+  }
+  factory MoonbeamAddress(String address) {
+    try {
+      final checksumAddress = EthAddrUtils.toChecksumAddress(address);
+      return MoonbeamAddress._(checksumAddress);
+    } catch (e) {
+      throw DartSubstratePluginException("Invalid moonbeam address.",
+          details: {"address": address, "error": e.toString()});
+    }
+  }
+
+  /// Converts the address to a list of bytes.
+  ///
+  /// Decodes the address using the current SS58 format.
+  @override
+  List<int> toBytes() {
+    final decode = EthAddrDecoder().decodeAddr(address);
+    return decode;
+  }
+
+  /// Converts the address to a SubstrateMultiAddress.
+  @override
+  SubstrateMultiAddress toMultiAddress() {
+    return SubstrateMultiAddress(SubstrateAccount20(toBytes()));
+  }
+
+  @override
+  operator ==(other) {
+    if (identical(this, other)) return true;
+    if (other is! MoonbeamAddress) return false;
+    return other.address == address;
+  }
+
+  @override
+  int get hashCode => address.hashCode;
 
   @override
   String toString() {

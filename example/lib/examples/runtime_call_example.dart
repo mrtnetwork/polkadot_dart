@@ -5,12 +5,12 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 
 import 'json_rpc_example.dart';
-import 'repository/westend_v14.dart';
+import '../repository/westend_v14.dart';
 
 void main() async {
-  /// Setting up the provider to connect to the Westend Substrate node.
-  final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+  /// Settsing up the provider to connect to the Westend Substrate node.
+  final provider = SubstrateProvider(
+      SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
   /// Parsing the metadata and initializing the Metadata API.
   final metadata = VersionedMetadata<MetadataV15>.fromBytes(

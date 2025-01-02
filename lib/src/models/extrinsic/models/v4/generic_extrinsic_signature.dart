@@ -1,3 +1,4 @@
+import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/models/extrinsic/layouts/v4.dart';
 import 'package:polkadot_dart/src/models/generic/models/signature.dart';
@@ -37,35 +38,23 @@ abstract class BaseExtrinsicSignature
 
 class LegacyExtrinsicSignature extends BaseExtrinsicSignature {
   const LegacyExtrinsicSignature(
-      {required SubstrateMultiSignature signature,
-      required SubstrateMultiAddress address,
-      required SubstrateBaseEra era,
-      required BigInt? tip,
-      required int nonce})
-      : super(
-            signature: signature,
-            address: address,
-            era: era,
-            tip: tip,
-            nonce: nonce);
+      {required super.signature,
+      required super.address,
+      required super.era,
+      required super.tip,
+      required super.nonce});
 }
 
 class ExtrinsicSignature extends BaseExtrinsicSignature {
   final int mode;
 
   ExtrinsicSignature(
-      {required SubstrateMultiSignature signature,
-      required SubstrateMultiAddress address,
-      required SubstrateBaseEra era,
-      required BigInt? tip,
-      required int nonce,
-      this.mode = 0})
-      : super(
-            signature: signature,
-            address: address,
-            era: era,
-            tip: tip,
-            nonce: nonce);
+      {required super.signature,
+      required super.address,
+      required super.era,
+      required super.tip,
+      required super.nonce,
+      this.mode = 0});
 
   @override
   StructLayout layout({String? property}) =>
@@ -79,7 +68,55 @@ class ExtrinsicSignature extends BaseExtrinsicSignature {
       "era": era.scaleJsonSerialize(),
       "tip": tip ?? BigInt.zero,
       "nonce": nonce,
-      "mode": mode
+      "mode": mode,
+    };
+  }
+}
+
+class AssetExtrinsicSignature extends ExtrinsicSignature {
+  final List<int>? asset;
+  AssetExtrinsicSignature(
+      {required super.signature,
+      required super.address,
+      required super.era,
+      required super.tip,
+      required super.nonce,
+      super.mode = 0,
+      List<int>? asset})
+      : asset = asset?.immutable;
+
+  @override
+  StructLayout layout({String? property}) =>
+      ExtrinsicV4Layouts.assetSignatureV4(property: property);
+
+  @override
+  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+    return {...super.scaleJsonSerialize(property: property), "asset": asset};
+  }
+}
+
+class MoonbeamExtrinsicSignature extends ExtrinsicSignature {
+  MoonbeamExtrinsicSignature(
+      {required super.signature,
+      required super.address,
+      required super.era,
+      super.tip,
+      required super.nonce,
+      super.mode});
+
+  @override
+  StructLayout layout({String? property}) =>
+      ExtrinsicV4Layouts.monoBeanSignatureV4(property: property);
+
+  @override
+  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+    return {
+      "signature": signature.signatureBytes(),
+      "address": address.value.accountBytes(),
+      "era": era.scaleJsonSerialize(),
+      "tip": tip ?? BigInt.zero,
+      "nonce": nonce,
+      "mode": mode,
     };
   }
 }

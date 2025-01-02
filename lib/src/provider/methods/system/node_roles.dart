@@ -3,13 +3,13 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns the roles the node is running as
 /// https://polkadot.js.org/docs/substrate/rpc/#system
-class SubstrateRPCSystemNodeRoles
-    extends SubstrateRPCRequest<List<dynamic>, List<dynamic>> {
-  const SubstrateRPCSystemNodeRoles();
+class SubstrateRequestSystemNodeRoles
+    extends SubstrateRequest<List<dynamic>, List<dynamic>> {
+  const SubstrateRequestSystemNodeRoles();
 
   /// system_nodeRoles
   @override
-  String get rpcMethod => SubstrateRPCMethods.nodeRoles.value;
+  String get rpcMethod => SubstrateRequestMethods.nodeRoles.value;
 
   @override
   List<dynamic> toJson() {

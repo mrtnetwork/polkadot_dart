@@ -63,8 +63,7 @@ class Si1TypeDefsIndexesConst {
   }
 }
 
-abstract class Si1TypeDef<T> extends SubstrateSerialization<T>
-    implements ScaleTypeDef {
+abstract class Si1TypeDef<T> extends ScaleTypeDef<T> {
   @override
   abstract final Si1TypeDefsIndexesConst typeName;
   const Si1TypeDef();

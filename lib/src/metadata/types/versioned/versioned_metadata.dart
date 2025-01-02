@@ -1,7 +1,7 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:blockchain_utils/utils/binary/utils.dart';
 import 'package:polkadot_dart/src/api/api.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
@@ -50,7 +50,7 @@ class VersionedMetadata<T extends SubstrateMetadata>
       }
     }
     if (metadata is! T) {
-      throw MessageException("Incorrect metadata version.",
+      throw DartSubstratePluginException("Incorrect metadata version.",
           details: {"excepted": "$T", "version": "$version"});
     }
     return VersionedMetadata(

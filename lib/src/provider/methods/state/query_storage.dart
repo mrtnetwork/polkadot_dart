@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Query historical storage entries (by key) starting from a start block
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateQueryStorage
-    extends SubstrateRPCRequest<List<dynamic>, List<dynamic>> {
-  const SubstrateRPCStateQueryStorage(
+class SubstrateRequestStateQueryStorage
+    extends SubstrateRequest<List<dynamic>, List<dynamic>> {
+  const SubstrateRequestStateQueryStorage(
       {required this.keys, required this.fromBlock, this.toBlock});
   final List<String> keys;
   final String fromBlock;
@@ -13,7 +13,7 @@ class SubstrateRPCStateQueryStorage
 
   /// state_queryStorage
   @override
-  String get rpcMethod => SubstrateRPCMethods.queryStorage.value;
+  String get rpcMethod => SubstrateRequestMethods.queryStorage.value;
 
   @override
   List<dynamic> toJson() {

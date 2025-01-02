@@ -4,13 +4,13 @@ import 'package:polkadot_dart/src/provider/models/chain/header.dart';
 
 /// Retrieves the best finalized header via subscription
 /// https://polkadot.js.org/docs/substrate/rpc/#chain
-class SubstrateRPCChainSubscribeFinalizedHeads
-    extends SubstrateRPCRequest<Map<String, dynamic>, SubstrateHeaderResponse> {
-  const SubstrateRPCChainSubscribeFinalizedHeads();
+class SubstrateRequestChainSubscribeFinalizedHeads
+    extends SubstrateRequest<Map<String, dynamic>, SubstrateHeaderResponse> {
+  const SubstrateRequestChainSubscribeFinalizedHeads();
 
   /// chain_subscribeFinalizedHeads
   @override
-  String get rpcMethod => SubstrateRPCMethods.subscribeFinalizedHeads.value;
+  String get rpcMethod => SubstrateRequestMethods.subscribeFinalizedHeads.value;
 
   @override
   List<dynamic> toJson() {

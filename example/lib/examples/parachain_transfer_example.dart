@@ -1,20 +1,20 @@
-import 'package:example/json_rpc_example.dart';
+import 'package:example/examples/json_rpc_example.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 
 /// https://rococo-rpc.polkadot.io
 /// /rococo-asset-hub-rpc.polkadot.io
 /// [System, Babe, Timestamp, Indices, Balances, TransactionPayment, Authorship, Staking, Offences, Historical, Session, Grandpa, AuthorityDiscovery, Utility, Identity, Recovery, Vesting, Scheduler, Preimage, Sudo, Proxy, Multisig, ElectionProviderMultiPhase, VoterList, NominationPools, FastUnstake, ConvictionVoting, Referenda, Origins, Whitelist, Treasury, ParachainsOrigin, Configuration, ParasShared, ParaInclusion, ParaInherent, ParaScheduler, Paras, Initializer, Dmp, Hrmp, ParaSessionInfo, ParasDisputes, ParasSlashing, OnDemandAssignmentProvider, CoretimeAssignmentProvider, Registrar, Slots, ParasSudoWrapper, Auctions, Crowdloan, AssignedSlots, Coretime, XcmPallet, MessageQueue, AssetRate, RootTesting, Beefy, Mmr, BeefyMmrLeaf, IdentityMigrator]
 void main() async {
-  final provider = SubstrateRPC(
+  final provider = SubstrateProvider(
       SubstrateHttpService("https://sys.ibp.network/bridgehub-westend"));
   final VersionedMetadata metadata =
-      await provider.request(const SubstrateRPCStateGetMetadata());
+      await provider.request(const SubstrateRequestStateGetMetadata());
 
   List<int> seedBytes = List<int>.filled(32, 12);
   final privateKey = SubstratePrivateKey.fromSeed(
       seedBytes: seedBytes, algorithm: SubstrateKeyAlgorithm.sr25519);
 
-  // final chainInfo = await provider.request(SubstrateRPCSystemProperties());
+  // final chainInfo = await provider.request(SubstrateRequestSystemProperties());
 
   // print(privateKey.algorithm.cuve);
   // return;
@@ -31,11 +31,11 @@ void main() async {
   final version = api.runtimeVersion();
 
   final genesisHash = await provider
-      .request(const SubstrateRPCChainGetBlockHash<String>(number: 0));
-  final blockHash =
-      await provider.request(const SubstrateRPCChainChainGetFinalizedHead());
+      .request(const SubstrateRequestChainGetBlockHash<String>(number: 0));
+  final blockHash = await provider
+      .request(const SubstrateRequestChainChainGetFinalizedHead());
   final blockHeader = await provider
-      .request(SubstrateRPCChainChainGetHeader(atBlockHash: blockHash));
+      .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
   final accountInfo = await api.getStorage(
@@ -87,7 +87,7 @@ void main() async {
       nonce: nonce);
   final extrinsic = Extrinsic(signature: signature, methodBytes: method);
   await provider.request(
-      SubstrateRPCAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
+      SubstrateRequestAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
 }
 
 /// https://westend.subscan.io/extrinsic/0xdb7c22ac4f66fda76e053ce06dc56bda9f67bf9e2ce9311adff693e5614955c6

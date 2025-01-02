@@ -54,10 +54,6 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>>
     };
   }
 
-  static const xcm = ["staging_xcm", "xcm"];
-
-  final x = ["staging_xcm", "v4", "Xcm"];
-
   /// Returns the serialization layout of the type definition using the provided [registry], [value], and optional [property].
   @override
   Layout typeDefLayout(PortableRegistry registry, value, {String? property}) {

@@ -19,7 +19,9 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
   final PortableRegistryV14 lookup;
   @override
   final Map<int, PalletMetadataV15> pallets;
+  @override
   final ExtrinsicMetadataV15 extrinsic;
+
   final int type;
   final List<RuntimeApiMetadataV15> apis;
   final OuterEnums15 outerEnums;

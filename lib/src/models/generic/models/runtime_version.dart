@@ -12,7 +12,8 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
   final int implVersion;
   final List<RuntimeVersionApi> apis;
   final int transactionVersion;
-  final int stateVersion;
+  final int? stateVersion;
+  final int? systemVersion;
   RuntimeVersion(
       {required this.specName,
       required this.implName,
@@ -21,7 +22,8 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
       required this.implVersion,
       required List<RuntimeVersionApi> apis,
       required this.transactionVersion,
-      required this.stateVersion})
+      this.stateVersion,
+      this.systemVersion})
       : apis = List<RuntimeVersionApi>.unmodifiable(apis);
   RuntimeVersion.deserializeJson(Map<String, dynamic> json)
       : specVersion = json["spec_version"],
@@ -32,7 +34,8 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
         apis = List<RuntimeVersionApi>.unmodifiable((json["apis"] as List)
             .map((e) => RuntimeVersionApi.deserializeJson(e))),
         implName = json["impl_name"],
-        specName = json["spec_name"];
+        specName = json["spec_name"],
+        systemVersion = json["system_version"];
   factory RuntimeVersion.fromJson(Map<String, dynamic> json) {
     return RuntimeVersion(
         specName: json["specName"],
@@ -46,7 +49,8 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
                 version: IntUtils.parse(e[1])))
             .toList(),
         transactionVersion: IntUtils.parse(json["transactionVersion"]),
-        stateVersion: IntUtils.parse(json["stateVersion"]));
+        stateVersion: IntUtils.tryParse(json["stateVersion"]),
+        systemVersion: IntUtils.tryParse(json["systemVersion"]));
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +65,8 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
               (e) => [BytesUtils.toHexString(e.apiId, prefix: "0x"), e.version])
           .toList(),
       "transactionVersion": transactionVersion,
-      "stateVersion": stateVersion
+      "stateVersion": stateVersion,
+      "systemVersion": systemVersion
     };
   }
 

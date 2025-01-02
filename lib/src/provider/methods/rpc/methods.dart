@@ -4,13 +4,13 @@ import 'package:polkadot_dart/src/provider/models/rpc/rpc_methods.dart';
 
 /// Retrieves the list of RPC methods that are exposed by the node.
 /// https://polkadot.js.org/docs/substrate/rpc/#rpc
-class SubstrateRPCRpcMethods
-    extends SubstrateRPCRequest<Map<String, dynamic>, RpcMethods> {
-  const SubstrateRPCRpcMethods();
+class SubstrateRequestRpcMethods
+    extends SubstrateRequest<Map<String, dynamic>, RpcMethods> {
+  const SubstrateRequestRpcMethods();
 
   /// rpc_methods
   @override
-  String get rpcMethod => SubstrateRPCMethods.rpc.value;
+  String get rpcMethod => SubstrateRequestMethods.rpc.value;
 
   @override
   List<dynamic> toJson() {

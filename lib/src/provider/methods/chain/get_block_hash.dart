@@ -3,14 +3,14 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Get the block hash for a specific block.
 /// https://polkadot.js.org/docs/substrate/rpc/#chain
-class SubstrateRPCChainGetBlockHash<T extends String?>
-    extends SubstrateRPCRequest<T, T> {
-  const SubstrateRPCChainGetBlockHash({this.number});
+class SubstrateRequestChainGetBlockHash<T extends String?>
+    extends SubstrateRequest<T, T> {
+  const SubstrateRequestChainGetBlockHash({this.number});
   final int? number;
 
   /// chain_getBlockHash
   @override
-  String get rpcMethod => SubstrateRPCMethods.getBlockHash.value;
+  String get rpcMethod => SubstrateRequestMethods.getBlockHash.value;
 
   @override
   List<dynamic> toJson() {

@@ -1,6 +1,6 @@
 import 'package:blockchain_utils/utils/utils.dart';
-import 'package:blockchain_utils/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
@@ -357,7 +357,7 @@ class MetadataCastingUtils {
     if (isInt(value, bitLength: 8)) {
       if (max == null || value <= max) return value;
     }
-    throw MessageException("Invalid integer provided for U8.",
+    throw DartSubstratePluginException("Invalid integer provided for U8.",
         details: {"value": value, "max": max});
   }
 
@@ -371,7 +371,7 @@ class MetadataCastingUtils {
     } else if (min == null && except == null) {
       return bytes;
     }
-    throw MessageException(error ?? "Invalid bytes length.",
+    throw DartSubstratePluginException(error ?? "Invalid bytes length.",
         details: {"length": bytes.length, "excepted": except});
   }
 }

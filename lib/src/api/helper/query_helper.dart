@@ -28,7 +28,7 @@ extension QueryHelper on MetadataApi {
 
   Future<QueryStorageResponse<T>> getStorage<T>({
     required QueryStorageRequest<T> request,
-    required SubstrateRPC rpc,
+    required SubstrateProvider rpc,
     required bool fromTemplate,
     String? atBlockHash,
   }) async {
@@ -38,7 +38,7 @@ extension QueryHelper on MetadataApi {
         value: request.input,
         fromTemplate: fromTemplate);
     final rpcMethod =
-        SubstrateRPCGetStorage(storageKey, atBlockHash: atBlockHash);
+        SubstrateRequestGetStorage(storageKey, atBlockHash: atBlockHash);
     final response = await rpc.request(rpcMethod);
     final List<int>? queryResponse = BytesUtils.tryFromHexString(response);
     final storageData = decodeStorageResponse(
@@ -50,7 +50,7 @@ extension QueryHelper on MetadataApi {
 
   Future<QueryStorageRequestBlock> queryStorageAt(
       {required List<QueryStorageRequest> requestes,
-      required SubstrateRPC rpc,
+      required SubstrateProvider rpc,
       required bool fromTemplate,
       String? atBlockHash}) async {
     final result = await _queryStorage(
@@ -63,7 +63,7 @@ extension QueryHelper on MetadataApi {
 
   Future<List<QueryStorageRequestBlock>> queryStorage<T>(
       {required List<QueryStorageRequest> requestes,
-      required SubstrateRPC rpc,
+      required SubstrateProvider rpc,
       required String fromBlock,
       required bool fromTemplate,
       String? toBlock}) {
@@ -77,7 +77,7 @@ extension QueryHelper on MetadataApi {
 
   Future<List<QueryStorageRequestBlock>> _queryStorage<T>(
       {required List<QueryStorageRequest> requestes,
-      required SubstrateRPC rpc,
+      required SubstrateProvider rpc,
       required bool fromTemplate,
       String? fromBlock,
       String? atBlockHash}) async {
@@ -93,9 +93,9 @@ extension QueryHelper on MetadataApi {
       storageKeys.add(storageKey);
     }
     final rpcMethod = fromBlock == null
-        ? SubstrateRPCQuerStateStorageAt([...storageKeys],
+        ? SubstrateRequestQuerStateStorageAt([...storageKeys],
             atBlockHash: atBlockHash)
-        : SubstrateRPCStateQueryStorage(
+        : SubstrateRequestStateQueryStorage(
             keys: [...storageKeys], fromBlock: fromBlock, toBlock: atBlockHash);
     final List<QueryStorageRequestBlock> blockResult = [];
     final response = await rpc.request(rpcMethod);
@@ -125,9 +125,9 @@ extension QueryHelper on MetadataApi {
   }
 
   Future<Map<String, dynamic>?> getMultisigs({
-    required SubstrateAddress multisigaddress,
+    required BaseSubstrateAddress multisigaddress,
     required List<int> callHashTx,
-    required SubstrateRPC rpc,
+    required SubstrateProvider rpc,
   }) async {
     final List<List<int>> template = [multisigaddress.toBytes(), callHashTx];
     final result = await getStorage(
@@ -142,7 +142,8 @@ extension QueryHelper on MetadataApi {
   }
 
   Future<SubstrateAccountInfo> getAccountInfo(
-      {required SubstrateAddress address, required SubstrateRPC rpc}) async {
+      {required BaseSubstrateAddress address,
+      required SubstrateProvider rpc}) async {
     final data = await getStorage(
         request: QueryStorageRequest<Map<String, dynamic>>(
             palletNameOrIndex: "System",
@@ -155,7 +156,7 @@ extension QueryHelper on MetadataApi {
   }
 
   Future<FrameSupportDispatchPerDispatchClass> queryBlockWeight(
-    SubstrateRPC rpc, {
+    SubstrateProvider rpc, {
     String? atBlockHash,
   }) async {
     final storageKey = _getStorageKey(
@@ -164,7 +165,7 @@ extension QueryHelper on MetadataApi {
         value: [],
         fromTemplate: false);
     final rpcMethod =
-        SubstrateRPCGetStorage(storageKey, atBlockHash: atBlockHash);
+        SubstrateRequestGetStorage(storageKey, atBlockHash: atBlockHash);
     final response = await rpc.request(rpcMethod);
     final List<int>? queryResponse = BytesUtils.tryFromHexString(response);
     final decodeResponse = decodeStorageResponse<Map<String, dynamic>>(

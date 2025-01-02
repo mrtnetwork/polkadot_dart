@@ -5,13 +5,13 @@ import 'package:polkadot_dart/src/models/generic/models/events.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 extension EventHelper on MetadataApi {
-  Future<QueryStorageResult<T>> getEvents<T>(SubstrateRPC rpc,
+  Future<QueryStorageResult<T>> getEvents<T>(SubstrateProvider rpc,
       {String? palletIdOrIndex, String? atBlockHash}) async {
     final List<int> storageKeyBytes = generateEventStorageKey();
     final String storageKey =
         BytesUtils.toHexString(storageKeyBytes, prefix: "0x");
     final rpcMethod =
-        SubstrateRPCGetStorage(storageKey, atBlockHash: atBlockHash);
+        SubstrateRequestGetStorage(storageKey, atBlockHash: atBlockHash);
     final response = await rpc.request(rpcMethod);
     if (response == null) {
       return QueryStorageResult(storageKey: storageKey, result: null as T);
@@ -21,13 +21,13 @@ extension EventHelper on MetadataApi {
     return QueryStorageResult(storageKey: storageKey, result: events);
   }
 
-  Future<List<SubstrateEvent>> getSystemEvents(SubstrateRPC rpc,
+  Future<List<SubstrateEvent>> getSystemEvents(SubstrateProvider rpc,
       {String? palletIdOrIndex, String? atBlockHash}) async {
     final List<int> storageKeyBytes = generateEventStorageKey();
     final String storageKey =
         BytesUtils.toHexString(storageKeyBytes, prefix: "0x");
     final rpcMethod =
-        SubstrateRPCGetStorage(storageKey, atBlockHash: atBlockHash);
+        SubstrateRequestGetStorage(storageKey, atBlockHash: atBlockHash);
     final response = await rpc.request(rpcMethod);
     if (response == null) {
       return [];

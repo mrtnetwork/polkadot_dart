@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Retrieves the storage hash.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetStorageHash
-    extends SubstrateRPCRequest<String, String> {
-  const SubstrateRPCStateGetStorageHash({
+class SubstrateRequestStateGetStorageHash
+    extends SubstrateRequest<String, String> {
+  const SubstrateRequestStateGetStorageHash({
     required this.key,
     this.atBlockHash,
   });
@@ -14,7 +14,7 @@ class SubstrateRPCStateGetStorageHash
 
   /// state_getStorageHash
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateGetStorageHash.value;
+  String get rpcMethod => SubstrateRequestMethods.stateGetStorageHash.value;
 
   @override
   List<dynamic> toJson() {

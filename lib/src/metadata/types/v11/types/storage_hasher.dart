@@ -1,7 +1,7 @@
 import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/core/storage_hasher.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
@@ -37,7 +37,7 @@ class StorageHasherV11Options implements StorageHasher {
   static StorageHasherV11Options fromValue(String? value) {
     return values.firstWhere(
       (element) => element.name == value,
-      orElse: () => throw MessageException(
+      orElse: () => throw DartSubstratePluginException(
           "No StorageHasherV11Optionss found matching the specified value",
           details: {"value": value}),
     );
@@ -85,9 +85,8 @@ class StorageHasherV11 extends SubstrateSerialization<Map<String, dynamic>> {
 }
 
 class StorageHasherV14 extends StorageHasherV11 {
-  StorageHasherV14.deserializeJson(Map<String, dynamic> json)
-      : super.deserializeJson(json);
-  StorageHasherV14(StorageHasherV11Options option) : super(option);
+  StorageHasherV14.deserializeJson(super.json) : super.deserializeJson();
+  StorageHasherV14(super.option);
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>
       SubstrateMetadataLayouts.storageHasherV14(property: property);

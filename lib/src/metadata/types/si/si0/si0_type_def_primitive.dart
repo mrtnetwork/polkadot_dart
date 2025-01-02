@@ -8,8 +8,8 @@ import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
-class Si0TypeDefPrimitive extends SubstrateSerialization<Map<String, dynamic>>
-    implements ScaleTypeDef, PrimitiveType {
+class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
+    implements PrimitiveType {
   @override
   final PrimitiveTypes type;
   Si0TypeDefPrimitive(String name) : type = PrimitiveTypes.fromValue(name);

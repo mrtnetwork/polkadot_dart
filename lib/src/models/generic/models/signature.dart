@@ -6,10 +6,10 @@ import 'package:polkadot_dart/src/serialization/serialization.dart';
 import 'fixed_bytes.dart';
 
 abstract class SubstrateBaseSignature extends ScaleFixedBytes {
-  SubstrateBaseSignature.fromHex(String hex, int lengthInBytes)
-      : super.fromHex(hex, lengthInBytes: lengthInBytes);
-  SubstrateBaseSignature(List<int> bytes, int lengthInBytes)
-      : super(bytes, lengthInBytes: lengthInBytes);
+  SubstrateBaseSignature.fromHex(super.hex, int lengthInBytes)
+      : super.fromHex(lengthInBytes: lengthInBytes);
+  SubstrateBaseSignature(super.bytes, int lengthInBytes)
+      : super(lengthInBytes: lengthInBytes);
   abstract final String name;
 }
 

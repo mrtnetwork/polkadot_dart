@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Retrieves the keys with prefix of a specific child storage.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetChildKeys
-    extends SubstrateRPCRequest<List<dynamic>, List<String>> {
-  const SubstrateRPCStateGetChildKeys({
+class SubstrateRequestStateGetChildKeys
+    extends SubstrateRequest<List<dynamic>, List<String>> {
+  const SubstrateRequestStateGetChildKeys({
     required this.childStorageKey,
     required this.childDefinition,
     required this.childType,
@@ -20,7 +20,7 @@ class SubstrateRPCStateGetChildKeys
 
   /// state_getChildKeys
   @override
-  String get rpcMethod => SubstrateRPCMethods.getChildKeys.value;
+  String get rpcMethod => SubstrateRequestMethods.getChildKeys.value;
 
   @override
   List<dynamic> toJson() {

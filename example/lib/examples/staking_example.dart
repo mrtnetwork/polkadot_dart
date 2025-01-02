@@ -3,10 +3,10 @@ import 'package:polkadot_dart/polkadot_dart.dart';
 import 'json_rpc_example.dart';
 
 void main() async {
-  final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+  final provider = SubstrateProvider(
+      SubstrateHttpService("https://westend-rpc.polkadot.io"));
   final VersionedMetadata metadata =
-      await provider.request(const SubstrateRPCStateGetMetadata());
+      await provider.request(const SubstrateRequestStateGetMetadata());
   // final metadata =
   //     VersionedMetadata<MetadataV14>.fromBytes(BytesUtils.fromHexString(mt))
   //         .metadata;
@@ -24,11 +24,11 @@ void main() async {
   final version = api.runtimeVersion();
 
   final genesisHash = await provider
-      .request(const SubstrateRPCChainGetBlockHash<String>(number: 0));
-  final blockHash =
-      await provider.request(const SubstrateRPCChainChainGetFinalizedHead());
+      .request(const SubstrateRequestChainGetBlockHash<String>(number: 0));
+  final blockHash = await provider
+      .request(const SubstrateRequestChainChainGetFinalizedHead());
   final blockHeader = await provider
-      .request(SubstrateRPCChainChainGetHeader(atBlockHash: blockHash));
+      .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
   final accountInfo = await api.getStorage(
@@ -78,7 +78,7 @@ void main() async {
       nonce: nonce);
   final extrinsic = Extrinsic(signature: signature, methodBytes: method);
   await provider.request(
-      SubstrateRPCAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
+      SubstrateRequestAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
 }
 
 /// https://westend.subscan.io/extrinsic/0x64e79836cacc80414b42a374da4d16f6771c7dd5854f061d396cf4b7d116dd43

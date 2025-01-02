@@ -3,8 +3,8 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Retrieves the storage size.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetStorageSize extends SubstrateRPCRequest<int, int> {
-  const SubstrateRPCStateGetStorageSize({
+class SubstrateRequestStateGetStorageSize extends SubstrateRequest<int, int> {
+  const SubstrateRequestStateGetStorageSize({
     required this.key,
     this.atBlockHash,
   });
@@ -13,7 +13,7 @@ class SubstrateRPCStateGetStorageSize extends SubstrateRPCRequest<int, int> {
 
   /// state_getStorageSize
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateGetStorageSize.value;
+  String get rpcMethod => SubstrateRequestMethods.stateGetStorageSize.value;
 
   @override
   List<dynamic> toJson() {

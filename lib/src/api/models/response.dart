@@ -68,6 +68,10 @@ class QueryStorageResponse<T> {
   final QueryStorageRequest<T> request;
   final T result;
   const QueryStorageResponse({required this.request, required this.result});
+  @override
+  String toString() {
+    return result.toString();
+  }
 }
 
 class QueryStorageRequest<T> {
@@ -79,7 +83,7 @@ class QueryStorageRequest<T> {
   QueryStorageRequest(
       {required this.palletNameOrIndex,
       required this.methodName,
-      required this.input,
+      this.input,
       required this.identifier});
   QueryStorageResponse<T> toResponse(T result) {
     return QueryStorageResponse(request: this, result: result);

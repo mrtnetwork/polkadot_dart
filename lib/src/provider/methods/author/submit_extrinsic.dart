@@ -3,14 +3,14 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Submit a fully formatted extrinsic for block inclusion.
 /// https://polkadot.js.org/docs/substrate/rpc/#author
-class SubstrateRPCAuthorSubmitExtrinsic
-    extends SubstrateRPCRequest<String, String> {
-  const SubstrateRPCAuthorSubmitExtrinsic(this.extrinsicHex);
+class SubstrateRequestAuthorSubmitExtrinsic
+    extends SubstrateRequest<String, String> {
+  const SubstrateRequestAuthorSubmitExtrinsic(this.extrinsicHex);
   final String extrinsicHex;
 
   /// author_submitExtrinsic
   @override
-  String get rpcMethod => SubstrateRPCMethods.submitExtrinsic.value;
+  String get rpcMethod => SubstrateRequestMethods.submitExtrinsic.value;
 
   @override
   List<dynamic> toJson() {

@@ -13,6 +13,7 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
   final PortableRegistryV14 lookup;
   @override
   final Map<int, PalletMetadataV14> pallets;
+  @override
   final ExtrinsicMetadataV14 extrinsic;
   final int type;
   MetadataV14(

@@ -4,12 +4,12 @@ import 'json_rpc_example.dart';
 
 void main() async {
   /// Setting up the provider to connect to the Substrate node.
-  final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+  final provider = SubstrateProvider(
+      SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
   /// Requesting metadata from the blockchain to determine its version.
   final requestMetadata = await provider
-      .request(const SubstrateRPCRuntimeMetadataGetMetadataAtVersion(15));
+      .request(const SubstrateRequestRuntimeMetadataGetMetadataAtVersion(15));
   final metadata = requestMetadata!.metadata as MetadataV15;
 
   /// Generating a private key from a seed and deriving the corresponding address.
@@ -33,11 +33,11 @@ void main() async {
 
   /// Retrieving genesis hash and finalized block hash.
   final genesisHash = await provider
-      .request(const SubstrateRPCChainGetBlockHash<String>(number: 0));
-  final blockHash =
-      await provider.request(const SubstrateRPCChainChainGetFinalizedHead());
+      .request(const SubstrateRequestChainGetBlockHash<String>(number: 0));
+  final blockHash = await provider
+      .request(const SubstrateRequestChainChainGetFinalizedHead());
   final blockHeader = await provider
-      .request(SubstrateRPCChainChainGetHeader(atBlockHash: blockHash));
+      .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
   /// Retrieving account information to determine the nonce for the transaction.
@@ -94,7 +94,7 @@ void main() async {
 
   /// Submitting the extrinsic to the blockchain.
   await provider.request(
-      SubstrateRPCAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
+      SubstrateRequestAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
 }
 
 /// https://westend.subscan.io/extrinsic/0xdb7c22ac4f66fda76e053ce06dc56bda9f67bf9e2ce9311adff693e5614955c6

@@ -3,14 +3,14 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Adds the supplied directives to the current log filter
 /// https://polkadot.js.org/docs/substrate/rpc/#system
-class SubstrateRPCSystemAddLogFilter
-    extends SubstrateRPCRequest<String, String> {
-  const SubstrateRPCSystemAddLogFilter(this.directives);
+class SubstrateRequestSystemAddLogFilter
+    extends SubstrateRequest<String, String> {
+  const SubstrateRequestSystemAddLogFilter(this.directives);
   final String directives;
 
   /// system_addLogFilter
   @override
-  String get rpcMethod => SubstrateRPCMethods.addLogFilter.value;
+  String get rpcMethod => SubstrateRequestMethods.addLogFilter.value;
 
   @override
   List<dynamic> toJson() {

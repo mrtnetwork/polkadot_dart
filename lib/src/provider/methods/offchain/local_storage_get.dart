@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Get offchain local storage under given key and prefix
 /// https://polkadot.js.org/docs/substrate/rpc/#offchain
-class SubstrateRPCOffChainLocalStorageGet
-    extends SubstrateRPCRequest<String?, String?> {
-  const SubstrateRPCOffChainLocalStorageGet({
+class SubstrateRequestOffChainLocalStorageGet
+    extends SubstrateRequest<String?, String?> {
+  const SubstrateRequestOffChainLocalStorageGet({
     required this.kind,
     required this.key,
   });
@@ -14,7 +14,7 @@ class SubstrateRPCOffChainLocalStorageGet
 
   /// offchain_localStorageGet
   @override
-  String get rpcMethod => SubstrateRPCMethods.localStorageGet.value;
+  String get rpcMethod => SubstrateRequestMethods.localStorageGet.value;
 
   @override
   List<dynamic> toJson() {

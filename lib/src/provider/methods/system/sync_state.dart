@@ -4,13 +4,13 @@ import 'package:polkadot_dart/src/provider/models/system/sync_state.dart';
 
 /// Returns the state of the syncing of the node
 /// https://polkadot.js.org/docs/substrate/rpc/#system
-class SubstrateRPCSystemSyncState
-    extends SubstrateRPCRequest<Map<String, dynamic>, SyncStateResponse> {
-  const SubstrateRPCSystemSyncState();
+class SubstrateRequestSystemSyncState
+    extends SubstrateRequest<Map<String, dynamic>, SyncStateResponse> {
+  const SubstrateRequestSystemSyncState();
 
   /// system_syncState
   @override
-  String get rpcMethod => SubstrateRPCMethods.syncState.value;
+  String get rpcMethod => SubstrateRequestMethods.syncState.value;
 
   @override
   List<dynamic> toJson() {

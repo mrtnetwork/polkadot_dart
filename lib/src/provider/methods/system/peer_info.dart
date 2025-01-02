@@ -4,13 +4,13 @@ import 'package:polkadot_dart/src/provider/models/system/peer_info.dart';
 
 /// Returns the currently connected peers
 /// https://polkadot.js.org/docs/substrate/rpc/#system
-class SubstrateRPCSystemPeers
-    extends SubstrateRPCRequest<List<Map<String, dynamic>>, List<PeerInfo>> {
-  const SubstrateRPCSystemPeers();
+class SubstrateRequestSystemPeers
+    extends SubstrateRequest<List<Map<String, dynamic>>, List<PeerInfo>> {
+  const SubstrateRequestSystemPeers();
 
   /// system_peers
   @override
-  String get rpcMethod => SubstrateRPCMethods.peers.value;
+  String get rpcMethod => SubstrateRequestMethods.peers.value;
 
   @override
   List<dynamic> toJson() {

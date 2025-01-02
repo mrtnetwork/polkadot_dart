@@ -4,13 +4,13 @@ import 'package:polkadot_dart/src/provider/models/system/chain_properties.dart';
 
 /// Get a custom set of properties as a JSON object, defined in the chain spec.
 /// https://polkadot.js.org/docs/substrate/rpc/#system
-class SubstrateRPCSystemProperties
-    extends SubstrateRPCRequest<Map<String, dynamic>, ChainProperties> {
-  const SubstrateRPCSystemProperties();
+class SubstrateRequestSystemProperties
+    extends SubstrateRequest<Map<String, dynamic>, ChainProperties> {
+  const SubstrateRequestSystemProperties();
 
   /// system_properties
   @override
-  String get rpcMethod => SubstrateRPCMethods.properties.value;
+  String get rpcMethod => SubstrateRequestMethods.properties.value;
 
   @override
   List<dynamic> toJson() {

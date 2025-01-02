@@ -1,20 +1,22 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
-import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_constant_metadata_v14.dart';
-import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/versioned/pallet/metadata.dart';
 
-class PalletMetadataV15 extends PalletMetadataV14 {
+class PalletMetadataV15 extends PalletMetadata {
   final List<String> docs;
-  PalletMetadataV15.deserializeJson(Map<String, dynamic> json)
+  PalletMetadataV15.deserializeJson(super.json)
       : docs = List<String>.unmodifiable(json["docs"]),
-        super.deserializeJson(json);
+        super.deserializeJson();
   PalletMetadataV15(
-      {required String name,
-      required List<PalletConstantMetadataV14> constants,
-      required int index,
+      {required super.name,
+      required super.constants,
+      required super.index,
+      super.calls,
+      super.errors,
+      super.events,
+      super.storage,
       required List<String> docs})
-      : docs = List<String>.unmodifiable(docs),
-        super(name: name, constants: constants, index: index);
+      : docs = List<String>.unmodifiable(docs);
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {

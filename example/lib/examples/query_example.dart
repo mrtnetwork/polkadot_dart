@@ -7,8 +7,8 @@ import 'json_rpc_example.dart';
 
 void main() async {
   /// Setting up the provider to connect to the Substrate node.
-  final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+  final provider = SubstrateProvider(
+      SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
   /// Parsing the metadata and initializing the Metadata API.
   final metadata = VersionedMetadata<MetadataV14>.fromBytes(

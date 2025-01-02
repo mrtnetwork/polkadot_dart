@@ -8,6 +8,19 @@ class SubstrateHelper {
   // Decimal values for KSM and DOT
   static final BigRational _ksmDecimal = BigRational(BigInt.from(10).pow(12));
   static final BigRational _dotDecimal = BigRational(BigInt.from(10).pow(10));
+  static final BigRational _moonbeam = BigRational(BigInt.from(10).pow(18));
+
+  // Convert amount to Moonbeam unit
+  static BigInt toUnit(String amount) {
+    final parse = BigRational.parseDecimal(amount);
+    return (parse * _moonbeam).toBigInt();
+  }
+
+  // Convert GLMR amount to Moonbeam Unit
+  static String fromGMLR(BigInt amount) {
+    final parse = BigRational(amount);
+    return (parse / _moonbeam).toDecimal(digits: 12);
+  }
 
   // Convert amount to KSM
   static BigInt toKSM(String amount) {
@@ -82,6 +95,42 @@ class SubstrateHelper {
         tip: BigInt.zero,
         nonce: nonce,
       );
+    }
+
+    return Extrinsic(
+        signature: signature,
+        methodBytes: methodBytes,
+        version: extrinsicVersion);
+  }
+
+  static Extrinsic createMoonbeamTransaction({
+    required String blockHash,
+    required String genesisHash,
+    required List<int> methodBytes,
+    required int nonce,
+    required int specVersion,
+    required int transactionVersion,
+    required SubstrateBaseEra era,
+    MoonbeamPrivateKey? signer,
+    int extrinsicVersion = SubstrateConstant.currentExtrinsicVersion,
+  }) {
+    final payload = MoonbeamTransactionPayload(
+      blockHash: SubstrateBlockHash.hash(blockHash),
+      era: era,
+      genesisHash: SubstrateBlockHash.hash(genesisHash),
+      method: methodBytes,
+      nonce: nonce,
+      specVersion: specVersion,
+      transactionVersion: transactionVersion,
+      tip: BigInt.zero,
+    );
+
+    ExtrinsicSignature? signature;
+    if (signer != null) {
+      final SubstrateMultiSignature multiSignature =
+          signer.multiSignature(payload.serialzeSign());
+      signature = payload.toExtrinsicSignature(
+          signature: multiSignature, signer: signer.toAddress());
     }
 
     return Extrinsic(

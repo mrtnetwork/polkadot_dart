@@ -1,46 +1,51 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 
-/// An abstract class representing substrate RPC request parameters.
-abstract class SubstrateRequestParams {
-// The Ethereum method associated with the request.
-  abstract final String rpcMethod;
-
-  /// Converts the request parameters to a JSON representation.
-  List<dynamic> toJson();
-}
-
 /// Represents the details of an Ethereum JSON-RPC request.
-class SubstrateRequestDetails {
-  const SubstrateRequestDetails(
-      {required this.id, required this.method, required this.params});
-
-  /// The unique identifier for the JSON-RPC request.
-  final int id;
+class SubstrateRequestDetails extends BaseServiceRequestParams {
+  const SubstrateRequestDetails({
+    required super.requestID,
+    required super.type,
+    required super.headers,
+    required this.method,
+    required this.jsonBody,
+  });
 
   /// The Ethereum method name for the request.
   final String method;
 
   /// The JSON-formatted string containing the request parameters.
-  final String params;
+  final Map<String, dynamic> jsonBody;
 
-  /// Converts the request parameters to a JSON-formatted string.
-  String toRequestBody() {
-    return params;
+  @override
+  List<int>? body() {
+    return StringUtils.encode(StringUtils.fromJson(jsonBody));
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {"method": method, "body": jsonBody, "type": type.name};
+  }
+
+  @override
+  Uri toUri(String uri) {
+    return Uri.parse(uri);
   }
 }
 
-// /// An abstract class representing Substrate lookup block requests.
-// abstract class LookupBlockRequest {
-//   const LookupBlockRequest();
-
-//   /// Converts the request parameters to a JSON representation.
-//   List<dynamic> toJson();
-// }
-
 /// An abstract class representing Ethereum JSON-RPC requests with generic response types.
-abstract class SubstrateRPCRequest<RPCRESPONSE, RPCRESULT>
-    implements SubstrateRequestParams {
-  const SubstrateRPCRequest() : super();
+abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
+    extends BaseServiceRequest<SERVICERESPONSE, RESULT,
+        SubstrateRequestDetails> {
+  const SubstrateRequest();
+
+  @override
+  RequestServiceType get requestType => RequestServiceType.post;
+
+  /// JSON-RPC method name.
+  abstract final String rpcMethod;
+
+  /// Converts the request parameters to a JSON representation.
+  List<dynamic> toJson();
 
   /// A validation property (not used in this implementation).
   String? get validate => null;
@@ -57,26 +62,26 @@ abstract class SubstrateRPCRequest<RPCRESPONSE, RPCRESULT>
     return int.parse(StringUtils.strip0x(result), radix: 16);
   }
 
-  /// Converts a dynamic response to the generic type [T].
-  RPCRESULT onResonse(RPCRESPONSE result) {
-    return result as RPCRESULT;
-  }
-
   /// Converts the request parameters to a [SubstrateRequestDetails] object.
-  SubstrateRequestDetails toRequest(int requestId) {
+  @override
+  SubstrateRequestDetails buildRequest(int requestId) {
     List<dynamic> inJson = toJson();
     inJson.removeWhere((v) => v == null);
     inJson = inJson.map((e) {
       return e;
     }).toList();
-    final params = {
+    final Map<String, dynamic> params = {
       "jsonrpc": "2.0",
       "method": rpcMethod,
       "params": inJson,
       "id": requestId,
     };
     return SubstrateRequestDetails(
-        id: requestId, params: StringUtils.fromJson(params), method: rpcMethod);
+        requestID: requestId,
+        jsonBody: params,
+        method: rpcMethod,
+        type: requestType,
+        headers: ServiceConst.defaultPostHeaders);
   }
 
   @override

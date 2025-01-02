@@ -7,13 +7,13 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns the metadata at a given version
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
-class SubstrateRPCRuntimeMetadataGetMetadataAtVersion
-    extends SubstrateRPCRequest<String, VersionedMetadata?> {
-  const SubstrateRPCRuntimeMetadataGetMetadataAtVersion(this.version);
+class SubstrateRequestRuntimeMetadataGetMetadataAtVersion
+    extends SubstrateRequest<String, VersionedMetadata?> {
+  const SubstrateRequestRuntimeMetadataGetMetadataAtVersion(this.version);
   final int version;
 
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateCall.value;
+  String get rpcMethod => SubstrateRequestMethods.stateCall.value;
 
   @override
   List<dynamic> toJson() {
@@ -28,6 +28,7 @@ class SubstrateRPCRuntimeMetadataGetMetadataAtVersion
     final decode =
         LayoutConst.optional(LayoutConst.bytes()).deserialize(toBytes).value;
     if (decode == null) return null;
+    // print(BytesUtils.toHexString(decode));
     return VersionedMetadata.fromBytes(decode);
   }
 }

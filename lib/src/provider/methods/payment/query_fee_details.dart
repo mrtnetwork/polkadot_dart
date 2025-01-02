@@ -4,9 +4,9 @@ import 'package:polkadot_dart/src/provider/models/payment/fee_details.dart';
 
 /// Query the detailed fee of a given encoded extrinsic.
 /// https://polkadot.js.org/docs/substrate/rpc/#payment
-class SubstrateRPCPaymentQueryFeeDetails
-    extends SubstrateRPCRequest<Map<String, dynamic>, FeeDetails> {
-  const SubstrateRPCPaymentQueryFeeDetails({
+class SubstrateRequestPaymentQueryFeeDetails
+    extends SubstrateRequest<Map<String, dynamic>, FeeDetails> {
+  const SubstrateRequestPaymentQueryFeeDetails({
     required this.extrinsic,
     this.atBlockHash,
   });
@@ -15,7 +15,7 @@ class SubstrateRPCPaymentQueryFeeDetails
 
   /// payment_queryFeeDetails
   @override
-  String get rpcMethod => SubstrateRPCMethods.queryFeeDetails.value;
+  String get rpcMethod => SubstrateRequestMethods.queryFeeDetails.value;
 
   @override
   List<dynamic> toJson() {

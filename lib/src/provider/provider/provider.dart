@@ -1,48 +1,64 @@
 import 'dart:async';
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/provider/core/core/base.dart';
-import 'package:polkadot_dart/src/provider/core/core/service.dart';
+import 'package:polkadot_dart/src/provider/service/service.dart';
 
 /// Represents an interface to interact with substrate nodes
 /// using JSON-RPC requests.
-class SubstrateRPC {
+class SubstrateProvider implements BaseProvider<SubstrateRequestDetails> {
   /// The JSON-RPC service used for communication with the substrate node.
-  final SubstrateRPCService rpc;
+  final SubstrateServiceProvider rpc;
 
-  /// Creates a new instance of the [SubstrateRPC] class with the specified [rpc].
-  SubstrateRPC(this.rpc);
+  /// Creates a new instance of the [SubstrateProvider] class with the specified [rpc].
+  SubstrateProvider(this.rpc);
 
   /// Finds the result in the JSON-RPC response data or throws an [RPCError]
   /// if an error is encountered.
-  T _findResult<T>(Map<String, dynamic> data, SubstrateRequestDetails request) {
-    final error = data["error"];
+  static SERVICERESPONSE _findError<SERVICERESPONSE>(
+      {required BaseServiceResponse<Map<String, dynamic>> response,
+      required SubstrateRequestDetails params}) {
+    final Map<String, dynamic> r = response.getResult(params);
+    final error = r["error"];
     if (error != null) {
-      final code = int.tryParse(error['code']?.toString() ?? '');
-      final message = error['message'] ?? "";
+      final errorCode = IntUtils.tryParse(error['code']);
+      final String message =
+          error['message']?.toString() ?? ServiceConst.defaultError;
       throw RPCError(
-          errorCode: code ?? 0,
+          errorCode: errorCode,
           message: message,
-          request:
-              data["request"] ?? StringUtils.toJson(request.toRequestBody()),
-          details: error);
+          request: params.toJson(),
+          details: StringUtils.tryToJson(error));
     }
-    return data["result"];
+    return r["result"];
   }
 
   /// The unique identifier for each JSON-RPC request.
   int _id = 0;
 
-  /// Sends a JSON-RPC request to the substrate node and returns the result after
-  /// processing the response.
+  /// Sends a request to the substract network using the specified [request] parameter.
   ///
-  /// [request]: The JSON-RPC request to be sent.
-  /// [timeout]: The maximum duration for waiting for the response.
-  Future<RPCRESULT> request<RPCRESPONSE, RPCRESULT>(
-      SubstrateRPCRequest<RPCRESPONSE, RPCRESULT> request,
-      [Duration? timeout]) async {
-    final id = ++_id;
-    final params = request.toRequest(id);
-    final data = await rpc.call(params, timeout);
-    return request.onResonse(_findResult<RPCRESPONSE>(data, params));
+  /// The [timeout] parameter, if provided, sets the maximum duration for the request.
+  @override
+  Future<RESULT> request<RESULT, SERVICERESPONSE>(
+      BaseServiceRequest<RESULT, SERVICERESPONSE, SubstrateRequestDetails>
+          request,
+      {Duration? timeout}) async {
+    final r = await requestDynamic(request, timeout: timeout);
+    return request.onResonse(r);
+  }
+
+  /// Sends a request to the substract network using the specified [request] parameter.
+  ///
+  /// The [timeout] parameter, if provided, sets the maximum duration for the request.
+  /// Whatever is received will be returned
+  @override
+  Future<SERVICERESPONSE> requestDynamic<RESULT, SERVICERESPONSE>(
+      BaseServiceRequest<RESULT, SERVICERESPONSE, SubstrateRequestDetails>
+          request,
+      {Duration? timeout}) async {
+    final params = request.buildRequest(_id++);
+    final response =
+        await rpc.doRequest<Map<String, dynamic>>(params, timeout: timeout);
+    return _findError(params: params, response: response);
   }
 }

@@ -1,26 +1,24 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
-import 'package:polkadot_dart/src/serialization/core/serialization.dart';
-
+import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_metadata.dart';
 import 'signed_extension_metadata_v14.dart';
 
-class ExtrinsicMetadataV14
-    extends SubstrateSerialization<Map<String, dynamic>> {
+class ExtrinsicMetadataV14 extends ExtrinsicMetadata {
   final int type;
-  final int version;
+  @override
   final List<SignedExtensionMetadataV14> signedExtensions;
   ExtrinsicMetadataV14(
       {required this.type,
-      required this.version,
+      required super.version,
       required List<SignedExtensionMetadataV14> signedExtensions})
       : signedExtensions =
             List<SignedExtensionMetadataV14>.unmodifiable(signedExtensions);
-  ExtrinsicMetadataV14.deserializeJson(Map<String, dynamic> json)
+  ExtrinsicMetadataV14.deserializeJson(super.json)
       : signedExtensions = List<SignedExtensionMetadataV14>.unmodifiable(
             (json["signedExtensions"] as List)
                 .map((e) => SignedExtensionMetadataV14.deserializeJson(e))),
-        version = json["version"],
-        type = json["type"];
+        type = json["type"],
+        super.deserializeJson();
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -35,5 +33,10 @@ class ExtrinsicMetadataV14
       "version": version,
       "type": type
     };
+  }
+
+  @override
+  List<int> signingPayloadTypes() {
+    return [type, ...signedExtensions.map((e) => e.additionalSigned)];
   }
 }

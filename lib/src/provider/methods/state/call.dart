@@ -3,8 +3,8 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Perform a call to a builtin on the chain.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateCall extends SubstrateRPCRequest<String, String> {
-  const SubstrateRPCStateCall({
+class SubstrateRequestStateCall extends SubstrateRequest<String, String> {
+  const SubstrateRequestStateCall({
     required this.method,
     required this.data,
     this.atBlockHash,
@@ -15,7 +15,7 @@ class SubstrateRPCStateCall extends SubstrateRPCRequest<String, String> {
 
   /// state_call
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateCall.value;
+  String get rpcMethod => SubstrateRequestMethods.stateCall.value;
 
   @override
   List<dynamic> toJson() {

@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Returns proof of storage entries at a specific block state.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetReadProof
-    extends SubstrateRPCRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRPCStateGetReadProof({
+class SubstrateRequestStateGetReadProof
+    extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
+  const SubstrateRequestStateGetReadProof({
     required this.keys,
     this.atBlockHash,
   });
@@ -14,7 +14,7 @@ class SubstrateRPCStateGetReadProof
 
   /// state_getReadProof
   @override
-  String get rpcMethod => SubstrateRPCMethods.getReadProof.value;
+  String get rpcMethod => SubstrateRequestMethods.getReadProof.value;
 
   @override
   List<dynamic> toJson() {

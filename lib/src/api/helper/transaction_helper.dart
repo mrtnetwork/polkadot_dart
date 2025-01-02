@@ -86,7 +86,7 @@ extension TransactionHelper on MetadataApi {
   /// Encode approve as multi
   List<int> approveAsMulti(
       {required int thresHold,
-      required List<SubstrateAddress> otherSignatories,
+      required List<BaseSubstrateAddress> otherSignatories,
       MultisigTimepoint? maybeTimepoint,
       required List<int> callHash,
       required SpWeightsWeightV2Weight maxWeight}) {
@@ -113,7 +113,7 @@ extension TransactionHelper on MetadataApi {
   /// Encode as multi
   List<int> encodeAsMulti(
       {required int thresHold,
-      required List<SubstrateAddress> otherSignatories,
+      required List<BaseSubstrateAddress> otherSignatories,
       MultisigTimepoint? maybeTimepoint,
       required Map<String, dynamic> call,
       required SpWeightsWeightV2Weight maxWeight}) {

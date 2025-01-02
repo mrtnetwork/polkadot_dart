@@ -4,13 +4,13 @@ import 'package:polkadot_dart/src/provider/core/core.dart';
 
 /// Returns the supported metadata versions.
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
-class SubstrateRPCRuntimeMetadataGetVersions
-    extends SubstrateRPCRequest<String, List<int>> {
-  const SubstrateRPCRuntimeMetadataGetVersions();
+class SubstrateRequestRuntimeMetadataGetVersions
+    extends SubstrateRequest<String, List<int>> {
+  const SubstrateRequestRuntimeMetadataGetVersions();
 
   /// sync_state_genSyncSpec
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateCall.value;
+  String get rpcMethod => SubstrateRequestMethods.stateCall.value;
 
   @override
   List<dynamic> toJson() {

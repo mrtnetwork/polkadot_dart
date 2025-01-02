@@ -3,16 +3,16 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Retrieves the keys with a certain prefix
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateGetKeys
-    extends SubstrateRPCRequest<List<dynamic>, List<String>> {
-  const SubstrateRPCStateGetKeys(this.key, {this.atBlockHash});
+class SubstrateRequestStateGetKeys
+    extends SubstrateRequest<List<dynamic>, List<String>> {
+  const SubstrateRequestStateGetKeys(this.key, {this.atBlockHash});
 
   final String key;
   final String? atBlockHash;
 
   /// state_getKeys
   @override
-  String get rpcMethod => SubstrateRPCMethods.stateGetKeys.value;
+  String get rpcMethod => SubstrateRequestMethods.stateGetKeys.value;
 
   @override
   List<dynamic> toJson() {

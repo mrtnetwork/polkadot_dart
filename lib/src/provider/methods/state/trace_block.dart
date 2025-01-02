@@ -3,9 +3,9 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Provides a way to trace the re-execution of a single block
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRPCStateTraceBlock
-    extends SubstrateRPCRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRPCStateTraceBlock(
+class SubstrateRequestStateTraceBlock
+    extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
+  const SubstrateRequestStateTraceBlock(
       {required this.block, this.targets, this.storageKeys, this.methods});
   final String block;
   final List<String>? targets;
@@ -14,7 +14,7 @@ class SubstrateRPCStateTraceBlock
 
   /// state_traceBlock
   @override
-  String get rpcMethod => SubstrateRPCMethods.traceBlock.value;
+  String get rpcMethod => SubstrateRequestMethods.traceBlock.value;
 
   @override
   List<dynamic> toJson() {

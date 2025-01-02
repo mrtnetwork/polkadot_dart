@@ -43,26 +43,26 @@ void main() async {
       ss58Format: networkSS58);
 
   /// Set up the provider with the RPC service
-  final provider =
-      SubstrateRPC(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+  final provider = SubstrateProvider(
+      SubstrateHttpService("https://westend-rpc.polkadot.io"));
 
   final currentMetadata = await provider
-      .request(const SubstrateRPCRuntimeMetadataGetMetadataAtVersion(15));
+      .request(const SubstrateRequestRuntimeMetadataGetMetadataAtVersion(15));
 
   /// Load API metadata
   final api = currentMetadata!.toApi();
 
   /// Fetch the genesis hash
   final String genesisHash = await provider
-      .request(const SubstrateRPCChainGetBlockHash<String>(number: 0));
+      .request(const SubstrateRequestChainGetBlockHash<String>(number: 0));
 
   /// Fetch the latest finalized block hash
-  String blockHash =
-      await provider.request(const SubstrateRPCChainChainGetFinalizedHead());
+  String blockHash = await provider
+      .request(const SubstrateRequestChainChainGetFinalizedHead());
 
   /// Fetch the block header using the block hash
   SubstrateHeaderResponse blockHeader = await provider
-      .request(SubstrateRPCChainChainGetHeader(atBlockHash: blockHash));
+      .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
 
   /// Get the runtime version from the API
   final runtime = api.runtimeVersion();
@@ -129,7 +129,7 @@ void main() async {
       signer: alice);
 
   /// Submit Alice's approval extrinsic
-  await provider.request(SubstrateRPCAuthorSubmitExtrinsic(
+  await provider.request(SubstrateRequestAuthorSubmitExtrinsic(
       signedTxApproveAsMulti.toHex(prefix: "0x")));
 
   /// Wait for 10 seconds
@@ -171,8 +171,8 @@ void main() async {
       signer: bob);
 
   /// Submit Bob's multisig execution extrinsic
-  await provider
-      .request(SubstrateRPCAuthorSubmitExtrinsic(asMulti.toHex(prefix: "0x")));
+  await provider.request(
+      SubstrateRequestAuthorSubmitExtrinsic(asMulti.toHex(prefix: "0x")));
 
   /// Link to the transaction on subscan
   /// https://westend.stg.subscan.io/extrinsic/0x486158426559b12f6cebecd55e9ab07796331a5083d81e5a0eff7a9cbdf50563

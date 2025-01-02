@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
@@ -55,7 +55,7 @@ class MetadataApi with MetadataApiInterface {
   @override
   T decodeCall<T>(List<int> bytes) {
     if (bytes.isEmpty) {
-      throw const MessageException("Invalid encoded call bytes.");
+      throw const DartSubstratePluginException("Invalid encoded call bytes.");
     }
     final palletIndex = bytes[0];
     return decodeLookup(
@@ -143,7 +143,7 @@ class MetadataApi with MetadataApiInterface {
     if (hashers.length > 1) {
       final lookup = metadata.getLookup(lookupId);
       if (lookup.typeName != Si1TypeDefsIndexesConst.tuple) {
-        throw const MessageException(
+        throw const DartSubstratePluginException(
             "Invalid lookup type. method with mutliple argruments must be tuple");
       }
       final List<int> lookupIds = (lookup.def as TypeDefTuple).values;
