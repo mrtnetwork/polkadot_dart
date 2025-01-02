@@ -369,38 +369,23 @@ like previously we just encoded staking bond method
 ```dart
 
 /// Custom implementation of Substrate HTTP service.
-class MySubstrateHttpSerivce with SubstrateRequestService {
-  MySubstrateHttpSerivce(this.url,
+class SubstrateHttpService with SubstrateServiceProvider {
+  SubstrateHttpService(this.url,
       {Client? client, this.defaultTimeOut = const Duration(seconds: 30)})
       : client = client ?? Client();
 
-  /// URL of the Substrate node.
-  @override
   final String url;
-
-  /// HTTP client for making requests.
   final Client client;
-
-  /// Default timeout duration for requests.
   final Duration defaultTimeOut;
-
-  /// Method to make a Substrate RPC call.
   @override
-  Future<Map<String, dynamic>> call(SubstrateRequestDetails params,
-      [Duration? timeout]) async {
-    // Making a POST request to the Substrate node.
+  Future<BaseServiceResponse<T>> doRequest<T>(SubstrateRequestDetails params,
+      {Duration? timeout}) async {
     final response = await client
-        .post(Uri.parse(url),
-            headers: {'Content-Type': 'application/json'},
-            body: params.toRequestBody())
+        .post(params.toUri(url), headers: params.headers, body: params.body())
         .timeout(timeout ?? defaultTimeOut);
-
-    // Parsing the response data.
-    final data = json.decode(response.body) as Map<String, dynamic>;
-    return data;
+    return params.toResponse(response.bodyBytes, response.statusCode);
   }
 }
-
 /// Creating a provider with custom Substrate HTTP service.
 final provider =
     SubstrateProvider(MySubstrateHttpSerivce("https://westend-rpc.polkadot.io"));
