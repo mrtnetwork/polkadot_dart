@@ -157,15 +157,6 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
 
   @override
   List<TransactionExtrinsicInfo> extrinsicInfo() {
-    // print(extrinsic.scaleJsonSerialize());
-    // print(extrinsic.transactionExtensions.length);
-    // throw UnimplementedError();
-    // // return TransactionExtrinsicInfo(
-    // //     extrinsic: extrinsic,
-    // //     payloadExtrinsic: payloadExtrinsic,
-    // //     addressType: addressType,
-    // //     signatureType: signatureType,
-    // //     version: version);
     final List<TransactionExtrinsicInfo> extrinsics = [];
     for (final i in extrinsic.versions) {
       final extrinsic = TransactionExtrinsicInfo(
