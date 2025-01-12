@@ -44,9 +44,8 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
         specVersion: IntUtils.parse(json["specVersion"]),
         implVersion: IntUtils.parse(json["implVersion"]),
         apis: (json["apis"] as List)
-            .map((e) => RuntimeVersionApi(
-                apiId: BytesUtils.fromHexString(e[0]),
-                version: IntUtils.parse(e[1])))
+            .map((e) =>
+                RuntimeVersionApi(apiId: e[0], version: IntUtils.parse(e[1])))
             .toList(),
         transactionVersion: IntUtils.parse(json["transactionVersion"]),
         stateVersion: IntUtils.tryParse(json["stateVersion"]),
@@ -60,10 +59,7 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
       "authoringVersion": authoringVersion,
       "specVersion": specVersion,
       "implVersion": implVersion,
-      "apis": apis
-          .map(
-              (e) => [BytesUtils.toHexString(e.apiId, prefix: "0x"), e.version])
-          .toList(),
+      "apis": apis.map((e) => [e.apiId, e.version]).toList(),
       "transactionVersion": transactionVersion,
       "stateVersion": stateVersion,
       "systemVersion": systemVersion

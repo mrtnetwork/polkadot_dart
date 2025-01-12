@@ -1,44 +1,45 @@
-import 'package:blockchain_utils/helper/helper.dart';
+import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 
-abstract class PalletMetadata
+abstract class PalletMetadata<
+        STORAGE extends PalletStorageMetadata,
+        CALL extends PalletCallMetadata,
+        EVENT extends PalletEventMetadata,
+        CONSTANT extends PalletConstantMetadata,
+        ERROR extends PalletErrorMetadata>
     extends SubstrateSerialization<Map<String, dynamic>> {
+  /// Pallet name.
   final String name;
-  final PalletStorageMetadataV14? storage;
-  final PalletCallMetadataV14? calls;
-  final PalletEventMetadataV14? events;
-  final List<PalletConstantMetadataV14> constants;
-  final PalletErrorMetadataV14? errors;
+
+  /// Pallet storage metadata.
+  abstract final STORAGE? storage;
+
+  /// Pallet calls metadata.
+  abstract final PalletCallMetadata? calls;
+
+  /// Pallet event metadata.
+  abstract final EVENT? events;
+
+  /// Pallet constants metadata.
+  abstract final List<CONSTANT> constants;
+
+  /// Pallet error metadata.
+  abstract final ERROR? errors;
+
+  /// Define the index of the pallet, this index will be used for the encoding of pallet event,
+  /// call and origin variants.
   final int index;
-  PalletMetadata(
-      {required this.name,
-      required this.storage,
-      required List<PalletConstantMetadataV14> constants,
-      required this.events,
-      required this.calls,
-      required this.errors,
-      required this.index})
-      : constants = constants.immutable;
+
+  final List<String>? docs;
+
+  PalletMetadata({required this.name, required this.index, required this.docs});
 
   PalletMetadata.deserializeJson(Map<String, dynamic> json)
       : name = json["name"],
-        storage = json["storage"] == null
-            ? null
-            : PalletStorageMetadataV14.deserializeJson(json["storage"]),
-        calls = json["calls"] == null
-            ? null
-            : PalletCallMetadataV14.deserializeJson(json["calls"]),
-        events = json["events"] == null
-            ? null
-            : PalletEventMetadataV14.deserializeJson(json["events"]),
-        constants = List.unmodifiable((json["constants"] as List)
-            .map((e) => PalletConstantMetadataV14.deserializeJson(e))),
-        errors = json["errors"] == null
-            ? null
-            : PalletErrorMetadataV14.deserializeJson(json["errors"]),
-        index = json["index"];
+        index = json["index"],
+        docs = (json["docs"] as List?)?.cast<String>().immutable;
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {

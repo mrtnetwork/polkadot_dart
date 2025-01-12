@@ -14,8 +14,6 @@ import 'si1_type_def_variant.dart';
 class Si1TypeDefsIndexesConst {
   final String name;
   const Si1TypeDefsIndexesConst._(this.name);
-  static const Si1TypeDefsIndexesConst option =
-      Si1TypeDefsIndexesConst._("Option");
   static const Si1TypeDefsIndexesConst composite =
       Si1TypeDefsIndexesConst._('Composite');
   static const Si1TypeDefsIndexesConst variant =

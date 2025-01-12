@@ -1,5 +1,5 @@
-import 'package:example/examples/json_rpc_example.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
+import 'json_rpc_example.dart';
 
 /// https://rococo-rpc.polkadot.io
 /// /rococo-asset-hub-rpc.polkadot.io

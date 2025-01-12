@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/types.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
@@ -72,13 +73,17 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
     return LayoutConst.tuple(layouts, property: property);
   }
 
-  LayoutDecodeResult decode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult decode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     if (fields.isEmpty) {
       return LayoutDecodeResult(consumed: 0, value: {name: null});
     }
     if (fields.length == 1) {
       final type = registry.scaleType(fields[0].type);
-      final decode = type.typeDefDecode(registry, bytes);
+      final decode =
+          type.typeDefDecode(registry: registry, bytes: bytes, offset: offset);
       return LayoutDecodeResult(
           consumed: decode.consumed, value: {name: decode.value});
     }
@@ -90,7 +95,8 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
     for (int i = 0; i < fields.length; i++) {
       final field = fields[i];
       final type = registry.scaleType(field.type);
-      final decode = type.typeDefDecode(registry, bytes.sublist(consumed));
+      final decode = type.typeDefDecode(
+          registry: registry, bytes: bytes, offset: offset + consumed);
       if (isStruct) {
         mapResult[field.name!] = decode.value;
       } else {
@@ -144,7 +150,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
       return values;
     }
     final listValue =
-        MetadataCastingUtils.hasList(value: data, length: fields.length);
+        MetadataCastingUtils.asList(value: data, length: fields.length);
     final List<Object?> values = [];
     final Map<String, dynamic> mapValues = {};
     final bool isStruct = fields[0].hasName;
@@ -160,5 +166,19 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
     }
     if (isStruct) return mapValues;
     return values;
+  }
+
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    if (fields.isEmpty) {
+      return MetadataTypeInfoNone(typeId: id, name: name);
+    }
+    if (fields.length == 1) {
+      return fields[0].typeInfo(registry);
+    }
+    final types = fields.map((e) => e.typeInfo(registry)).toList();
+    if (fields[0].hasName) {
+      return MetadataTypeInfoComposit(name: name, typeId: id, types: types);
+    }
+    return MetadataTypeInfoTuple(name: name, typeId: id, types: types);
   }
 }

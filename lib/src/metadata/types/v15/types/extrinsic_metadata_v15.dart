@@ -4,22 +4,22 @@ import 'package:polkadot_dart/src/metadata/types/v14/types/signed_extension_meta
 import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_metadata.dart';
 
 class ExtrinsicMetadataV15 extends ExtrinsicMetadata {
+  final int version;
   final int addressType;
   final int callType;
   final int signatureType;
   final int extraType;
-  @override
   final List<SignedExtensionMetadataV14> signedExtensions;
   ExtrinsicMetadataV15(
       {required this.addressType,
-      required super.version,
+      required this.version,
       required this.callType,
       required this.signatureType,
       required this.extraType,
       required List<SignedExtensionMetadataV14> signedExtensions})
       : signedExtensions =
             List<SignedExtensionMetadataV14>.unmodifiable(signedExtensions);
-  ExtrinsicMetadataV15.deserializeJson(super.json)
+  ExtrinsicMetadataV15.deserializeJson(Map<String, dynamic> json)
       : signedExtensions = List<SignedExtensionMetadataV14>.unmodifiable(
             (json["signedExtensions"] as List)
                 .map((e) => SignedExtensionMetadataV14.deserializeJson(e))),
@@ -27,7 +27,7 @@ class ExtrinsicMetadataV15 extends ExtrinsicMetadata {
         callType = json["callType"],
         signatureType = json["signatureType"],
         extraType = json["extraType"],
-        super.deserializeJson();
+        version = json["version"];
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -45,10 +45,5 @@ class ExtrinsicMetadataV15 extends ExtrinsicMetadata {
       "signedExtensions":
           signedExtensions.map((e) => e.scaleJsonSerialize()).toList(),
     };
-  }
-
-  @override
-  List<int> signingPayloadTypes() {
-    return [extraType, ...signedExtensions.map((e) => e.additionalSigned)];
   }
 }

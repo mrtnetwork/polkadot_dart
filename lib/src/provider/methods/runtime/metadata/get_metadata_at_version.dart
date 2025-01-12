@@ -19,6 +19,7 @@ class SubstrateRequestRuntimeMetadataGetMetadataAtVersion
   List<dynamic> toJson() {
     final val = BytesUtils.toHexString(LayoutConst.u32().serialize(version),
         prefix: "0x");
+
     return ["Metadata_metadata_at_version", val, null];
   }
 
@@ -28,7 +29,7 @@ class SubstrateRequestRuntimeMetadataGetMetadataAtVersion
     final decode =
         LayoutConst.optional(LayoutConst.bytes()).deserialize(toBytes).value;
     if (decode == null) return null;
-    // print(BytesUtils.toHexString(decode));
+
     return VersionedMetadata.fromBytes(decode);
   }
 }

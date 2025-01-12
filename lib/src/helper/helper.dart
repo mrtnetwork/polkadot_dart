@@ -10,6 +10,12 @@ class SubstrateHelper {
   static final BigRational _dotDecimal = BigRational(BigInt.from(10).pow(10));
   static final BigRational _moonbeam = BigRational(BigInt.from(10).pow(18));
 
+  static String numberToDecimals(BigInt amount, int decimal) {
+    final parse = BigRational(amount);
+    final decimals = BigRational(BigInt.from(10).pow(decimal));
+    return (parse / decimals).toDecimal(digits: decimal);
+  }
+
   // Convert amount to Moonbeam unit
   static BigInt toUnit(String amount) {
     final parse = BigRational.parseDecimal(amount);

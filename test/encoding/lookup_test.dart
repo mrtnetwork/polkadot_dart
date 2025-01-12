@@ -18,7 +18,10 @@ void main() {
 void _test(MetadataV15 api) {
   test("ID-1", () {
     const lookupid = 1;
-    final templateValue = {"type": "[U8;32]", "value": List<int>.filled(32, 1)};
+    final templateValue = {
+      "type": "[U8;32]",
+      "value": List<int>.filled(32, 1).toHex()
+    };
     final encodeSimple = api.encodeLookup(
         id: lookupid,
         value: BytesUtils.toHexString(List<int>.filled(32, 1)),
@@ -27,7 +30,7 @@ void _test(MetadataV15 api) {
         id: lookupid, value: templateValue, fromTemplate: true);
     expect(encodeSimple.toHex(), encodeTemplate.toHex());
     final decode = api.decodeLookup(lookupid, encodeTemplate);
-    expect(decode, List<int>.filled(32, 1));
+    expect(decode, List<int>.filled(32, 1).toHex());
   });
   test("ID-2", () {
     const lookupid = 2;
@@ -191,7 +194,10 @@ void _test(MetadataV15 api) {
   });
   test("ID-13", () {
     const lookupid = 13;
-    final templateValue = {"type": "[U8;32]", "value": List<int>.filled(32, 1)};
+    final templateValue = {
+      "type": "[U8;32]",
+      "value": List<int>.filled(32, 1).toHex()
+    };
     final hexValue = List<int>.filled(32, 1).toHex();
     final simpleValue = api.registry
         .getValue(id: lookupid, value: templateValue, fromTemplate: true);
@@ -203,7 +209,7 @@ void _test(MetadataV15 api) {
         id: lookupid, value: templateValue, fromTemplate: true);
     expect(encodeSimple.toHex(), encodeTemplate.toHex());
     final decode = api.decodeLookup(lookupid, encodeTemplate);
-    expect(decode, List<int>.filled(32, 1));
+    expect(decode, List<int>.filled(32, 1).toHex());
     expect(encodeSimple.toHex(),
         "0101010101010101010101010101010101010101010101010101010101010101");
     expect(encodeHex.toHex(),
@@ -221,7 +227,10 @@ void _test(MetadataV15 api) {
   });
   test("ID-14", () {
     const lookupid = 14;
-    final templateValue = {"type": "Vec<U8>", "value": List<int>.filled(32, 1)};
+    final templateValue = {
+      "type": "Vec<U8>",
+      "value": List<int>.filled(32, 1).toHex()
+    };
     final hexValue = List<int>.filled(32, 1).toHex();
     final simpleValue = api.registry
         .getValue(id: lookupid, value: templateValue, fromTemplate: true);
@@ -233,7 +242,7 @@ void _test(MetadataV15 api) {
         id: lookupid, value: templateValue, fromTemplate: true);
     expect(encodeSimple.toHex(), encodeTemplate.toHex());
     final decode = api.decodeLookup(lookupid, encodeTemplate);
-    expect(decode, List<int>.filled(32, 1));
+    expect(decode, List<int>.filled(32, 1).toHex());
     expect(encodeSimple.toHex(),
         "800101010101010101010101010101010101010101010101010101010101010101");
     expect(encodeHex.toHex(),
@@ -298,9 +307,9 @@ void _test(MetadataV15 api) {
                 "value": [
                   {
                     "type": "[U8;4]",
-                    "value": [1, 2, 3, 4]
+                    "value": [1, 2, 3, 4].toHex()
                   },
-                  {"type": "Vec<U8>", "value": List<int>.filled(1, 0)}
+                  {"type": "Vec<U8>", "value": List<int>.filled(1, 0).toHex()}
                 ]
               },
             }
@@ -321,13 +330,22 @@ void _test(MetadataV15 api) {
       "logs": [
         {
           "PreRuntime": [
+            [1, 2, 3, 4].toHex(),
+            [0].toHex()
+          ]
+        }
+      ]
+    });
+    expect({
+      "logs": [
+        {
+          "PreRuntime": [
             [1, 2, 3, 4],
             [0]
           ]
         }
       ]
-    });
-    expect(decode, simpleValue);
+    }, simpleValue);
     expect(encodeSimple.toHex(), "0406010203040400");
   });
   test("ID-15_3", () {
@@ -358,11 +376,17 @@ void _test(MetadataV15 api) {
     expect(decode, {
       "logs": [
         {
-          "Other": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+          "Other": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].toHex()
         }
       ]
     });
-    expect(decode, simpleValue);
+    expect({
+      "logs": [
+        {
+          "Other": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        }
+      ]
+    }, simpleValue);
     expect(encodeSimple.toHex(), "040030010101010101010101010101");
   });
   test("ID-21", () {
@@ -396,7 +420,7 @@ void _test(MetadataV15 api) {
     final decode = api.decodeLookup(lookupid, encodeTemplate);
     expect(decode, {
       "Indices": {
-        "IndexAssigned": {"who": List<int>.filled(32, 1), "index": 255}
+        "IndexAssigned": {"who": List<int>.filled(32, 1).toHex(), "index": 255}
       }
     });
     expect(encodeSimple.toHex(),
@@ -450,8 +474,8 @@ void _test(MetadataV15 api) {
     final value = {
       "Balances": {
         "ReserveRepatriated": {
-          "from": List<int>.filled(32, 1),
-          "to": List<int>.filled(32, 2),
+          "from": List<int>.filled(32, 1).toHex(),
+          "to": List<int>.filled(32, 2).toHex(),
           "amount": BigInt.from(2222222),
           "destination_status": {"Reserved": null}
         }
@@ -522,7 +546,7 @@ void _test(MetadataV15 api) {
     final decode = api.decodeLookup(lookupid, encodeTemplate);
     expect(decode, {
       "TicketBought": {
-        "who": List<int>.filled(32, 5),
+        "who": List<int>.filled(32, 5).toHex(),
         "call_index": [1, 2]
       }
     });

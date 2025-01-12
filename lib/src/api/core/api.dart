@@ -1,11 +1,11 @@
 import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 
 class MetadataApi with MetadataApiInterface {
+  @override
   final LatestMetadataInterface metadata;
   const MetadataApi(this.metadata);
 
@@ -190,9 +190,11 @@ class MetadataApi with MetadataApiInterface {
   T decodeEvent<T>(
       {String palletNameOrIndex = MetadataConstant.genericSystemPalletName,
       required List<int> bytes,
-      int? knownLookupId}) {
+      int? knownLookupId,
+      int offset = 0}) {
     final event = registry.findEventRecordLookup(knownId: knownLookupId);
-    final decode = event.typeDefDecode(registry, bytes);
+    final decode =
+        event.typeDefDecode(registry: registry, bytes: bytes, offset: offset);
     return decode.value;
   }
 

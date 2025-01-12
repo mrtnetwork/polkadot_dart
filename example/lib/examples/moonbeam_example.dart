@@ -1,11 +1,11 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:blockchain_utils/utils/binary/utils.dart';
-import 'package:example/examples/json_rpc_example.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
+import 'json_rpc_example.dart';
 
 void main() async {
   final provider = SubstrateProvider(
-      SubstrateHttpService("https://moonbase-rpc.dwellir.com"));
+      SubstrateHttpService("https://archive.perseverance.chainflip.io"));
   final VersionedMetadata? metadata = await provider
       .request(const SubstrateRequestRuntimeMetadataGetMetadataAtVersion(15));
 
@@ -48,6 +48,7 @@ void main() async {
           identifier: 0),
       rpc: provider,
       fromTemplate: false);
+
   final int nonce = accountInfo.result["nonce"];
   final method = api.encodeCall(
       palletNameOrIndex: "balances", value: tmp, fromTemplate: true);

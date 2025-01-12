@@ -5,10 +5,8 @@ import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
 
-typedef Method<T> = Function();
-
 class MetadataCastingUtils {
-  static List<T> hasList<T>(
+  static List<T> asList<T>(
       {required Object? value,
       int? lookupId,
       Si1TypeDefsIndexesConst? type,
@@ -21,7 +19,7 @@ class MetadataCastingUtils {
           "length": isList.length,
           "lookup_id": lookupId,
           "type": type?.name,
-          "value": value.runtimeType,
+          "value": value.runtimeType
         });
       }
       return isList;
@@ -50,13 +48,13 @@ class MetadataCastingUtils {
     PrimitiveTypes? primitive,
   }) {
     Object? val = fromTemplate
-        ? _getTemolateValue(value: value, lookupId: lookupId, type: type)
+        ? _getTemplateValue(value: value, lookupId: lookupId, type: type)
         : value;
     switch (type) {
       case Si1TypeDefsIndexesConst.compact:
       case Si1TypeDefsIndexesConst.composite:
       case Si1TypeDefsIndexesConst.variant:
-      case Si1TypeDefsIndexesConst.option:
+        // case Si1TypeDefsIndexesConst.option:
         return val;
       default:
         val = nullOnException(
@@ -80,13 +78,12 @@ class MetadataCastingUtils {
     return val;
   }
 
-  static Object? _getValue({
-    required Object? value,
-    required Si1TypeDefsIndexesConst type,
-    required bool fromTemplate,
-    required int lookupId,
-    PrimitiveTypes? primitive,
-  }) {
+  static Object? _getValue(
+      {required Object? value,
+      required Si1TypeDefsIndexesConst type,
+      required bool fromTemplate,
+      required int lookupId,
+      PrimitiveTypes? primitive}) {
     switch (type) {
       case Si1TypeDefsIndexesConst.sequence:
       case Si1TypeDefsIndexesConst.tuple:
@@ -114,7 +111,7 @@ class MetadataCastingUtils {
     return map;
   }
 
-  static Object? _getTemolateValue(
+  static Object? _getTemplateValue(
       {required Object? value,
       required int lookupId,
       required Si1TypeDefsIndexesConst type}) {
@@ -172,12 +169,8 @@ class MetadataCastingUtils {
     return null;
   }
 
-  static List _isList(
-    Object? value, {
-    String? typneName,
-    int? length,
-    PrimitiveTypes? primitive,
-  }) {
+  static List _isList(Object? value,
+      {String? typneName, int? length, PrimitiveTypes? primitive}) {
     List? castValue;
 
     switch (primitive) {
@@ -187,22 +180,25 @@ class MetadataCastingUtils {
       case PrimitiveTypes.u128:
       case PrimitiveTypes.u256:
       case PrimitiveTypes.u64:
-        castValue =
+        castValue = castListOrNull<BigInt>(value);
+        castValue ??=
             castListOrNull<int>(value)?.map((e) => BigInt.from(e)).toList();
-        castValue ??= castListOrNull<BigInt>(value);
+
         break;
       case PrimitiveTypes.i8:
       case PrimitiveTypes.i32:
       case PrimitiveTypes.i16:
+        castValue ??= castListOrNull<int>(value);
       case PrimitiveTypes.u8:
         castValue = bytesOrNull(value);
         break;
       case PrimitiveTypes.u32:
       case PrimitiveTypes.u16:
       case PrimitiveTypes.charType:
-        castValue =
+        castValue = castListOrNull<int>(value);
+        castValue ??=
             castListOrNull<BigInt>(value)?.map((e) => e.toInt()).toList();
-        castValue ??= castListOrNull<int>(value);
+
         break;
       case PrimitiveTypes.strType:
         castValue = castListOrNull<String>(value);
@@ -215,20 +211,13 @@ class MetadataCastingUtils {
         break;
     }
     if (castValue == null || length != null && castValue.length != length) {
-      throw MetadataException("Invalid List value.", details: {
-        "value": value,
-        "type": typneName,
-        "length": length,
-      });
+      throw MetadataException("Invalid List value.",
+          details: {"value": value, "type": typneName, "length": length});
     }
     return castValue;
   }
 
-  static List<int> isBytes(
-    Object? value, {
-    String? property,
-    String? type,
-  }) {
+  static List<int> isBytes(Object? value, {String? property, String? type}) {
     final toBytes = bytesOrNull(value);
     if (toBytes != null) return toBytes;
     throw MetadataException("Invalid bytes value.",
@@ -250,53 +239,41 @@ class MetadataCastingUtils {
         value: value, sign: sign, bitLength: bitLength, property: property);
   }
 
-  static BigInt _castBigint({
-    required Object? value,
-    required bool sign,
-    required int bitLength,
-    String? property,
-  }) {
-    try {
-      if (value is BigInt) {
-        if (isBigint(value, sign: sign, bitLength: bitLength)) {
-          return value;
-        }
-      } else if (value is int) {
-        final toBigint = BigInt.from(value);
-        if (isBigint(toBigint, sign: sign, bitLength: bitLength)) {
-          return toBigint;
-        }
+  static BigInt _castBigint(
+      {required Object? value,
+      required bool sign,
+      required int bitLength,
+      String? property}) {
+    if (value is int || value is BigInt) {
+      final val = BigintUtils.parse(value);
+      if (isBigint(val, sign: sign, bitLength: bitLength)) {
+        return val;
       }
-      // ignore: empty_catches
-    } catch (e) {}
+    }
     throw LayoutException("Invalid value for type Bigint",
         details: {"sign": sign, "bitLength": bitLength, "property": property});
   }
 
-  static int _castInt({
-    required Object? value,
-    required bool sign,
-    required int bitLength,
-    String? property,
-  }) {
-    try {
-      if (value is int) {
-        if (isInt(value, sign: sign, bitLength: bitLength)) {
-          return value;
-        }
-      } else if (value is BigInt && value.isValidInt) {
-        final intValue = value.toInt();
-        if (isInt(intValue, sign: sign, bitLength: bitLength)) {
-          return intValue;
-        }
+  static int _castInt(
+      {required Object? value,
+      required bool sign,
+      required int bitLength,
+      String? property}) {
+    if (value is int) {
+      if (isInt(value, sign: sign, bitLength: bitLength)) {
+        return value;
       }
-      // ignore: empty_catches
-    } catch (e) {}
+    } else if (value is BigInt && value.isValidInt) {
+      final intValue = value.toInt();
+      if (isInt(intValue, sign: sign, bitLength: bitLength)) {
+        return intValue;
+      }
+    }
     throw LayoutException("Invalid value for type int", details: {
       "sign": sign,
       "bitLength": bitLength,
       "property": property,
-      "value": value,
+      "value": value
     });
   }
 
@@ -304,7 +281,7 @@ class MetadataCastingUtils {
     if (value is! List) return null;
     try {
       return value.cast<T>();
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -317,7 +294,7 @@ class MetadataCastingUtils {
       final List<int>? bytes = castListOrNull(value);
       BytesUtils.validateBytes(bytes!);
       return bytes;
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -326,31 +303,25 @@ class MetadataCastingUtils {
     if (value is! Map) return null;
     try {
       return value.cast<K, V>();
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
 
-  static bool isBigint(dynamic data, {bool sign = false, int? bitLength}) {
-    if (data is BigInt) {
-      if (bitLength != null) {
-        if (data.bitLength > bitLength) return false;
-      }
-      if (!sign && data.isNegative) return false;
-      return true;
+  static bool isBigint(BigInt data, {bool sign = false, int? bitLength}) {
+    if (bitLength != null) {
+      if (data.bitLength > bitLength) return false;
     }
-    return false;
+    if (!sign && data.isNegative) return false;
+    return true;
   }
 
-  static bool isInt(dynamic data, {bool sign = false, int? bitLength}) {
-    if (data is int) {
-      if (bitLength != null) {
-        if (data.bitLength > bitLength) return false;
-      }
-      if (!sign && data.isNegative) return false;
-      return true;
+  static bool isInt(int data, {bool sign = false, int? bitLength}) {
+    if (bitLength != null) {
+      if (data.bitLength > bitLength) return false;
     }
-    return false;
+    if (!sign && data.isNegative) return false;
+    return true;
   }
 
   static int validateU8(int value, {int? max}) {
@@ -362,7 +333,7 @@ class MetadataCastingUtils {
   }
 
   static List<int> validateBytesLength(List<int> bytes,
-      {int? except, int? min, String? error}) {
+      {int? except, int? min}) {
     BytesUtils.validateBytes(bytes);
     if (except != null && bytes.length == except) {
       return bytes;
@@ -371,7 +342,7 @@ class MetadataCastingUtils {
     } else if (min == null && except == null) {
       return bytes;
     }
-    throw DartSubstratePluginException(error ?? "Invalid bytes length.",
+    throw DartSubstratePluginException("Invalid bytes length.",
         details: {"length": bytes.length, "excepted": except});
   }
 }

@@ -1,9 +1,9 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:blockchain_utils/utils/utils.dart';
-import 'package:example/repository/westend_v15.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'json_rpc_example.dart';
+import 'repository/westend_v15.dart';
 
 void main() async {
   /// Setting up the provider to connect to the Substrate node.

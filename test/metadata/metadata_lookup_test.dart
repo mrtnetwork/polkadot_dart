@@ -9,11 +9,12 @@ void main() {
   final metadata = MetadataV14.fromBytes(metadataBytesV14);
 
   group("Metadata v14", () {
-    _encodeDecode(metadata.lookup);
+    _encodeDecode(metadata);
   });
 }
 
-void _encodeDecode(PortableRegistry registry) {
+void _encodeDecode(MetadataV14 api) {
+  // final registry = api.registry;
   test("Encode and Decode", () {
     final layout = SubstrateMetadataLayouts.metadataV14();
     final metadataBytes = BytesUtils.fromHexString(metadataV14).sublist(5);
@@ -24,9 +25,10 @@ void _encodeDecode(PortableRegistry registry) {
   test("lockup-6", () {
     const int loockUpId = 6;
     final value = BigInt.from(1233333);
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode), "b5d11200000000000000000000000000");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-3", () {
@@ -43,10 +45,11 @@ void _encodeDecode(PortableRegistry registry) {
         "flags": BigInt.two
       }
     };
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "0100000001000000de0000000100000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000002000000000000000000000000000000");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-9", () {
@@ -56,35 +59,39 @@ void _encodeDecode(PortableRegistry registry) {
       "operational": {"ref_time": BigInt.one, "proof_size": BigInt.one},
       "mandatory": {"ref_time": BigInt.one, "proof_size": BigInt.one},
     };
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode), "040404040404");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-12", () {
     const int loockUpId = 12;
     final value = BigInt.from(12323);
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode), "2330000000000000");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-13", () {
     const int loockUpId = 13;
-    final value = List<int>.filled(32, 12);
-    final encode = registry.encode(loockUpId, value);
+    final value = BytesUtils.toHexString(List<int>.filled(32, 12));
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-14", () {
     const int loockUpId = 14;
-    final value = List<int>.filled(32, 12);
-    final encode = registry.encode(loockUpId, value);
+    final value = BytesUtils.toHexString(List<int>.filled(32, 12));
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "800c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-15_2", () {
@@ -92,14 +99,18 @@ void _encodeDecode(PortableRegistry registry) {
     final value = {
       "logs": [
         {
-          "Consensus": [List<int>.filled(4, 2), List<int>.filled(20, 12)]
+          "Consensus": [
+            BytesUtils.toHexString(List<int>.filled(4, 2)),
+            BytesUtils.toHexString(List<int>.filled(20, 12))
+          ]
         }
       ]
     };
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "040402020202500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-15", () {
@@ -109,51 +120,56 @@ void _encodeDecode(PortableRegistry registry) {
         {"RuntimeEnvironmentUpdated": null}
       ]
     };
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode), "0408");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-15-3", () {
     const int loockUpId = 15;
     final value = {
       "logs": [
-        {"Other": List<int>.filled(20, 12)}
+        {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))}
       ]
     };
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-16", () {
     const int loockUpId = 16;
     final value = [
-      {"Other": List<int>.filled(20, 12)}
+      {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))}
     ];
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-17", () {
     const int loockUpId = 17;
-    final value = {"Other": List<int>.filled(20, 12)};
-    final encode = registry.encode(loockUpId, value);
+    final value = {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))};
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "00500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-18", () {
     const int loockUpId = 18;
     final value = List<int>.filled(4, 12);
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode), "0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
-    expect(decode, value);
+    final decode = api.decodeLookup(loockUpId, encode);
+    expect(BytesUtils.fromHexString(decode), value);
   });
   test("lockup-19", () {
     const int loockUpId = 19;
@@ -163,13 +179,14 @@ void _encodeDecode(PortableRegistry registry) {
         "event": {
           "System": {"CodeUpdated": null}
         },
-        "topics": [List<int>.filled(32, 12)]
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
       }
     ];
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "04000c0000000002040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-19_2", () {
@@ -178,16 +195,19 @@ void _encodeDecode(PortableRegistry registry) {
       {
         "phase": {"ApplyExtrinsic": 12},
         "event": {
-          "System": {"NewAccount": List<int>.filled(32, 1)}
+          "System": {
+            "NewAccount": BytesUtils.toHexString(List<int>.filled(32, 1))
+          }
         },
-        "topics": [List<int>.filled(32, 12)]
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
       }
     ];
 
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "04000c00000000030101010101010101010101010101010101010101010101010101010101010101040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-19_3", () {
@@ -204,13 +224,14 @@ void _encodeDecode(PortableRegistry registry) {
             }
           }
         },
-        "topics": [List<int>.filled(32, 12)]
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
       }
     ];
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "04000c00000006000100000010270000000000000000000000000000d0070000000000000000000000000000040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-19_4", () {
@@ -221,22 +242,24 @@ void _encodeDecode(PortableRegistry registry) {
         "event": {
           "XcmPallet": {"VersionMigrationFinished": 1212}
         },
-        "topics": [List<int>.filled(32, 12)]
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
       }
     ];
-    final encode = registry.encode(loockUpId, value);
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "04000c0000006317bc040000040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-57", () {
     const int loockUpId = 57;
-    final value = List<int>.filled(32, 2);
-    final encode = registry.encode(loockUpId, value);
+    final value = {"Some": BytesUtils.toHexString(List<int>.filled(32, 2))};
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode),
         "010202020202020202020202020202020202020202020202020202020202020202");
-    final decode = registry.decode(loockUpId, encode);
+    final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
 }

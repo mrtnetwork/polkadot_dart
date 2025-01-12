@@ -102,13 +102,6 @@ class MetadataTemplateBuilder {
     return children.map((e) => buildJson(e)).toList();
   }
 
-  static Map<String, dynamic> _createOptionValue(List<TypeTemlate> children) {
-    assert(children.length == 1);
-    final template = buildJson(children[0]);
-    template["type"] = "Option<${template["type"]}>";
-    return template;
-  }
-
   static String _compactType(List<TypeTemlate> children) {
     assert(children.length == 1);
     return _correctType(children[0]);
@@ -133,8 +126,6 @@ class MetadataTemplateBuilder {
         return "HistoricMetaCompat";
       case Si1TypeDefsIndexesConst.bitSequence:
         return "[U8]";
-      case Si1TypeDefsIndexesConst.option:
-        return "Option<${_correctType(template.children[0])}>";
       default:
         return _getTuppleType(template.children);
     }
@@ -164,8 +155,8 @@ class MetadataTemplateBuilder {
     switch (template.type) {
       case Si1TypeDefsIndexesConst.composite:
         return _createStructValues(template.children);
-      case Si1TypeDefsIndexesConst.option:
-        return _createOptionValue(template.children);
+      // case Si1TypeDefsIndexesConst.option:
+      //   return _createOptionValue(template.children);
       default:
     }
     return {
@@ -255,9 +246,6 @@ class MetadataTemplateBuilder {
       case Si1TypeDefsIndexesConst.historicMetaCompat:
         return "HistoricMetaCompat";
       case Si1TypeDefsIndexesConst.bitSequence:
-        return "[U8]";
-      case Si1TypeDefsIndexesConst.option:
-        return "Option<${buildString(template.children[0])}>";
       default:
         return _tupleStringType(template.children);
     }

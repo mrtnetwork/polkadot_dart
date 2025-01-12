@@ -1,9 +1,13 @@
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
-import 'package:polkadot_dart/src/metadata/metadata.dart';
+import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/models/generic/models/runtime_version.dart';
+
+import 'metadata_interface.dart';
 
 /// Interface providing methods for interacting with metadata in the Substrate framework.
 mixin MetadataApiInterface {
+  LatestMetadataInterface get metadata;
+
   /// Returns the list of supported metadata versions.
   List<int> get supportedMetadataVersion =>
       MetadataConstant.supportedMetadataVersion;

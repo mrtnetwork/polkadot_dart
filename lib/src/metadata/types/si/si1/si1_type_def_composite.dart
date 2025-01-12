@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
@@ -72,13 +73,17 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     if (fields.isEmpty) {
       return const LayoutDecodeResult(consumed: 0, value: null);
     }
     if (fields.length == 1 && !fields[0].hasName) {
       final type = registry.scaleType(fields[0].type);
-      final decode = type.typeDefDecode(registry, bytes);
+      final decode =
+          type.typeDefDecode(registry: registry, bytes: bytes, offset: offset);
       return decode;
     }
     final Map<String, dynamic> mapResult = {};
@@ -88,8 +93,8 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
     for (int i = 0; i < fields.length; i++) {
       final field = fields[i];
       final type = registry.scaleType(field.type);
-      final decodeBytes = bytes.sublist(consumed);
-      final decode = type.typeDefDecode(registry, decodeBytes);
+      final decode = type.typeDefDecode(
+          registry: registry, bytes: bytes, offset: offset + consumed);
       if (isStruct) {
         mapResult[field.name!] = decode.value;
       } else {
@@ -143,7 +148,7 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
       }
       return values;
     }
-    final listValue = MetadataCastingUtils.hasList(
+    final listValue = MetadataCastingUtils.asList(
         value: data, length: fields.length, lookupId: self, type: typeName);
     final List<Object?> values = [];
     for (int i = 0; i < fields.length; i++) {
@@ -153,5 +158,19 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
       values.add(value);
     }
     return values;
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    if (fields.isEmpty) return MetadataTypeInfoNone(name: null, typeId: id);
+
+    if (fields.length == 1 && !fields[0].hasName) {
+      return fields[0].typeInfo(registry);
+    }
+    final types = fields.map((e) => e.typeInfo(registry)).toList();
+    if (fields[0].hasName) {
+      return MetadataTypeInfoComposit(name: null, typeId: id, types: types);
+    }
+    return MetadataTypeInfoTuple(name: null, typeId: id, types: types);
   }
 }

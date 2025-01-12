@@ -3,8 +3,14 @@ import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
-class PalletCallMetadataV14
+abstract class PalletCallMetadata
     extends SubstrateSerialization<Map<String, dynamic>> {
+  abstract final int type;
+  const PalletCallMetadata();
+}
+
+class PalletCallMetadataV14 extends PalletCallMetadata {
+  @override
   final int type;
   const PalletCallMetadataV14(this.type);
   PalletCallMetadataV14.deserializeJson(Map<String, dynamic> json)

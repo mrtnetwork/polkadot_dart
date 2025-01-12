@@ -33,4 +33,9 @@ class Si1Field extends SubstrateSerialization<Map<String, dynamic>> {
   Map<String, dynamic> toJson() {
     return scaleJsonSerialize();
   }
+
+  MetadataTypeInfo typeInfo(PortableRegistry registry) {
+    final type = registry.typeInfo(this.type);
+    return type.copyWith(name: name ?? typeName ?? type.name, docs: docs);
+  }
 }

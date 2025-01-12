@@ -4,5 +4,6 @@ export 'v9/v9.dart';
 export 'v11/v11.dart';
 export 'v14/v14.dart';
 export 'v15/v15.dart';
+export 'v16/v16.dart';
 export 'versioned/versioned_metadata.dart';
 export 'versioned/pallet/metadata.dart';

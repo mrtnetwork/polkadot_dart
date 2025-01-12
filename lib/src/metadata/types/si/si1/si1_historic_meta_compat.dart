@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
@@ -28,7 +29,10 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     throw UnimplementedError();
   }
 
@@ -44,6 +48,11 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
       required Object? value,
       required bool fromTemplate,
       required int self}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
     throw UnimplementedError();
   }
 }

@@ -2,6 +2,8 @@ import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entery_type_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v16/types/depecrated_info.dart';
+import 'package:polkadot_dart/src/metadata/types/v16/types/deprecation_status.dart';
 import 'package:polkadot_dart/src/metadata/types/v9/types/storage_entry_modifier.dart';
 import 'package:polkadot_dart/src/metadata/types/v11/types/storage_hasher.dart';
 
@@ -390,6 +392,184 @@ class SubstrateMetadataLayouts {
       LayoutConst.u32(property: "magicNumber"),
       LayoutConst.u8(property: "version"),
       metadata
+    ], property: property);
+  }
+
+  ///
+  static StructLayout depecratedV16({String? property}) {
+    return LayoutConst.struct([
+      /// Note explaining the deprecation
+      LayoutConst.compactString(property: "note"),
+
+      /// Optional value for denoting version when the deprecation occurred.
+      LayoutConst.optional(LayoutConst.compactString(), property: "since")
+    ], property: property);
+  }
+
+  static Layout<Map<String, dynamic>> depecratedStatusV16({String? property}) {
+    return LayoutConst.rustEnum([
+      /// Entry is not deprecated
+      LayoutConst.noArgs(property: DeprecationStatusTypes.notDeprecated.name),
+
+      /// Deprecated without a note.
+      LayoutConst.noArgs(
+          property: DeprecationStatusTypes.deprecatedWithoutNote.name),
+
+      /// Entry is deprecated with an note and an optional `since` field.
+      depecratedV16(property: DeprecationStatusTypes.deprecated.name)
+    ], property: property);
+  }
+
+  static StructLayout storageEntryMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "name"),
+      storageEntryModifierV14(property: "modifier"),
+      storageEntryTypeV14(property: "type"),
+      LayoutConst.bytes(property: "fallback"),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
+      depecratedStatusV16(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static StructLayout palletStorageMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "prefix"),
+      LayoutConst.compactVec(storageEntryMetadataV16(), property: "items")
+    ], property: property);
+  }
+
+  static StructLayout palletMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "name"),
+      LayoutConst.optional(palletStorageMetadataV16(), property: "storage"),
+      LayoutConst.optional(palletCallMetadataV16(), property: "calls"),
+      LayoutConst.optional(palletEventMetadataV16(), property: "events"),
+      LayoutConst.compactVec(palletConstantMetadataV16(),
+          property: "constants"),
+      LayoutConst.optional(palletErrorMetadataV16(), property: "errors"),
+      LayoutConst.compactVec(palletAssociatedTypeMetadata(),
+          property: "associated_types"),
+      LayoutConst.u8(property: "index"),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
+      depecratedStatusV16(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static Layout<Map<String, dynamic>> itemDeprecated({String? property}) {
+    return LayoutConst.struct([depecratedStatusV16(property: "status")],
+        property: property);
+  }
+
+  static StructLayout variantsDeprecated({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactMap<dynamic, dynamic>(
+          LayoutConst.u8(), depecratedStatusV16(),
+          property: "depecreatedVariants"),
+    ], property: property);
+  }
+
+  static Layout<Map<String, dynamic>> depecratedInfo({String? property}) {
+    return LayoutConst.rustEnum([
+      /// Type is not deprecated
+      LayoutConst.noArgs(property: DeprecationInfoTypes.notDeprecated.name),
+
+      /// Entry is fully deprecated.
+      itemDeprecated(property: DeprecationInfoTypes.itemDeprecated.name),
+
+      /// Entry is partially deprecated.
+      variantsDeprecated(property: DeprecationInfoTypes.variantsDeprecated.name)
+    ], property: property);
+  }
+
+  static StructLayout palletCallMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      siLookupTypeId(property: "type"),
+      depecratedInfo(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static StructLayout palletEventMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      siLookupTypeId(property: "type"),
+      depecratedInfo(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static StructLayout palletConstantMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "name"),
+      siLookupTypeId(property: "type"),
+      LayoutConst.bytes(property: "value"),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
+      depecratedStatusV16(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static StructLayout palletErrorMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      siLookupTypeId(property: "type"),
+      depecratedInfo(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static StructLayout palletAssociatedTypeMetadata({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "name"),
+      siLookupTypeId(property: "type"),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+    ], property: property);
+  }
+
+  static StructLayout transactionExtensionMetadata({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "identifier"),
+      siLookupTypeId(property: "type"),
+      siLookupTypeId(property: "implicit"),
+    ], property: property);
+  }
+
+  static StructLayout extrinsicMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactVec(LayoutConst.u8(), property: "versions"),
+      siLookupTypeId(property: "addressType"),
+      siLookupTypeId(property: "signatureType"),
+      LayoutConst.compactMap<dynamic, dynamic>(
+          LayoutConst.u8(), LayoutConst.compactVec(LayoutConst.u32()),
+          property: "transaction_extensions_by_version"),
+      LayoutConst.compactVec(transactionExtensionMetadata(),
+          property: "transaction_extensions"),
+    ], property: property);
+  }
+
+  static StructLayout runtimeApiMethodMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "name"),
+      LayoutConst.compactVec(runtimeApiMethodParamMetadataV15(),
+          property: "inputs"),
+      si1LookupTypeId(property: "output"),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
+      depecratedStatusV16(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static StructLayout runtimeApiMetadataV16({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.compactString(property: "name"),
+      LayoutConst.compactVec(runtimeApiMethodMetadataV16(),
+          property: "methods"),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
+      depecratedInfo(property: 'deprecation_info')
+    ], property: property);
+  }
+
+  static StructLayout metadataV16({String? property}) {
+    return LayoutConst.struct([
+      portableRegistry(property: "lookup"),
+      LayoutConst.compactVec(palletMetadataV16(), property: "pallets"),
+      extrinsicMetadataV16(property: "extrinsic"),
+      LayoutConst.compactVec(runtimeApiMetadataV16(), property: "apis"),
+      outerEnums15(property: "outerEnums"),
+      customMetadata15(property: "custom")
     ], property: property);
   }
 }

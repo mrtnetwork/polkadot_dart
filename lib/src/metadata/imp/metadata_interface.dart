@@ -1,13 +1,14 @@
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
-import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/core/storage_hasher.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_storage_metadata_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entery_type_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entry_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v15/types/runtime_api_metadata_v15.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_metadata.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/pallet/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
@@ -17,22 +18,28 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   abstract final int version;
 
   /// Retrieves the lookup for the given [id].
-  ScaleInfoVersioned getLookup(int id) => registry.scaleType(id);
+  Si1Type getLookup(int id) => registry.scaleType(id);
 
   /// Retrieves the portable registry.
   PortableRegistry get registry;
+
+  bool get supportRuntimeApi =>
+      MetadataConstant.supportRuntimeApi.contains(version);
 
   /// Map containing pallet metadata for version 14.
   abstract final Map<int, PALLET> pallets;
 
   abstract final ExtrinsicMetadata extrinsic;
 
-  /// Decodes a lookup.
-  T decodeLookup<T>(int id, List<int> bytes) {
-    final decode = getLookup(id).typeDefDecode(registry, bytes).value;
-    if (T is List) return (decode as List).cast() as T;
+  abstract final List<RuntimeApiMetadata> apis;
 
-    return decode;
+  /// Decodes a lookup.
+  T decodeLookup<T>(int id, List<int> bytes, {int offset = 0}) {
+    final decode = getLookup(id)
+        .typeDefDecode(registry: registry, bytes: bytes, offset: offset);
+    assert((decode.consumed + offset) == bytes.length, "decode lookup failed.");
+    if (T is List) return (decode.value as List).cast() as T;
+    return decode.value;
   }
 
   List<int> encodeLookup(
@@ -103,7 +110,7 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   }
 
   /// Retrieves the storage metadata for the given pallet.
-  PalletStorageMetadataV14 getStorage(String palletNameOrIndex) {
+  PalletStorageMetadata getStorage(String palletNameOrIndex) {
     final storage = getPallet(palletNameOrIndex);
     if (storage.storage == null) {
       throw MetadataException("Storage does not exist.",
@@ -161,14 +168,13 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   T getConstant<T>(String palletNameOrIndex, String constantName) {
     final pallet = getPallet(palletNameOrIndex);
     final constant = pallet.constants.firstWhere(
-      (element) => element.name.toLowerCase() == constantName.toLowerCase(),
-      orElse: () => throw DartSubstratePluginException(
-          "Constant does not exist.",
-          details: {
-            "name": constantName,
-            "constants": pallet.constants.map((e) => e.name).join(", ")
-          }),
-    );
+        (element) => element.name.toLowerCase() == constantName.toLowerCase(),
+        orElse: () => throw DartSubstratePluginException(
+                "Constant does not exist.",
+                details: {
+                  "name": constantName,
+                  "constants": pallet.constants.map((e) => e.name).join(", ")
+                }));
     return decodeLookup(constant.type, constant.value);
   }
 
@@ -261,12 +267,58 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     return registry.scaleType(lookupid).docs;
   }
 
-  List<Si1Variant> getCalls_(String palletNameOrIndex) {
+  bool get isSupportMetadataHash;
+
+  CallInfo _callInfo(String palletNameOrIndex) {
     final callId = getCallLookupId(palletNameOrIndex);
     final type = getLookup(callId);
-    final variant = type.def.cast<Si1TypeDefVariant>().variants;
-    return variant;
+    final variants = type.def.cast<Si1TypeDefVariant>().variants;
+    return CallInfo(
+        id: callId,
+        palletName: palletNameOrIndex,
+        methods: variants
+            .map((e) => CallMethodInfo(variant: e, name: e.name, docs: e.docs))
+            .toList());
   }
 
-  bool get isSupportMetadataHash;
+  PalletInfo palletInfo(String palletNameOrIndex) {
+    final pallet = getPallet(palletNameOrIndex);
+    final constant = pallet.constants.map((e) {
+      final value = getConstant(pallet.name, e.name);
+      return ConstantInfo(name: e.name, value: value, docs: e.docs);
+    }).toList();
+    final storage = pallet.storage?.items.map((e) {
+      return StorageInfo(
+          name: e.name, inputLookupId: e.type.inputTypeId, docs: e.docs);
+    }).toList();
+
+    return PalletInfo(
+        name: pallet.name,
+        contants: constant,
+        calls: pallet.calls == null ? null : _callInfo(palletNameOrIndex),
+        storage: storage,
+        docs: pallet.docs);
+  }
+
+  List<TransactionExtrinsicInfo> extrinsicInfo();
+
+  MetadataInfo palletsInfos() {
+    final apiMethods = apis
+        .map((e) => RuntimeApiInfo(
+            docs: e.docs,
+            name: e.name,
+            methods: e.methods
+                .map((e) => RuntimeApiMethodInfo(
+                    name: e.name,
+                    docs: e.docs,
+                    inputs: e.inputs
+                        .map((e) =>
+                            RuntimeApiInputInfo(name: e.name, lockupId: e.type))
+                        .toList()))
+                .toList()))
+        .toList();
+    final pallets = getPalletNames().map((e) => palletInfo(e)).toList();
+    return MetadataInfo(
+        pallets: pallets, apis: apiMethods, extrinsic: extrinsicInfo());
+  }
 }

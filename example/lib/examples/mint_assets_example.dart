@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/utils/binary/utils.dart';
-import 'package:example/examples/json_rpc_example.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
+
+import 'json_rpc_example.dart';
 
 void main() async {
   final provider = SubstrateProvider(
@@ -70,7 +71,7 @@ void main() async {
       palletNameOrIndex: "assets",
       value: setAssetMetadata,
       fromTemplate: true));
-  final payload = TransactionPayload(
+  final payload = AssetTransactionPayload(
       blockHash: SubstrateBlockHash.hash(blockHash),
       era: era,
       genesisHash: SubstrateBlockHash.hash(genesisHash),
@@ -82,7 +83,7 @@ void main() async {
 
   final sig = privateKey.multiSignature(payload.serialzeSign());
 
-  final signature = ExtrinsicSignature(
+  final signature = AssetExtrinsicSignature(
       signature: sig,
       address: signer.toMultiAddress(),
       era: era,

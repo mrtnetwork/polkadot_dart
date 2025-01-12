@@ -9,8 +9,11 @@ import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/unsuported_metadata.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/metadata_v14.dart';
-import 'package:polkadot_dart/src/metadata/types/v15/types/metadata_v15.dart';
+import 'package:polkadot_dart/src/metadata/types/v15/v15.dart';
+import 'package:polkadot_dart/src/metadata/types/v16/v16.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
+
+// class VersionedMetadataChecker extends {}
 
 class VersionedMetadata<T extends SubstrateMetadata>
     extends SubstrateSerialization<Map<String, dynamic>> {
@@ -41,12 +44,18 @@ class VersionedMetadata<T extends SubstrateMetadata>
       metadata = UnsupportedMetadata(version: version, bytes: metadataBytes);
     } else {
       switch (version) {
-        case 14:
+        case MetadataConstant.v14:
           metadata = MetadataV14.fromBytes(metadataBytes);
           break;
-        default:
+        case MetadataConstant.v15:
           metadata = MetadataV15.fromBytes(metadataBytes);
           break;
+        case MetadataConstant.v16:
+          metadata = MetadataV16.fromBytes(metadataBytes);
+          break;
+        default:
+          throw DartSubstratePluginException("Unsuported metadata version.",
+              details: {"version": "$version"});
       }
     }
     if (metadata is! T) {

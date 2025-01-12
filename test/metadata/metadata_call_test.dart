@@ -18,7 +18,7 @@ void _encodeDecode(MetadataApi api) {
         SubstrateAddress("5DZM9wq9xQQwp3HZMVftVGLCsqNJE9KoK8C9VGmaZbJHqyEw");
     final Map<String, dynamic> transferAllowDeath = {
       "transfer_allow_death": {
-        "dest": {"Id": receiver.toBytes()},
+        "dest": {"Id": BytesUtils.toHexString(receiver.toBytes())},
         "value": BigInt.from(100000000000)
       }
     };

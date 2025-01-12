@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_tuple.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
@@ -42,12 +43,16 @@ class Si1TypeDefTuple extends Si1TypeDef<List<int>> implements TypeDefTuple {
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     int consumed = 0;
     final List decoded = [];
     for (int i = 0; i < values.length; i++) {
       final type = registry.scaleType(values[i]);
-      final decode = type.typeDefDecode(registry, bytes.sublist(consumed));
+      final decode = type.typeDefDecode(
+          registry: registry, bytes: bytes, offset: offset + consumed);
       decoded.add(decode.value);
       consumed += decode.consumed;
     }
@@ -76,7 +81,7 @@ class Si1TypeDefTuple extends Si1TypeDef<List<int>> implements TypeDefTuple {
         type: typeName,
         fromTemplate: fromTemplate,
         lookupId: self);
-    final listValue = MetadataCastingUtils.hasList(
+    final listValue = MetadataCastingUtils.asList(
         value: data, length: values.length, type: typeName, lookupId: self);
     final List<Object?> correctValues = [];
     for (int i = 0; i < values.length; i++) {
@@ -85,5 +90,13 @@ class Si1TypeDefTuple extends Si1TypeDef<List<int>> implements TypeDefTuple {
       correctValues.add(value);
     }
     return correctValues;
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    return MetadataTypeInfoTuple(
+        name: null,
+        typeId: id,
+        types: values.map((e) => registry.typeInfo(e)).toList());
   }
 }

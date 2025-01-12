@@ -5,7 +5,7 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 
 import 'json_rpc_example.dart';
-import '../repository/westend_v14.dart';
+import 'repository/westend_v14.dart';
 
 void main() async {
   /// Settsing up the provider to connect to the Westend Substrate node.

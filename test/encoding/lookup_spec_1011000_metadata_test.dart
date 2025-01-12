@@ -22,11 +22,17 @@ void _test(MetadataV15 api) {
     final templateValue = {
       "type": "Tuple([U8;32], Enum)",
       "value": [
-        {"type": "[U8;32]", "value": List<int>.filled(32, 2)},
+        {
+          "type": "[U8;32]",
+          "value": BytesUtils.toHexString(List<int>.filled(32, 2))
+        },
         {
           "type": "Enum",
           "key": "Raw11",
-          "value": {"type": "[U8;11]", "value": List<int>.filled(11, 2)},
+          "value": {
+            "type": "[U8;11]",
+            "value": BytesUtils.toHexString(List<int>.filled(11, 2))
+          },
           "variants": {
             "None": null,
 
@@ -48,8 +54,8 @@ void _test(MetadataV15 api) {
     expect(encodeSimple.toHex(), encodeTemplate.toHex());
     final decode = api.decodeLookup(lookupid, encodeTemplate);
     expect(decode, [
-      List<int>.filled(32, 2),
-      {"Raw11": List<int>.filled(11, 2)}
+      BytesUtils.toHexString(List<int>.filled(32, 2)),
+      {"Raw11": BytesUtils.toHexString(List<int>.filled(11, 2))}
     ]);
     expect(encodeSimple.toHex(),
         "02020202020202020202020202020202020202020202020202020202020202020c0202020202020202020202");
@@ -57,9 +63,9 @@ void _test(MetadataV15 api) {
         () => api.encodeLookup(
             id: lookupid,
             value: [
-              List<int>.filled(32, 2),
+              BytesUtils.toHexString(List<int>.filled(32, 2)),
               // 12 bytes for tyoe [u8;11]
-              {"Raw11": List<int>.filled(12, 2)}
+              {"Raw11": BytesUtils.toHexString(List<int>.filled(12, 2))}
             ],
             fromTemplate: false),
         throwsA(isA<MetadataException>()));
@@ -67,9 +73,9 @@ void _test(MetadataV15 api) {
         () => api.encodeLookup(
             id: lookupid,
             value: [
-              List<int>.filled(32, 2),
+              BytesUtils.toHexString(List<int>.filled(32, 2)),
               // invalid variant key
-              {"Raw111": List<int>.filled(11, 2)}
+              {"Raw111": BytesUtils.toHexString(List<int>.filled(11, 2))}
             ],
             fromTemplate: false),
         throwsA(isA<MetadataException>()));
@@ -117,7 +123,7 @@ void _test(MetadataV15 api) {
     expect(decode, {
       "Plurality": {
         "id": {
-          "Moniker": [1, 2, 3, 4]
+          "Moniker": [1, 2, 3, 4].toHex()
         },
         "part": {
           "AtLeastProportion": {"nom": 444, "denom": 555}
@@ -165,25 +171,28 @@ void _test(MetadataV15 api) {
                           "type": "Map",
                           "value": {
                             "network": {
-                              "type": "Option<Enum>",
-                              "key": "ByFork",
+                              "key": "Some",
                               "value": {
-                                "type": "Map",
+                                "type": "Option<Enum>",
+                                "key": "ByFork",
                                 "value": {
-                                  "block_number": {
-                                    "type": "U64",
-                                    "value": 1213123123
-                                  },
-                                  "block_hash": {
-                                    "type": "[U8;32]",
-                                    "value": List<int>.filled(32, 10)
+                                  "type": "Map",
+                                  "value": {
+                                    "block_number": {
+                                      "type": "U64",
+                                      "value": 1213123123
+                                    },
+                                    "block_hash": {
+                                      "type": "[U8;32]",
+                                      "value": List<int>.filled(32, 10).toHex()
+                                    }
                                   }
-                                }
+                                },
                               },
                             },
                             "id": {
                               "type": "[U8;32]",
-                              "value": List<int>.filled(32, 10)
+                              "value": List<int>.filled(32, 10).toHex()
                             }
                           }
                         },
@@ -196,25 +205,28 @@ void _test(MetadataV15 api) {
                           "type": "Map",
                           "value": {
                             "network": {
-                              "type": "Option<Enum>",
-                              "key": "ByFork",
+                              "key": "Some",
                               "value": {
-                                "type": "Map",
+                                "type": "Option<Enum>",
+                                "key": "ByFork",
                                 "value": {
-                                  "block_number": {
-                                    "type": "U64",
-                                    "value": 123123
-                                  },
-                                  "block_hash": {
-                                    "type": "[U8;32]",
-                                    "value": List<int>.filled(32, 10)
+                                  "type": "Map",
+                                  "value": {
+                                    "block_number": {
+                                      "type": "U64",
+                                      "value": 123123
+                                    },
+                                    "block_hash": {
+                                      "type": "[U8;32]",
+                                      "value": List<int>.filled(32, 10).toHex()
+                                    }
                                   }
-                                }
-                              },
+                                },
+                              }
                             },
                             "id": {
                               "type": "[U8;32]",
-                              "value": List<int>.filled(32, 10)
+                              "value": List<int>.filled(32, 10).toHex()
                             }
                           }
                         },
@@ -227,24 +239,28 @@ void _test(MetadataV15 api) {
                           "value": {
                             "network": {
                               "type": "Option<Enum>",
-                              "key": "ByFork",
+                              "key": "Some",
                               "value": {
-                                "type": "Map",
+                                "type": "Option<Enum>",
+                                "key": "ByFork",
                                 "value": {
-                                  "block_number": {
-                                    "type": "U64",
-                                    "value": 123123123123
-                                  },
-                                  "block_hash": {
-                                    "type": "[U8;32]",
-                                    "value": List<int>.filled(32, 12)
+                                  "type": "Map",
+                                  "value": {
+                                    "block_number": {
+                                      "type": "U64",
+                                      "value": 123123123123
+                                    },
+                                    "block_hash": {
+                                      "type": "[U8;32]",
+                                      "value": List<int>.filled(32, 12).toHex()
+                                    }
                                   }
-                                }
+                                },
                               },
                             },
                             "id": {
                               "type": "[U8;32]",
-                              "value": List<int>.filled(32, 15)
+                              "value": List<int>.filled(32, 15).toHex()
                             }
                           }
                         },
@@ -261,7 +277,10 @@ void _test(MetadataV15 api) {
               "value": {
                 "type": "Enum",
                 "key": "Array4",
-                "value": {"type": "[U8;4]", "value": List<int>.filled(4, 12)},
+                "value": {
+                  "type": "[U8;4]",
+                  "value": List<int>.filled(4, 12).toHex()
+                },
               },
             }
           }
@@ -286,41 +305,47 @@ void _test(MetadataV15 api) {
               {
                 "AccountId32": {
                   "network": {
-                    "ByFork": {
-                      "block_number": BigInt.from(1213123123),
-                      "block_hash": List<int>.filled(32, 10)
+                    "Some": {
+                      "ByFork": {
+                        "block_number": BigInt.from(1213123123),
+                        "block_hash": List<int>.filled(32, 10).toHex()
+                      }
                     }
                   },
-                  "id": List<int>.filled(32, 10)
+                  "id": List<int>.filled(32, 10).toHex()
                 }
               },
               {
                 "AccountId32": {
                   "network": {
-                    "ByFork": {
-                      "block_number": BigInt.from(123123),
-                      "block_hash": List<int>.filled(32, 10)
+                    "Some": {
+                      "ByFork": {
+                        "block_number": BigInt.from(123123),
+                        "block_hash": List<int>.filled(32, 10).toHex()
+                      }
                     }
                   },
-                  "id": List<int>.filled(32, 10)
+                  "id": List<int>.filled(32, 10).toHex()
                 }
               },
               {
                 "AccountId32": {
                   "network": {
-                    "ByFork": {
-                      "block_number": BigInt.from(123123123123),
-                      "block_hash": List<int>.filled(32, 12)
+                    "Some": {
+                      "ByFork": {
+                        "block_number": BigInt.from(123123123123),
+                        "block_hash": List<int>.filled(32, 12).toHex()
+                      }
                     }
                   },
-                  "id": List<int>.filled(32, 15)
+                  "id": List<int>.filled(32, 15).toHex()
                 }
               }
             ]
           }
         },
         "fun": {
-          "NonFungible": {"Array4": List<int>.filled(4, 12)}
+          "NonFungible": {"Array4": List<int>.filled(4, 12).toHex()}
         }
       }
     ]);
@@ -335,14 +360,14 @@ void _test(MetadataV15 api) {
         {
           "type": "Tuple([U8;8], U32)",
           "value": [
-            {"type": "[U8;8]", "value": List<int>.filled(8, 8)},
+            {"type": "[U8;8]", "value": List<int>.filled(8, 8).toHex()},
             {"type": "U32", "value": 1111}
           ]
         },
         {
           "type": "Tuple([U8;8], U32)",
           "value": [
-            {"type": "[U8;8]", "value": List<int>.filled(8, 10)},
+            {"type": "[U8;8]", "value": List<int>.filled(8, 10).toHex()},
             {"type": "U32", "value": 1}
           ]
         }
@@ -359,11 +384,11 @@ void _test(MetadataV15 api) {
     final decode = api.decodeLookup(lookupid, encodeTemplate);
     expect(decode, [
       [
-        [8, 8, 8, 8, 8, 8, 8, 8],
+        [8, 8, 8, 8, 8, 8, 8, 8].toHex(),
         1111
       ],
       [
-        [10, 10, 10, 10, 10, 10, 10, 10],
+        [10, 10, 10, 10, 10, 10, 10, 10].toHex(),
         1
       ]
     ]);
@@ -375,11 +400,11 @@ void _test(MetadataV15 api) {
             value: [
               [
                 /// incorrect length
-                [8, 8, 8, 8, 8, 8, 8, 8, 8],
+                [8, 8, 8, 8, 8, 8, 8, 8, 8].toHex(),
                 1111
               ],
               [
-                [10, 10, 10, 10, 10, 10, 10, 10],
+                [10, 10, 10, 10, 10, 10, 10, 10].toHex(),
                 1
               ]
             ],
@@ -391,11 +416,11 @@ void _test(MetadataV15 api) {
             value: [
               [
                 /// incorrect length
-                [8, 8, 8, 8, 8, 8, 8, 8],
+                [8, 8, 8, 8, 8, 8, 8, 8].toHex(),
                 1111
               ],
               [
-                [10, 10, 10, 10, 10, 10, 10, 10],
+                [10, 10, 10, 10, 10, 10, 10, 10].toHex(),
 
                 /// Invalid u32
                 -1
@@ -407,7 +432,7 @@ void _test(MetadataV15 api) {
 
   test("ID-609", () {
     const lookupid = 609;
-    final templateValue = {"type": "Option<Vec<U8>>", "value": null};
+    final templateValue = {"value": null, "key": "None"};
     final simpleValue = api.registry
         .getValue(id: lookupid, value: templateValue, fromTemplate: true);
     final encodeSimple =
@@ -417,14 +442,15 @@ void _test(MetadataV15 api) {
         id: lookupid, value: templateValue, fromTemplate: true);
     expect(encodeSimple.toHex(), encodeTemplate.toHex());
     final decode = api.decodeLookup(lookupid, encodeTemplate);
-    expect(decode, null);
+    expect(decode, {"None": null});
     expect(encodeSimple.toHex(), "00");
   });
   test("ID-609_2", () {
     const lookupid = 609;
     final templateValue = {
       "type": "Option<Vec<U8>>",
-      "value": List<int>.filled(8, 12).toHex()
+      "key": "Some",
+      "value": {"value": List<int>.filled(8, 12).toHex()}
     };
     final simpleValue = api.registry
         .getValue(id: lookupid, value: templateValue, fromTemplate: true);
@@ -435,7 +461,7 @@ void _test(MetadataV15 api) {
         id: lookupid, value: templateValue, fromTemplate: true);
     expect(encodeSimple.toHex(), encodeTemplate.toHex());
     final decode = api.decodeLookup(lookupid, encodeTemplate);
-    expect(decode, List<int>.filled(8, 12));
+    expect(decode, {"Some": List<int>.filled(8, 12).toHex()});
     expect(encodeSimple.toHex(), "01200c0c0c0c0c0c0c0c");
     expect(
         () => api.encodeLookup(
@@ -444,6 +470,7 @@ void _test(MetadataV15 api) {
             /// Incorrect template
             value: {
               "type": "Option<Vec<U8>>",
+              "key": "None",
               "value": {"type": "Map", "value": List<int>.filled(8, 12).toHex()}
             },
             fromTemplate: true),
@@ -466,7 +493,10 @@ void _test(MetadataV15 api) {
         {
           "type": "Map",
           "value": {
-            "real": {"type": "[U8;32]", "value": List<int>.filled(32, 1)},
+            "real": {
+              "type": "[U8;32]",
+              "value": List<int>.filled(32, 1).toHex()
+            },
             "call_hash": {"type": "[U8;32]", "value": List<int>.filled(32, 2)},
             "height": {"type": "U32", "value": 0}
           }
@@ -474,8 +504,14 @@ void _test(MetadataV15 api) {
         {
           "type": "Map",
           "value": {
-            "real": {"type": "[U8;32]", "value": List<int>.filled(32, 2)},
-            "call_hash": {"type": "[U8;32]", "value": List<int>.filled(32, 3)},
+            "real": {
+              "type": "[U8;32]",
+              "value": List<int>.filled(32, 2).toHex()
+            },
+            "call_hash": {
+              "type": "[U8;32]",
+              "value": List<int>.filled(32, 3).toHex()
+            },
             "height": {"type": "U32", "value": 1}
           }
         }
@@ -493,13 +529,13 @@ void _test(MetadataV15 api) {
     final decode = api.decodeLookup(lookupid, encodeTemplate);
     expect(decode, [
       {
-        "real": List<int>.filled(32, 1),
-        "call_hash": List<int>.filled(32, 2),
+        "real": List<int>.filled(32, 1).toHex(),
+        "call_hash": List<int>.filled(32, 2).toHex(),
         "height": 0
       },
       {
-        "real": List<int>.filled(32, 2),
-        "call_hash": List<int>.filled(32, 3),
+        "real": List<int>.filled(32, 2).toHex(),
+        "call_hash": List<int>.filled(32, 3).toHex(),
         "height": 1
       }
     ]);
@@ -511,8 +547,8 @@ void _test(MetadataV15 api) {
             value: [
               {
                 /// incorret length
-                "real": List<int>.filled(33, 1),
-                "call_hash": List<int>.filled(32, 2),
+                "real": List<int>.filled(33, 1).toHex(),
+                "call_hash": List<int>.filled(32, 2).toHex(),
                 "height": 0
               },
             ],
@@ -525,8 +561,8 @@ void _test(MetadataV15 api) {
             /// invalid value
             value: {
               /// incorret length
-              "real": List<int>.filled(33, 1),
-              "call_hash": List<int>.filled(32, 2),
+              "real": List<int>.filled(33, 1).toHex(),
+              "call_hash": List<int>.filled(32, 2).toHex(),
               "height": 0
             },
             fromTemplate: false),

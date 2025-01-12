@@ -2,8 +2,14 @@ import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
-class PalletEventMetadataV14
+abstract class PalletEventMetadata
     extends SubstrateSerialization<Map<String, dynamic>> {
+  abstract final int type;
+  const PalletEventMetadata();
+}
+
+class PalletEventMetadataV14 extends PalletEventMetadata {
+  @override
   final int type;
   const PalletEventMetadataV14(this.type);
   PalletEventMetadataV14.deserializeJson(Map<String, dynamic> json)

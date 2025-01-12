@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import 'v14_metadata_hex.dart';
 import 'v12_metadata_hex.dart';
 import 'v15_metadata_hex.dart';
+import 'v16_metadata_hex.dart';
 
 void main() {
   group("Metadata", () {
@@ -12,6 +13,15 @@ void main() {
 }
 
 void _encodeDecode() {
+  test("V16 Encode and Decode", () {
+    final metadataBytesV16 = BytesUtils.fromHexString(metadataV16);
+    final VersionedMetadata<MetadataV16> metadata =
+        VersionedMetadata.fromBytes(metadataBytesV16);
+    final encode = metadata.serialize();
+    expect(encode, metadataBytesV16);
+    expect(metadata.version, 16);
+    expect(metadata.supportedByApi, true);
+  });
   test("V15 Encode and Decode", () {
     final metadataBytesV15 = BytesUtils.fromHexString(metadataV15);
     final VersionedMetadata<MetadataV15> metadata =

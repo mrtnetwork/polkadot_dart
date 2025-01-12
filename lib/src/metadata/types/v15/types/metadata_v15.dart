@@ -4,6 +4,7 @@ import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_metadata_v14.dart';
@@ -23,6 +24,7 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
   final ExtrinsicMetadataV15 extrinsic;
 
   final int type;
+  @override
   final List<RuntimeApiMetadataV15> apis;
   final OuterEnums15 outerEnums;
   final CustomMetadata15 custom;
@@ -145,5 +147,25 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
   bool get isSupportMetadataHash {
     return extrinsic.signedExtensions.any((e) =>
         e.identifier == MetadataConstant.checkMetadataHashExtensionIdentifier);
+  }
+
+  @override
+  List<TransactionExtrinsicInfo> extrinsicInfo() {
+    return [
+      TransactionExtrinsicInfo(
+          version: extrinsic.version,
+          callType: extrinsic.callType,
+          addressType: extrinsic.addressType,
+          signatureType: extrinsic.signatureType,
+          extrinsic: [
+            ...extrinsic.signedExtensions
+                .map((e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier))
+          ],
+          payloadExtrinsic: [
+            ExtrinsicTypeInfo(id: extrinsic.extraType),
+            ...extrinsic.signedExtensions.map((e) =>
+                ExtrinsicTypeInfo(id: e.additionalSigned, name: e.identifier))
+          ])
+    ];
   }
 }

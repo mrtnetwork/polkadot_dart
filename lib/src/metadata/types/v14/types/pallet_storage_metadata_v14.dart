@@ -4,9 +4,18 @@ import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 import 'storage_entry_metadata_v14.dart';
 
-class PalletStorageMetadataV14
+abstract class PalletStorageMetadata<
+        STORAGEENTERY extends StorageEntryMetadataV14>
     extends SubstrateSerialization<Map<String, dynamic>> {
+  abstract final String prefix;
+  abstract final List<STORAGEENTERY> items;
+}
+
+class PalletStorageMetadataV14
+    extends PalletStorageMetadata<StorageEntryMetadataV14> {
+  @override
   final String prefix;
+  @override
   final List<StorageEntryMetadataV14> items;
   PalletStorageMetadataV14(
       {required this.prefix, required List<StorageEntryMetadataV14> items})

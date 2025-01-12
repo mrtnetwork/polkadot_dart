@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
@@ -70,11 +71,14 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     if (bytes.isEmpty) {
       throw const MetadataException("Invalid variant bytes");
     }
-    final index = bytes[0];
+    final index = bytes[offset];
     final variant = variants.firstWhere(
       (element) => element.index == index,
       orElse: () => throw MetadataException(
@@ -84,7 +88,8 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
             "indexes": variants.map((e) => e.index).join(", ")
           }),
     );
-    final decode = variant.decode(registry, bytes.sublist(1));
+    final decode =
+        variant.decode(registry: registry, bytes: bytes, offset: offset + 1);
     return LayoutDecodeResult(
         consumed: decode.consumed + 1, value: decode.value);
   }
@@ -146,4 +151,9 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
 
   List<String> get getVariantNames =>
       variants.map((e) => "${e.name} ").toList();
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    return MetadataTypeInfoVariant(typeId: id, variants: variants, name: null);
+  }
 }

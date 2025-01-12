@@ -5,10 +5,14 @@ class ExtrinsicV4Layouts {
   static StructLayout payloadV4({String? property}) {
     return LayoutConst.struct([
       LayoutConst.greedyArray(LayoutConst.u8(), property: "method"),
+
+      /// signatureType
       GenericLayouts.era(property: "era"),
       LayoutConst.compactIntU32(property: "nonce"),
       LayoutConst.compactBigintU128(property: "tip"),
       LayoutConst.u8(property: "mode"),
+
+      /// additional signed (need in payload)
       LayoutConst.u32(property: "specVersion"),
       LayoutConst.u32(property: "transactionVersion"),
       LayoutConst.fixedBlob32(property: "genesisHash"),
@@ -51,6 +55,8 @@ class ExtrinsicV4Layouts {
     return LayoutConst.struct([
       GenericLayouts.multiAddress(property: "address"),
       GenericLayouts.signature(property: "signature"),
+
+      /// signedExtensions type ids
       GenericLayouts.era(property: "era"),
       LayoutConst.compactIntU32(property: "nonce"),
       LayoutConst.compactBigintU128(property: "tip"),
@@ -91,20 +97,6 @@ class ExtrinsicV4Layouts {
       LayoutConst.compactBigintU128(property: "tip"),
     ], property: property);
   }
-
-  // static StructLayout genericExtrinssicSigned({String? property}) {
-  //   return LayoutConst.struct([
-  //     LayoutConst.u8(property: "version"),
-  //     signatureV4(property: "signature")
-  //   ], property: property);
-  // }
-
-  // static StructLayout legacyGenericExtrinssicSigned({String? property}) {
-  //   return LayoutConst.struct([
-  //     LayoutConst.u8(property: "version"),
-  //     legacySignatureV4(property: "signature")
-  //   ], property: property);
-  // }
 
   static StructLayout genericExtrinssicUnsigned({String? property}) {
     return LayoutConst.struct([LayoutConst.u8(property: "version")],

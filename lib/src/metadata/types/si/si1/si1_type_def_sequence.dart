@@ -1,10 +1,15 @@
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
+import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
+import 'package:polkadot_dart/src/serialization/serialization.dart';
+import 'package:polkadot_dart/src/serialization/utils/utils.dart';
 
 class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
   final int type;
@@ -41,20 +46,32 @@ class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     final parent = registry.scaleType(type);
     final isPrimitive = parent.toPrimitive();
     if (isPrimitive != null) {
       final layout = registry.typeDefLayout(type, null);
       final listLayout = LayoutConst.compactVec(layout);
-      return listLayout.deserialize(bytes);
+      final result = SubstrateSerialization.deserialize(
+          bytes: bytes, layout: listLayout, offset: offset);
+      if (isPrimitive == PrimitiveTypes.u8) {
+        return LayoutDecodeResult(
+            consumed: result.consumed,
+            value: BytesUtils.toHexString((result.value as List).cast<int>()));
+      }
+      return result;
     }
-    final decodeLength = LayoutSerializationUtils.decodeLength(bytes);
+    final decodeLength =
+        SubstrateSerializationUtils.decodeLength(bytes: bytes, offset: offset);
     final count = decodeLength.item2.toInt();
     int consumed = decodeLength.item1;
     final List decoded = [];
     for (int i = 0; i < count; i++) {
-      final decode = parent.typeDefDecode(registry, bytes.sublist(consumed));
+      final decode = parent.typeDefDecode(
+          registry: registry, bytes: bytes, offset: consumed + offset);
       decoded.add(decode.value);
       consumed += decode.consumed;
     }
@@ -88,11 +105,17 @@ class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
     if (isPrimitive != null) {
       return data;
     }
-    final listValue = MetadataCastingUtils.hasList(
+    final listValue = MetadataCastingUtils.asList(
         value: data, lookupId: self, type: typeName);
     return listValue
         .map((e) =>
             registry.getValue(id: type, value: e, fromTemplate: fromTemplate))
         .toList();
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    return MetadataTypeInfoSequence(
+        name: null, typeId: id, type: registry.typeInfo(type));
   }
 }

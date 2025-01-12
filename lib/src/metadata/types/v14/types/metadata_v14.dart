@@ -3,8 +3,11 @@ import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/types/v15/types/runtime_api_metadata_v15.dart';
+import 'package:polkadot_dart/src/metadata/types/v15/types/runtime_api_method_metadata_v15.dart';
 import 'extrinsic_metadata_v14.dart';
 import 'pallet_metadata_v14.dart';
 
@@ -64,5 +67,29 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
   bool get isSupportMetadataHash {
     return extrinsic.signedExtensions.any((e) =>
         e.identifier == MetadataConstant.checkMetadataHashExtensionIdentifier);
+  }
+
+  @override
+  List<RuntimeApiMetadata<RuntimeApiMethodMetadata>> get apis => [];
+
+  @override
+  List<TransactionExtrinsicInfo> extrinsicInfo() {
+    return [
+      TransactionExtrinsicInfo(
+          addressType:
+              lookup.typeByPaths(MetadataConstant.accountIndexPaths)?.id,
+          signatureType: lookup.typeByPaths(MetadataConstant.signaturePath)?.id,
+          version: extrinsic.version,
+          extrinsic: [
+            ...extrinsic.signedExtensions
+                .map((e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier)),
+          ],
+          payloadExtrinsic: [
+            ...extrinsic.signedExtensions
+                .map((e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier)),
+            ...extrinsic.signedExtensions.map((e) =>
+                ExtrinsicTypeInfo(id: e.additionalSigned, name: e.identifier)),
+          ])
+    ];
   }
 }

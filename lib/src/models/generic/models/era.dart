@@ -94,4 +94,9 @@ class MortalEra extends SubstrateBaseEra {
   Map<String, dynamic> scaleJsonSerialize({String? property}) {
     return {"${_SubstrateEraConst.mortal}$index": era};
   }
+
+  @override
+  String toString() {
+    return "${_SubstrateEraConst.mortal}$index ($era)";
+  }
 }

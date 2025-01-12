@@ -1,11 +1,13 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
+import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
   final int type;
@@ -58,11 +60,14 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     final parent = registry.typeDefLayout(type, null);
     final layout = _serializationLayout(parent);
-    final deserialize = layout.deserialize(bytes);
-    return deserialize;
+    return SubstrateSerialization.deserialize(
+        bytes: bytes, layout: layout, offset: offset);
   }
 
   /// Returns the type template using the provided [registry].
@@ -91,5 +96,21 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
     }
     return registry.getValue(
         id: type, value: value, fromTemplate: fromTemplate);
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    final type = registry.typeInfo(this.type);
+    if (type.typeName == MetadataTypes.tuple) {
+      return MetadataTypeInfoCompact(
+          type: MetadataTypeInfoInt(
+              name: null,
+              typeId: type.typeId,
+              primitiveType: PrimitiveTypes.u32),
+          name: null,
+          typeId: id);
+    }
+    return MetadataTypeInfoCompact(
+        type: type as MetadataTypeInfoNumeric, name: null, typeId: id);
   }
 }

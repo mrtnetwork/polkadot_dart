@@ -201,7 +201,6 @@ class MoonbeamAddress extends BaseSubstrateAddress {
 
   /// Converts the address to a list of bytes.
   ///
-  /// Decodes the address using the current SS58 format.
   @override
   List<int> toBytes() {
     final decode = EthAddrDecoder().decodeAddr(address);

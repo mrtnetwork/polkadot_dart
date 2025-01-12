@@ -6,3 +6,4 @@ export 'models/modesl.dart';
 export 'provider/provider.dart';
 export 'serialization/serialization.dart';
 export 'helper/helper.dart';
+export 'constant/constant.dart';

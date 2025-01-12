@@ -8,7 +8,7 @@ import 'package:polkadot_dart/src/serialization/serialization.dart';
 import 'generic_extrinsic_signature.dart';
 import 'generic_extrinsic.dart';
 
-class _TransactionPalyloadConst {
+class TransactionPalyloadConst {
   static const int requiredHashDigestLength = 256;
 }
 
@@ -64,7 +64,7 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
   /// the bytes must be sign
   List<int> serialzeSign({String? property}) {
     final digest = serialize(property: property);
-    if (digest.length > _TransactionPalyloadConst.requiredHashDigestLength) {
+    if (digest.length > TransactionPalyloadConst.requiredHashDigestLength) {
       return QuickCrypto.blake2b256Hash(digest);
     }
     return digest;

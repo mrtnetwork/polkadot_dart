@@ -1,10 +1,14 @@
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
+import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
+import 'package:polkadot_dart/src/serialization/serialization.dart';
 
 class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
   final int len;
@@ -31,11 +35,8 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
       {String? property}) {
     final listValue = MetadataUtils.isList(value);
     final parent = registry.type(type).type;
-    MetadataUtils.hasLen(
-      listValue,
-      len,
-      info: "Invalid fixed array length for type: ${parent.typeName}",
-    );
+    MetadataUtils.hasLen(listValue, len,
+        info: "Invalid fixed array length for type: ${parent.typeName}");
     if (parent.typeName.isPrimitive) {
       final layout = registry.typeDefLayout(type, null);
       return LayoutConst.array(layout, len, property: property);
@@ -48,19 +49,29 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     final parent = registry.scaleType(type);
     final isPrimitive = parent.toPrimitive();
     if (isPrimitive != null) {
       final parentLayout = registry.typeDefLayout(type, null);
       final layout = LayoutConst.array(parentLayout, len);
-      final result = layout.deserialize(bytes);
+      final result = SubstrateSerialization.deserialize(
+          bytes: bytes, layout: layout, offset: offset);
+      if (isPrimitive == PrimitiveTypes.u8) {
+        return LayoutDecodeResult(
+            consumed: result.consumed,
+            value: BytesUtils.toHexString((result.value as List).cast<int>()));
+      }
       return result;
     }
     final List decoded = [];
     int consumed = 0;
     for (int i = 0; i < len; i++) {
-      final decode = parent.typeDefDecode(registry, bytes.sublist(consumed));
+      final decode = parent.typeDefDecode(
+          registry: registry, bytes: bytes, offset: offset + consumed);
       decoded.add(decode.value);
       consumed += decode.consumed;
     }
@@ -93,11 +104,17 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
     if (isPrimitive != null) {
       return data;
     }
-    final listValue = MetadataCastingUtils.hasList(
+    final listValue = MetadataCastingUtils.asList(
         value: data, length: len, lookupId: self, type: typeName);
     return listValue
         .map((e) =>
             registry.getValue(id: type, value: e, fromTemplate: fromTemplate))
         .toList();
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    return MetadataTypeInfoArray(
+        type: registry.typeInfo(type), length: len, name: null, typeId: id);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
+import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type_def_sequence.dart';
 import 'portable_type.dart';
 
@@ -40,7 +41,9 @@ abstract class PortableRegistry {
   /// Returns the versioned type definition for the given [id].
   ///
   /// [id] is the identifier for the type definition.
-  ScaleInfoVersioned scaleType(int id);
+  Si1Type scaleType(int id);
+
+  PortableType? typeByPaths(List<String> paths);
 
   /// Returns the template for the type definition for the given [id].
   ///
@@ -49,4 +52,6 @@ abstract class PortableRegistry {
 
   Object? getValue(
       {required int id, required Object? value, required bool fromTemplate});
+
+  MetadataTypeInfo typeInfo(int id);
 }

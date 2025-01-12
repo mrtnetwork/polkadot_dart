@@ -4,20 +4,27 @@ import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 import 'runtime_api_method_param_metadata_v15.dart';
 
-class RuntimeApiMethodMetadataV15
+abstract class RuntimeApiMethodMetadata
     extends SubstrateSerialization<Map<String, dynamic>> {
+  /// Method name.
   final String name;
+
+  /// Method parameters.
   final List<RuntimeApiMethodParamMetadataV15> inputs;
+
+  /// Method output.
   final int output;
+
+  /// Method documentation.
   final List<String> docs;
-  RuntimeApiMethodMetadataV15({
+  RuntimeApiMethodMetadata({
     required this.name,
     required List<RuntimeApiMethodParamMetadataV15> inputs,
     required this.output,
     required List<String> docs,
   })  : inputs = List<RuntimeApiMethodParamMetadataV15>.unmodifiable(inputs),
         docs = List<String>.unmodifiable(docs);
-  RuntimeApiMethodMetadataV15.deserializeJson(Map<String, dynamic> json)
+  RuntimeApiMethodMetadata.deserializeJson(Map<String, dynamic> json)
       : name = json["name"],
         inputs = List<RuntimeApiMethodParamMetadataV15>.unmodifiable(
             (json["inputs"] as List).map(
@@ -40,9 +47,13 @@ class RuntimeApiMethodMetadataV15
     };
   }
 }
-// export interface RuntimeApiMethodMetadataV15 extends Struct {
-//     readonly name: Text;
-//     readonly inputs: Vec<RuntimeApiMethodParamMetadataV15>;
-//     readonly output: SiLookupTypeId;
-//     readonly docs: Vec<Text>;
-// }
+
+class RuntimeApiMethodMetadataV15 extends RuntimeApiMethodMetadata {
+  RuntimeApiMethodMetadataV15(
+      {required super.name,
+      required super.inputs,
+      required super.output,
+      required super.docs});
+  RuntimeApiMethodMetadataV15.deserializeJson(super.json)
+      : super.deserializeJson();
+}

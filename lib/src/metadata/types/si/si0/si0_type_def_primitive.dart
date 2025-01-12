@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
@@ -36,9 +37,13 @@ class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
 
   /// Decodes the data based on the type definition using the provided [registry] and [bytes].
   @override
-  LayoutDecodeResult typeDefDecode(PortableRegistry registry, List<int> bytes) {
+  LayoutDecodeResult typeDefDecode(
+      {required PortableRegistry registry,
+      required List<int> bytes,
+      required int offset}) {
     final layout = type.toLayout();
-    return layout.deserialize(bytes);
+    return SubstrateSerialization.deserialize(
+        bytes: bytes, layout: layout, offset: offset);
   }
 
   @override
@@ -64,5 +69,10 @@ class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
         fromTemplate: fromTemplate,
         primitive: type,
         lookupId: self);
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    return type.typeInfo(typeId: id);
   }
 }

@@ -4,21 +4,21 @@ import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_m
 import 'signed_extension_metadata_v14.dart';
 
 class ExtrinsicMetadataV14 extends ExtrinsicMetadata {
+  final int version;
   final int type;
-  @override
   final List<SignedExtensionMetadataV14> signedExtensions;
   ExtrinsicMetadataV14(
       {required this.type,
-      required super.version,
+      required this.version,
       required List<SignedExtensionMetadataV14> signedExtensions})
       : signedExtensions =
             List<SignedExtensionMetadataV14>.unmodifiable(signedExtensions);
-  ExtrinsicMetadataV14.deserializeJson(super.json)
+  ExtrinsicMetadataV14.deserializeJson(Map<String, dynamic> json)
       : signedExtensions = List<SignedExtensionMetadataV14>.unmodifiable(
             (json["signedExtensions"] as List)
                 .map((e) => SignedExtensionMetadataV14.deserializeJson(e))),
         type = json["type"],
-        super.deserializeJson();
+        version = json["version"];
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -33,10 +33,5 @@ class ExtrinsicMetadataV14 extends ExtrinsicMetadata {
       "version": version,
       "type": type
     };
-  }
-
-  @override
-  List<int> signingPayloadTypes() {
-    return [type, ...signedExtensions.map((e) => e.additionalSigned)];
   }
 }

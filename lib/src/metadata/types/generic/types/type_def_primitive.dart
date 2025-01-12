@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 
 class PrimitiveTypes {
   final String name;
@@ -63,6 +64,24 @@ class PrimitiveTypes {
         }
         return LayoutConst.intLayout(byteLength,
             sign: sign, property: property);
+    }
+  }
+
+  MetadataTypeInfo typeInfo({String? name, required int typeId}) {
+    switch (this) {
+      case PrimitiveTypes.boolType:
+        return MetadataTypeInfoBoolean(name: name, typeId: typeId);
+      case PrimitiveTypes.charType:
+      case PrimitiveTypes.strType:
+        return MetadataTypeInfoString(name: name, typeId: typeId);
+      default:
+        final bitLength = int.parse(this.name.substring(1));
+        if (bitLength > 32) {
+          return MetadataTypeInfoBigInt(
+              name: name, typeId: typeId, primitiveType: this);
+        }
+        return MetadataTypeInfoInt(
+            name: name, typeId: typeId, primitiveType: this);
     }
   }
 

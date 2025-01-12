@@ -2,10 +2,11 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_type.dart';
-import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
+import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type_def_sequence.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/portable_type_v14.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
@@ -91,8 +92,10 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   }
 
   @override
-  dynamic decode(int id, List<int> bytes, {String? property}) {
-    final decode = type(id).type.typeDefDecode(this, bytes);
+  dynamic decode(int id, List<int> bytes, {String? property, int offset = 0}) {
+    final decode = type(id)
+        .type
+        .typeDefDecode(registry: this, bytes: bytes, offset: offset);
     return decode.value;
   }
 
@@ -113,7 +116,7 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   }
 
   @override
-  ScaleInfoVersioned scaleType(int id) {
+  Si1Type scaleType(int id) {
     return type(id).type;
   }
 
@@ -127,5 +130,16 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
       {required int id, required Object? value, required bool fromTemplate}) {
     return type(id).type.getValue(
         registry: this, value: value, fromTemplate: fromTemplate, self: id);
+  }
+
+  @override
+  MetadataTypeInfo typeInfo(int id) {
+    return type(id).type.typeInfo(this, id);
+  }
+
+  @override
+  PortableType? typeByPaths(List<String> paths) {
+    return types.values.firstWhereNullable(
+        (e) => CompareUtils.iterableIsEqual(e.type.path, paths));
   }
 }

@@ -2,8 +2,16 @@ import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
-class PalletErrorMetadataV14
+abstract class PalletErrorMetadata
     extends SubstrateSerialization<Map<String, dynamic>> {
+  /// The error type information.
+  abstract final int type;
+  const PalletErrorMetadata();
+}
+
+class PalletErrorMetadataV14 extends PalletErrorMetadata {
+  /// The error type information.
+  @override
   final int type;
   const PalletErrorMetadataV14(this.type);
   PalletErrorMetadataV14.deserializeJson(Map<String, dynamic> json)

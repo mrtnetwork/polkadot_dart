@@ -4,7 +4,7 @@ class MetadataConstant {
   static const List<String> eventPath = ["frame_system", "EventRecord"];
 
   /// The list of supported metadata versions.
-  static const List<int> supportedMetadataVersion = [14, 15];
+  static const List<int> supportedMetadataVersion = [14, 15, 16];
 
   /// The name of the generic system pallet.
   static const String genericSystemPalletName = "System";
@@ -18,13 +18,22 @@ class MetadataConstant {
   /// Metadata version 15.
   static const int v15 = 15;
 
-  static const List<int> supportRuntimeApi = [15];
+  static const int v16 = 16;
+
+  static const List<int> supportRuntimeApi = [15, 16];
 
   /// unsuported template
   static const List<String> unsuportedTemplatePath = [
     "RuntimeCall",
     "Instruction"
   ];
+
+  static const List<String> accountIndexPaths = [
+    "sp_runtime",
+    "multiaddress",
+    "MultiAddress"
+  ];
+  static const List<String> signaturePath = ["sp_runtime", "MultiSignature"];
 
   static const String queryBlockWeightMethodName = "BlockWeight";
 

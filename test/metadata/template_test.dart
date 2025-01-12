@@ -720,45 +720,12 @@ void _test(PortableRegistry registry) {
   test("loookup-57", () {
     const lookupId = 57;
     final Map<String, dynamic> template = {
-      "type": "Option<[U8;32]>",
-      "value": List<int>.filled(32, 12)
+      "key": "Some",
+      "value": {"value": List<int>.filled(32, 12)}
     };
     final value =
         registry.getValue(id: lookupId, value: template, fromTemplate: true);
-    final result = [
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12,
-      12
-    ];
+    final result = {"Some": List<int>.filled(32, 12)};
     expect(value, result);
     final withoutTemplate =
         registry.getValue(id: lookupId, value: result, fromTemplate: false);

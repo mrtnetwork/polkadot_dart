@@ -1,21 +1,9 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
-import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
-import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_option.dart';
-import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 
 class MetadataUtils {
   static const List<String> optionPath = ["Option"];
-  static ScaleTypeDef toOption(
-      Si1TypeDef def, List<String> path, List<int?> params) {
-    if (params.length == 1 &&
-        params[0] != null &&
-        CompareUtils.iterableIsEqual(path, optionPath)) {
-      return TypeDefOption(params[0]!, def);
-    }
-    return def;
-  }
 
   static List isList(dynamic value, {String? info}) {
     if (value is! List) {
