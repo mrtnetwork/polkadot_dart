@@ -9,7 +9,7 @@ This package is designed to work with Substrate metadata. It does not provide a 
 To effectively use this package, you should have a solid understanding of Substrate metadata. It provides a powerful and flexible toolkit for developers who need to handle various data formats and cryptographic operations within the Substrate ecosystem.
 
 ## Live application
- - the example of using package can be found [here](https://mrtnetwork.github.io/substrate/)
+ - An example of using a package can be found [here](https://mrtnetwork.github.io/substrate/)
 
 ## Futures
 
