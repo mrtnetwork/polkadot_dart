@@ -14,12 +14,8 @@ void main() async {
   final privateKey = SubstratePrivateKey.fromSeed(
       seedBytes: seedBytes, algorithm: SubstrateKeyAlgorithm.sr25519);
 
-  // final chainInfo = await provider.request(SubstrateRequestSystemProperties());
-
-  // print(privateKey.algorithm.cuve);
-  // return;
   final privateKey2 = SubstratePrivateKey.fromSeed(
-      seedBytes: seedBytes, algorithm: SubstrateKeyAlgorithm.secp256k1);
+      seedBytes: seedBytes, algorithm: SubstrateKeyAlgorithm.ecdsa);
 
   /// 5GjQNXpyZoyYiQ8GdB5fgjRkZdh3EgELwGdEmPP44YDnMx43
   final signer = privateKey.toAddress();
@@ -47,8 +43,6 @@ void main() async {
       rpc: provider,
       fromTemplate: false);
 
-  // print("account $accountInfo");
-  // return;
   final int nonce = accountInfo.result["nonce"];
 
   final tmp = {

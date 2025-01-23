@@ -174,7 +174,7 @@ class LegacyTransactionPayload
 }
 
 class MoonbeamTransactionPayload
-    extends BaseTransactionPayload<MoonbeamAddress> {
+    extends BaseTransactionPayload<SubstrateEthereumAddress> {
   final int mode;
   final List<int>? metadataHash;
 
@@ -205,10 +205,10 @@ class MoonbeamTransactionPayload
   }
 
   @override
-  MoonbeamExtrinsicSignature toExtrinsicSignature(
+  EthereumExtrinsicSignature toExtrinsicSignature(
       {required SubstrateMultiSignature signature,
-      required MoonbeamAddress signer}) {
-    return MoonbeamExtrinsicSignature(
+      required SubstrateEthereumAddress signer}) {
+    return EthereumExtrinsicSignature(
         signature: signature,
         address: signer.toMultiAddress(),
         era: era,

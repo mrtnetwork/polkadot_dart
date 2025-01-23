@@ -9,7 +9,6 @@ import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
-import 'package:polkadot_dart/src/serialization/utils/utils.dart';
 
 class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
   final int type;
@@ -65,7 +64,7 @@ class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
       return result;
     }
     final decodeLength =
-        SubstrateSerializationUtils.decodeLength(bytes: bytes, offset: offset);
+        LayoutSerializationUtils.decodeLength(bytes, offset: offset);
     final count = decodeLength.item2.toInt();
     int consumed = decodeLength.item1;
     final List decoded = [];

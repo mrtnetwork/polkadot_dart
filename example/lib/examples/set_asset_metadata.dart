@@ -19,7 +19,6 @@ void main() async {
   final signer = privateKey.toAddress();
 
   final api = metadata!.toApi();
-  // print(StringUtils.fromJson(meta.extrinsic.scaleJsonSerialize()));
 
   final version = api.runtimeVersion();
 

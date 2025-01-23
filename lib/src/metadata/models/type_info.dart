@@ -34,7 +34,6 @@ enum MetadataTypes {
   string,
   int,
   bigInt,
-  compact,
   array,
   sequence,
   tuple,
@@ -56,11 +55,8 @@ abstract class MetadataTypeInfo<T> {
       List<String>? paths})
       : docs = docs?.emptyAsNull?.immutable,
         paths = paths?.emptyAsNull?.immutable;
-  MetadataTypeInfo<T> copyWith({
-    String? name,
-    List<String>? paths,
-    List<String>? docs,
-  });
+  MetadataTypeInfo<T> copyWith(
+      {String? name, List<String>? paths, List<String>? docs, int? typeId});
   bool get isPromitive;
   MetadataTypes get typeName;
 
@@ -69,6 +65,16 @@ abstract class MetadataTypeInfo<T> {
       throw Exception("casting failed $E $runtimeType");
     }
     return this as E;
+  }
+
+  E? findType<E extends MetadataTypeInfo>(String name) {
+    if (this.name == name && this is E) return this as E;
+    return null;
+  }
+
+  List<String> getTypeNames() {
+    if (name == null) return [];
+    return [name!];
   }
 }
 
@@ -98,9 +104,10 @@ class MetadataTypeInfoBoolean extends MetadataTypeInfoPromitive<bool> {
     String? name,
     List<String>? paths,
     List<String>? docs,
+    int? typeId,
   }) {
     return MetadataTypeInfoBoolean(
-        typeId: typeId,
+        typeId: typeId ?? this.typeId,
         name: name ?? this.name,
         paths: paths ?? this.paths,
         docs: docs ?? this.docs);
@@ -158,6 +165,12 @@ abstract class MetadataTypeInfoNumeric<T> extends MetadataTypeInfoPromitive<T> {
 
   @override
   MetadataTypes get typeName => MetadataTypes.int;
+
+  @override
+  E? findType<E extends MetadataTypeInfo>(String name) {
+    if (this.name == name && this is E) return this as E;
+    return null;
+  }
 }
 
 class MetadataTypeInfoBigInt extends MetadataTypeInfoNumeric<BigInt> {
@@ -265,44 +278,6 @@ class MetadataTypeInfoArray<T extends MetadataTypeInfo>
   MetadataTypes get typeName => MetadataTypes.array;
 }
 
-class MetadataTypeInfoCompact<T extends MetadataTypeInfoNumeric>
-    extends MetadataTypeInfoPromitive<T> {
-  final T type;
-  MetadataTypeInfoCompact(
-      {required this.type,
-      required super.typeId,
-      required super.name,
-      super.docs,
-      super.paths})
-      : super(primitiveType: type.primitiveType);
-  @override
-  String toString() {
-    return "MetadataTypeInfoCompact<$type>";
-  }
-
-  @override
-  MetadataTypeInfoPromitive<T> copyWith({
-    int? typeId,
-    String? name,
-    T? type,
-    List<String>? paths,
-    List<String>? docs,
-  }) {
-    return MetadataTypeInfoCompact(
-        type: type ?? this.type,
-        name: name ?? this.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
-  }
-
-  @override
-  bool get isPromitive => type.isPromitive;
-
-  @override
-  MetadataTypes get typeName => MetadataTypes.compact;
-}
-
 class MetadataTypeInfoNone extends MetadataTypeInfo {
   MetadataTypeInfoNone(
       {required super.typeId, required super.name, super.docs, super.paths});
@@ -330,6 +305,10 @@ class MetadataTypeInfoNone extends MetadataTypeInfo {
 
   @override
   MetadataTypes get typeName => MetadataTypes.none;
+  @override
+  List<String> getTypeNames() {
+    return [];
+  }
 }
 
 class MetadataTypeInfoTuple<T extends MetadataTypeInfo>
@@ -367,6 +346,21 @@ class MetadataTypeInfoTuple<T extends MetadataTypeInfo>
 
   @override
   MetadataTypes get typeName => MetadataTypes.tuple;
+
+  @override
+  E? findType<E extends MetadataTypeInfo>(String name) {
+    for (final i in types) {
+      final type = i.findType<E>(name);
+      if (type != null) return type;
+    }
+    if (this.name == name && this is E) return this as E;
+    return null;
+  }
+
+  @override
+  List<String> getTypeNames() {
+    return types.map((e) => e.getTypeNames()).expand((e) => e).toList();
+  }
 }
 
 class MetadataTypeInfoComposit<T extends MetadataTypeInfo>
@@ -404,6 +398,20 @@ class MetadataTypeInfoComposit<T extends MetadataTypeInfo>
 
   @override
   MetadataTypes get typeName => MetadataTypes.composit;
+  @override
+  E? findType<E extends MetadataTypeInfo>(String name) {
+    for (final i in types) {
+      final type = i.findType<E>(name);
+      if (type != null) return type;
+    }
+    if (this.name == name && this is E) return this as E;
+    return null;
+  }
+
+  @override
+  List<String> getTypeNames() {
+    return types.map((e) => e.getTypeNames()).expand((e) => e).toList();
+  }
 }
 
 class MetadataTypeInfoSequence<T extends MetadataTypeInfo>
@@ -445,6 +453,20 @@ class MetadataTypeInfoSequence<T extends MetadataTypeInfo>
 
   @override
   MetadataTypes get typeName => MetadataTypes.sequence;
+
+  @override
+  E? findType<E extends MetadataTypeInfo>(String name) {
+    final type = this.type.findType<E>(name);
+    if (type != null) return type;
+    if (this.name == name && this is E) return this as E;
+    return null;
+  }
+
+  @override
+  List<String> getTypeNames() {
+    if (name == null) return [];
+    return [name!];
+  }
 }
 
 class MetadataTypeInfoVariant extends MetadataTypeInfo {

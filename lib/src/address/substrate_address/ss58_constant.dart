@@ -45,4 +45,10 @@ class SS58Const {
 
   /// SS58 format identifier for chainflip network.
   static const int chainFlip = 2112;
+
+  /// SS58 format identifier for astar network.
+  static const int astar = 5;
+
+  /// SS58 format identifier for centrifuge network.
+  static const int centrifuge = 36;
 }

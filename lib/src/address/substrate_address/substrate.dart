@@ -6,7 +6,6 @@ import 'address_utils.dart';
 import 'ss58_constant.dart';
 
 abstract class BaseSubstrateAddress {
-  /// The SS58 format identifier.
   final String address;
 
   const BaseSubstrateAddress._(this.address);
@@ -15,15 +14,19 @@ abstract class BaseSubstrateAddress {
   List<int> toBytes();
 
   SubstrateMultiAddress toMultiAddress();
+
+  factory BaseSubstrateAddress(String address) {
+    if (StringUtils.isHexBytes(address)) {
+      return SubstrateEthereumAddress(address);
+    }
+    return SubstrateAddress(address);
+  }
 }
 
 /// Represents a Substrate blockchain address with various factory constructors
 /// to initialize an address from different key types and functionalities to
 /// manipulate and encode/decode addresses.
 class SubstrateAddress extends BaseSubstrateAddress {
-  // /// The address string representation.
-  // final String address;
-
   /// The SS58 format identifier.
   final int ss58Format;
 
@@ -160,27 +163,27 @@ class SubstrateAddress extends BaseSubstrateAddress {
 /// Represents a Substrate blockchain address with various factory constructors
 /// to initialize an address from different key types and functionalities to
 /// manipulate and encode/decode addresses.
-class MoonbeamAddress extends BaseSubstrateAddress {
-  /// Private constructor for initializing a SubstrateAddress.
-  const MoonbeamAddress._(super.address) : super._();
+class SubstrateEthereumAddress extends BaseSubstrateAddress {
+  /// Private constructor for initializing a SubstrateEthereumAddress.
+  const SubstrateEthereumAddress._(super.address) : super._();
 
-  factory MoonbeamAddress.fromPublicKey(List<int> bytes) {
+  factory SubstrateEthereumAddress.fromPublicKey(List<int> bytes) {
     try {
       final addr = EthAddrEncoder().encodeKey(bytes);
-      return MoonbeamAddress._(addr);
+      return SubstrateEthereumAddress._(addr);
     } catch (e) {
-      throw DartSubstratePluginException("Invalid moonbeam public key bytes.",
+      throw DartSubstratePluginException("Invalid ethereum public key bytes.",
           details: {
             "bytes": BytesUtils.tryToHexString(bytes),
             "error": e.toString()
           });
     }
   }
-  factory MoonbeamAddress.fromBytes(List<int> addressBytes) {
+  factory SubstrateEthereumAddress.fromBytes(List<int> addressBytes) {
     try {
       final checksumAddress =
           EthAddrUtils.addressBytesToChecksumAddress(addressBytes);
-      return MoonbeamAddress._(checksumAddress);
+      return SubstrateEthereumAddress._(checksumAddress);
     } catch (e) {
       throw DartSubstratePluginException("Invalid moonbeam address bytes.",
           details: {
@@ -189,10 +192,10 @@ class MoonbeamAddress extends BaseSubstrateAddress {
           });
     }
   }
-  factory MoonbeamAddress(String address) {
+  factory SubstrateEthereumAddress(String address) {
     try {
       final checksumAddress = EthAddrUtils.toChecksumAddress(address);
-      return MoonbeamAddress._(checksumAddress);
+      return SubstrateEthereumAddress._(checksumAddress);
     } catch (e) {
       throw DartSubstratePluginException("Invalid moonbeam address.",
           details: {"address": address, "error": e.toString()});
@@ -200,7 +203,6 @@ class MoonbeamAddress extends BaseSubstrateAddress {
   }
 
   /// Converts the address to a list of bytes.
-  ///
   @override
   List<int> toBytes() {
     final decode = EthAddrDecoder().decodeAddr(address);
@@ -216,7 +218,7 @@ class MoonbeamAddress extends BaseSubstrateAddress {
   @override
   operator ==(other) {
     if (identical(this, other)) return true;
-    if (other is! MoonbeamAddress) return false;
+    if (other is! SubstrateEthereumAddress) return false;
     return other.address == address;
   }
 

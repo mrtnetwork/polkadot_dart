@@ -102,15 +102,10 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
     final type = registry.typeInfo(this.type);
     if (type.typeName == MetadataTypes.tuple) {
-      return MetadataTypeInfoCompact(
-          type: MetadataTypeInfoInt(
-              name: null,
-              typeId: type.typeId,
-              primitiveType: PrimitiveTypes.u32),
-          name: null,
-          typeId: id);
+      return MetadataTypeInfoInt(
+          name: type.name, typeId: id, primitiveType: PrimitiveTypes.u32);
     }
-    return MetadataTypeInfoCompact(
-        type: type as MetadataTypeInfoNumeric, name: null, typeId: id);
+
+    return type.copyWith(typeId: id);
   }
 }

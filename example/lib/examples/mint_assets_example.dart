@@ -20,7 +20,6 @@ void main() async {
   final signer = privateKey.toAddress();
 
   final api = metadata!.toApi();
-  // print(StringUtils.fromJson(meta.extrinsic.scaleJsonSerialize()));
 
   final version = api.runtimeVersion();
 
@@ -33,14 +32,6 @@ void main() async {
       .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
-  // final nextAsset = await api.getStorage(
-  //     request: QueryStorageRequest<int>(
-  //         palletNameOrIndex: "Assets",
-  //         methodName: "NextAssetId",
-  //         identifier: 0),
-  //     rpc: provider,
-  //     fromTemplate: false);
-  // print("next assetid ${nextAsset.result}");
   final setAssetMetadata = {
     "type": "Enum",
     "key": "mint",

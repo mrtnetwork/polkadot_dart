@@ -1,7 +1,6 @@
 import 'package:blockchain_utils/layout/constant/constant.dart';
 import 'package:blockchain_utils/layout/utils/utils.dart';
 import 'package:blockchain_utils/utils/binary/utils.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
 import 'package:polkadot_dart/src/provider/core/core/base.dart';
 import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 import 'package:polkadot_dart/src/provider/models/runtime/query_fee_info.dart';
@@ -13,8 +12,7 @@ class SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails
   const SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails(
       {required this.data, this.atBlockHash});
   factory SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails.fromExtrinsic(
-      {required Extrinsic exirce, String? atBlockHash}) {
-    final exirceBytes = exirce.serialize(encodeLength: false);
+      {required List<int> exirceBytes, String? atBlockHash}) {
     final length = LayoutConst.u32().serialize(exirceBytes.length);
     final data = [
       ...LayoutSerializationUtils.encodeLength(exirceBytes),

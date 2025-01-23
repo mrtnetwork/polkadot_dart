@@ -1,10 +1,9 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
-
-import 'private_key.dart';
+import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 
 /// Represents a public key in the Substrate framework.
-class SubstratePublicKey {
+class SubstratePublicKey extends BaseSubstratePublicKey<SubstrateAddress> {
   /// The underlying Substrate instance.
   final Substrate _substrate;
 
@@ -12,16 +11,16 @@ class SubstratePublicKey {
   const SubstratePublicKey._(this._substrate, this.algorithm);
 
   /// Constructs a [SubstratePublicKey] from a byte array.
-  factory SubstratePublicKey.fromBytes({
-    required List<int> pubkeyBytes,
-    SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
-  }) {
+  factory SubstratePublicKey.fromBytes(
+      {required List<int> pubkeyBytes,
+      SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519}) {
     final substrate =
-        Substrate.fromPublicKey(pubkeyBytes, algorithm.defaultCoin);
+        Substrate.fromPublicKey(pubkeyBytes, algorithm.substrateCoinInfo);
     return SubstratePublicKey._(substrate, algorithm);
   }
 
   /// Retrieves the algorithm used for the public key.
+  @override
   final SubstrateKeyAlgorithm algorithm;
 
   /// Derives a new public key from the current one using the provided [path].
@@ -31,17 +30,20 @@ class SubstratePublicKey {
   }
 
   /// Converts the public key to bytes.
+  @override
   List<int> toBytes() {
     return List<int>.from(_substrate.publicKey.compressed);
   }
 
   /// Converts the public key to hexadecimal string.
-  String tohex({bool upperCase = false}) {
+  @override
+  String toHex({bool upperCase = false}) {
     return BytesUtils.toHexString(toBytes(),
         lowerCase: !upperCase, prefix: "0x");
   }
 
   /// Verifies a given message and signature using the public key.
+  @override
   bool verify(List<int> message, List<int> signature) {
     final verifier = SubstrateVerifier.fromSubstrate(_substrate);
     return verifier.verify(message, signature);
@@ -55,6 +57,7 @@ class SubstratePublicKey {
   }
 
   /// Converts the public key to a Substrate address.
+  @override
   SubstrateAddress toAddress({int ss58Format = SS58Const.genericSubstrate}) {
     return SubstrateAddress(
         _substrate.publicKey.toSS58Address(ss58Format: ss58Format),

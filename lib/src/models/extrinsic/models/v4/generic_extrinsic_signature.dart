@@ -95,8 +95,8 @@ class AssetExtrinsicSignature extends ExtrinsicSignature {
   }
 }
 
-class MoonbeamExtrinsicSignature extends ExtrinsicSignature {
-  MoonbeamExtrinsicSignature(
+class EthereumExtrinsicSignature extends ExtrinsicSignature {
+  EthereumExtrinsicSignature(
       {required super.signature,
       required super.address,
       required super.era,

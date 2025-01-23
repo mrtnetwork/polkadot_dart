@@ -115,7 +115,7 @@ void main() async {
 
   /// Fetch Alice's account information
   final aliceAccount =
-      await api.getAccountInfo(address: aliceAddress, rpc: provider);
+      await api.getAccount(address: aliceAddress, rpc: provider);
 
   /// Create the payload for Alice's approval
   final signedTxApproveAsMulti = SubstrateHelper.createTransaction(
@@ -148,8 +148,7 @@ void main() async {
   final int multisigCallHeight = multisigDetails["when"]["height"];
 
   /// Fetch Bob's account information
-  final bobAccount =
-      await api.getAccountInfo(address: bobAddress, rpc: provider);
+  final bobAccount = await api.getAccount(address: bobAddress, rpc: provider);
 
   final asMultiEncode = api.encodeAsMulti(
       thresHold: thresHold,

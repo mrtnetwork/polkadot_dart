@@ -108,33 +108,9 @@ class SubstrateAddressUtils {
   static List<BaseSubstrateAddress> otherSignatories(
       {required List<BaseSubstrateAddress> addresses,
       required BaseSubstrateAddress signer}) {
-    // final addressesSS58 = addresses.map((e) => e.ss58Format).toSet();
-    // if (addressesSS58.length != 1) {
-    //   throw DartSubstratePluginException(
-    //     "Some provided addresses have different ss58 format with provided ss58Format",
-    //     details: {
-    //       "addresses": addresses.map((e) => e.address).join(", "),
-    //       "addressSS58Formats": addressesSS58.join(", ")
-    //     },
-    //   );
-    // }
     final sorted = sortedAddress(addresses);
     return sorted..removeWhere((element) => element == signer);
   }
-
-  // const multisigModuleHash = xxhashAsHex('Multisig', 128);
-  // const multisigStorageHash = xxhashAsHex('Multisigs', 128);
-  // const multisigAddressHash = xxhashAsHex(
-  //   keyring.decodeAddress(Ss58MultiSigAddress),
-  //   64,
-  // );
-  // const multisigCallHash = blake2AsHex(callTxHashMulti, 128);
-  // const multisigStorageKey = multisigModuleHash +
-  //     multisigStorageHash.substring(2) +
-  //     multisigAddressHash.substring(2) +
-  //     multisigAddressInHex +
-  //     multisigCallHash.substring(2) +
-  //     callTxHashMulti.substring(2);
 
   static List<int> createMultisigStorageKey(
       {required SubstrateAddress multiSigAddress,

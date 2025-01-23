@@ -11,7 +11,7 @@ void main() async {
 
   List<int> seedBytes = BytesUtils.fromHexString(
       "241c27160517b75a04e29b560c50dde37ec564aed7ac5552862c80b0f956f460");
-  final privateKey = MoonbeamPrivateKey.fromBytes(seedBytes);
+  final privateKey = SubstrateEthereumPrivateKey.fromBytes(seedBytes);
 
   final signer = privateKey.toAddress();
   final api = metadata!.toApi();
@@ -33,7 +33,8 @@ void main() async {
       "type": "Map",
       "value": {
         "dest": {
-          "value": MoonbeamAddress("0x64a01564edB3e4a914DE27EE7758198bfFedDEdE")
+          "value": SubstrateEthereumAddress(
+                  "0x64a01564edB3e4a914DE27EE7758198bfFedDEdE")
               .toBytes()
         },
         "value": {"type": "U128", "value": SubstrateHelper.toWSD("5")}

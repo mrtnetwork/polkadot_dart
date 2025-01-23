@@ -117,7 +117,7 @@ class SubstrateHelper {
     required int specVersion,
     required int transactionVersion,
     required SubstrateBaseEra era,
-    MoonbeamPrivateKey? signer,
+    SubstrateEthereumPrivateKey? signer,
     int extrinsicVersion = SubstrateConstant.currentExtrinsicVersion,
   }) {
     final payload = MoonbeamTransactionPayload(

@@ -141,7 +141,8 @@ extension QueryHelper on MetadataApi {
     return result.result;
   }
 
-  Future<SubstrateAccountInfo> getAccountInfo(
+  /// should be failed in some network.
+  Future<SubstrateDefaultAccount> getDefaultAccountInfo(
       {required BaseSubstrateAddress address,
       required SubstrateProvider rpc}) async {
     final data = await getStorage(
@@ -152,7 +153,21 @@ extension QueryHelper on MetadataApi {
             identifier: 0),
         rpc: rpc,
         fromTemplate: false);
-    return SubstrateAccountInfo.deserializeJson(data.result);
+    return SubstrateDefaultAccount.deserializeJson(data.result);
+  }
+
+  Future<SubstrateAccount> getAccount(
+      {required BaseSubstrateAddress address,
+      required SubstrateProvider rpc}) async {
+    final data = await getStorage(
+        request: QueryStorageRequest<Map<String, dynamic>>(
+            palletNameOrIndex: "System",
+            methodName: "account",
+            input: address.toBytes(),
+            identifier: 0),
+        rpc: rpc,
+        fromTemplate: false);
+    return SubstrateAccount.deserializeJson(data.result);
   }
 
   Future<FrameSupportDispatchPerDispatchClass> queryBlockWeight(
