@@ -10,7 +10,7 @@ class SubstrateEnumSerializationUtils {
       if (keys != null && !keys.contains(key)) {
         throw DartSubstratePluginException("Invalid enum key.", details: {
           "key": key,
-          "excepted": keys.join(", "),
+          "expected": keys.join(", "),
           "runtime": className,
         });
       }
@@ -26,7 +26,7 @@ class SubstrateEnumSerializationUtils {
     final value = json[key];
     if (value is! T) {
       throw DartSubstratePluginException("Invalid enum values.", details: {
-        "excepted": "$T",
+        "expected": "$T",
         "value": value,
         "key": key,
         "runtime": className

@@ -16,7 +16,7 @@ class MetadataUtils {
   static void hasLen(List list, int len, {String? info}) {
     if (list.length != len) {
       throw MetadataException("Invalid list len.",
-          details: {"excepted": len, "length": list.length, "info": info});
+          details: {"expected": len, "length": list.length, "info": info});
     }
   }
 
@@ -58,7 +58,7 @@ class MetadataUtils {
       // ignore: empty_catches
     } catch (e) {}
     throw MetadataException("Invalid Metadata option bytes.",
-        details: {"excepted": "0, 1", ...infos});
+        details: {"expected": "0, 1", ...infos});
   }
 
   static List<int> createQueryPrefixHash(

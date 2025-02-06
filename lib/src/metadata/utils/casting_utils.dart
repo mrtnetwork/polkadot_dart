@@ -15,7 +15,7 @@ class MetadataCastingUtils {
     if (isList != null) {
       if (length != null && isList.length != length) {
         throw MetadataException("Incorrect Array length.", details: {
-          "excepted": length,
+          "expected": length,
           "length": isList.length,
           "lookup_id": lookupId,
           "type": type?.name,
@@ -343,6 +343,6 @@ class MetadataCastingUtils {
       return bytes;
     }
     throw DartSubstratePluginException("Invalid bytes length.",
-        details: {"length": bytes.length, "excepted": except});
+        details: {"length": bytes.length, "expected": except});
   }
 }

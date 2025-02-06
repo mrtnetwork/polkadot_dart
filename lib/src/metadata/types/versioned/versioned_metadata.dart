@@ -60,7 +60,7 @@ class VersionedMetadata<T extends SubstrateMetadata>
     }
     if (metadata is! T) {
       throw DartSubstratePluginException("Incorrect metadata version.",
-          details: {"excepted": "$T", "version": "$version"});
+          details: {"expected": "$T", "version": "$version"});
     }
     return VersionedMetadata(
         metadata: metadata, version: version, magicNumber: magicNumber);

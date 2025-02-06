@@ -497,7 +497,6 @@ void _test(MetadataV15 api) {
 
     Map<String, dynamic> wrongTemplate = createTemolate(
         from: List<int>.filled(32, 1).toHex(),
-        //33 bytes. 32 bytes [u8;32] excepted
         to: List<int>.filled(33, 3).toHex(),
         amount: 2222222);
     expect(

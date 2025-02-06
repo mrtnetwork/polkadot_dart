@@ -37,7 +37,7 @@ abstract class ScaleTypeDef<T> extends SubstrateSerialization<T> {
   TYPE cast<TYPE extends ScaleTypeDef>() {
     if (this is! TYPE) {
       throw MetadataException("Type defination casting failed.",
-          details: {"excepted": "$Type", "type": typeName.name});
+          details: {"expected": "$Type", "type": typeName.name});
     }
     return this as TYPE;
   }
