@@ -8,8 +8,8 @@ class SubstrateConstant {
   static const int accountId20LengthInBytes = 20;
 
   static const int signatureLength = QuickCrypto.sha512DeigestLength;
-  static const int ecdsaSignatureLength = ETHSignerConst.ethSignatureLength +
-      ETHSignerConst.ethSignatureRecoveryIdLength;
+  static const int ecdsaSignatureLength =
+      CryptoSignerConst.ecdsaSignatureWithRecoveryIdLength;
   static const int bitSigned = 128;
   static const int bitUnsigned = 0;
   static int callIndexBytesLength = 2;
