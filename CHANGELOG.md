@@ -1,3 +1,7 @@
+## 3.6.0
+
+- Add deserialize constructor to MultiSignature.
+
 ## 3.5.0
 
 - Update dependencies.

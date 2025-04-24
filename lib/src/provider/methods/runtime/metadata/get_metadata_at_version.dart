@@ -29,7 +29,6 @@ class SubstrateRequestRuntimeMetadataGetMetadataAtVersion
     final decode =
         LayoutConst.optional(LayoutConst.bytes()).deserialize(toBytes).value;
     if (decode == null) return null;
-
     return VersionedMetadata.fromBytes(decode);
   }
 }

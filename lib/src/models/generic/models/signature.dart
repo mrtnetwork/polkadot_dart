@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
+import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/constant/constant.dart';
 import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
@@ -47,6 +48,22 @@ class SubstrateMultiSignature
     extends SubstrateSerialization<Map<String, dynamic>> {
   final SubstrateBaseSignature signature;
   const SubstrateMultiSignature(this.signature);
+  factory SubstrateMultiSignature.deserialize(List<int> bytes) {
+    final json = SubstrateVariantSerialization.deserialize(
+        bytes: bytes, layout: GenericLayouts.signature());
+    final variant = SubstrateVariantSerialization.toVariantDecodeResult(json);
+    final bytesValue = (variant.result["value"] as List).cast<int>();
+    final signature = switch (variant.variantName) {
+      GenericConstants.multiSignatureSr25519IndexKey =>
+        SubstrateSr25519Signature(bytesValue),
+      GenericConstants.multiSignatureEd25519IndexKey =>
+        SubstrateED25519Signature(bytesValue),
+      GenericConstants.multiSignatureEcdsaIndexKey =>
+        SubstrateSr25519Signature(bytesValue),
+      _ => throw DartSubstratePluginException("Unsuported signature type.")
+    };
+    return SubstrateMultiSignature(signature);
+  }
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>

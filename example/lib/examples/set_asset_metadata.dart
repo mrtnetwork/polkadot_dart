@@ -70,6 +70,7 @@ void main() async {
 
   final sig = privateKey.multiSignature(payload.serialzeSign());
 
+  /// SubstrateMultiSignature
   final signature = AssetExtrinsicSignature(
       signature: sig,
       address: signer.toMultiAddress(),
