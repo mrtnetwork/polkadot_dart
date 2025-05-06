@@ -10,12 +10,12 @@ class SubstrateEthereumPublicKey
   SubstrateEthereumPublicKey._(this._publicKey);
 
   /// The underlying ECDSA public key.
-  final Secp256k1PublicKeyEcdsa _publicKey;
+  final Secp256k1PublicKey _publicKey;
 
   /// Creates an [SubstrateEthereumPublicKey] instance from a list of bytes representing the public key.
   factory SubstrateEthereumPublicKey.fromBytes(List<int> keyBytes) {
     try {
-      final pubKey = Secp256k1PublicKeyEcdsa.fromBytes(keyBytes);
+      final pubKey = Secp256k1PublicKey.fromBytes(keyBytes);
       return SubstrateEthereumPublicKey._(pubKey);
     } catch (e) {
       throw DartSubstratePluginException("Invalid ethereum public key.",
@@ -73,7 +73,7 @@ class SubstrateEthereumPublicKey
     final verifier = ETHVerifier.getPublicKey(messageDigest, signature,
         hashMessage: hashMessage, payloadLength: payloadLength);
     if (verifier == null) return null;
-    final pubKey = Secp256k1PublicKeyEcdsa.fromBytes(verifier.point.toBytes());
+    final pubKey = Secp256k1PublicKey.fromBytes(verifier.point.toBytes());
     return SubstrateEthereumPublicKey._(pubKey);
   }
 

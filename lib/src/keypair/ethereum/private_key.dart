@@ -12,7 +12,7 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   const SubstrateEthereumPrivateKey._(this._privateKey);
 
   /// The underlying ECDSA private key.
-  final Secp256k1PrivateKeyEcdsa _privateKey;
+  final Secp256k1PrivateKey _privateKey;
 
   /// Creates an [SubstrateEthereumPrivateKey] instance from a hexadecimal private key string.
   factory SubstrateEthereumPrivateKey(String privateKeyHex) {
@@ -23,8 +23,7 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   /// Creates an [SubstrateEthereumPrivateKey] instance from a list of bytes representing the private key.
   factory SubstrateEthereumPrivateKey.fromBytes(List<int> keyBytes) {
     try {
-      final Secp256k1PrivateKeyEcdsa key =
-          Secp256k1PrivateKeyEcdsa.fromBytes(keyBytes);
+      final Secp256k1PrivateKey key = Secp256k1PrivateKey.fromBytes(keyBytes);
       return SubstrateEthereumPrivateKey._(key);
     } catch (e) {
       throw DartSubstratePluginException("invalid ethereum private key",
@@ -57,7 +56,8 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   @override
   List<int> sign(List<int> transactionDigest, {bool hashMessage = true}) {
     final ethsigner = ETHSigner.fromKeyBytes(toBytes());
-    final sign = ethsigner.sign(transactionDigest, hashMessage: hashMessage);
+    final sign =
+        ethsigner.signConst(transactionDigest, hashMessage: hashMessage);
     return sign.toBytes();
   }
 
@@ -66,8 +66,8 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   /// Optionally, [payloadLength] can be set to specify the payload length for the message.
   String signPersonalMessage(List<int> message, {int? payloadLength}) {
     final ethsigner = ETHSigner.fromKeyBytes(toBytes());
-    final sign =
-        ethsigner.signProsonalMessage(message, payloadLength: payloadLength);
+    final sign = ethsigner.signProsonalMessageConst(message,
+        payloadLength: payloadLength);
     return BytesUtils.toHexString(sign);
   }
 

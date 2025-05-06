@@ -84,7 +84,7 @@ class SubstratePrivateKey
   @override
   List<int> sign(List<int> digest) {
     final signer = SubstrateSigner.fromSubstrate(_substrate);
-    return signer.sign(digest);
+    return signer.signConst(digest);
   }
 
   /// Signs a given message using VRF (Verifiable Random Function) and the private key.
