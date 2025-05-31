@@ -38,8 +38,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     final decode = getLookup(id)
         .typeDefDecode(registry: registry, bytes: bytes, offset: offset);
     assert((decode.consumed + offset) == bytes.length, "decode lookup failed.");
-    if (T is List) return (decode.value as List).cast() as T;
-    return decode.value;
+    final value = decode.value;
+    return MetadataUtils.parseLoockupData<T>(value);
   }
 
   List<int> encodeLookup(

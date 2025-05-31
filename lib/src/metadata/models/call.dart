@@ -135,3 +135,12 @@ class TransactionExtrinsicInfo {
       this.callType,
       required this.version});
 }
+
+class DecodeCallResult {
+  final String palletName;
+  final Map<String, dynamic> data;
+  const DecodeCallResult({required this.palletName, required this.data});
+  Map<String, dynamic> toJson() {
+    return {palletName: data};
+  }
+}

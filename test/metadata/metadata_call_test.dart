@@ -30,6 +30,6 @@ void _encodeDecode(MetadataApi api) {
         "0400004214a9208f35732f27e41e7f2f6658082d06b14553a38a646c3c51bddc425e390700e8764817");
 
     final decodeCall = api.decodeCall(encodeCall);
-    expect(transferAllowDeath, decodeCall);
+    expect(transferAllowDeath, decodeCall.data);
   });
 }

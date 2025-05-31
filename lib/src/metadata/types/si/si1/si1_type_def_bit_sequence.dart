@@ -6,7 +6,6 @@ import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
-import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 class Si1TypeDefBitSequence extends Si1TypeDef<Map<String, dynamic>> {
@@ -33,8 +32,6 @@ class Si1TypeDefBitSequence extends Si1TypeDef<Map<String, dynamic>> {
   @override
   Layout typeDefLayout(PortableRegistry registry, Object? value,
       {String? property}) {
-    MetadataUtils.isListOf<int>(MetadataUtils.isList(value,
-        info: "BitSequence only accepts a list of bits (0 and 1)."));
     return SubstrateBitSequenceLayout(property: property);
   }
 

@@ -48,18 +48,20 @@ class MetadataApi with MetadataApiInterface {
 
   @override
   T decodeLookup<T>(int id, List<int> bytes) {
-    final decode = metadata.decodeLookup(id, bytes);
+    final decode = metadata.decodeLookup<T>(id, bytes);
     return decode;
   }
 
   @override
-  T decodeCall<T>(List<int> bytes) {
+  DecodeCallResult decodeCall<T>(List<int> bytes) {
     if (bytes.isEmpty) {
       throw const DartSubstratePluginException("Invalid encoded call bytes.");
     }
     final palletIndex = bytes[0];
-    return decodeLookup(
-        metadata.getCallLookupId(palletIndex.toString()), bytes.sublist(1));
+    final palletName = getPalletNameByIndex(palletIndex);
+    final palletId = metadata.getCallLookupId(palletIndex.toString());
+    final data = decodeLookup<Map<String, dynamic>>(palletId, bytes.sublist(1));
+    return DecodeCallResult(palletName: palletName, data: data);
   }
 
   @override

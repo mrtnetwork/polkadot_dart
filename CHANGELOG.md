@@ -1,3 +1,7 @@
+## 3.8.0
+
+- Introduced a method for deserializing pallet call data.
+
 ## 3.7.0
 
 - Update dependencies.

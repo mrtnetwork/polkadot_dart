@@ -3,6 +3,26 @@ import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 
 class MetadataUtils {
+  static T parseLoockupData<T>(dynamic value) {
+    if (value is T) return value;
+    if (T is List) {
+      if (<int>[] is T) {
+        return (value as List).cast<int>() as T;
+      }
+      if (<BigInt>[] is T) {
+        return (value as List).cast<BigInt>() as T;
+      }
+      if (<String, dynamic>{} is T) {
+        return (value as List).cast<Map<String, dynamic>>() as T;
+      }
+    } else if (0 is T) {
+      return IntUtils.parse(value) as T;
+    } else if (BigInt.zero is T) {
+      return BigintUtils.parse(value) as T;
+    }
+    throw MetadataException("lookup data parsing failed. incorrect type.");
+  }
+
   static const List<String> optionPath = ["Option"];
 
   static List isList(dynamic value, {String? info}) {

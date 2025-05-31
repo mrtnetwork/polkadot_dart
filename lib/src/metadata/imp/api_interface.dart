@@ -1,4 +1,5 @@
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/models/generic/models/runtime_version.dart';
 
@@ -38,7 +39,7 @@ mixin MetadataApiInterface {
   T decodeLookup<T>(int id, List<int> bytes);
 
   /// Decodes a call.
-  T decodeCall<T>(List<int> bytes);
+  DecodeCallResult decodeCall<T>(List<int> bytes);
 
   /// Retrieves the constant value.
   T getConstant<T>(String palletNameOrIndex, String constantName);

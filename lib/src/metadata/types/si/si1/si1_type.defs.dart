@@ -54,6 +54,15 @@ class Si1TypeDefsIndexesConst {
   }
 
   bool get isPrimitive => this == primitive;
+  @override
+  operator ==(other) {
+    if (identical(this, other)) return true;
+    if (other is! Si1TypeDefsIndexesConst) return false;
+    return other.name == name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
 
   @override
   String toString() {
