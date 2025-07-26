@@ -1,3 +1,7 @@
+## 4.0.0
+
+- Update dependencies.
+
 ## 3.9.0
 
 - Update dependencies.
