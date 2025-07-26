@@ -69,6 +69,10 @@ class MetadataApi with MetadataApiInterface {
       metadata.getConstant(palletNameOrIndex, constantName);
 
   @override
+  T? tryGetConstant<T>(String palletNameOrIndex, String constantName) =>
+      metadata.tryGetConstant(palletNameOrIndex, constantName);
+
+  @override
   List<int> getPalletIndexes() => metadata.getPalletIndexes();
 
   @override

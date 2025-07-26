@@ -44,6 +44,9 @@ mixin MetadataApiInterface {
   /// Retrieves the constant value.
   T getConstant<T>(String palletNameOrIndex, String constantName);
 
+  /// Retrieves the constant value if exists.
+  T? tryGetConstant<T>(String palletNameOrIndex, String constantName);
+
   /// Retrieves all constants for a pallet.
   Map<String, dynamic> getConstants(String palletNameOrIndex);
 

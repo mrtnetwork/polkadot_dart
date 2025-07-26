@@ -1,3 +1,4 @@
+import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
@@ -89,6 +90,14 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     return pallets[_toPalletIndex(nameOrIndex)]!;
   }
 
+  PALLET? tryGetPallet(String nameOrIndex) {
+    try {
+      return pallets[_toPalletIndex(nameOrIndex)];
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// Retrieves the list of pallet indexes.
   List<int> getPalletIndexes() {
     return pallets.keys.toList();
@@ -175,6 +184,14 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
                   "name": constantName,
                   "constants": pallet.constants.map((e) => e.name).join(", ")
                 }));
+    return decodeLookup(constant.type, constant.value);
+  }
+
+  T? tryGetConstant<T>(String palletNameOrIndex, String constantName) {
+    final pallet = tryGetPallet(palletNameOrIndex);
+    final constant = pallet?.constants.firstWhereNullable(
+        (element) => element.name.toLowerCase() == constantName.toLowerCase());
+    if (constant == null) return null;
     return decodeLookup(constant.type, constant.value);
   }
 
