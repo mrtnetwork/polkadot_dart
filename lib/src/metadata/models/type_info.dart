@@ -432,13 +432,13 @@ class MetadataTypeInfoSequence<T extends MetadataTypeInfo>
   }
 
   @override
-  MetadataTypeInfo<List<T>> copyWith({
-    T? type,
-    String? name,
-    int? typeId,
-    List<String>? paths,
-    List<String>? docs,
-  }) {
+  MetadataTypeInfo<List<T>> copyWith(
+      {T? type,
+      String? name,
+      int? typeId,
+      List<String>? paths,
+      List<String>? docs,
+      int? length}) {
     return MetadataTypeInfoSequence(
         type: type ?? this.type,
         name: name ?? this.name,
