@@ -33,6 +33,15 @@ To effectively use this package, you should have a solid understanding of Substr
 - **Data Handling**
   - Encode and decode.
 
+- **Network Controller Support**
+  - Introduced `BaseSubstrateNetworkController` for unified Substrate network management.
+  - Enabled **Account Assets**, **System transfer**, **Asset transfer**, and **XCM transfer** operations.
+  - Supported ecosystems:
+    - **Polkadot**: Astar, Acala, Bifrost, Interlay, Phala, Moonbeam, Mythos, etc.
+    - **Kusama**: Shiden, Karura, Basilisk, Bifrost Kusama, Moonriver, Kintsugi, etc.
+    - **Westend**: Westend, Penpal, and system parachains.
+    - **Paseo**: Paseo testnet and Hydration parachain.
+
 ### Metadata and template
 
 You can encode your metadata type using two methods: input the data as the standard metadata itself or use the template option to enter the data.
