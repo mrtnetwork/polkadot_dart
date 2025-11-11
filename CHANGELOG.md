@@ -1,3 +1,6 @@
+## 5.1.0
+  - Fix block stream tracker.
+
 ## 5.0.0
 
 - Update dependencies.

@@ -301,28 +301,35 @@ final class SubstrateTransactionBuilder {
 
   /// Submits a signed extrinsic and streams its submission status with optional callbacks and retry logic.
   static Future<Stream<SubtrateTransactionSubmitionResult>>
-      submitExtrinsicAndWatchStatic({
-    required SubstrateSubmitableTransaction extrinsic,
-    required MetadataWithProvider provider,
-    void Function(String txId, int blocId)? onSubmitxtrinsic,
-    int maxRetryEachBlock = 20,
-    int blockCount = 50,
-    int Function()? onLookupMoreBlock,
-  }) async {
-    final blockHeader =
-        await provider.provider.request(SubstrateRequestChainChainGetHeader());
+      submitExtrinsicAndWatchStatic(
+          {required SubstrateSubmitableTransaction extrinsic,
+          required MetadataWithProvider provider,
+          void Function(String txId, int blocId)? onSubmitxtrinsic,
+          int maxRetryEachBlock = 20,
+          int blockCount = 50,
+          int Function()? onLookupMoreBlock,
+          Duration requestTimeout = const Duration(milliseconds: 200),
+          Duration blockInterval = const Duration(seconds: 10)}) async {
+    final finalizeHash = await provider.provider
+        .request(SubstrateRequestChainChainGetFinalizedHead());
+    final finalBlockHead = await provider.provider
+        .request(SubstrateRequestChainGetBlock(atBlockHash: finalizeHash));
     final ext = extrinsic.serializeHex();
     final txId = await provider.provider
         .request(SubstrateRequestAuthorSubmitExtrinsic(ext));
-    if (onSubmitxtrinsic != null) onSubmitxtrinsic(txId, blockHeader.number);
+    if (onSubmitxtrinsic != null) {
+      onSubmitxtrinsic(txId, finalBlockHead.block.header.number);
+    }
     return findEextrinsic(
         txId: txId,
         extrinsic: ext,
         blockCount: blockCount,
-        blockId: blockHeader.number,
+        blockId: finalBlockHead.block.header.number,
         maxRetryEachBlock: maxRetryEachBlock,
         onLookupMoreBlock: onLookupMoreBlock,
-        provider: provider);
+        provider: provider,
+        requestTimeout: requestTimeout,
+        blockInterval: blockInterval);
   }
 
   /// Submits a signed extrinsic and returns the final submission result asynchronously.
@@ -334,6 +341,7 @@ final class SubstrateTransactionBuilder {
     int maxRetryEachBlock = 20,
     int blockCount = 50,
     int Function()? onLookupMoreBlock,
+    Duration requestTimeout = const Duration(milliseconds: 200),
   }) async {
     final Completer<SubtrateTransactionSubmitionResult> completer = Completer();
     final stream = await submitExtrinsicAndWatchStatic(
@@ -357,18 +365,20 @@ final class SubstrateTransactionBuilder {
     required String extrinsic,
     required int blockId,
     required MetadataWithProvider provider,
-    int maxRetryEachBlock = 50,
+    int maxRetryEachBlock = 20,
     int blockCount = 50,
-    Duration retryInterval = const Duration(seconds: 5),
+    Duration blockInterval = const Duration(seconds: 10),
     int Function()? onLookupMoreBlock,
+    Duration requestTimeout = const Duration(milliseconds: 200),
   }) {
     return loockupBlockStream(
       blockId: blockId,
       provider: provider,
-      retryInterval: retryInterval,
+      blockInterval: blockInterval,
       maxRetryEachBlock: maxRetryEachBlock,
       blockCount: blockCount,
       onLookupMoreBlock: onLookupMoreBlock,
+      requestTimeout: requestTimeout,
       onBlockEvents: (blockHash, blockId, blockExtrinsics, events) {
         final index = blockExtrinsics.findExtrinsicIndex(extrinsic);
         if (index == null) {
@@ -382,15 +392,36 @@ final class SubstrateTransactionBuilder {
             extrinsicIndex: index,
             transactionHash: txId);
       },
-    );
+    ).handleError((_) {
+      return SubtrateTransactionSubmitionResult.notFount(
+          extrinsic: extrinsic, transactionHash: txId);
+    }, test: (err) => err == SubstrateLookupBlockExceptionConst.blockNotFound);
   }
 
-  static Future<T?> _lockupBlockEvents<T extends Object>(
-      {required int blockId,
-      required MetadataWithProvider provider,
-      required ONLOOKUPBLOCKEVENT<T> onBlockEvents}) async {
-    final blockHash = await provider.provider
-        .request(SubstrateRequestChainGetBlockHash<String?>(number: blockId));
+  static Future<_LookupBlock<T>> _lockupBlockEvents<T extends Object>({
+    required int blockId,
+    required MetadataWithProvider provider,
+    required ONLOOKUPBLOCKEVENT<T> onBlockEvents,
+    required _LookupBlock<T> blockData,
+  }) async {
+    int? finalizeBlock = blockData.finalizeBlock;
+    String? blockHash;
+    if (finalizeBlock == null || blockId > finalizeBlock) {
+      final finalizeHead = await provider.provider
+          .request(SubstrateRequestChainChainGetFinalizedHead());
+      final finalBlockHead = await provider.provider
+          .request(SubstrateRequestChainGetBlock(atBlockHash: finalizeHead));
+      finalizeBlock = finalBlockHead.block.header.number;
+      if (blockId == finalizeBlock) {
+        blockHash = finalizeHead;
+      }
+    }
+    if (blockId > finalizeBlock) {
+      throw SubstrateLookupBlockExceptionConst.blockNotFound;
+    }
+    blockHash ??= await provider.provider
+        .request(SubstrateRequestChainGetBlockHash<String>(number: blockId));
+    assert(blockHash != null);
     if (blockHash == null) {
       throw SubstrateLookupBlockExceptionConst.blockNotFound;
     }
@@ -401,7 +432,7 @@ final class SubstrateTransactionBuilder {
           .getSystemEvents(provider.provider, atBlockHash: blockHash);
       final result = onBlockEvents(blockHash, block.block.header.number,
           block.block, SubstrateGroupEvents(events: events));
-      return result;
+      return _LookupBlock(finalizeBlock, result);
     } on RPCError catch (_) {
       rethrow;
     } catch (e) {
@@ -411,12 +442,13 @@ final class SubstrateTransactionBuilder {
 
   /// Streams events from a specific block, with retry and custom event handling support.
   static Stream<T> loockupBlockStream<T extends Object>(
-      {Duration retryInterval = const Duration(seconds: 5),
+      {Duration blockInterval = const Duration(seconds: 10),
+      Duration requestTimeout = const Duration(milliseconds: 200),
       required int blockId,
       required MetadataWithProvider provider,
       required ONLOOKUPBLOCKEVENT<T> onBlockEvents,
       int Function()? onLookupMoreBlock,
-      int maxRetryEachBlock = 50,
+      int maxRetryEachBlock = 20,
       int blockCount = 50}) {
     final controller = StreamController<T>();
     void closeController() {
@@ -426,18 +458,24 @@ final class SubstrateTransactionBuilder {
     }
 
     Future<void> startFetching() async {
+      _LookupBlock<T> blockInfo = _LookupBlock(blockId, null);
       int id = blockId;
       int retry = maxRetryEachBlock;
       int count = blockCount;
+
       while (!controller.isClosed) {
         try {
-          final result = await _lockupBlockEvents(
-              blockId: id, onBlockEvents: onBlockEvents, provider: provider);
+          blockInfo = await _lockupBlockEvents(
+              blockId: id,
+              onBlockEvents: onBlockEvents,
+              provider: provider,
+              blockData: blockInfo);
           id++;
           count--;
           retry = maxRetryEachBlock;
-          if (result != null) {
-            controller.add(result);
+          final response = blockInfo.response;
+          if (response != null) {
+            controller.add(response);
             closeController();
             return;
           } else {
@@ -452,6 +490,7 @@ final class SubstrateTransactionBuilder {
                 return;
               }
             }
+            await Future.delayed(requestTimeout);
           }
         } on DartSubstratePluginException catch (e) {
           if (e == SubstrateLookupBlockExceptionConst.blockNotFound) {
@@ -461,20 +500,15 @@ final class SubstrateTransactionBuilder {
               closeController();
               return;
             }
-            await Future.delayed(retryInterval);
+            await Future.delayed(blockInterval);
           } else {
             controller.addError(e);
             closeController();
             return;
           }
         } catch (e) {
-          retry--;
-          if (retry <= 0) {
-            controller.addError(e);
-            closeController();
-            return;
-          }
-          await Future.delayed(retryInterval);
+          controller.addError(e);
+          closeController();
         }
       }
     }
@@ -484,4 +518,10 @@ final class SubstrateTransactionBuilder {
       controller.close();
     });
   }
+}
+
+class _LookupBlock<T> {
+  final int? finalizeBlock;
+  final T? response;
+  const _LookupBlock(this.finalizeBlock, this.response);
 }

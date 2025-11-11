@@ -394,9 +394,11 @@ abstract mixin class BaseSubstrateNetworkController<
     int? destinationBlockId;
     if (canTrack) {
       destinationProvider = await destinationChainController.metadata();
+      final finalizeHead = await destinationProvider.provider
+          .request(SubstrateRequestChainChainGetFinalizedHead());
       final currentBlock = await destinationProvider.provider
-          .request(SubstrateRequestChainChainGetHeader());
-      destinationBlockId = currentBlock.number + 1;
+          .request(SubstrateRequestChainGetBlock(atBlockHash: finalizeHead));
+      destinationBlockId = currentBlock.block.header.number;
     }
 
     final stream =
@@ -412,77 +414,84 @@ abstract mixin class BaseSubstrateNetworkController<
     }
 
     void stratTracking() {
-      stream.listen((result) {
-        final callBack = onUpdateTransactionStatus;
-        if (callBack != null) callBack(result);
-        if (!canTrack || !result.status.isSuccess) {
-          close();
-          return;
-        }
-        final messageId = SubstrateNetworkControllerUtils.findSendXCMMessageId(
-            events: SubstrateGroupEvents(events: result.txEvents!),
-            network: network,
-            transferPallet: params.transfer.pallet);
-        if (messageId == null) {
-          final callBack = onDestinationChainEvent;
-          if (callBack != null) {
-            callBack(SubstrateXCMTransctionTrackerResult(
-              status: SubstrateXCMTransctionTrackerStatus.error,
-            ));
+      stream.listen(
+        (result) {
+          final callBack = onUpdateTransactionStatus;
+          if (callBack != null) callBack(result);
+          if (!canTrack || !result.status.isSuccess) {
+            close();
+            return;
           }
-          close();
-          return;
-        }
+          final messageId =
+              SubstrateNetworkControllerUtils.findSendXCMMessageId(
+                  events: SubstrateGroupEvents(events: result.txEvents!),
+                  network: network,
+                  transferPallet: params.transfer.pallet);
+          if (messageId == null) {
+            final callBack = onDestinationChainEvent;
+            if (callBack != null) {
+              callBack(SubstrateXCMTransctionTrackerResult(
+                status: SubstrateXCMTransctionTrackerStatus.error,
+              ));
+            }
+            close();
+            return;
+          }
 
-        void track(
-            {required int blockId,
-            required BaseSubstrateNetworkController controller,
-            required MetadataWithProvider provider,
-            required String msgId}) {
-          final onDestinationResult =
-              SubstrateTransactionBuilder.loockupBlockStream(
-                  blockId: blockId,
-                  maxRetryEachBlock: 30,
-                  onBlockEvents: (blockHash, blockId, blockExtrinsics, events) {
-                    return SubstrateNetworkControllerUtils
-                        .findProcessedXCMMessage(
-                            events: events,
-                            params: params,
-                            id: msgId,
-                            blockNumber: blockId);
-                  },
-                  provider: provider);
-          sub = onDestinationResult.listen(
-            (event) {
-              final callBack = onDestinationChainEvent;
-              if (callBack != null) {
-                callBack(event);
-              }
-              close();
-            },
-            onError: (e) {
-              final callBack = onDestinationChainEvent;
-              if (callBack != null) {
-                callBack(SubstrateXCMTransctionTrackerResult(
-                    status: e == SubstrateLookupBlockExceptionConst.notFound
-                        ? SubstrateXCMTransctionTrackerStatus.notFound
-                        : SubstrateXCMTransctionTrackerStatus.error));
-              }
-              close();
-            },
-          );
-        }
+          void track(
+              {required int blockId,
+              required BaseSubstrateNetworkController controller,
+              required MetadataWithProvider provider,
+              required String msgId}) {
+            final onDestinationResult =
+                SubstrateTransactionBuilder.loockupBlockStream(
+                    blockId: blockId,
+                    onBlockEvents:
+                        (blockHash, blockId, blockExtrinsics, events) {
+                      return SubstrateNetworkControllerUtils
+                          .findProcessedXCMMessage(
+                              events: events,
+                              params: params,
+                              id: msgId,
+                              blockNumber: blockId);
+                    },
+                    provider: provider);
+            sub = onDestinationResult.listen(
+              (event) {
+                final callBack = onDestinationChainEvent;
+                if (callBack != null) {
+                  callBack(event);
+                }
+                close();
+              },
+              onError: (e, s) {
+                final callBack = onDestinationChainEvent;
+                if (callBack != null) {
+                  callBack(SubstrateXCMTransctionTrackerResult(
+                      status: e == SubstrateLookupBlockExceptionConst.notFound
+                          ? SubstrateXCMTransctionTrackerStatus.notFound
+                          : SubstrateXCMTransctionTrackerStatus.error));
+                }
+                close();
+              },
+            );
+          }
 
-        if (destinationBlockId != null) {
-          track(
-              blockId: destinationBlockId,
-              controller: destinationChainController,
-              provider: destinationProvider!,
-              msgId: messageId);
-        } else {
+          if (destinationBlockId != null) {
+            track(
+                blockId: destinationBlockId,
+                controller: destinationChainController,
+                provider: destinationProvider!,
+                msgId: messageId);
+          } else {
+            close();
+          }
+        },
+        onError: (e) {
+          if (!controller.isClosed) controller.addError(e);
           close();
-        }
-      });
+        },
+      );
     }
 
     controller.onListen = stratTracking;
@@ -546,6 +555,11 @@ abstract mixin class BaseSubstrateNetworkController<
         final callBack = onUpdateTransactionStatus;
         if (callBack != null) callBack(result);
         close();
+      }, onError: (e) {
+        if (!controller.isClosed) {
+          controller.addError(e);
+          close();
+        }
       });
     }
 

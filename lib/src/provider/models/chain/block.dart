@@ -11,8 +11,8 @@ class SubstrateBlockResponse {
             extrinsics.map((e) => StringUtils.normalizeHex(e)).toImutableList;
   factory SubstrateBlockResponse.fromJson(Map<String, dynamic> json) {
     return SubstrateBlockResponse(
-        header: SubstrateHeaderResponse.fromJson(json["header"]),
-        extrinsics: (json["extrinsics"] as List).cast());
+        header: SubstrateHeaderResponse.fromJson(json.valueAs("header")),
+        extrinsics: json.valueAs("extrinsics"));
   }
 
   int? findExtrinsicIndex(String extrinsic) {
@@ -25,15 +25,11 @@ class SubstrateBlockResponse {
 
 class SubstrateGetBlockResponse {
   final SubstrateBlockResponse block;
-  final List<List<String>>? justifications;
+  final Object? justifications;
   const SubstrateGetBlockResponse({required this.block, this.justifications});
   factory SubstrateGetBlockResponse.fromJson(Map<String, dynamic> json) {
     return SubstrateGetBlockResponse(
         block: SubstrateBlockResponse.fromJson(json["block"]),
-        justifications: (json["justifications"] as List?)
-            ?.map((e) => (e as List).cast<String>().immutable)
-            .cast<List<String>>()
-            .toList()
-            .immutable);
+        justifications: json.valueAs("justifications"));
   }
 }
