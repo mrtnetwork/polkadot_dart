@@ -72,14 +72,14 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "lookup": lookup.scaleJsonSerialize(),
-      "pallets": pallets.values.map((e) => e.scaleJsonSerialize()).toList(),
-      "extrinsic": extrinsic.scaleJsonSerialize(),
-      "outerEnums": outerEnums.scaleJsonSerialize(),
-      "apis": apis.map((e) => e.scaleJsonSerialize()).toList(),
-      "custom": custom.scaleJsonSerialize()
+      "lookup": lookup.serializeJson(),
+      "pallets": pallets.values.map((e) => e.serializeJson()).toList(),
+      "extrinsic": extrinsic.serializeJson(),
+      "outerEnums": outerEnums.serializeJson(),
+      "apis": apis.map((e) => e.serializeJson()).toList(),
+      "custom": custom.serializeJson()
     };
   }
 
@@ -131,7 +131,7 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
   }
 
   @override
-  String getRuntimeApiMethod(String apiName, String methodName) {
+  String generateRuntimeApiMethod(String apiName, String methodName) {
     final api = _getRuntimeApi(apiName);
     final method = _getRuntimeMethod(apiName, methodName);
     return "${api.name}_${method.name}";
@@ -150,9 +150,18 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
   }
 
   @override
-  bool get isSupportMetadataHash {
-    return extrinsic.transactionExtensions.any((e) =>
-        e.identifier == MetadataConstant.checkMetadataHashExtensionIdentifier);
+  bool runtimeMethodExists(String apiName, {String? methodName}) {
+    try {
+      if (methodName != null) {
+        _getRuntimeMethod(apiName, methodName);
+      } else {
+        return apis.any(
+            (element) => element.name.toLowerCase() == apiName.toLowerCase());
+      }
+      return true;
+    } on MetadataException {
+      return false;
+    }
   }
 
   @override

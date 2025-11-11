@@ -19,7 +19,7 @@ class PortableTypeV14 extends SubstrateSerialization<Map<String, dynamic>>
       SubstrateMetadataLayouts.portableTypeV14(property: property);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
-    return {"id": id, "type": type.scaleJsonSerialize()};
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {"id": id, "type": type.serializeJson()};
   }
 }

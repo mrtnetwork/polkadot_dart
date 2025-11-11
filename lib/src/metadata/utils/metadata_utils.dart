@@ -2,25 +2,42 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 
+typedef ONPARSEOPTIONAL<T extends Object, V extends Object> = T Function(V v);
+
 class MetadataUtils {
-  static T parseLoockupData<T>(dynamic value) {
-    if (value is T) return value;
-    if (T is List) {
-      if (<int>[] is T) {
-        return (value as List).cast<int>() as T;
+  static T? parseOptional<T extends Object, V extends Object>(Object? json,
+      {ONPARSEOPTIONAL<T, V>? parse}) {
+    if (json == null) return null;
+    try {
+      if (json is! Map) return json as T;
+      if (!json.containsKey("None") && !json.containsKey("Some")) {
+        return json as T;
       }
-      if (<BigInt>[] is T) {
-        return (value as List).cast<BigInt>() as T;
+      if (json.containsKey("None")) {
+        return null;
       }
-      if (<String, dynamic>{} is T) {
-        return (value as List).cast<Map<String, dynamic>>() as T;
-      }
-    } else if (0 is T) {
-      return IntUtils.parse(value) as T;
-    } else if (BigInt.zero is T) {
-      return BigintUtils.parse(value) as T;
+      final val = json["Some"];
+      if (parse == null) return val as T;
+      return parse(val);
+    } catch (_) {
+      throw MetadataException("Unexpected optionial type.",
+          details: {"expected": "$T", "value": json.runtimeType});
     }
-    throw MetadataException("lookup data parsing failed. incorrect type.");
+  }
+
+  static Map<String, dynamic> toOptionalJson<T>(Object? json) {
+    if (json == null) return {"None": null};
+    return {"Some": json};
+  }
+
+  static Layout optionalLayout<T>(LayoutFunc onSome, {String? property}) {
+    return LayoutConst.lazyEnum([
+      LazyVariantModel(
+          layout: ({property}) => LayoutConst.none(property: property),
+          property: "None",
+          index: 0),
+      LazyVariantModel(layout: onSome, property: "Some", index: 1),
+    ], property: property, useKeyAndValue: false);
   }
 
   static const List<String> optionPath = ["Option"];
@@ -31,6 +48,15 @@ class MetadataUtils {
           details: {"info": info, "value": value.runtimeType.toString()});
     }
     return value;
+  }
+
+  static List<Object> asList(Object? value, {String? info}) {
+    if (value == null) {
+      throw MetadataException("Invalid provided list.",
+          details: {"info": info, "value": value.runtimeType.toString()});
+    }
+    if (value is List) return value.cast<Object>();
+    return [value];
   }
 
   static void hasLen(List list, int len, {String? info}) {

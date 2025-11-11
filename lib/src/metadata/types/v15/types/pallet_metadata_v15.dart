@@ -57,9 +57,9 @@ class PalletMetadataV15 extends PalletMetadata<
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      ...super.scaleJsonSerialize(property: property),
+      ...super.serializeJson(property: property),
       "docs": docs ?? <String>[]
     };
   }

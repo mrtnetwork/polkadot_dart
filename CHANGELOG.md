@@ -1,3 +1,14 @@
+## 5.0.0
+
+- Update dependencies.
+- Added support for creating versioned XCM transactions (V2, V3, V4, V5).  
+- Introduced `SubstrateNetworkController` API, now supporting 30+ networks with features including:  
+  - Transfer assets  
+  - Fetch assets  
+  - Fetch account asset balances  
+  - Transfer assets and XCM between chains  
+- Enabled XCM transfers between chains seamlessly.
+
 ## 4.1.0
 
 - Update dependencies.

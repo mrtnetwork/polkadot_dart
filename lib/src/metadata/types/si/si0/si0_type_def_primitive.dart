@@ -1,13 +1,13 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
-import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
+import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
-import 'package:polkadot_dart/src/serialization/serialization.dart';
 
 class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
     implements PrimitiveType {
@@ -16,34 +16,15 @@ class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
   Si0TypeDefPrimitive(String name) : type = PrimitiveTypes.fromValue(name);
 
   Si0TypeDefPrimitive.deserializeJson(Map<String, dynamic> json)
-      : type = PrimitiveTypes.fromValue(
-            SubstrateEnumSerializationUtils.getScaleEnumKey(json,
-                keys: PrimitiveTypes.values.map((e) => e.name).toList()));
+      : type = PrimitiveTypes.fromValue(json.keys.firstOrNull);
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>
       SubstrateMetadataLayouts.si0TypeDefPrimitive(property: property);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {type.name: null};
-  }
-
-  @override
-  Layout typeDefLayout(PortableRegistry registry, Object? value,
-      {String? property}) {
-    return type.toLayout(property: property);
-  }
-
-  /// Decodes the data based on the type definition using the provided [registry] and [bytes].
-  @override
-  LayoutDecodeResult typeDefDecode(
-      {required PortableRegistry registry,
-      required List<int> bytes,
-      required int offset}) {
-    final layout = type.toLayout();
-    return SubstrateSerialization.deserialize(
-        bytes: bytes, layout: layout, offset: offset);
   }
 
   @override
@@ -68,11 +49,31 @@ class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
         type: typeName,
         fromTemplate: fromTemplate,
         primitive: type,
-        lookupId: self);
+        id: self,
+        registry: registry);
   }
 
   @override
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
     return type.typeInfo(typeId: id);
+  }
+
+  @override
+  int? typeByFieldName(PortableRegistry registry, int id, String name) {
+    return null;
+  }
+
+  @override
+  int? typeByName(PortableRegistry registry, int id, String name) {
+    if (type.name == name) {
+      return id;
+    }
+    return null;
+  }
+
+  @override
+  Layout serializationLayout(PortableRegistry registry,
+      {String? property, LookupDecodeParams? params}) {
+    return type.toLayout(property: property);
   }
 }

@@ -2,6 +2,7 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:polkadot_dart/src/keypair/core/signer.dart';
 
 enum SubstrateKeyAlgorithm {
   sr25519(name: "Sr25519", value: 0),
@@ -13,8 +14,7 @@ enum SubstrateKeyAlgorithm {
 
   static SubstrateKeyAlgorithm fromValue(int? value) {
     return values.firstWhere((e) => e.value == value,
-        orElse: () => throw DartSubstratePluginException(
-            "SubstrateKeyAlgorithm not found. The provided value is invalid."));
+        orElse: () => throw ItemNotFoundException(value: value));
   }
 
   final String name;
@@ -79,8 +79,10 @@ abstract class BaseSubstratePublicKey<ADDRESS extends BaseSubstrateAddress> {
 }
 
 abstract class BaseSubstratePrivateKey<ADDRESS extends BaseSubstrateAddress,
-    PUBLICKEY extends BaseSubstratePublicKey<ADDRESS>> {
+        PUBLICKEY extends BaseSubstratePublicKey<ADDRESS>>
+    with SubstrateTransactionSigner {
   const BaseSubstratePrivateKey();
+  @override
   abstract final SubstrateKeyAlgorithm algorithm;
 
   /// key bytes
@@ -100,4 +102,9 @@ abstract class BaseSubstratePrivateKey<ADDRESS extends BaseSubstrateAddress,
 
   /// get public key
   PUBLICKEY toPublicKey();
+
+  @override
+  Future<List<int>> signAsync(List<int> digest) async {
+    return sign(digest);
+  }
 }

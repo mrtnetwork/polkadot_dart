@@ -1,7 +1,7 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/generic/constant/constant.dart';
-import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
+
 import 'account_id.dart';
 
 class SubstrateMultiAddress
@@ -10,38 +10,40 @@ class SubstrateMultiAddress
   const SubstrateMultiAddress(this.value);
 
   factory SubstrateMultiAddress.deserializeJson(Map<String, dynamic> json) {
-    final key = SubstrateEnumSerializationUtils.getScaleEnumKey(json, keys: [
-      GenericConstants.idIndexKey,
-      GenericConstants.address20IndexKey,
-      GenericConstants.address32IndexKey,
-      GenericConstants.rawIndexKey,
-      GenericConstants.indexIndexKey
-    ]);
+    final key = json.keys.firstOrNull;
     final SubstrateBaseAccountId account;
     switch (key) {
       case GenericConstants.idIndexKey:
         account = SubstrateAccountId.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key));
+            json.valueEnsureAsList<int>(key!));
         break;
       case GenericConstants.address32IndexKey:
-        account = SubstrateAccount32(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key));
+        account = SubstrateAccount32(json.valueEnsureAsList<int>(key!));
         break;
       case GenericConstants.address20IndexKey:
-        account = SubstrateAccount20(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key));
+        account = SubstrateAccount20(json.valueEnsureAsList<int>(key!));
         break;
       default:
-        throw UnimplementedError();
+        throw ItemNotFoundException();
     }
     return SubstrateMultiAddress(account);
   }
-  @override
-  Layout<Map<String, dynamic>> layout({String? property}) =>
-      GenericLayouts.multiAddress(property: property);
+
+  static Layout<Map<String, dynamic>> layout_({String? property}) {
+    return LayoutConst.rustEnum([
+      LayoutConst.fixedBlob32(property: GenericConstants.idIndexKey),
+      SubstrateAccountIndex.layout_(property: GenericConstants.indexIndexKey),
+      SubstrateAccountRaw.layout_(property: GenericConstants.rawIndexKey),
+      LayoutConst.fixedBlob32(property: GenericConstants.address32IndexKey),
+    ], property: property);
+  }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
-    return {value.name: value.scaleJsonSerialize()};
+  Layout<Map<String, dynamic>> layout({String? property}) =>
+      layout_(property: property);
+
+  @override
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {value.name: value.serializeJson()};
   }
 }

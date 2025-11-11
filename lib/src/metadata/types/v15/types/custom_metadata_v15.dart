@@ -18,9 +18,9 @@ class CustomMetadata15 extends SubstrateSerialization<Map<String, dynamic>> {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "map": {for (final i in map.entries) i.key: i.value.scaleJsonSerialize()}
+      "map": {for (final i in map.entries) i.key: i.value.serializeJson()}
     };
   }
 }

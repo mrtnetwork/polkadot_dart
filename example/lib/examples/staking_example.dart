@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
+
 import 'json_rpc_example.dart';
 
 void main() async {
@@ -31,23 +32,26 @@ void main() async {
       .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
-  final accountInfo = await api.getStorage(
-      request: QueryStorageRequest<Map<String, dynamic>>(
-          palletNameOrIndex: "System",
-          methodName: "account",
-          input: signer.toBytes(),
-          identifier: 0),
+  final nonce = await api.getStorageRequest(
+      request: GetStorageRequest<int, Map<String, dynamic>>(
+        palletNameOrIndex: "System",
+        methodName: "account",
+        inputs: signer.toBytes(),
+        onJsonResponse: (response, _, __) => response["nonce"],
+      ),
       rpc: provider,
       fromTemplate: false);
 
-  final int nonce = accountInfo.result["nonce"];
   final tmp = {
     "type": "Enum",
     "key": "bond",
     "value": {
       "type": "Map",
       "value": {
-        "value": {"type": "U128", "value": SubstrateHelper.toWSD("2")},
+        "value": {
+          "type": "U128",
+          "value": AmountConverter.polkadot.toUnit("2")
+        },
         "payee": {
           "type": "Enum",
           "key": "Controller",

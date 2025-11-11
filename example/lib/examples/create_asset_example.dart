@@ -29,11 +29,9 @@ void main() async {
       .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
-  final nextAsset = await api.getStorage(
-      request: QueryStorageRequest<int>(
-          palletNameOrIndex: "Assets",
-          methodName: "NextAssetId",
-          identifier: 0),
+  final nextAsset = await api.getStorageRequest(
+      request: GetStorageRequest<int, int>(
+          palletNameOrIndex: "Assets", methodName: "NextAssetId"),
       rpc: provider,
       fromTemplate: false);
   final createAssetsTemplate = {
@@ -42,7 +40,7 @@ void main() async {
     "value": {
       "type": "Map",
       "value": {
-        "id": {"type": "U32", "value": nextAsset.result},
+        "id": {"type": "U32", "value": nextAsset},
         "admin": {
           "key": "Id",
           "value": {"type": "[U8;32]", "value": signer.toBytes()},
@@ -52,16 +50,14 @@ void main() async {
     },
   };
 
-  final accountInfo = await api.getStorage(
-      request: QueryStorageRequest<Map<String, dynamic>>(
+  final nonce = await api.getStorageRequest(
+      request: GetStorageRequest<int, Map<String, dynamic>>(
           palletNameOrIndex: "System",
           methodName: "account",
-          input: signer.toBytes(),
-          identifier: 0),
+          inputs: signer.toBytes(),
+          onJsonResponse: (response, _, __) => response["nonce"]),
       rpc: provider,
       fromTemplate: false);
-
-  final int nonce = accountInfo.result["nonce"];
 
   final method = List<int>.unmodifiable(api.encodeCall(
       palletNameOrIndex: "assets",

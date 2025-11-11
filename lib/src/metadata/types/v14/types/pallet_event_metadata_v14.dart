@@ -21,7 +21,7 @@ class PalletEventMetadataV14 extends PalletEventMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {"type": type};
   }
 }

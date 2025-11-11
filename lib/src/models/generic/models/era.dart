@@ -1,11 +1,10 @@
-import 'package:blockchain_utils/utils/binary/binary_operation.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'dart:math' as math;
+
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
-import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
-import 'dart:math' as math;
 
 class _SubstrateEraConst {
   static const String immortal = "Immortal";
@@ -47,27 +46,33 @@ abstract class SubstrateBaseEra
     extends SubstrateSerialization<Map<String, dynamic>> {
   const SubstrateBaseEra();
   factory SubstrateBaseEra.deserializeJson(Map<String, dynamic> json) {
-    final key = SubstrateEnumSerializationUtils.getScaleEnumKey(json);
+    final key = json.keys.firstOrNull;
     if (key == _SubstrateEraConst.immortal) return ImmortalEra();
     final eraIndex =
-        int.tryParse(key.replaceFirst(_SubstrateEraConst.mortal, ''));
+        int.tryParse(key?.replaceFirst(_SubstrateEraConst.mortal, '') ?? '');
     if (eraIndex == null || eraIndex > 255 || eraIndex < 0) {
       throw DartSubstratePluginException("Invalid provided era json.",
           details: {"value": key});
     }
-    return MortalEra(
-        index: eraIndex,
-        era: SubstrateEnumSerializationUtils.getScaleEnumValue(json, key));
+    return MortalEra(index: eraIndex, era: json.valueAs(key!));
   }
+  static Layout<Map<String, dynamic>> layout_({String? property}) {
+    return LayoutConst.rustEnum([
+      LayoutConst.none(property: "Immortal"),
+      ...List.generate(
+          255, (index) => LayoutConst.u8(property: "Mortal${index + 1}"))
+    ], property: property);
+  }
+
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
-    return GenericLayouts.era(property: property);
+    return layout_(property: property);
   }
 }
 
 class ImmortalEra extends SubstrateBaseEra {
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {_SubstrateEraConst.immortal: null};
   }
 }
@@ -91,7 +96,7 @@ class MortalEra extends SubstrateBaseEra {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {"${_SubstrateEraConst.mortal}$index": era};
   }
 

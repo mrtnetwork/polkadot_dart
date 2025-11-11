@@ -1,8 +1,9 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
-import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
+import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 
 class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
@@ -13,28 +14,13 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
       SubstrateMetadataLayouts.type(property: property);
 
   @override
-  String scaleJsonSerialize({String? property}) {
+  String serializeJson({String? property}) {
     return type;
   }
 
   @override
   Si1TypeDefsIndexesConst get typeName =>
       Si1TypeDefsIndexesConst.historicMetaCompat;
-
-  /// Returns the serialization layout of the type definition using the provided [registry], [value], and optional [property].
-  @override
-  Layout typeDefLayout(PortableRegistry registry, value, {String? property}) {
-    throw UnimplementedError();
-  }
-
-  /// Decodes the data based on the type definition using the provided [registry] and [bytes].
-  @override
-  LayoutDecodeResult typeDefDecode(
-      {required PortableRegistry registry,
-      required List<int> bytes,
-      required int offset}) {
-    throw UnimplementedError();
-  }
 
   /// Returns the type template using the provided [registry].
   @override
@@ -53,6 +39,22 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
 
   @override
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
+    throw UnimplementedError();
+  }
+
+  @override
+  int? typeByFieldName(PortableRegistry registry, int id, String name) {
+    return null;
+  }
+
+  @override
+  int? typeByName(PortableRegistry registry, int id, String name) {
+    return null;
+  }
+
+  @override
+  Layout serializationLayout(PortableRegistry registry,
+      {String? property, LookupDecodeParams? params}) {
     throw UnimplementedError();
   }
 }

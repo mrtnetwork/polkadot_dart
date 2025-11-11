@@ -22,6 +22,7 @@ export 'chain/get_finalized_head.dart';
 export 'chain/get_header.dart';
 export 'chain/subscribe_all_heads.dart';
 export 'chain/subscribe_finalized_heads.dart';
+export 'chain/unsubscribe_finalized_heads.dart';
 export 'chain/subscribe_new_heads.dart';
 
 /// childstate
@@ -34,6 +35,7 @@ export 'childstate/get_storage_size.dart';
 
 /// dev
 export 'dev/get_block_stats.dart';
+export 'dev/new_block.dart';
 
 /// engine
 export 'engine/create_block.dart';

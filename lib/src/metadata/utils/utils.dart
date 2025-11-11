@@ -46,7 +46,10 @@ class MetadataTemplateBuilder {
       for (final i in children) {
         valueTemplate[i.name!] = buildJson(i);
       }
-      return {"type": "Map", "value": valueTemplate};
+      return {
+        "type": "Map",
+        "value": valueTemplate,
+      };
     }
 
     return {
@@ -69,7 +72,8 @@ class MetadataTemplateBuilder {
     }
     return {
       "type": _correctType(template),
-      ..._createVariantStruct(template.children)
+      ..._createVariantStruct(template.children),
+      if (template.variantIndex != null) "variant_index": template.variantIndex,
     };
   }
 
@@ -133,7 +137,10 @@ class MetadataTemplateBuilder {
 
   static Map<String, Object?> _correctValue(TypeTemlate template) {
     if (template.isVariant) {
-      return {"key": null, "value": null};
+      return {
+        "key": null,
+        "value": null,
+      };
     }
     Object? val;
     switch (template.type) {
@@ -155,12 +162,12 @@ class MetadataTemplateBuilder {
     switch (template.type) {
       case Si1TypeDefsIndexesConst.composite:
         return _createStructValues(template.children);
-      // case Si1TypeDefsIndexesConst.option:
-      //   return _createOptionValue(template.children);
       default:
     }
     return {
       "type": _correctType(template),
+      "lookup_id": template.lookupId,
+      if (template.isCompact == true) "encoding": "Compact",
       ..._correctValue(template),
       if (template.isVariant) ..._createVariantValue(template),
     };

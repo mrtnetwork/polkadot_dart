@@ -1,6 +1,6 @@
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
+import 'package:polkadot_dart/src/metadata/types/types.dart';
 
 class StorageEntryMetadataV16 extends StorageEntryMetadataV14 {
   final DeprecationStatus deprecationInfo;
@@ -22,14 +22,14 @@ class StorageEntryMetadataV16 extends StorageEntryMetadataV14 {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "name": name,
-      "modifier": modifier.scaleJsonSerialize(),
-      "type": {type.typeName: type.scaleJsonSerialize()},
+      "modifier": modifier.serializeJson(),
+      "type": {type.typeName: type.serializeJson()},
       "fallback": fallback,
       "docs": docs,
-      "deprecation_info": deprecationInfo.toVariantScaleJsonSerialize()
+      "deprecation_info": deprecationInfo.serializeJsonVariant()
     };
   }
 }

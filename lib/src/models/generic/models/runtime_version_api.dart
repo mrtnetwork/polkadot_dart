@@ -1,6 +1,5 @@
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
-import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 class RuntimeVersionApi extends SubstrateSerialization<List> {
   final String apiId;
@@ -10,13 +9,20 @@ class RuntimeVersionApi extends SubstrateSerialization<List> {
     return RuntimeVersionApi(apiId: json[0], version: json[1]);
   }
 
-  @override
-  Layout<List> layout({String? property}) {
-    return GenericLayouts.runtimeVersionApi(property: property);
+  static Layout<List> layout_({String? property}) {
+    return LayoutConst.tuple([
+      LayoutConst.fixedBlobN(8),
+      LayoutConst.u32(),
+    ], property: property);
   }
 
   @override
-  List scaleJsonSerialize({String? property}) {
+  Layout<List> layout({String? property}) {
+    return layout_(property: property);
+  }
+
+  @override
+  List serializeJson({String? property}) {
     return [apiId, version];
   }
 }

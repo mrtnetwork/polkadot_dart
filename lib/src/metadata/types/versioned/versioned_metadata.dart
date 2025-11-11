@@ -1,13 +1,12 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:blockchain_utils/utils/binary/utils.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
-import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/unsuported_metadata.dart';
+import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/metadata_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/v15.dart';
 import 'package:polkadot_dart/src/metadata/types/v16/v16.dart';
@@ -54,14 +53,15 @@ class VersionedMetadata<T extends SubstrateMetadata>
           metadata = MetadataV16.fromBytes(metadataBytes);
           break;
         default:
-          throw DartSubstratePluginException("Unsuported metadata version.",
+          throw MetadataException("Unsuported metadata version.",
               details: {"version": "$version"});
       }
     }
     if (metadata is! T) {
-      throw DartSubstratePluginException("Incorrect metadata version.",
+      throw MetadataException("Incorrect metadata version.",
           details: {"expected": "$T", "version": "$version"});
     }
+
     return VersionedMetadata(
         metadata: metadata, version: version, magicNumber: magicNumber);
   }
@@ -74,10 +74,10 @@ class VersionedMetadata<T extends SubstrateMetadata>
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "version": version,
-      "metadata": metadata.scaleJsonSerialize(),
+      "metadata": metadata.serializeJson(),
       "magicNumber": magicNumber
     };
   }

@@ -14,7 +14,7 @@ class Si1TypeParameter extends SubstrateSerialization<Map<String, dynamic>> {
       SubstrateMetadataLayouts.si1TypeParameter(property: property);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {"name": name, "type": type};
   }
 }

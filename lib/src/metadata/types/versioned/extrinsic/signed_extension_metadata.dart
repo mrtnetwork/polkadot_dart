@@ -21,7 +21,7 @@ abstract class SignedExtensionMetadata
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "identifier": identifier,
       "type": type,

@@ -24,13 +24,13 @@ class PalletConstantMetadataV16 extends PalletConstantMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "name": name,
       "type": type,
       "value": value,
       "docs": docs,
-      "deprecation_info": deprecationInfo.toVariantScaleJsonSerialize()
+      "deprecation_info": deprecationInfo.serializeJsonVariant()
     };
   }
 }

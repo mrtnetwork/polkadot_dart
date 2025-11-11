@@ -8,6 +8,7 @@ import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/types/runtime_api_metadata_v15.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/types/runtime_api_method_metadata_v15.dart';
+
 import 'extrinsic_metadata_v14.dart';
 import 'pallet_metadata_v14.dart';
 
@@ -48,11 +49,11 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "lookup": lookup.scaleJsonSerialize(),
-      "pallets": pallets.values.map((e) => e.scaleJsonSerialize()).toList(),
-      "extrinsic": extrinsic.scaleJsonSerialize(),
+      "lookup": lookup.serializeJson(),
+      "pallets": pallets.values.map((e) => e.serializeJson()).toList(),
+      "extrinsic": extrinsic.serializeJson(),
       "type": type
     };
   }
@@ -64,20 +65,15 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
   int get version => MetadataConstant.v14;
 
   @override
-  bool get isSupportMetadataHash {
-    return extrinsic.signedExtensions.any((e) =>
-        e.identifier == MetadataConstant.checkMetadataHashExtensionIdentifier);
-  }
-
-  @override
   List<RuntimeApiMetadata<RuntimeApiMethodMetadata>> get apis => [];
 
   @override
   List<TransactionExtrinsicInfo> extrinsicInfo() {
+    final addr = lookup.typeByPaths(MetadataConstant.accountIndexPaths) ??
+        lookup.typeByPaths(MetadataConstant.account32IndexPaths);
     return [
       TransactionExtrinsicInfo(
-          addressType:
-              lookup.typeByPaths(MetadataConstant.accountIndexPaths)?.id,
+          addressType: addr?.id,
           signatureType: lookup.typeByPaths(MetadataConstant.signaturePath)?.id,
           version: extrinsic.version,
           extrinsic: [
@@ -91,5 +87,10 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
                 ExtrinsicTypeInfo(id: e.additionalSigned, name: e.identifier)),
           ])
     ];
+  }
+
+  @override
+  bool runtimeMethodExists(String apiName, {String? methodName}) {
+    return false;
   }
 }

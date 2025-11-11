@@ -17,6 +17,9 @@ class TypeTemlate {
   /// length of array
   final int? length;
 
+  final int? variantIndex;
+  final bool? isCompact;
+
   final Si0TypeDefPrimitive? primitive;
 
   final Si1TypeDefsIndexesConst? type;
@@ -29,6 +32,7 @@ class TypeTemlate {
 
   const TypeTemlate({
     required this.lookupId,
+    this.isCompact,
     this.name,
     this.typeName,
     this.primitive,
@@ -36,6 +40,7 @@ class TypeTemlate {
     this.children = const [],
     this.length,
     this.path = const [],
+    this.variantIndex,
   });
 
   TypeTemlate copyWith(
@@ -46,7 +51,9 @@ class TypeTemlate {
       Si1TypeDefsIndexesConst? type,
       List<TypeTemlate>? children,
       int? length,
-      List<String>? path}) {
+      List<String>? path,
+      bool? isCompact,
+      int? variantIndex}) {
     return TypeTemlate(
         lookupId: lookupId ?? this.lookupId,
         type: type ?? this.type,
@@ -55,7 +62,9 @@ class TypeTemlate {
         name: name ?? this.name,
         primitive: primitive ?? this.primitive,
         typeName: typeName ?? this.typeName,
-        path: path ?? this.path);
+        path: path ?? this.path,
+        isCompact: isCompact ?? this.isCompact,
+        variantIndex: variantIndex ?? this.variantIndex);
   }
 
   Map<String, dynamic> toJson() {
@@ -67,7 +76,9 @@ class TypeTemlate {
       "primitive": primitive?.type.name,
       "type": type?.name,
       "children": children.map((e) => e.toJson()).toList(),
-      "path": path
+      "path": path,
+      "isCompact": isCompact,
+      "variantIndex": variantIndex
     };
   }
 

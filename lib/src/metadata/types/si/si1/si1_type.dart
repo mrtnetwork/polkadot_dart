@@ -1,12 +1,14 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
-import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
+import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
+
 import 'si1_type.defs.dart';
 import 'si1_type_parameter.dart';
 
@@ -38,26 +40,19 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>> {
       SubstrateMetadataLayouts.si1Type(property: property);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "path": path,
-      "params": params.map((e) => e.scaleJsonSerialize()).toList(),
-      "def": {
-        typeName.name: (def as SubstrateSerialization).scaleJsonSerialize()
-      },
+      "params": params.map((e) => e.serializeJson()).toList(),
+      "def": {typeName.name: (def as SubstrateSerialization).serializeJson()},
       "docs": docs
     };
   }
 
-  Layout typeDefLayout(PortableRegistry registry, value, {String? property}) {
-    return def.typeDefLayout(registry, value, property: property);
-  }
-
-  LayoutDecodeResult typeDefDecode(
-      {required PortableRegistry registry,
-      required List<int> bytes,
-      required int offset}) {
-    return def.typeDefDecode(registry: registry, bytes: bytes, offset: offset);
+  Layout serializationLayout(PortableRegistry registry,
+      {String? property, LookupDecodeParams? params}) {
+    return def.serializationLayout(registry,
+        property: property, params: params);
   }
 
   Si1TypeDefsIndexesConst get typeName => def.typeName;

@@ -21,10 +21,10 @@ class PalletCallMetadataV16 extends PalletCallMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "type": type,
-      "deprecation_info": deprecationInfo.toVariantScaleJsonSerialize()
+      "deprecation_info": deprecationInfo.serializeJsonVariant()
     };
   }
 }

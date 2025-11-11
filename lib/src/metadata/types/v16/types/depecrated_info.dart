@@ -1,7 +1,7 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
+import 'package:polkadot_dart/src/metadata/types/v16/types/deprecation_status.dart';
+import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 enum DeprecationInfoTypes {
   notDeprecated,
@@ -9,15 +9,8 @@ enum DeprecationInfoTypes {
   variantsDeprecated;
 
   static DeprecationInfoTypes fromName(String? name) {
-    return values.firstWhere(
-      (e) => e.name == name,
-      orElse: () => throw DartSubstratePluginException(
-          'MetadataDeprecationInfo type not found.',
-          details: {
-            'name': name,
-            'values': values.map((e) => e.name).join(', ')
-          }),
-    );
+    return values.firstWhere((e) => e.name == name,
+        orElse: () => throw ItemNotFoundException(value: name));
   }
 }
 
@@ -75,10 +68,10 @@ class MetadataVariantsDeprecated extends MetadataDeprecationInfo {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       'depecreatedVariants': depecreatedVariants
-          .map((k, v) => MapEntry(k, v.toVariantScaleJsonSerialize()))
+          .map((k, v) => MapEntry(k, v.serializeJsonVariant()))
     };
   }
 }
@@ -93,7 +86,7 @@ class MetadataNotDeprecated extends MetadataDeprecationInfo {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {};
   }
 }
@@ -114,7 +107,7 @@ class MetadataItemDeprecated extends MetadataDeprecationInfo {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
-    return {'status': status.toVariantScaleJsonSerialize()};
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {'status': status.serializeJsonVariant()};
   }
 }

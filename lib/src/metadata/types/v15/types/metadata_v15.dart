@@ -6,11 +6,12 @@ import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
-import 'package:polkadot_dart/src/metadata/types/v14/types/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/types/custom_metadata_v15.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/types/outer_enums_15.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/types/runtime_api_method_metadata_v15.dart';
+
 import 'extrinsic_metadata_v15.dart';
 import 'pallet_metadata_v15.dart';
 import 'runtime_api_metadata_v15.dart';
@@ -54,9 +55,8 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
         custom = CustomMetadata15.deserializeJson(json["custom"]);
   factory MetadataV15.fromBytes(List<int> bytes, {String? property}) {
     final decode = SubstrateMetadataLayouts.metadataV15(property: property)
-        .deserialize(bytes)
-        .value;
-    return MetadataV15.deserializeJson(decode);
+        .deserialize(bytes);
+    return MetadataV15.deserializeJson(decode.value);
   }
 
   @override
@@ -65,15 +65,15 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "lookup": lookup.scaleJsonSerialize(),
-      "pallets": pallets.values.map((e) => e.scaleJsonSerialize()).toList(),
-      "extrinsic": extrinsic.scaleJsonSerialize(),
+      "lookup": lookup.serializeJson(),
+      "pallets": pallets.values.map((e) => e.serializeJson()).toList(),
+      "extrinsic": extrinsic.serializeJson(),
       "type": type,
-      "outerEnums": outerEnums.scaleJsonSerialize(),
-      "apis": apis.map((e) => e.scaleJsonSerialize()).toList(),
-      "custom": custom.scaleJsonSerialize()
+      "outerEnums": outerEnums.serializeJson(),
+      "apis": apis.map((e) => e.serializeJson()).toList(),
+      "custom": custom.serializeJson()
     };
   }
 
@@ -125,7 +125,7 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
   }
 
   @override
-  String getRuntimeApiMethod(String apiName, String methodName) {
+  String generateRuntimeApiMethod(String apiName, String methodName) {
     final api = _getRuntimeApi(apiName);
     final method = _getRuntimeMethod(apiName, methodName);
     return "${api.name}_${method.name}";
@@ -144,9 +144,18 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
   }
 
   @override
-  bool get isSupportMetadataHash {
-    return extrinsic.signedExtensions.any((e) =>
-        e.identifier == MetadataConstant.checkMetadataHashExtensionIdentifier);
+  bool runtimeMethodExists(String apiName, {String? methodName}) {
+    try {
+      if (methodName != null) {
+        _getRuntimeMethod(apiName, methodName);
+      } else {
+        return apis.any(
+            (element) => element.name.toLowerCase() == apiName.toLowerCase());
+      }
+      return true;
+    } on MetadataException {
+      return false;
+    }
   }
 
   @override

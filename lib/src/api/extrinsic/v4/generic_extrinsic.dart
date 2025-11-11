@@ -1,0 +1,56 @@
+import 'package:blockchain_utils/crypto/quick_crypto.dart';
+import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
+import 'package:polkadot_dart/src/api/extrinsic/v4/generic_extrinsic_signature.dart';
+import 'package:polkadot_dart/src/constant/constant.dart';
+import 'package:polkadot_dart/src/serialization/serialization.dart';
+
+class Extrinsic extends SubstrateSerialization<Map<String, dynamic>> {
+  final BaseExtrinsicSignature? signature;
+  final List<int> methodBytes;
+  const Extrinsic(
+      {required this.signature, required this.methodBytes, this.version = 4});
+
+  final int version;
+
+  bool get isSigned => signature != null;
+  static StructLayout layout_({String? property}) {
+    return LayoutConst.struct([LayoutConst.u8(property: "version")],
+        property: property);
+  }
+
+  @override
+  List<int> serialize({String? property, bool encodeLength = true}) {
+    final encode = [...super.serialize(), ...methodBytes];
+    if (encodeLength) {
+      return [...LayoutSerializationUtils.encodeLength(encode), ...encode];
+    }
+    return encode;
+  }
+
+  @override
+  StructLayout layout({String? property}) {
+    if (isSigned) {
+      return LayoutConst.struct([
+        LayoutConst.u8(property: "version"),
+        signature!.layout(property: "signature")
+      ], property: property);
+    }
+    return layout_(property: property);
+  }
+
+  String toHash() {
+    return BytesUtils.toHexString(QuickCrypto.blake2b256Hash(serialize()),
+        prefix: "0x");
+  }
+
+  @override
+  Map<String, dynamic> serializeJson({String? property}) {
+    final int version = this.version |
+        (isSigned
+            ? SubstrateConstant.bitSigned
+            : SubstrateConstant.bitUnsigned);
+    return {"version": version, "signature": signature?.serializeJson()}
+      ..removeWhere((key, value) => value == null);
+  }
+}

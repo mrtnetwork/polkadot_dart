@@ -2,6 +2,7 @@ import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/pallet/metadata.dart';
+
 import 'deprecation_status.dart';
 import 'pallet_assosiate_type_metadata.dart';
 import 'pallet_call_metadata_v16.dart';
@@ -75,13 +76,13 @@ class PalletMetadataV16 extends PalletMetadata<
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      ...super.scaleJsonSerialize(property: property),
+      ...super.serializeJson(property: property),
       "docs": docs ?? <String>[],
       "associated_types":
-          associatedTypes.map((e) => e.scaleJsonSerialize()).toList(),
-      "deprecation_info": deprecationInfo.toVariantScaleJsonSerialize()
+          associatedTypes.map((e) => e.serializeJson()).toList(),
+      "deprecation_info": deprecationInfo.serializeJsonVariant()
     };
   }
 }

@@ -16,10 +16,7 @@ class TransactionExtensionMetadata extends SignedExtensionMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
-    return {
-      ...super.scaleJsonSerialize(property: property),
-      "implicit": implicit
-    };
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {...super.serializeJson(property: property), "implicit": implicit};
   }
 }

@@ -1,50 +1,37 @@
+import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:example/examples/json_rpc_example.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
-import 'json_rpc_example.dart';
 
-/// https://github.com/paritytech/txwrapper-core/blob/main/packages/txwrapper-examples/multisig/src/multisig.ts#L321
 void main() async {
   /// Define constants for network format and threshold
   const int networkSS58 = SS58Const.genericSubstrate;
-  const int thresHold = 2;
+  const int threshold = 4;
+  final sponser = SubstratePrivateKey.fromPrivateKey(
+      keyBytes: BytesUtils.fromHexString(
+          "032d3f756c0f96422f82fc5f8e02cfa5ebd87a3a368b4b81b095cf84f26334e8"),
+      algorithm: SubstrateKeyAlgorithm.ed25519);
+  final sponserAddress = sponser.toAddress(ss58Format: networkSS58);
 
-  /// Generate an unmodifiable list of seed bytes
-  final List<int> seedBytes =
-      List.unmodifiable(List.generate(32, (index) => index * 2));
-
-  /// Create a substrate wallet using the generated seed bytes and SR25519 algorithm
-  final substrateWallet = SubstratePrivateKey.fromSeed(
-      seedBytes: seedBytes, algorithm: SubstrateKeyAlgorithm.sr25519);
-
-  /// Derive keys for Alice, Bob, and Charlie
-  final alice = substrateWallet.derive("//alice");
-  final bob = substrateWallet.derive("//bob");
-  final charlie = substrateWallet.derive("//charlie");
-
-  /// Generate SS58 addresses for Alice, Bob, and Charlie
-  final aliceAddress = alice.toAddress(ss58Format: networkSS58);
-  final bobAddress = bob.toAddress(ss58Format: networkSS58);
-  final charlieAddress = charlie.toAddress(ss58Format: networkSS58);
+  List<SubstratePrivateKey> privateKeys = List.generate(
+      threshold + 1,
+      (i) => SubstratePrivateKey.fromSeed(
+            seedBytes: QuickCrypto.sha256Hash(
+                BigintUtils.toBytes(BigInt.from(i + 1), length: 32)),
+          ));
 
   /// List of signer addresses
-  final signerAddresses = [aliceAddress, bobAddress, charlieAddress];
+  final signerAddresses =
+      privateKeys.map((e) => e.toAddress(ss58Format: networkSS58)).toList();
 
-  /// Define destination address
-  final destination = SubstrateAddress(
-      "5FeHntLqsucHn1CZuAsLceAN2FJhwbonP6goHzo4dWVzW33T",
-
-      /// add network format to ensure the destination address is related to the current network
-      ss58Format: networkSS58);
-
-  /// 5GQSRESwfR2c9x6pPeWcx7kC5as1PKCr7HkEUpJj7b4n1g9U
   /// Create a multisig address from signer addresses and threshold
-  final multiSigAddress = SubstrateAddress.createMultiSigAddress(
+  final multiSigAddress = BaseSubstrateAddress.createMultiSigAddress(
       addresses: signerAddresses,
-      thresHold: thresHold,
+      threshold: threshold,
       ss58Format: networkSS58);
 
   /// Set up the provider with the RPC service
-  final provider = SubstrateProvider(
-      SubstrateHttpService("https://westend-rpc.polkadot.io"));
+  final provider =
+      SubstrateProvider(SubstrateHttpService("http://localhost:8001"));
 
   final currentMetadata = await provider
       .request(const SubstrateRequestRuntimeMetadataGetMetadataAtVersion(15));
@@ -52,127 +39,118 @@ void main() async {
   /// Load API metadata
   final api = currentMetadata!.toApi();
 
-  /// Fetch the genesis hash
-  final String genesisHash = await provider
-      .request(const SubstrateRequestChainGetBlockHash<String>(number: 0));
+  final fucent =
+      await SubstrateTransactionBuilder.buildSignAndWatchTransactionStaticAsync(
+          owner: sponserAddress,
+          signer: sponser,
+          calls: SubstrateTransactionSubmitableParams(calls: [
+            ...signerAddresses.map((e) {
+              final transfer = BalancesCallPalletTransferKeepAlive(
+                  dest: e, amount: AmountConverter.kusama.toUnit("25"));
+              return SubstrateEncodedCallParams(
+                  pallet: transfer.pallet.name,
+                  method: transfer.type.method,
+                  bytes: transfer.encodeCall(
+                    extrinsic: api.metadataWithExtrinsic(),
+                  ));
+            }),
+            () {
+              final transfer = BalancesCallPalletTransferKeepAlive(
+                  dest: multiSigAddress,
+                  amount: AmountConverter.kusama.toUnit("25"));
+              return SubstrateEncodedCallParams(
+                  pallet: transfer.pallet.name,
+                  method: transfer.type.method,
+                  bytes: transfer.encodeCall(
+                      extrinsic: api.metadataWithExtrinsic()));
+            }()
+          ]),
+          provider: MetadataWithProvider(
+              provider: provider, metadata: api.metadataWithExtrinsic()));
+  if (!fucent.status.isSuccess) {
+    return;
+  }
 
-  /// Fetch the latest finalized block hash
-  String blockHash = await provider
-      .request(const SubstrateRequestChainChainGetFinalizedHead());
+  final transfer = BalancesCallPalletTransferKeepAlive(
+      dest: sponserAddress, amount: AmountConverter.kusama.toUnit('2'));
+  final msigTx = SubstrateEncodedCallParams(
+      pallet: transfer.pallet.name,
+      method: transfer.type.method,
+      bytes: transfer.encodeCall(extrinsic: api.metadataWithExtrinsic()));
+  final weight = await SubstrateTransactionBuilder.dryRunTransaction(
+      owner: multiSigAddress,
+      calls: SubstrateTransactionSubmitableParams(calls: [msigTx]),
+      provider: MetadataWithProvider(
+          provider: provider, metadata: api.metadataWithExtrinsic()),
+      xcmVersion: XCMVersion.v4);
+  final info = await SubstrateQuickStorageApi.multisig.multisigs(
+      address: multiSigAddress,
+      callHashTx: QuickCrypto.blake2b256Hash(msigTx.bytes),
+      api: api,
+      rpc: provider);
+  MultisigExtrinsicInfo? maybeTimepoint = info?.when;
+  List<BaseSubstrateAddress> signers = signerAddresses;
+  int approved = 0;
+  if (info != null) {
+    signers =
+        signerAddresses.where((e) => !info.approvals.contains(e)).toList();
+    approved = info.approvals.length;
+  }
+  privateKeys = List.generate(
+      signers.length,
+      (i) => privateKeys.firstWhere(
+          (e) => e.toAddress(ss58Format: networkSS58) == signers[i]));
 
-  /// Fetch the block header using the block hash
-  SubstrateHeaderResponse blockHeader = await provider
-      .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
+  for (int i = 0; i < signers.length; i++) {
+    final address = signers[i];
+    final otherSignatories = SubstrateAddressUtils.otherSignatories(
+        addresses: signerAddresses, signer: address);
+    final tx = switch (threshold) {
+      1 => MultisigCallPalletAsMultiThreshold1(
+          otherSignatories: otherSignatories, call: msigTx.bytes),
+      _ => switch (approved + 1 == threshold) {
+          false => MultisigCallPalletApproveAsMulti.fromCall(
+              threshold: threshold,
+              otherSignatories: otherSignatories,
+              call: msigTx.bytes,
+              maybeTimepoint: maybeTimepoint,
+              maxWeight: weight.queryFeeInfo.weight),
+          true => MultisigCallPalletAsMulti(
+              threshold: threshold,
+              otherSignatories: otherSignatories,
+              call: msigTx.bytes,
+              maybeTimepoint: maybeTimepoint,
+              maxWeight: weight.queryFeeInfo.weight)
+        }
+    };
 
-  /// Get the runtime version from the API
-  final runtime = api.runtimeVersion();
-
-  /// Retrieve the call template for the 'transfer_allow_death' method from the 'Balances' pallet
-  /// using the getCallTemplate function, and store it as a JSON string in the 'callMethod' variable.
-  ///
-  /// final transferAllowDeath =
-  ///     api.getCallTemplate("Balances").buildJsonTemplateAsString();
-
-  final amount = BigInt.parse("1${"0" * 12}");
-
-  /// Define the destination address for the transaction
-  final Map<String, dynamic> callMethod = {
-    "transfer_allow_death": {
-      "dest": {"Id": destination.toBytes()},
-      "value": amount
+    final status = await SubstrateTransactionBuilder
+        .buildSignAndWatchTransactionStaticAsync(
+            owner: address,
+            signer: privateKeys[i],
+            calls: SubstrateTransactionSubmitableParams(calls: [
+              SubstrateEncodedCallParams(
+                  pallet: tx.pallet.name,
+                  method: tx.type.name,
+                  bytes: tx.encodeCall(extrinsic: api.metadataWithExtrinsic()))
+            ]),
+            provider: MetadataWithProvider(
+                provider: provider, metadata: api.metadataWithExtrinsic()));
+    if (!status.status.isSuccess) {
+      return;
     }
-  };
-
-  /// Encode the call for a multisig transaction
-  final unsignedTXMultiEncodedMethod = api.encodeCall(
-      palletNameOrIndex: "Balances", fromTemplate: false, value: callMethod);
-
-  /// Map the 'Balances' pallet to the constructed transfer method call.
-  /// The 'runtimeMethod' map associates the 'Balances' pallet with the 'callMethod' map,
-  /// which contains the 'transfer_allow_death' method and its parameters.
-  final Map<String, dynamic> runtimeMethod = {"Balances": callMethod};
-
-  /// Compute the call transaction hash
-  /// - `unsignedTXMultiEncodedMethod` is the encoded method call that needs to be hashed.
-  /// - `methodHash` will store the resulting hash of the transaction (substrate use blake2b256Hash for that)
-  final callHash = SubstrateHelper.txHash(unsignedTXMultiEncodedMethod);
-
-  FrameSupportDispatchPerDispatchClass weight =
-      await api.queryBlockWeight(provider, atBlockHash: blockHash);
-
-  /// select the mandatory of block weight for the transaction
-  SpWeightsWeightV2Weight maxWeight = weight.mandatory;
-
-  /// Get other sorted signatories excluding Alice
-  final otherSignatoriesSortedExAlice = SubstrateAddressUtils.otherSignatories(
-      addresses: signerAddresses, signer: aliceAddress);
-
-  final approveAsMulti = api.approveAsMulti(
-      thresHold: thresHold,
-      otherSignatories: otherSignatoriesSortedExAlice,
-      callHash: callHash,
-      maxWeight: maxWeight);
-
-  /// Fetch Alice's account information
-  final aliceAccount =
-      await api.getAccount(address: aliceAddress, rpc: provider);
-
-  /// Create the payload for Alice's approval
-  final signedTxApproveAsMulti = SubstrateHelper.createTransaction(
-      blockHash: blockHash,
-      genesisHash: genesisHash,
-      methodBytes: approveAsMulti,
-      nonce: aliceAccount.nonce,
-      specVersion: runtime.specVersion,
-      transactionVersion: runtime.transactionVersion,
-      era: blockHeader.toMortalEra(),
-      signer: alice);
-
-  /// Submit Alice's approval extrinsic
-  await provider.request(SubstrateRequestAuthorSubmitExtrinsic(
-      signedTxApproveAsMulti.toHex(prefix: "0x")));
-
-  /// Wait for 10 seconds
-  await Future.delayed(const Duration(seconds: 35));
-
-  /// Get other sorted signatories excluding Bob
-  final otherSignatoriesSortedExBob = SubstrateAddressUtils.otherSignatories(
-      addresses: signerAddresses, signer: bobAddress);
-
-  /// Fetch multisig details
-  final multisigDetails = await api.getMultisigs(
-      multisigaddress: multiSigAddress, callHashTx: callHash, rpc: provider);
-
-  /// Extract multisig call index and height
-  final int multisigCallIndex = multisigDetails!["when"]["index"];
-  final int multisigCallHeight = multisigDetails["when"]["height"];
-
-  /// Fetch Bob's account information
-  final bobAccount = await api.getAccount(address: bobAddress, rpc: provider);
-
-  final asMultiEncode = api.encodeAsMulti(
-      thresHold: thresHold,
-      otherSignatories: otherSignatoriesSortedExBob,
-      call: runtimeMethod,
-      maxWeight: maxWeight,
-      maybeTimepoint: MultisigTimepoint(
-          height: multisigCallHeight, index: multisigCallIndex));
-
-  /// Create the payload for Bob's multisig execution
-  final asMulti = SubstrateHelper.createTransaction(
-      blockHash: blockHash,
-      genesisHash: genesisHash,
-      methodBytes: asMultiEncode,
-      nonce: bobAccount.nonce,
-      specVersion: runtime.specVersion,
-      transactionVersion: runtime.transactionVersion,
-      era: blockHeader.toMortalEra(),
-      signer: bob);
-
-  /// Submit Bob's multisig execution extrinsic
-  await provider.request(
-      SubstrateRequestAuthorSubmitExtrinsic(asMulti.toHex(prefix: "0x")));
-
-  /// Link to the transaction on subscan
-  /// https://westend.stg.subscan.io/extrinsic/0x486158426559b12f6cebecd55e9ab07796331a5083d81e5a0eff7a9cbdf50563
+    if (approved == 0) {
+      final multisigDetails = await SubstrateQuickStorageApi.multisig.multisigs(
+          address: multiSigAddress,
+          callHashTx: QuickCrypto.blake2b256Hash(msigTx.bytes),
+          api: api,
+          rpc: provider);
+      assert(multisigDetails != null, "mulitisg not found.");
+      maybeTimepoint = multisigDetails?.when;
+    }
+    approved++;
+    if (approved == threshold) {
+      break;
+    }
+  }
 }

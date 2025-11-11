@@ -13,8 +13,8 @@ mixin JsonSerialization {
 abstract class SubstrateSerialization<T> {
   const SubstrateSerialization();
 
-  static LayoutDecodeResult deserialize(
-      {required List<int> bytes, required Layout layout, required int offset}) {
+  static LayoutDecodeResult<T> deserialize<T>(
+      {required List<int> bytes, required Layout<T> layout, int offset = 0}) {
     final reader = LayoutByteReader(bytes);
     final decodeBytes = layout.decode(reader, offset: offset);
     return decodeBytes;
@@ -23,8 +23,7 @@ abstract class SubstrateSerialization<T> {
   List<int> serialize({String? property}) {
     final scaleLayout = layout();
     final LayoutByteWriter data = LayoutByteWriter(scaleLayout.span);
-    final size =
-        scaleLayout.encode(scaleJsonSerialize(property: property), data);
+    final size = scaleLayout.encode(serializeJson(property: property), data);
     if (scaleLayout.span < 0) {
       return data.sublist(0, size);
     }
@@ -33,7 +32,7 @@ abstract class SubstrateSerialization<T> {
 
   Layout<T> layout({String? property});
 
-  T scaleJsonSerialize({String? property});
+  T serializeJson({String? property});
 
   String toHex({String? prefix, bool lowerCase = true}) {
     return BytesUtils.toHexString(serialize(),
@@ -42,7 +41,7 @@ abstract class SubstrateSerialization<T> {
 
   @override
   String toString() {
-    return "$runtimeType${scaleJsonSerialize()}";
+    return "$runtimeType${serializeJson()}";
   }
 }
 
@@ -84,12 +83,32 @@ abstract class SubstrateVariantSerialization
 
   String get variantName;
   Layout<Map<String, dynamic>> createVariantLayout({String? property});
-  Map<String, dynamic> toVariantScaleJsonSerialize() {
-    return {variantName: scaleJsonSerialize()};
+  Map<String, dynamic> serializeJsonVariant() {
+    return {variantName: serializeJson()};
   }
 
   List<int> serializeVariant({String? property}) {
     final scaleLayout = createVariantLayout(property: property);
-    return scaleLayout.serialize(toVariantScaleJsonSerialize());
+    return scaleLayout.serialize(serializeJsonVariant());
+  }
+
+  @override
+  Map<String, dynamic> serializeJson({String? property});
+}
+
+abstract mixin class SubstrateVariantNoArgs
+    implements SubstrateVariantSerialization {
+  static Layout<Map<String, dynamic>> layout_({String? property}) {
+    return LayoutConst.noArgs(property: property);
+  }
+
+  @override
+  Layout<Map<String, dynamic>> layout({String? property}) {
+    return layout_(property: property);
+  }
+
+  @override
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {};
   }
 }

@@ -1,4 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/address/substrate_address/ss58_constant.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
@@ -49,6 +50,14 @@ class SubstrateEthereumPublicKey
   @override
   SubstrateEthereumAddress toAddress() {
     return SubstrateEthereumAddress.fromPublicKey(toBytes());
+  }
+
+  SubstrateAddress toSS58Address(
+      {int ss58Format = SS58Const.genericSubstrate}) {
+    return SubstrateAddress.fromBytes(
+        QuickCrypto.blake2b256Hash(
+            [...StringUtils.encode("evm:"), ...toBytes()]),
+        ss58Format: ss58Format);
   }
 
   @override

@@ -1,5 +1,5 @@
+import 'package:blockchain_utils/exception/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
@@ -20,23 +20,18 @@ class StorageEntryModifierV9
     StorageEntryModifierV9.required
   ];
   static StorageEntryModifierV9 fromValue(String? value) {
-    return values.firstWhere(
-      (element) => element.name == value,
-      orElse: () => throw DartSubstratePluginException(
-          "No StorageEntryModifierV9 found matching the specified value",
-          details: {"value": value}),
-    );
+    return values.firstWhere((element) => element.name == value,
+        orElse: () => throw ItemNotFoundException(value: value));
   }
 
   StorageEntryModifierV9.deserializeJson(Map<String, dynamic> json)
-      : name = fromValue(SubstrateEnumSerializationUtils.getScaleEnumKey(json))
-            .name;
+      : name = fromValue(json.keys.firstOrNull).name;
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>
       SubstrateMetadataLayouts.storageEntryModifierV9(property: property);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {name: null};
   }
 

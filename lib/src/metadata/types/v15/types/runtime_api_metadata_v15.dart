@@ -2,6 +2,7 @@ import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
+
 import 'runtime_api_method_metadata_v15.dart';
 
 abstract class RuntimeApiMetadata<METHOD extends RuntimeApiMethodMetadata>
@@ -18,10 +19,10 @@ abstract class RuntimeApiMetadata<METHOD extends RuntimeApiMethodMetadata>
         docs = List<String>.unmodifiable(json["docs"]);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "name": name,
-      "methods": methods.map((e) => e.scaleJsonSerialize()).toList(),
+      "methods": methods.map((e) => e.serializeJson()).toList(),
       "docs": docs
     };
   }

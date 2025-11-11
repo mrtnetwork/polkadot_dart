@@ -1,4 +1,6 @@
+import 'package:blockchain_utils/utils/amount/amount/amount.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
+
 import 'json_rpc_example.dart';
 
 /// https://rococo-rpc.polkadot.io
@@ -34,16 +36,15 @@ void main() async {
       .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
   final era = blockHeader.toMortalEra();
 
-  final accountInfo = await api.getStorage(
-      request: QueryStorageRequest<Map<String, dynamic>>(
-          palletNameOrIndex: "System",
-          methodName: "account",
-          input: signer.toBytes(),
-          identifier: 0),
+  final nonce = await api.getStorageRequest(
+      request: GetStorageRequest<int, Map<String, dynamic>>(
+        palletNameOrIndex: "System",
+        methodName: "account",
+        inputs: signer.toBytes(),
+        onJsonResponse: (response, _, __) => response["nonce"],
+      ),
       rpc: provider,
       fromTemplate: false);
-
-  final int nonce = accountInfo.result["nonce"];
 
   final tmp = {
     "type": "Enum",
@@ -55,7 +56,10 @@ void main() async {
           "key": "Id",
           "value": {"type": "[U8;32]", "value": destination.toBytes()},
         },
-        "value": {"type": "U128", "value": SubstrateHelper.toWSD("0.1")}
+        "value": {
+          "type": "U128",
+          "value": AmountConverter.polkadot.toUnit("0.1")
+        }
       }
     },
   };

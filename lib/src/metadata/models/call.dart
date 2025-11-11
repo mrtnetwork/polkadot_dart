@@ -1,5 +1,11 @@
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
+import 'package:polkadot_dart/src/metadata/types/si/si.dart';
+
+class LookupRawParam {
+  final List<int> bytes;
+  LookupRawParam({required List<int> bytes}) : bytes = bytes.immutable;
+}
 
 class CallMethodInfo {
   final String name;
@@ -12,6 +18,9 @@ class CallMethodInfo {
   })  : docs =
             docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
         name = MetadataTypeInfoUtils.toCamelCase(name)!;
+  Map<String, dynamic> toJson() {
+    return {"name": name, "variant": variant.name};
+  }
 }
 
 class CallInfo {
@@ -20,6 +29,13 @@ class CallInfo {
   final List<CallMethodInfo> methods;
   const CallInfo(
       {required this.id, required this.palletName, required this.methods});
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "pallet": palletName,
+      "methods": methods.map((e) => e.toJson()).toList()
+    };
+  }
 }
 
 class PalletInfo {
@@ -38,6 +54,14 @@ class PalletInfo {
       : docs = docs?.emptyAsNull?.immutable,
         contants = contants?.emptyAsNull?.immutable,
         storage = storage?.emptyAsNull?.immutable;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "calls": calls?.methods.map((e) => e.variant.name).toList(),
+      "storage": storage?.map((e) => e.name).toList(),
+    };
+  }
 }
 
 class MetadataInfo {
@@ -50,6 +74,14 @@ class MetadataInfo {
     List<RuntimeApiInfo>? apis,
   })  : pallets = pallets.immutable,
         apis = apis?.emptyAsNull?.immutable;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "names": pallets.map((e) => e.name).toList(),
+      "pallets": pallets.map((e) => e.toJson()).toList(),
+      "apis": apis?.map((e) => e.toJson()).toList(),
+    };
+  }
 }
 
 class ConstantInfo {
@@ -63,6 +95,10 @@ class ConstantInfo {
   })  : name = MetadataTypeInfoUtils.toCamelCase(name)!,
         docs =
             docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList;
+
+  Map<String, dynamic> toJson() {
+    return {"name": name, "value": value};
+  }
 }
 
 class StorageInfo {
@@ -77,12 +113,21 @@ class StorageInfo {
   })  : docs =
             docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
         viewName = MetadataTypeInfoUtils.toCamelCase(name)!;
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "input_id": inputLookupId,
+    };
+  }
 }
 
 class RuntimeApiInputInfo {
   final String name;
   final int lockupId;
   const RuntimeApiInputInfo({required this.name, required this.lockupId});
+  Map<String, dynamic> toJson() {
+    return {"name": name, "id": lockupId};
+  }
 }
 
 class RuntimeApiMethodInfo {
@@ -98,12 +143,25 @@ class RuntimeApiMethodInfo {
         docs =
             docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
         viewName = MetadataTypeInfoUtils.toCamelCase(name)!;
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "inputs": inputs?.map((e) => e.toJson()).toList(),
+    };
+  }
 }
 
 class RuntimeApiInfo {
   final String name;
   final List<RuntimeApiMethodInfo>? methods;
   final List<String> docs;
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "methods": methods?.map((e) => e.toJson()).toList(),
+    };
+  }
+
   RuntimeApiInfo({
     required this.name,
     required List<RuntimeApiMethodInfo> methods,
@@ -143,4 +201,9 @@ class DecodeCallResult {
   Map<String, dynamic> toJson() {
     return {palletName: data};
   }
+}
+
+class LookupDecodeParams {
+  final bool bytesAsHex;
+  const LookupDecodeParams({this.bytesAsHex = true});
 }

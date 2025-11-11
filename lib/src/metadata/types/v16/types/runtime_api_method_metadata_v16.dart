@@ -24,10 +24,10 @@ class RuntimeApiMethodMetadataV16 extends RuntimeApiMethodMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      ...super.scaleJsonSerialize(property: property),
-      "deprecation_info": deprecationInfo.toVariantScaleJsonSerialize()
+      ...super.serializeJson(property: property),
+      "deprecation_info": deprecationInfo.serializeJsonVariant()
     };
   }
 }

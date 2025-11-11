@@ -1,5 +1,5 @@
-import 'package:blockchain_utils/utils/utils.dart';
 import 'package:blockchain_utils/layout/core/core/core.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 import 'runtime_version_api.dart';
@@ -72,13 +72,13 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "spec_name": specName,
       "impl_name": implName,
       "authoring_version": authoringVersion,
       "impl_version": implVersion,
-      "apis": apis.map((e) => e.scaleJsonSerialize()).toList(),
+      "apis": apis.map((e) => e.serializeJson()).toList(),
       "transaction_version": transactionVersion,
       "state_version": stateVersion,
       "spec_version": specVersion

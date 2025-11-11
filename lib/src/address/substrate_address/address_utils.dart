@@ -1,7 +1,9 @@
+import 'package:blockchain_utils/bip/address/eth_addr.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/address/substrate_address/ss58_constant.dart';
+import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 
 class _MultiSigAddressConst {
   static const List<int> multiSigAddressPrefix = [
@@ -27,60 +29,57 @@ class _MultiSigAddressConst {
 /// Utility class for operations related to Substrate addresses, including
 /// creation of multi-signature addresses and sorting addresses.
 class SubstrateAddressUtils {
+  static const int addressBytesLength = 32;
+  // static const int ehtereumAddressBytesLength = 20;
+  static const int minMultisigThreshold = 1;
+  static const int defaultMaxMultisigSignatories = 100;
+
+  static final SubstrateEthereumAddress zeroAddress =
+      SubstrateEthereumAddress.fromBytes(
+          List<int>.filled(EthAddrConst.addrLenBytes, 0));
+
   /// Creates a multi-signature address from a list of Substrate addresses.
   ///
   /// [addresses] is the list of Substrate addresses to include in the multi-signature.
-  /// [thresHold] is the required number of signatures to approve a transaction.
+  /// [threshold] is the required number of signatures to approve a transaction.
   /// [ss58Format] is the SS58 format identifier for the resulting address.
   ///
   /// Throws a [DartSubstratePluginException] if the addresses have different SS58 formats,
   /// if the threshold is invalid, or if the addresses list is empty.
-  static SubstrateAddress createMultiSigAddress(
-      {required List<SubstrateAddress> addresses,
-      required int thresHold,
-      required int ss58Format}) {
-    // Check if any address has a different SS58 format
-    final hasDifferentSS58 =
-        addresses.any((element) => element.ss58Format != ss58Format);
-    if (hasDifferentSS58) {
+  static BaseSubstrateAddress createMultiSigAddress(
+      {required List<BaseSubstrateAddress> addresses,
+      required int threshold,
+      int? ss58Format,
+      int maxSignatories = defaultMaxMultisigSignatories}) {
+    if (maxSignatories <= 0 || maxSignatories > mask16) {
       throw DartSubstratePluginException(
-        "Some provided addresses have different ss58 format with provided ss58Format",
+        "MaxSignatories must be greater than 0 and not exceed $mask16.",
+      );
+    }
+    // Validate the threshold
+    if (threshold <= 0 ||
+        threshold > addresses.length ||
+        addresses.length > maxSignatories) {
+      throw DartSubstratePluginException(
+        "Threshold or number of addresses is out of range.",
         details: {
-          "ss58Format": ss58Format,
-          "addresses": addresses.map((e) => e.address).join(", "),
-          "addressSS58Formats": addresses.map((e) => e.ss58Format).join(", ")
+          "threshold": threshold,
+          "addressesLength": addresses.length,
         },
       );
     }
 
-    // Validate the threshold
-    if (thresHold <= 0 || thresHold > addresses.length || thresHold > mask16) {
-      throw DartSubstratePluginException(
-          "The number of accounts that must approve. Must be U16 and greater than 0 and less than or equal to the total number of addresses.",
-          details: {
-            "thresHold": thresHold,
-            "addressesLength": addresses.length
-          });
+    if (addresses.any((e) => e.type != SubstrateAddressType.substrate)) {
+      throw DartSubstratePluginException("Unsuported address type.");
     }
-
-    // Check if the addresses list is empty
-    if (addresses.isEmpty) {
-      throw DartSubstratePluginException("The addresses must not be empty.",
-          details: {
-            "thresHold": thresHold,
-            "addressesLength": addresses.length
-          });
-    }
-
     // Convert addresses to bytes and sort them
     final List<List<int>> addressBytes = List<List<int>>.unmodifiable(
         addresses.map((e) => List<int>.unmodifiable(e.toBytes())).toList()
           ..sort((a, b) => BytesUtils.compareBytes(a, b)));
-
     // Encode the length and threshold to bytes
     final lenBytes =
         LayoutSerializationUtils.compactIntToBytes(addressBytes.length);
-    final thressHoldBytes = LayoutConst.u16().serialize(thresHold);
+    final thressHoldBytes = LayoutConst.u16().serialize(threshold);
 
     // Compute the hash for the multi-signature address
     final addressHash = QuickCrypto.blake2b256Hash([
@@ -91,7 +90,8 @@ class SubstrateAddressUtils {
     ]);
 
     // Create and return the multi-signature address
-    return SubstrateAddress.fromBytes(addressHash, ss58Format: ss58Format);
+    return SubstrateAddress.fromBytes(addressHash,
+        ss58Format: ss58Format ?? SS58Const.genericSubstrate);
   }
 
   /// Sorts a list of Substrate addresses based on their byte representations.
@@ -108,8 +108,11 @@ class SubstrateAddressUtils {
   static List<BaseSubstrateAddress> otherSignatories(
       {required List<BaseSubstrateAddress> addresses,
       required BaseSubstrateAddress signer}) {
+    final signerRawAddress = signer.toHex();
     final sorted = sortedAddress(addresses);
-    return sorted..removeWhere((element) => element == signer);
+    return sorted
+      ..removeWhere(
+          (element) => StringUtils.hexEqual(element.toHex(), signerRawAddress));
   }
 
   static List<int> createMultisigStorageKey(
@@ -128,5 +131,16 @@ class SubstrateAddressUtils {
       ...multisigCallHash,
       ...txHash
     ];
+  }
+
+  static SubstrateEthereumAddress? tryDecodeFromSolidityAddress(
+      String address32) {
+    final hex = StringUtils.strip0x(address32);
+    if (hex.length != 64) return null;
+    final prefix = hex.substring(0, 24);
+    if (!RegExp(r'^0+$').hasMatch(prefix)) return null;
+    final addrHex = hex.substring(24);
+    return SubstrateEthereumAddress.fromBytes(
+        BytesUtils.fromHexString(addrHex));
   }
 }

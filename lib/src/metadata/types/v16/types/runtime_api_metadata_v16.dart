@@ -1,7 +1,8 @@
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
+import 'package:polkadot_dart/src/metadata/types/types.dart';
+
 import 'runtime_api_method_metadata_v16.dart';
 
 class RuntimeApiMetadataV16
@@ -28,10 +29,10 @@ class RuntimeApiMetadataV16
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      ...super.scaleJsonSerialize(property: property),
-      "deprecation_info": deprecationInfo.toVariantScaleJsonSerialize()
+      ...super.serializeJson(property: property),
+      "deprecation_info": deprecationInfo.serializeJsonVariant()
     };
   }
 }

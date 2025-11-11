@@ -39,7 +39,7 @@ class OuterEnums15 extends SubstrateSerialization<Map<String, dynamic>> {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "callType": callType,
       "eventType": eventType,

@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/v14.dart';
+
 import 'storage_entery_v16.dart';
 
 class PalletStorageMetadataV16
@@ -25,10 +26,10 @@ class PalletStorageMetadataV16
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "prefix": prefix,
-      "items": items.map((e) => e.scaleJsonSerialize()).toList()
+      "items": items.map((e) => e.serializeJson()).toList()
     };
   }
 }

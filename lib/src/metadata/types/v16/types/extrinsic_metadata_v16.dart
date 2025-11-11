@@ -53,13 +53,13 @@ class ExtrinsicMetadataV16 extends ExtrinsicMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "versions": versions,
       "addressType": addressType,
       "signatureType": signatureType,
       "transaction_extensions":
-          transactionExtensions.map((e) => e.scaleJsonSerialize()).toList(),
+          transactionExtensions.map((e) => e.serializeJson()).toList(),
       "transaction_extensions_by_version": transactionExtensionsByVersion
     };
   }

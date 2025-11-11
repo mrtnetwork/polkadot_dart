@@ -3,7 +3,6 @@ import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/constant/constant.dart';
-import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
 import 'package:polkadot_dart/src/models/generic/models/fixed_bytes.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
@@ -60,10 +59,13 @@ class SubstrateAccountIndex extends SubstrateBaseAccountId<int> {
 
   @override
   String get name => GenericConstants.indexIndexKey;
+  static Layout<int> layout_({String? property}) {
+    return LayoutConst.compactIntU32(property: property);
+  }
 
   @override
   Layout<int> layout({String? property}) {
-    return GenericLayouts.accountIndex(property: property);
+    return layout_(property: property);
   }
 
   @override
@@ -73,7 +75,7 @@ class SubstrateAccountIndex extends SubstrateBaseAccountId<int> {
   }
 
   @override
-  int scaleJsonSerialize({String? property}) {
+  int serializeJson({String? property}) {
     return index;
   }
 }
@@ -85,9 +87,13 @@ class SubstrateAccountRaw extends SubstrateBaseAccountId<List<int>> {
   @override
   String get name => GenericConstants.rawIndexKey;
 
+  static Layout<List<int>> layout_({String? property}) {
+    return LayoutConst.bytes(property: property);
+  }
+
   @override
   Layout<List<int>> layout({String? property}) {
-    return GenericLayouts.accountRaw(property: property);
+    return layout_(property: property);
   }
 
   @override
@@ -96,7 +102,7 @@ class SubstrateAccountRaw extends SubstrateBaseAccountId<List<int>> {
   }
 
   @override
-  List<int> scaleJsonSerialize({String? property}) {
+  List<int> serializeJson({String? property}) {
     return bytes;
   }
 }

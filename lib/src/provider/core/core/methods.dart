@@ -59,6 +59,10 @@ class SubstrateRequestMethods {
   static const SubstrateRequestMethods subscribeFinalizedHeads =
       SubstrateRequestMethods._("chain_subscribeFinalizedHeads",
           "Retrieves the best finalized header via subscription");
+
+  static const SubstrateRequestMethods unsubscribeFinalizedHeads =
+      SubstrateRequestMethods._("chain_unsubscribeFinalizedHeads",
+          "Retrieves the best finalized header via subscription");
   static const SubstrateRequestMethods subscribeNewHeads =
       SubstrateRequestMethods._("chain_subscribeNewHeads",
           "Retrieves the best header via subscription");
@@ -102,6 +106,8 @@ class SubstrateRequestMethods {
   static const SubstrateRequestMethods getBlockStats = SubstrateRequestMethods._(
       "dev_getBlockStats",
       "Reexecute the specified block_hash and gather statistics while doing so");
+  static const SubstrateRequestMethods devNewBlock =
+      SubstrateRequestMethods._("dev_newBlock", "");
 
   /// engine
   static const SubstrateRequestMethods createBlock = SubstrateRequestMethods._(
@@ -192,6 +198,9 @@ class SubstrateRequestMethods {
   static const SubstrateRequestMethods stateGetStorage =
       SubstrateRequestMethods._(
           "state_getStorage", "Retrieves the storage for a key");
+  // static const SubstrateRequestMethods stateGetKeysPaged =
+  //     SubstrateRequestMethods._(
+  //         "state_getKeysPaged", "Retrieves the storage for a key");
   static const SubstrateRequestMethods stateGetStorageHash =
       SubstrateRequestMethods._(
           "state_getStorageHash", "Retrieves the storage hash");

@@ -2,8 +2,8 @@ import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/constant/constant.dart';
-import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
+
 import 'fixed_bytes.dart';
 
 abstract class SubstrateBaseSignature extends ScaleFixedBytes {
@@ -50,7 +50,7 @@ class SubstrateMultiSignature
   const SubstrateMultiSignature(this.signature);
   factory SubstrateMultiSignature.deserialize(List<int> bytes) {
     final json = SubstrateVariantSerialization.deserialize(
-        bytes: bytes, layout: GenericLayouts.signature());
+        bytes: bytes, layout: layout_());
     final variant = SubstrateVariantSerialization.toVariantDecodeResult(json);
     final bytesValue = (variant.result["value"] as List).cast<int>();
     final signature = switch (variant.variantName) {
@@ -64,17 +64,27 @@ class SubstrateMultiSignature
     };
     return SubstrateMultiSignature(signature);
   }
+  static Layout<Map<String, dynamic>> layout_({String? property}) {
+    return LayoutConst.rustEnum([
+      LayoutConst.fixedBlobN(SubstrateConstant.signatureLength,
+          property: GenericConstants.multiSignatureEd25519IndexKey),
+      LayoutConst.fixedBlobN(SubstrateConstant.signatureLength,
+          property: GenericConstants.multiSignatureSr25519IndexKey),
+      LayoutConst.fixedBlobN(SubstrateConstant.ecdsaSignatureLength,
+          property: GenericConstants.multiSignatureEcdsaIndexKey),
+    ], property: property);
+  }
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>
-      GenericLayouts.signature(property: property);
+      layout_(property: property);
 
   List<int> signatureBytes() {
     return List<int>.from(signature.bytes);
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
-    return {signature.name: signature.scaleJsonSerialize()};
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {signature.name: signature.serializeJson()};
   }
 }

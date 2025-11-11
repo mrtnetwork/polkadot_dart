@@ -1,8 +1,9 @@
-import 'package:blockchain_utils/utils/utils.dart';
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entery_type_v14.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
+
 import 'entry_modifier_v14.dart';
 
 class StorageEntryMetadataV14
@@ -41,11 +42,11 @@ class StorageEntryMetadataV14
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "name": name,
-      "modifier": modifier.scaleJsonSerialize(),
-      "type": {type.typeName: type.scaleJsonSerialize()},
+      "modifier": modifier.serializeJson(),
+      "type": {type.typeName: type.serializeJson()},
       "fallback": fallback,
       "docs": docs
     };

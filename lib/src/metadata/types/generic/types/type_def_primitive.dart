@@ -1,5 +1,5 @@
+import 'package:blockchain_utils/exception/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 
 class PrimitiveTypes {
@@ -38,12 +38,8 @@ class PrimitiveTypes {
     PrimitiveTypes.i256,
   ];
   static PrimitiveTypes fromValue(String? value) {
-    return values.firstWhere(
-      (element) => element.name == value,
-      orElse: () => throw MetadataException(
-          "No PrimitiveTypes found matching the specified value",
-          details: {"value": value}),
-    );
+    return values.firstWhere((element) => element.name == value,
+        orElse: () => throw ItemNotFoundException(value: value));
   }
 
   Layout toLayout({String? property}) {

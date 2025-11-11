@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:test/test.dart';
+
 import '../repository/westend_v14.dart';
 
 void main() {
@@ -27,7 +28,10 @@ void _test(MetadataApi api) {
             "key": "Id",
             "value": {"type": "[U8;32]", "value": destination.toBytes()},
           },
-          "value": {"type": "U128", "value": SubstrateHelper.toWSD("0.1")}
+          "value": {
+            "type": "U128",
+            "value": AmountConverter.kusama.toUnit("0.1")
+          }
         }
       },
     };
@@ -39,7 +43,7 @@ void _test(MetadataApi api) {
   test("System_account", () {
     final List<int> data = BytesUtils.fromHexString(
         "04000000020000000100000000000000e0624a6fc408000000000000000000000000000000000000000000000000000000204aa9d1010000000000000000000000000000000000000000000000000080");
-    final decode = api.decodeStorageResponse(
+    final decode = api.decodeStorageOutput(
         palletNameOrIndex: "system",
         methodName: "account",
         queryResponse: data);
@@ -59,7 +63,7 @@ void _test(MetadataApi api) {
   test("System_account-2", () {
     final List<int> data = BytesUtils.fromHexString(
         "000000000000000001000000000000000058d7275e0900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080");
-    final decode = api.decodeStorageResponse(
+    final decode = api.decodeStorageOutput(
         palletNameOrIndex: "system",
         methodName: "account",
         queryResponse: data);

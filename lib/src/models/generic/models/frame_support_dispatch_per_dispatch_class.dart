@@ -1,37 +1,41 @@
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:polkadot_dart/src/models/generic/layouts/layouts.dart';
-import 'package:polkadot_dart/src/models/generic/models/sp_weights_weight_v2_weight.dart';
+import 'package:blockchain_utils/layout/layout.dart';
+import 'package:polkadot_dart/src/models/generic/models/weight.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 /// frame_support, dispatch, PerDispatchClas
 class FrameSupportDispatchPerDispatchClass
     extends SubstrateSerialization<Map<String, dynamic>> {
-  final SpWeightsWeightV2Weight normal;
-  final SpWeightsWeightV2Weight operational;
-  final SpWeightsWeightV2Weight mandatory;
+  final SubstrateWeightV2 normal;
+  final SubstrateWeightV2 operational;
+  final SubstrateWeightV2 mandatory;
   const FrameSupportDispatchPerDispatchClass(
       {required this.normal,
       required this.operational,
       required this.mandatory});
   FrameSupportDispatchPerDispatchClass.deserializeJson(
       Map<String, dynamic> json)
-      : normal = SpWeightsWeightV2Weight.deserializeJson(json["normal"]),
-        mandatory = SpWeightsWeightV2Weight.deserializeJson(json["mandatory"]),
-        operational =
-            SpWeightsWeightV2Weight.deserializeJson(json["operational"]);
-
-  @override
-  Layout<Map<String, dynamic>> layout({String? property}) {
-    return GenericLayouts.frameSupportDispatchPerDispatchClass(
-        property: property);
+      : normal = SubstrateWeightV2.deserializeJson(json["normal"]),
+        mandatory = SubstrateWeightV2.deserializeJson(json["mandatory"]),
+        operational = SubstrateWeightV2.deserializeJson(json["operational"]);
+  static StructLayout layout_({String? property}) {
+    return LayoutConst.struct([
+      SubstrateWeightV2.layout_(property: "normal"),
+      SubstrateWeightV2.layout_(property: "operational"),
+      SubstrateWeightV2.layout_(property: "mandatory"),
+    ], property: property);
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Layout<Map<String, dynamic>> layout({String? property}) {
+    return layout_(property: property);
+  }
+
+  @override
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "normal": normal.scaleJsonSerialize(),
-      "operational": operational.scaleJsonSerialize(),
-      "mandatory": mandatory.scaleJsonSerialize()
+      "normal": normal.serializeJson(),
+      "operational": operational.serializeJson(),
+      "mandatory": mandatory.serializeJson()
     };
   }
 }

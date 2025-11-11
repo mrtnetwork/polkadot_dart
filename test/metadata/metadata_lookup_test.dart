@@ -1,7 +1,8 @@
 import 'package:blockchain_utils/utils/utils.dart';
-import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
+import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:test/test.dart';
+
 import 'v14_metadata_hex.dart';
 
 void main() {
@@ -14,6 +15,19 @@ void main() {
 }
 
 void _encodeDecode(MetadataV14 api) {
+  test("lockup-16", () {
+    const int loockUpId = 16;
+    final value = [
+      {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))}
+    ];
+    final encode =
+        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
+    expect(BytesUtils.toHexString(encode),
+        "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final decode = api.decodeLookup(loockUpId, encode);
+    expect(decode, value);
+  });
+  // return;
   // final registry = api.registry;
   test("Encode and Decode", () {
     final layout = SubstrateMetadataLayouts.metadataV14();
@@ -168,7 +182,7 @@ void _encodeDecode(MetadataV14 api) {
     final encode =
         api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
     expect(BytesUtils.toHexString(encode), "0c0c0c0c");
-    final decode = api.decodeLookup(loockUpId, encode);
+    final String decode = api.decodeLookup(loockUpId, encode);
     expect(BytesUtils.fromHexString(decode), value);
   });
   test("lockup-19", () {

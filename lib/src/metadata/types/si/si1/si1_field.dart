@@ -1,6 +1,8 @@
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
+import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
+import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 class Si1Field extends SubstrateSerialization<Map<String, dynamic>> {
   final String? name;
@@ -26,12 +28,12 @@ class Si1Field extends SubstrateSerialization<Map<String, dynamic>> {
       SubstrateMetadataLayouts.si1Field(property: property);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {"name": name, "type": type, "typeName": typeName, "docs": docs};
   }
 
   Map<String, dynamic> toJson() {
-    return scaleJsonSerialize();
+    return serializeJson();
   }
 
   MetadataTypeInfo typeInfo(PortableRegistry registry) {

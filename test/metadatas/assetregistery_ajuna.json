@@ -1,0 +1,176 @@
+[
+    {
+        "is_spendable": true,
+        "is_fee_token": true,
+        "min_balance": "1000000000",
+        "name": "Ajuna",
+        "symbol": "AJUN",
+        "decimals": 12,
+        "excution_pallet": "Balances"
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "843f3835670565b5892f2bb413f4058626b72466570ab45091b68014f7c5ec27",
+                "issuer": "843f3835670565b5892f2bb413f4058626b72466570ab45091b68014f7c5ec27",
+                "admin": "843f3835670565b5892f2bb413f4058626b72466570ab45091b68014f7c5ec27",
+                "freezer": "5F46xXDZtB1ReEQFmHXzGrXNRAvVsVTdPv88qyqoLmgMh5wK",
+                "supply": "80850000000",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 4,
+                "sufficients": 2,
+                "approvals": 0,
+                "min_balance": "1000000000",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "0"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "Polkadot DOT",
+            "symbol": "DOT",
+            "decimals": 10,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V5": {
+                "parents": 1,
+                "interior": {
+                    "Here": null
+                }
+            }
+        }
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "e49ad2f6a7346dca526a39aeea90aa0231717c77eaf257b0733faed3e1953f19",
+                "issuer": "e49ad2f6a7346dca526a39aeea90aa0231717c77eaf257b0733faed3e1953f19",
+                "admin": "e49ad2f6a7346dca526a39aeea90aa0231717c77eaf257b0733faed3e1953f19",
+                "freezer": "5HESmTDX21v5syjhpesN61W7d4HGHtatecbpe3uoH6Qx7dkf",
+                "supply": "100000000000000000000",
+                "deposit": "0",
+                "is_sufficient": false,
+                "accounts": 15,
+                "sufficients": 0,
+                "approvals": 0,
+                "min_balance": "10000000000",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "847713"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "Battle Mogs Token",
+            "symbol": "DMOG",
+            "decimals": 12,
+            "is_frozen": false
+        },
+        "is_fee_token": false,
+        "units_per_second": null,
+        "location": null
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "843f3835670565b5892f2bb413f4058626b72466570ab45091b68014f7c5ec27",
+                "issuer": "843f3835670565b5892f2bb413f4058626b72466570ab45091b68014f7c5ec27",
+                "admin": "843f3835670565b5892f2bb413f4058626b72466570ab45091b68014f7c5ec27",
+                "freezer": "5F46xXDZtB1ReEQFmHXzGrXNRAvVsVTdPv88qyqoLmgMh5wK",
+                "supply": "200000000",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 3,
+                "sufficients": 3,
+                "approvals": 0,
+                "min_balance": "10000",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "1984"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "Tether USD",
+            "symbol": "USDt",
+            "decimals": 6,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V5": {
+                "parents": 1,
+                "interior": {
+                    "X3": [
+                        {
+                            "Parachain": 1000
+                        },
+                        {
+                            "PalletInstance": 50
+                        },
+                        {
+                            "GeneralIndex": "1984"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "e49ad2f6a7346dca526a39aeea90aa0231717c77eaf257b0733faed3e1953f19",
+                "issuer": "e49ad2f6a7346dca526a39aeea90aa0231717c77eaf257b0733faed3e1953f19",
+                "admin": "e49ad2f6a7346dca526a39aeea90aa0231717c77eaf257b0733faed3e1953f19",
+                "freezer": "5HESmTDX21v5syjhpesN61W7d4HGHtatecbpe3uoH6Qx7dkf",
+                "supply": "500000000",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 2,
+                "sufficients": 2,
+                "approvals": 0,
+                "min_balance": "10000",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "1337"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "USD Coin",
+            "symbol": "USDC",
+            "decimals": 6,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V5": {
+                "parents": 1,
+                "interior": {
+                    "X3": [
+                        {
+                            "Parachain": 1000
+                        },
+                        {
+                            "PalletInstance": 50
+                        },
+                        {
+                            "GeneralIndex": "1337"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]

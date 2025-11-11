@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 
 import 'json_rpc_example.dart';
@@ -13,8 +13,6 @@ void main() async {
       "241c27160517b75a04e29b560c50dde37ec564aed7ac5552862c80b0f956f460");
   final privateKey = SubstratePrivateKey.fromSeed(
       seedBytes: seedBytes, algorithm: SubstrateKeyAlgorithm.ed25519);
-
-  // final chainInfo = await provider.request(SubstrateRequestSystemProperties());
 
   /// 5GjQNXpyZoyYiQ8GdB5fgjRkZdh3EgELwGdEmPP44YDnMx43
   final signer = privateKey.toAddress();
@@ -44,20 +42,23 @@ void main() async {
           "key": "Id",
           "value": {"type": "[U8;32]", "value": signer.toBytes()},
         },
-        "amount": {"type": "U128", "value": SubstrateHelper.toWSD("200")}
+        "amount": {
+          "type": "U128",
+          "value": AmountConverter.polkadot.toUnit("200")
+        }
       }
     },
   };
 
-  final accountInfo = await api.getStorage(
-      request: QueryStorageRequest<Map<String, dynamic>>(
-          palletNameOrIndex: "System",
-          methodName: "account",
-          input: signer.toBytes(),
-          identifier: 0),
+  final nonce = await api.getStorageRequest(
+      request: GetStorageRequest<int, Map<String, dynamic>>(
+        palletNameOrIndex: "System",
+        methodName: "account",
+        onJsonResponse: (response, _, __) => response["nonce"],
+        inputs: signer.toBytes(),
+      ),
       rpc: provider,
       fromTemplate: false);
-  final int nonce = accountInfo.result["nonce"];
   final method = List<int>.unmodifiable(api.encodeCall(
       palletNameOrIndex: "assets",
       value: setAssetMetadata,

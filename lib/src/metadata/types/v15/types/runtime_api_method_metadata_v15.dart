@@ -38,10 +38,10 @@ abstract class RuntimeApiMethodMetadata
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "name": name,
-      "inputs": inputs.map((e) => e.scaleJsonSerialize()).toList(),
+      "inputs": inputs.map((e) => e.serializeJson()).toList(),
       "output": output,
       "docs": docs
     };

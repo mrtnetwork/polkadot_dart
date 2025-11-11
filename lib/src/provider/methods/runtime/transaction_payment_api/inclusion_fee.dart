@@ -8,7 +8,7 @@ import 'package:polkadot_dart/src/provider/models/runtime/query_fee_info.dart';
 /// Returns the metadata at a given version
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
 class SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails
-    extends SubstrateRequest<String, QueryFeeInfoFrame> {
+    extends SubstrateRequest<String, QueryFeeDetails> {
   const SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails(
       {required this.data, this.atBlockHash});
   factory SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails.fromExtrinsic(
@@ -36,7 +36,7 @@ class SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails
   }
 
   @override
-  QueryFeeInfoFrame onResonse(String result) {
-    return QueryFeeInfoFrame.deserialize(BytesUtils.fromHexString(result));
+  QueryFeeDetails onResonse(String result) {
+    return QueryFeeDetails.deserialize(BytesUtils.fromHexString(result));
   }
 }

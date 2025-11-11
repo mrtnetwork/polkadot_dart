@@ -35,7 +35,7 @@ class ExtrinsicMetadataV15 extends ExtrinsicMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "version": version,
       "addressType": addressType,
@@ -43,7 +43,7 @@ class ExtrinsicMetadataV15 extends ExtrinsicMetadata {
       "signatureType": signatureType,
       "extraType": extraType,
       "signedExtensions":
-          signedExtensions.map((e) => e.scaleJsonSerialize()).toList(),
+          signedExtensions.map((e) => e.serializeJson()).toList(),
     };
   }
 }

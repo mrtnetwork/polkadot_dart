@@ -29,11 +29,13 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   http: ^1.1.0
-  blockchain_utils: ^5.1.0
+  blockchain_utils: ^5.4.0
   # blockchain_utils:
   #   path: ../../blockchain_utils
   web_socket_channel: ^2.4.0
   flutter_secure_storage: ^9.2.3
+  on_chain:
+    path: ../../On_chain
   polkadot_dart:
     path: ../
   flutter:

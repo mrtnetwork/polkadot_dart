@@ -1,10 +1,12 @@
 import 'package:blockchain_utils/layout/core/core/core.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
+
 import 'portable_registry.dart';
 
 /// Abstract class representing a scale type definition in the Substrate framework.
@@ -12,14 +14,8 @@ abstract class ScaleTypeDef<T> extends SubstrateSerialization<T> {
   const ScaleTypeDef();
 
   /// Returns the serialization layout of a type definition for the given [registry], [value], and optional [property].
-  Layout typeDefLayout(PortableRegistry registry, Object? value,
-      {String? property});
-
-  // /// Decodes a type definition for the given [registry] and byte [bytes] array.
-  LayoutDecodeResult typeDefDecode(
-      {required PortableRegistry registry,
-      required List<int> bytes,
-      required int offset});
+  Layout serializationLayout(PortableRegistry registry,
+      {String? property, LookupDecodeParams? params});
 
   /// Gets the constant indexes for the type name.
   Si1TypeDefsIndexesConst get typeName;
@@ -43,4 +39,8 @@ abstract class ScaleTypeDef<T> extends SubstrateSerialization<T> {
   }
 
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id);
+
+  int? typeByFieldName(PortableRegistry registry, int id, String name);
+
+  int? typeByName(PortableRegistry registry, int id, String name);
 }

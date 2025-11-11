@@ -1,3 +1,4 @@
+import 'package:blockchain_utils/exception/exception/exception.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
@@ -62,7 +63,7 @@ abstract class MetadataTypeInfo<T> {
 
   E cast<E extends MetadataTypeInfo>() {
     if (this is! E) {
-      throw Exception("casting failed $E $runtimeType");
+      throw CastFailedException<E>(value: this);
     }
     return this as E;
   }

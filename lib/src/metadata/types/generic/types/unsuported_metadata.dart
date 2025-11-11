@@ -1,5 +1,4 @@
-import 'package:blockchain_utils/utils/utils.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 
 class UnsupportedMetadata extends SubstrateMetadata<List<int>> {
@@ -12,7 +11,7 @@ class UnsupportedMetadata extends SubstrateMetadata<List<int>> {
 
   /// Constructs an instance of [UnsupportedMetadata] with the provided [bytes] and [version].
   UnsupportedMetadata({required List<int> bytes, required this.version})
-      : bytes = BytesUtils.toBytes(bytes, unmodifiable: true);
+      : bytes = bytes.asImmutableBytes;
 
   /// Returns the serialization layout of the unsupported metadata with optional [property].
   @override
@@ -22,7 +21,7 @@ class UnsupportedMetadata extends SubstrateMetadata<List<int>> {
 
   /// Serializes the unsupported metadata to scale JSON format with optional [property].
   @override
-  List<int> scaleJsonSerialize({String? property}) {
+  List<int> serializeJson({String? property}) {
     return bytes;
   }
 }

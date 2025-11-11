@@ -1,0 +1,176 @@
+[
+    {
+        "is_spendable": true,
+        "is_fee_token": true,
+        "min_balance": "0",
+        "name": "Darwinia2",
+        "symbol": "RING",
+        "decimals": 18,
+        "excution_pallet": "Balances"
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "6d6f646c617373746d6e67720000000000000000",
+                "issuer": "6d6f646c617373746d6e67720000000000000000",
+                "admin": "6d6f646c617373746d6e67720000000000000000",
+                "freezer": "0x6D6f646c617373746d6E67720000000000000000",
+                "supply": "2363234694",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 26,
+                "sufficients": 26,
+                "approvals": 16,
+                "min_balance": "1",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "1027"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "Tether USD",
+            "symbol": "ahUSDT",
+            "decimals": 6,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V4": {
+                "parents": 1,
+                "interior": {
+                    "X3": [
+                        {
+                            "Parachain": 1000
+                        },
+                        {
+                            "PalletInstance": 50
+                        },
+                        {
+                            "GeneralIndex": "1984"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "08837de0ae21c270383d9f2de4db03c7b1314632",
+                "issuer": "46275d29113f065c2aac262f34c7a3d8a8b7377d",
+                "admin": "46275d29113f065c2aac262f34c7a3d8a8b7377d",
+                "freezer": "0x08837De0Ae21C270383D9F2de4DB03c7b1314632",
+                "supply": "149379194907601111806310",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 458,
+                "sufficients": 458,
+                "approvals": 151,
+                "min_balance": "1",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "1026"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "Darwinia Commitment Token",
+            "symbol": "KTON",
+            "decimals": 18,
+            "is_frozen": false
+        },
+        "is_fee_token": false,
+        "units_per_second": null,
+        "location": null
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "6d6f646c617373746d6e67720000000000000000",
+                "issuer": "6d6f646c617373746d6e67720000000000000000",
+                "admin": "6d6f646c617373746d6e67720000000000000000",
+                "freezer": "0x6D6f646c617373746d6E67720000000000000000",
+                "supply": "116201601702434643",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 466,
+                "sufficients": 466,
+                "approvals": 31,
+                "min_balance": "1",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "1028"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "PINK",
+            "symbol": "ahPINK",
+            "decimals": 10,
+            "is_frozen": false
+        },
+        "is_fee_token": false,
+        "units_per_second": null,
+        "location": {
+            "V4": {
+                "parents": 1,
+                "interior": {
+                    "X3": [
+                        {
+                            "Parachain": 1000
+                        },
+                        {
+                            "PalletInstance": 50
+                        },
+                        {
+                            "GeneralIndex": "23"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "6d6f646c617373746d6e67720000000000000000",
+                "issuer": "6d6f646c617373746d6e67720000000000000000",
+                "admin": "6d6f646c617373746d6e67720000000000000000",
+                "freezer": "0x6D6f646c617373746d6E67720000000000000000",
+                "supply": "20000001",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 2,
+                "sufficients": 2,
+                "approvals": 0,
+                "min_balance": "1",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "1029"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "DOT",
+            "symbol": "DOT",
+            "decimals": 10,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V4": {
+                "parents": 1,
+                "interior": {
+                    "Here": null
+                }
+            }
+        }
+    }
+]

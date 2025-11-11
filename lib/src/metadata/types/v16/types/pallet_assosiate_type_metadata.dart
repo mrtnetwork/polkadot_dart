@@ -1,7 +1,7 @@
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
+import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 class PalletAssociatedTypeMetadata
     extends SubstrateSerialization<Map<String, dynamic>> {
@@ -32,7 +32,7 @@ class PalletAssociatedTypeMetadata
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "type": type,
       "name": name,

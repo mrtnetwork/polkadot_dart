@@ -1,0 +1,140 @@
+[
+    {
+        "is_spendable": true,
+        "is_fee_token": true,
+        "min_balance": "100000000",
+        "name": "Crust",
+        "symbol": "CRU",
+        "decimals": 12,
+        "excution_pallet": "Balances"
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "6d6f646c617373746d6e67720000000000000000000000000000000000000000",
+                "issuer": "6d6f646c617373746d6e67720000000000000000000000000000000000000000",
+                "admin": "6d6f646c617373746d6e67720000000000000000000000000000000000000000",
+                "freezer": "5EYCAe5fj8dDwtSBKZm7aH7N5LVtJi2ieq6SM7xMqcchrC6h",
+                "supply": "2000800000",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 4,
+                "sufficients": 4,
+                "approvals": 0,
+                "min_balance": "1000",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "187224307232923873519830480073807488153"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "Equilibrium USD",
+            "symbol": "EQD",
+            "decimals": 9,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V3": {
+                "parents": 1,
+                "interior": {
+                    "X2": [
+                        {
+                            "Parachain": 2011
+                        },
+                        {
+                            "GeneralKey": {
+                                "length": 3,
+                                "data": [
+                                    101,
+                                    113,
+                                    100,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "6d6f646c617373746d6e67720000000000000000000000000000000000000000",
+                "issuer": "6d6f646c617373746d6e67720000000000000000000000000000000000000000",
+                "admin": "6d6f646c617373746d6e67720000000000000000000000000000000000000000",
+                "freezer": "5EYCAe5fj8dDwtSBKZm7aH7N5LVtJi2ieq6SM7xMqcchrC6h",
+                "supply": "0",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 0,
+                "sufficients": 0,
+                "approvals": 0,
+                "min_balance": "1",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "64174511183114006009298114091987195453"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "PINK",
+            "symbol": "PINK",
+            "decimals": 10,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V3": {
+                "parents": 1,
+                "interior": {
+                    "X3": [
+                        {
+                            "Parachain": 1000
+                        },
+                        {
+                            "PalletInstance": 50
+                        },
+                        {
+                            "GeneralIndex": "23"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]

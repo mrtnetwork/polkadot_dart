@@ -1,0 +1,49 @@
+[
+    {
+        "is_spendable": true,
+        "is_fee_token": true,
+        "min_balance": "1000000000",
+        "name": "Integritee Network",
+        "symbol": "TEER",
+        "decimals": 12,
+        "excution_pallet": "Balances"
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z",
+                "issuer": "5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z",
+                "admin": "5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z",
+                "freezer": "5EYCAe5ijiYfyeZ2JJCGq56LmPyNRAKzpG4QkoQkkQNB5e6Z",
+                "supply": "342270292589",
+                "deposit": "0",
+                "is_sufficient": true,
+                "accounts": 6,
+                "sufficients": 6,
+                "approvals": 0,
+                "min_balance": "100000000",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "0"
+        },
+        "metadata": {
+            "deposit": "0",
+            "name": "Polkadot DOT",
+            "symbol": "DOT",
+            "decimals": 10,
+            "is_frozen": false
+        },
+        "is_fee_token": true,
+        "units_per_second": null,
+        "location": {
+            "V5": {
+                "parents": 1,
+                "interior": {
+                    "Here": null
+                }
+            }
+        }
+    }
+]

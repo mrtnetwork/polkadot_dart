@@ -1,5 +1,5 @@
-import 'package:blockchain_utils/utils/utils.dart';
 import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
@@ -18,7 +18,7 @@ class CustomValueMetadata15
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {"type": type, "value": value};
   }
 }

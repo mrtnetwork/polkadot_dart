@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_metadata.dart';
+
 import 'signed_extension_metadata_v14.dart';
 
 class ExtrinsicMetadataV14 extends ExtrinsicMetadata {
@@ -26,10 +27,10 @@ class ExtrinsicMetadataV14 extends ExtrinsicMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "signedExtensions":
-          signedExtensions.map((e) => e.scaleJsonSerialize()).toList(),
+          signedExtensions.map((e) => e.serializeJson()).toList(),
       "version": version,
       "type": type
     };

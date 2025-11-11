@@ -1,7 +1,8 @@
+import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/utils/json/extension/json.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_historic_meta_compat.dart';
-import 'package:polkadot_dart/src/serialization/serialization.dart';
+
 import 'si1_type_def_array.dart';
 import 'si1_type_def_bit_sequence.dart';
 import 'si1_type_def_compact.dart';
@@ -45,12 +46,8 @@ class Si1TypeDefsIndexesConst {
   ];
 
   static Si1TypeDefsIndexesConst fromValue(String? name) {
-    return values.firstWhere(
-      (element) => element.name == name,
-      orElse: () => throw MetadataException(
-          "No Si1Type found matching the specified name",
-          details: {"name": name}),
-    );
+    return values.firstWhere((element) => element.name == name,
+        orElse: () => throw ItemNotFoundException(value: name));
   }
 
   bool get isPrimitive => this == primitive;
@@ -76,46 +73,43 @@ abstract class Si1TypeDef<T> extends ScaleTypeDef<T> {
   const Si1TypeDef();
 
   factory Si1TypeDef.deserializeJson(Map<String, dynamic> json) {
-    final key = Si1TypeDefsIndexesConst.fromValue(
-        SubstrateEnumSerializationUtils.getScaleEnumKey(json));
+    final key = Si1TypeDefsIndexesConst.fromValue(json.keys.firstOrNull);
 
     final ScaleTypeDef def;
     switch (key) {
       case Si1TypeDefsIndexesConst.composite:
         def = Si1TypeDefComposite.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+            json.valueEnsureAsMap<String, dynamic>(key.name));
         break;
       case Si1TypeDefsIndexesConst.variant:
         def = Si1TypeDefVariant.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+            json.valueEnsureAsMap<String, dynamic>(key.name));
         break;
       case Si1TypeDefsIndexesConst.array:
         def = Si1TypeDefArray.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+            json.valueEnsureAsMap<String, dynamic>(key.name));
         break;
       case Si1TypeDefsIndexesConst.tuple:
-        def = Si1TypeDefTuple(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+        def = Si1TypeDefTuple(json.valueEnsureAsList<int>(key.name));
         break;
       case Si1TypeDefsIndexesConst.primitive:
         def = Si1TypeDefPrimitive.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+            json.valueEnsureAsMap<String, dynamic>(key.name));
         break;
       case Si1TypeDefsIndexesConst.sequence:
         def = Si1TypeDefSequence.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+            json.valueEnsureAsMap<String, dynamic>(key.name));
         break;
       case Si1TypeDefsIndexesConst.compact:
         def = Si1TypeDefCompact.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+            json.valueEnsureAsMap<String, dynamic>(key.name));
         break;
       case Si1TypeDefsIndexesConst.bitSequence:
         def = Si1TypeDefBitSequence.deserializeJson(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+            json.valueEnsureAsMap<String, dynamic>(key.name));
         break;
       default:
-        def = Si1TypeDefHistoricMetaCompat(
-            SubstrateEnumSerializationUtils.getScaleEnumValue(json, key.name));
+        def = Si1TypeDefHistoricMetaCompat(json.valueAs(key.name));
         break;
     }
     return def as Si1TypeDef<T>;

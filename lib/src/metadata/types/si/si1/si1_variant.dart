@@ -1,11 +1,11 @@
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/types.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
-import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
@@ -33,86 +33,88 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "name": name,
-      "fields": fields.map((e) => e.scaleJsonSerialize()).toList(),
+      "fields": fields.map((e) => e.serializeJson()).toList(),
       "index": index,
       "docs": docs
     };
   }
 
-  Layout typeDefLayout(PortableRegistry registry, value, {String? property}) {
+  Layout serializationLayout(PortableRegistry registry,
+      {String? property, LookupDecodeParams? params}) {
     if (fields.isEmpty) {
       return LayoutConst.none(property: property);
     }
     if (fields.length == 1) {
-      return registry.typeDefLayout(fields[0].type, value,
-          property: property ?? fields[0].name);
+      return registry.serializationLayout(fields[0].type,
+          property: property ?? fields[0].name, params: params);
     }
     if (fields[0].hasName) {
-      final mapValue = MetadataUtils.isOf<Map<String, dynamic>>(value);
-      final layouts = fields
-          .map((e) => registry.typeDefLayout(e.type, mapValue[e.name],
-              property: e.name))
-          .toList();
-      return LayoutConst.struct(layouts, property: property);
+      return LayoutConst.lazyStruct(
+          fields
+              .map((e) => LazyLayout(
+                  layout: ({property}) => registry.serializationLayout(e.type,
+                      property: property, params: params),
+                  property: e.name))
+              .toList(),
+          property: property);
     }
-
-    final listValue = MetadataUtils.isOf<List>(value);
-    MetadataUtils.hasLen(listValue, fields.length);
-    final List<Layout<dynamic>> layouts = [];
-    for (int i = 0; i < fields.length; i++) {
-      final field = fields[i];
-      final value = listValue[i];
-      final layout =
-          registry.typeDefLayout(field.type, value, property: field.name);
-      layouts.add(layout);
-    }
-
-    return LayoutConst.tuple(layouts, property: property);
+    return LayoutConst.tuple(
+        fields
+            .map((e) => registry.serializationLayout(e.type, params: params))
+            .toList(),
+        property: property);
   }
 
-  LayoutDecodeResult decode(
-      {required PortableRegistry registry,
-      required List<int> bytes,
-      required int offset}) {
-    if (fields.isEmpty) {
-      return LayoutDecodeResult(consumed: 0, value: {name: null});
-    }
-    if (fields.length == 1) {
-      final type = registry.scaleType(fields[0].type);
-      final decode =
-          type.typeDefDecode(registry: registry, bytes: bytes, offset: offset);
-      return LayoutDecodeResult(
-          consumed: decode.consumed, value: {name: decode.value});
-    }
+  // LayoutDecodeResult decode(
+  //     {required PortableRegistry registry,
+  //     required List<int> bytes,
+  //     required int offset,
+  //     LookupDecodeParams? params}) {
+  //   if (fields.isEmpty) {
+  //     return LayoutDecodeResult(consumed: 0, value: {name: null});
+  //   }
+  //   if (fields.length == 1) {
+  //     final type = registry.scaleType(fields[0].type);
+  //     final decode = type.typeDefDecode(
+  //         registry: registry, bytes: bytes, offset: offset, params: params);
+  //     return LayoutDecodeResult(
+  //         consumed: decode.consumed, value: {name: decode.value});
+  //   }
 
-    final Map<String, dynamic> mapResult = {};
-    final List tupleResult = [];
-    final bool isStruct = fields[0].hasName;
-    int consumed = 0;
-    for (int i = 0; i < fields.length; i++) {
-      final field = fields[i];
-      final type = registry.scaleType(field.type);
-      final decode = type.typeDefDecode(
-          registry: registry, bytes: bytes, offset: offset + consumed);
-      if (isStruct) {
-        mapResult[field.name!] = decode.value;
-      } else {
-        tupleResult.add(decode.value);
-      }
-      consumed += decode.consumed;
-    }
-    return LayoutDecodeResult(
-        consumed: consumed, value: {name: isStruct ? mapResult : tupleResult});
-  }
+  //   final Map<String, dynamic> mapResult = {};
+  //   final List tupleResult = [];
+  //   final bool isStruct = fields[0].hasName;
+  //   int consumed = 0;
+  //   for (int i = 0; i < fields.length; i++) {
+  //     final field = fields[i];
+  //     final type = registry.scaleType(field.type);
+  //     final decode = type.typeDefDecode(
+  //         registry: registry,
+  //         bytes: bytes,
+  //         offset: offset + consumed,
+  //         params: params);
+  //     if (isStruct) {
+  //       mapResult[field.name!] = decode.value;
+  //     } else {
+  //       tupleResult.add(decode.value);
+  //     }
+  //     consumed += decode.consumed;
+  //   }
+  //   return LayoutDecodeResult(
+  //       consumed: consumed, value: {name: isStruct ? mapResult : tupleResult});
+  // }
 
-  TypeTemlate typeTemplate(PortableRegistry registry, int id) {
+  TypeTemlate typeTemplate(PortableRegistry registry, int id, {int? lookup}) {
+    List<Si1Field> fields = this.fields;
+    if (lookup != null) fields = fields.where((e) => e.type == lookup).toList();
     return TypeTemlate(
         lookupId: id,
         type: null,
         name: name,
+        variantIndex: index,
         children: fields
             .map((e) => registry
                 .typeTemplate(e.type)
@@ -121,7 +123,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
   }
 
   Object? getValue(PortableRegistry registry,
-      {required Object? value, required bool fromTemplate}) {
+      {required Object? value, required bool fromTemplate, required int self}) {
     if (fields.isEmpty) {
       if (value != null) {
         throw MetadataException(
@@ -130,6 +132,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
       }
       return null;
     }
+
     if (fields.length == 1) {
       return registry.getValue(
           id: fields[0].type, value: value, fromTemplate: fromTemplate);
@@ -138,7 +141,9 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
         value: value,
         type: Si1TypeDefsIndexesConst.variant,
         fromTemplate: fromTemplate,
-        lookupId: 0);
+        id: self,
+        registry: registry);
+
     if (fields[0].hasName) {
       final mapValue = MetadataCastingUtils.isMap<String, dynamic>(data);
       final Map<String, dynamic> values = {};

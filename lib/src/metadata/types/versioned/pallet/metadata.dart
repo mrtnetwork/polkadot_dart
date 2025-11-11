@@ -1,7 +1,12 @@
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_call_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_constant_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_error_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_event_metadata_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_storage_metadata_v14.dart';
+import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 abstract class PalletMetadata<
         STORAGE extends PalletStorageMetadata,
@@ -47,14 +52,14 @@ abstract class PalletMetadata<
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "name": name,
-      "storage": storage?.scaleJsonSerialize(),
-      "calls": calls?.scaleJsonSerialize(),
-      "events": events?.scaleJsonSerialize(),
-      "constants": constants.map((e) => e.scaleJsonSerialize()).toList(),
-      "errors": errors?.scaleJsonSerialize(),
+      "storage": storage?.serializeJson(),
+      "calls": calls?.serializeJson(),
+      "events": events?.serializeJson(),
+      "constants": constants.map((e) => e.serializeJson()).toList(),
+      "errors": errors?.serializeJson(),
       "index": index
     };
   }

@@ -63,4 +63,9 @@ class SubstratePublicKey extends BaseSubstratePublicKey<SubstrateAddress> {
         _substrate.publicKey.toSS58Address(ss58Format: ss58Format),
         ss58Format: ss58Format);
   }
+
+  SubstrateEthereumAddress toEthereumAddress(
+      {int ss58Format = SS58Const.genericSubstrate}) {
+    return SubstrateEthereumAddress.fromBytes(toBytes().sublist(0, 20));
+  }
 }

@@ -1,13 +1,13 @@
 import 'dart:async';
+
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/provider/core/core/base.dart';
-import 'package:polkadot_dart/src/provider/service/service.dart';
 
 /// Represents an interface to interact with substrate nodes
 /// using JSON-RPC requests.
 class SubstrateProvider implements BaseProvider<SubstrateRequestDetails> {
   /// The JSON-RPC service used for communication with the substrate node.
-  final SubstrateServiceProvider rpc;
+  final BaseServiceProvider rpc;
 
   /// Creates a new instance of the [SubstrateProvider] class with the specified [rpc].
   SubstrateProvider(this.rpc);

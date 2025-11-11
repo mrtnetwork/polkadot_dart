@@ -13,9 +13,9 @@ class SignedExtensionMetadataV14 extends SignedExtensionMetadata {
       required this.additionalSigned});
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
-      ...super.scaleJsonSerialize(property: property),
+      ...super.serializeJson(property: property),
       "additionalSigned": additionalSigned
     };
   }

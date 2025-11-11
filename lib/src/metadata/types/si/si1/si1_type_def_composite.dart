@@ -1,11 +1,13 @@
+import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
-import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
+import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
-import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
+
 import 'si1_field.dart';
 
 class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
@@ -23,15 +25,15 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
-    return {"fields": fields.map((e) => e.scaleJsonSerialize()).toList()};
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {"fields": fields.map((e) => e.serializeJson()).toList()};
   }
 
   @override
   Si1TypeDefsIndexesConst get typeName => Si1TypeDefsIndexesConst.composite;
 
   Map<String, dynamic> toJson() {
-    return scaleJsonSerialize();
+    return serializeJson();
   }
 
   @override
@@ -39,76 +41,11 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
     return "Si1TypeDefComposite${toJson()}";
   }
 
-  /// Returns the serialization layout of the type definition using the provided [registry], [value], and optional [property].
-  @override
-  Layout typeDefLayout(PortableRegistry registry, value, {String? property}) {
-    if (fields.isEmpty) {
-      return LayoutConst.none(property: property);
-    }
-    if (fields.length == 1 && !fields[0].hasName) {
-      return registry.typeDefLayout(fields[0].type, value,
-          property: property ?? fields[0].name);
-    }
-    if (fields[0].hasName) {
-      final mapValue = MetadataUtils.isOf<Map<String, dynamic>>(value);
-      final layouts = fields.map((e) {
-        return registry.typeDefLayout(e.type, mapValue[e.name],
-            property: e.name);
-      }).toList();
-      return LayoutConst.struct(layouts, property: property);
-    }
-    final listValue = MetadataUtils.isOf<List>(value);
-    MetadataUtils.hasLen(listValue, fields.length);
-    final List<Layout<dynamic>> layouts = [];
-    for (int i = 0; i < fields.length; i++) {
-      final field = fields[i];
-      final value = listValue[i];
-      final layout =
-          registry.typeDefLayout(field.type, value, property: field.name);
-      layouts.add(layout);
-    }
-
-    return LayoutConst.tuple(layouts, property: property);
-  }
-
-  /// Decodes the data based on the type definition using the provided [registry] and [bytes].
-  @override
-  LayoutDecodeResult typeDefDecode(
-      {required PortableRegistry registry,
-      required List<int> bytes,
-      required int offset}) {
-    if (fields.isEmpty) {
-      return const LayoutDecodeResult(consumed: 0, value: null);
-    }
-    if (fields.length == 1 && !fields[0].hasName) {
-      final type = registry.scaleType(fields[0].type);
-      final decode =
-          type.typeDefDecode(registry: registry, bytes: bytes, offset: offset);
-      return decode;
-    }
-    final Map<String, dynamic> mapResult = {};
-    final List tupleResult = [];
-    final bool isStruct = fields[0].hasName;
-    int consumed = 0;
-    for (int i = 0; i < fields.length; i++) {
-      final field = fields[i];
-      final type = registry.scaleType(field.type);
-      final decode = type.typeDefDecode(
-          registry: registry, bytes: bytes, offset: offset + consumed);
-      if (isStruct) {
-        mapResult[field.name!] = decode.value;
-      } else {
-        tupleResult.add(decode.value);
-      }
-      consumed += decode.consumed;
-    }
-    return LayoutDecodeResult(
-        consumed: consumed, value: isStruct ? mapResult : tupleResult);
-  }
-
   /// Returns the type template using the provided [registry].
   @override
-  TypeTemlate typeTemplate(PortableRegistry registry, int id) {
+  TypeTemlate typeTemplate(PortableRegistry registry, int id, {int? lookup}) {
+    List<Si1Field> fields = this.fields;
+    if (lookup != null) fields = fields.where((e) => e.type == lookup).toList();
     return TypeTemlate(
         lookupId: id,
         type: typeName,
@@ -136,7 +73,8 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
         value: value,
         type: typeName,
         fromTemplate: fromTemplate,
-        lookupId: self);
+        id: self,
+        registry: registry);
     if (fields[0].hasName) {
       final mapValue = MetadataCastingUtils.isMap<String, dynamic>(data);
 
@@ -172,5 +110,43 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
       return MetadataTypeInfoComposit(name: null, typeId: id, types: types);
     }
     return MetadataTypeInfoTuple(name: null, typeId: id, types: types);
+  }
+
+  @override
+  @override
+  int? typeByFieldName(PortableRegistry registry, int id, String name) {
+    return fields.firstWhereNullable((e) => e.name == name)?.type;
+  }
+
+  @override
+  int? typeByName(PortableRegistry registry, int id, String name) {
+    return fields.firstWhereNullable((e) => e.typeName == name)?.type;
+  }
+
+  @override
+  Layout serializationLayout(PortableRegistry registry,
+      {String? property, LookupDecodeParams? params}) {
+    if (fields.isEmpty) {
+      return LayoutConst.none(property: property);
+    }
+    if (fields.length == 1 && !fields[0].hasName) {
+      return registry.serializationLayout(fields[0].type,
+          property: property, params: params);
+    }
+    if (fields[0].hasName) {
+      return LayoutConst.lazyStruct(
+          fields
+              .map((e) => LazyLayout(
+                  layout: ({property}) => registry.serializationLayout(e.type,
+                      property: property, params: params),
+                  property: e.name))
+              .toList(),
+          property: property);
+    }
+    return LayoutConst.tuple(
+        fields
+            .map((e) => registry.serializationLayout(e.type, params: params))
+            .toList(),
+        property: property);
   }
 }

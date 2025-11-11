@@ -27,35 +27,34 @@ void main() async {
   final output = api.getStorageOutputTemplate("System", "account");
 
   /// Querying single account information.
-  final accountInfoSingleResult = await api.getStorage(
-    request: QueryStorageRequest<Map<String, dynamic>?>(
+  final accountInfoSingleResult = await api.getStorageRequest(
+      request: GetStorageRequest<Map<String, dynamic>?, Map<String, dynamic>>(
         palletNameOrIndex: "System",
         methodName: "account",
-        input: addr.toBytes(),
-        identifier: 0),
-    rpc: provider,
-    fromTemplate: false,
-  );
+        inputs: addr.toBytes(),
+      ),
+      rpc: provider,
+      fromTemplate: false);
 
   /// Constructing storage query requests for multiple accounts.
-  final rAccOne = QueryStorageRequest<Map<String, dynamic>>(
-      palletNameOrIndex: "System",
-      methodName: "account",
-      input: addr.toBytes(),
-      identifier: 0);
-  final rAccTwo = QueryStorageRequest<Map<String, dynamic>>(
-      palletNameOrIndex: "System",
-      methodName: "account",
-      input: addr2.toBytes(),
-      identifier: 1);
+  final rAccOne = GetStorageRequest<Map<String, dynamic>, Map<String, dynamic>>(
+    palletNameOrIndex: "System",
+    methodName: "account",
+    inputs: addr.toBytes(),
+  );
+  final rAccTwo = GetStorageRequest<Map<String, dynamic>, Map<String, dynamic>>(
+    palletNameOrIndex: "System",
+    methodName: "account",
+    inputs: addr2.toBytes(),
+  );
 
   /// Querying storage for multiple accounts.
-  final accountInfoMultipleResult = await api.queryStorageAt(
+  final accountInfoMultipleResult = await api.queryStorageAtBlock(
       requestes: [rAccOne, rAccTwo], rpc: provider, fromTemplate: false);
-  final account1Info = accountInfoMultipleResult.getResult(1);
+  final account1Info = accountInfoMultipleResult.getResultAt(1);
 
   /// Querying storage in a specific block range.
-  final queryRange = await api.queryStorage(
+  final queryRange = await api.queryStorageFromBlock(
       requestes: [rAccOne, rAccTwo],
       rpc: provider,
       fromBlock:
@@ -67,6 +66,6 @@ void main() async {
   /// Iterating through query results within the specified block range.
   for (int i = 0; i < queryRange.length; i++) {
     final blockResponse = queryRange[i];
-    final results = blockResponse.getResult(1);
+    final results = blockResponse.getResultAt(1);
   }
 }

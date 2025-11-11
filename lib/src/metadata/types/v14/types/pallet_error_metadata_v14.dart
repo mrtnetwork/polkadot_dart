@@ -23,7 +23,7 @@ class PalletErrorMetadataV14 extends PalletErrorMetadata {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {"type": type};
   }
 }

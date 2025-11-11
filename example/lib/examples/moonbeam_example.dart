@@ -1,6 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
+
 import 'json_rpc_example.dart';
 
 void main() async {
@@ -37,20 +37,20 @@ void main() async {
                   "0x64a01564edB3e4a914DE27EE7758198bfFedDEdE")
               .toBytes()
         },
-        "value": {"type": "U128", "value": SubstrateHelper.toWSD("5")}
+        "value": {"type": "U128", "value": AmountConverter.eth.toUnit("5")}
       }
     },
   };
-  final accountInfo = await api.getStorage(
-      request: QueryStorageRequest<Map<String, dynamic>>(
-          palletNameOrIndex: "System",
-          methodName: "account",
-          input: signer.toBytes(),
-          identifier: 0),
+  final nonce = await api.getStorageRequest(
+      request: GetStorageRequest<int, Map<String, dynamic>>(
+        palletNameOrIndex: "System",
+        methodName: "account",
+        inputs: signer.toBytes(),
+        onJsonResponse: (response, _, __) => response["nonce"],
+      ),
       rpc: provider,
       fromTemplate: false);
 
-  final int nonce = accountInfo.result["nonce"];
   final method = api.encodeCall(
       palletNameOrIndex: "balances", value: tmp, fromTemplate: true);
   final payload = MoonbeamTransactionPayload(

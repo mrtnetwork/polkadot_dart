@@ -136,128 +136,310 @@ The following example will show how both methods work.
 - transfer
 
 ```dart
+  // Choose the target Polkadot-based network
+  const network = PolkadotNetwork.hydration;
+  print("🌐 Selected network: $network");
 
-  /// Setting up the provider to connect to the Substrate node.
-  final provider =
-      SubstrateProvider(SubstrateHttpService("https://westend-rpc.polkadot.io"));
+  // Create owner and destination accounts
+  final owner = createAccount(network);
+  final destination = createAccount(network, addressIndex: 1);
+  print("👤 Owner address: ${owner.address}");
+  print("🎯 Destination address: ${destination.address}");
 
-  /// Requesting metadata from the blockchain to determine its version.
-  final requestMetadata =
-      await provider.request(const SubstrateRequestRuntimeGetMetadata(15));
-  final metadata = requestMetadata!.metadata as MetadataV15;
+  // Initialize the controller (network API + local provider)
+  print("🔧 Initializing network controller...");
+  final controller = SubstrateNetworkControllerFinder.buildApi(
+    network: network,
+    params: SubstrateNetworkApiDefaultParams(
+      (network) async => createLocalProvider(8001),
+    ),
+  );
+  print("✅ Controller initialized successfully");
 
-  /// Generating a private key from a seed and deriving the corresponding address.
-  List<int> seedBytes = BytesUtils.fromHexString(
-      "4bc884e0eb595d3c71dc4c62305380a43d7a820b9cf69753232196b34486a27c");
-  final privateKey = SubstratePrivateKey.fromSeed(
-      seedBytes: seedBytes, algorithm: SubstrateKeyAlgorithm.sr25519);
+  // Fetch the account's balances
+  print("💰 Fetching account balances for ${owner.address}...");
+  final balances = await controller.getAccountAssets(address: owner);
+  if (balances.assets.isEmpty) {
+    print("⚠️ No assets found for this account.");
+    return;
+  }
 
-  /// Deriving the address corresponding to the private key.
-  final signer = privateKey.toAddress();
+  // Try to locate a specific token (USDT)
+  final asset = balances.symbol("USDT");
+  if (asset == null) {
+    print("❌ USDT asset not found on this network.");
+    return;
+  }
 
-  /// Destination address for the transaction.
-  final destination =
-      SubstrateAddress("5EepAwmzpwn2PK45i3og3emvXs4NFnqzHu4T2VbUGhvkU4yB");
+  // Get balance information for the selected asset
+  final assetBalance = balances.findBalance(asset);
+  print("💵 USDT Balance: ${assetBalance?.free ?? 0}");
 
-  /// Initializing metadata API for further interaction.
-  final api = MetadataApi(metadata);
+  // Ensure the account has enough balance to send
+  if (assetBalance == null || assetBalance.free <= BigInt.zero) {
+    print("⚠️ Insufficient USDT balance. Cannot proceed with transfer.");
+    return;
+  }
 
-  /// Retrieving runtime version information.
-  final version = api.runtimeVersion();
-  final int transactionVersion = version["transaction_version"];
-  final int specVersion = version["spec_version"];
+  // Prepare a transfer transaction (sending 1/25th of the free balance)
+  final transferAmount = assetBalance.free ~/ BigInt.from(25);
+  print(
+      "✉️ Preparing transfer of $transferAmount USDT to ${destination.address}...");
+  final tx = await controller.assetTransfer(
+    params: SubstrateLocalTransferAssetParams(
+      destinationAddress: destination,
+      asset: assetBalance.asset,
+      amount: transferAmount,
+    ),
+  );
 
-  /// Retrieving genesis hash and finalized block hash.
-  final genesisHash =
-      await provider.request(const SubstrateRequestChainGetBlockHash(number: 0));
-  final blockHash =
-      await provider.request(const SubstrateRequestChainChainGetFinalizedHead());
-  final blockHeader = await provider
-      .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
-  final era = blockHeader.toMortalEra();
+  // Simulate (dry run) the transaction to estimate fees and check validity
+  print("🧪 Simulating transaction (dry run)...");
+  final simulate = await controller.dryRunTransaction(owner: owner, params: tx);
+  assert(simulate.dryRun != null || simulate.dryRun!.success);
+  print("💸 Estimated fee: ${simulate.queryFeeInfo.serializeJson()}");
 
-  /// Retrieving account information to determine the nonce for the transaction.
-  final accountInfo = await api.getStorage(
-      request: QueryStorageRequest<Map<String, dynamic>>(
-          palletNameOrIndex: "System",
-          methodName: "account",
-          input: signer.toBytes(),
-          identifier: 0),
-      rpc: provider,
-      fromTemplate: false);
-  final int nonce = accountInfo.result["nonce"];
+  // Submit the transaction to the network
+  print("🚀 Submitting transaction...");
+  final submit = await controller.submitTransaction(
+    owner: owner,
+    params: tx,
+    signer: createOwnerKeyPair(network),
+    onUpdateTransactionStatus: (event) =>
+        print("📦 Transaction found in block: ${event.extrinsicIndex}"),
+    onTransactionSubmited: (txId, blockNumber) => print(
+        "✅ Transaction submitted successfully! ID: $txId, Block: $blockNumber"),
+  );
 
-  /// Constructing the transfer payload.
-  final tmp = {
-    "type": "Enum",
-    "key": "transfer_allow_death",
-    "value": {
-      "type": "Map",
-      "value": {
-        "dest": {
-          "key": "Id",
-          "value": {"type": "[U8;32]", "value": destination.toBytes()},
-        },
-        "value": {"type": "U128", "value": SubstrateHelper.toWsd("0.1")}
-      }
-    },
-  };
-  final method = api.encodeCall(
-      palletNameOrIndex: "balances", value: tmp, fromTemplate: true);
-
-  /// Constructing the transaction payload.
-  final payload = TransactionPayload(
-      blockHash: SubstrateBlockHash.hash(blockHash),
-      era: era,
-      genesisHash: SubstrateBlockHash.hash(genesisHash),
-      method: method,
-      nonce: nonce,
-      specVersion: specVersion,
-      transactionVersion: transactionVersion,
-      tip: BigInt.zero);
-
-  /// Signing the transaction.
-  final sig = privateKey.multiSignature(payload.serialize());
-
-  /// Constructing the extrinsic with the signature for submission.
-  final signature = ExtrinsicSignature(
-      signature: sig,
-      address: signer.toMultiAddress(),
-      era: era,
-      tip: BigInt.zero,
-      nonce: nonce);
-  final extrinsic = Extrinsic(signature: signature, methodBytes: method);
-
-  /// Submitting the extrinsic to the blockchain.
-  final hash = await provider.request(
-      SubstrateRequestAuthorSubmitExtrinsic(extrinsic.toHex(prefix: "0x")));
-
+  await submit.toList();
+  print("🎉 Transaction flow complete!");
 
 ```
 
-- stacking
-
-like previously we just encoded staking bond method
+- xcm transfer
 
 ```dart
+  print("🚀 Starting cross-chain XCM transfer simulation...");
+  final ethereumParams = EvmDefaultParams();
+  // Initialize local network provider
+  final param = MySubstrateNetworkApiDefaultParams(
+      (network) async => throw UnimplementedError(),
+      evmParams: ethereumParams);
 
-  final tmp = {
-    "type": "Enum",
-    "key": "bond",
-    "value": {
-      "type": "Map",
-      "value": {
-        "value": {"type": "U128", "value": SubstrateHelper.toWsd("2")},
-        "payee": {
-          "type": "Enum",
-          "key": "Controller",
-          "value": null,
+  // Define origin and destination networks
+  const origin = PolkadotNetwork.moonbeam;
+  const destinationNetwork = PolkadotNetwork.hydration;
+
+  // Create owner and destination addresses
+  final owner = createAccount(origin);
+  final destinationAddress = createAccount(destinationNetwork);
+  print("🧩 Origin: ${origin.networkName}");
+  print("🧩 Destination: ${destinationNetwork.networkName}");
+  print("👤 Owner address: $owner");
+  print("🎯 Destination address: $destinationAddress");
+
+  // Build network controllers
+  final moonbeamController =
+      SubstrateNetworkControllerFinder.buildApi(network: origin, params: param);
+  final hydrationController = SubstrateNetworkControllerFinder.buildApi(
+      network: destinationNetwork, params: param);
+
+  // Load network assets and balances
+  print("🔍 Fetching network assets and balances...");
+  final hydrationAssets = await hydrationController.getAssets();
+  final moonbeamAccountAssets =
+      await moonbeamController.getAccountAssets(address: owner);
+
+  final sharedAssets = moonbeamAccountAssets.findShareAssets(hydrationAssets);
+  final canPayFee =
+      moonbeamAccountAssets.findShareAssets(hydrationAssets, canPayFee: true);
+
+  // Filter assets that can be transferred
+  print(
+      "🔎 Filtering assets transferable between ${origin.networkName} and ${destinationNetwork.networkName}...");
+  List<BaseSubstrateNetworkAsset> canTransfer =
+      await moonbeamController.filterReceiveAssets(
+          assets: sharedAssets.map((e) => e.origin).toList(), origin: origin);
+  canTransfer = await hydrationController.filterReceiveAssets(
+      assets: canTransfer, origin: origin);
+  final glmr =
+      moonbeamAccountAssets.findBalance(moonbeamController.defaultNativeAsset);
+
+  if (glmr == null) {
+    print("❌ Missing balance for GLMR in Moonbeam account.");
+    return;
+  }
+
+  assert(glmr.free > BigInt.zero, "Insufficient balance: GLMR=${glmr.free}");
+
+  // Determine which asset can pay the destination fee
+  BaseSubstrateNetworkAsset feeAsset() {
+    if (canPayFee
+        .any((e) => e.origin == moonbeamController.defaultNativeAsset)) {
+      return moonbeamController.defaultNativeAsset;
+    }
+    throw Exception("❌ Cannot pay fee on destination network.");
+  }
+
+  // Define transfer assets
+  final transferAssets = [
+    SubstrateXCMTransferAsset(
+        amount: glmr.free ~/ BigInt.from(10), asset: glmr.asset),
+  ];
+
+  final fee = feeAsset();
+  final int feeIndex = transferAssets.indexWhere((e) => e.asset == fee);
+  assert(!feeIndex.isNegative,
+      "Fee asset ${fee.symbol} not found among transfer assets.");
+
+  print("💸 Selected fee asset: ${fee.symbol}");
+  print("📦 Preparing XCM transfer params...");
+
+  // Build transfer parameters
+  final transferParams = SubstrateXCMTransferParams(
+      assets: transferAssets,
+      destinationNetwork: destinationNetwork,
+      destinationAddress: destinationAddress,
+      feeIndex: feeIndex,
+      origin: origin);
+
+  // Encode transfer transaction
+  final transfer = await moonbeamController.xcmTransfer(params: transferParams);
+
+  // Simulate XCM transfer (dry-run)
+  print("🧪 Running dry-run simulation for XCM transfer...");
+  final simulate = await moonbeamController.dryRunXcmTransfer(
+      owner: owner,
+      encodedParams: transfer,
+      creationParams: transferParams,
+      onRequestController: (network) async => switch (network) {
+            PolkadotNetwork.polkadotAssetHub => moonbeamController,
+            PolkadotNetwork.hydration => hydrationController,
+            _ => SubstrateNetworkControllerFinder.buildApi(
+                network: network, params: param)
+          });
+
+  BigInt localFee = BigInt.zero;
+  BigInt destinationFee = BigInt.zero;
+  bool isPartLocalFee = false;
+  bool isPartDestinationFee = false;
+
+  if (simulate != null) {
+    if (!simulate.dryRun.success) {
+      throw simulate.dryRun.cast<SubstrateDispatchResultError>().error.type;
+    }
+
+    // Parse local delivery fee
+    for (final i in simulate.localDeliveryFees) {
+      final dv = i.result;
+      if (dv == null) {
+        isPartLocalFee = true;
+        continue;
+      }
+
+      assert(
+        dv.success,
+        "Local delivery fee query failed: ${dv.cast<SubstrateDispatchResultError>().error.type}",
+      );
+
+      for (final amount in i.amounts) {
+        assert(
+          amount.asset == moonbeamController.defaultNativeAsset,
+          "Unexpected local delivery fee asset '${amount.asset?.symbol}', expected native asset '${moonbeamController.defaultNativeAsset.symbol}'",
+        );
+        if (amount.asset != moonbeamController.defaultNativeAsset) {
+          isPartLocalFee = true;
+          continue;
+        }
+        localFee += amount.amount;
+      }
+    }
+
+    // Parse destination delivery fee
+    for (final i in simulate.externalXcm) {
+      final dryRun = i.xcmDryRun;
+      if (dryRun == null) {
+        isPartDestinationFee = true;
+        continue;
+      }
+
+      if (!dryRun.success && !(dryRun.ok?.isComplete ?? false)) {
+        print(
+            "❌ Simulation failed on destination network '${i.network?.networkName}'.");
+        throw dryRun.cast<SubstrateDispatchResultError>().error.type;
+      }
+
+      final weightToFee = i.weightToFee;
+      if (weightToFee != null) {
+        assert(weightToFee.success,
+            "Weight-to-fee conversion failed on '${i.network?.networkName}': ${weightToFee.cast<SubstrateDispatchResultError>().error.type}");
+        destinationFee += weightToFee.ok!;
+      } else {
+        isPartDestinationFee = true;
+      }
+
+      for (final dv in i.deleveriesFee) {
+        for (final amount in dv.amounts) {
+          assert(amount.asset == fee,
+              "Unexpected destination delivery fee asset '${amount.asset?.symbol}' on '${i.network?.networkName}', expected '${fee.symbol}'. The network may not support asset conversion.");
+          if (amount.asset != fee) {
+            isPartDestinationFee = true;
+            continue;
+          }
+          destinationFee += amount.amount;
         }
       }
-    },
-  };
-  final method = List<int>.unmodifiable(api.encodeCall(
-      palletNameOrIndex: "staking", value: tmp, fromTemplate: true));
+    }
+  }
+
+  // Local transaction dry-run
+  print("🧮 Estimating local transaction fee...");
+  final localDryRun = await moonbeamController.dryRunTransaction(
+      owner: owner, params: transfer);
+  assert(localDryRun.dryRun == null || localDryRun.dryRun!.success,
+      "Local dry-run failed: ${localDryRun.dryRun?.cast<SubstrateDispatchResultError>().error.type}");
+  localFee += localDryRun.queryFeeInfo.partialFee;
+
+  // Format fee outputs
+  final localFeeStr = AmountConverter(
+          decimals: moonbeamController.defaultNativeAsset.decimals ?? 0)
+      .toAmount(localFee);
+  final destFeeStr =
+      AmountConverter(decimals: fee.decimals ?? 0).toAmount(destinationFee);
+
+  if (isPartLocalFee) {
+    print(
+        "⚠️ Partial local fee: $localFeeStr ${moonbeamController.defaultNativeAsset.symbol} (some deliveries may not be supported)");
+  } else {
+    print(
+        "✅ Total local fee: $localFeeStr ${moonbeamController.defaultNativeAsset.symbol}");
+  }
+
+  if (isPartDestinationFee) {
+    print(
+        "⚠️ Partial destination fee: $destFeeStr ${fee.symbol} (some deliveries may not be supported)");
+  } else {
+    print("✅ Total destination fee: $destFeeStr ${fee.symbol}");
+  }
+
+  // Submit transaction
+  print("🚀 Submitting transaction to ${origin.networkName}...");
+  final submit = await moonbeamController.submitXCMTransaction(
+    owner: owner,
+    params: transfer,
+    destinationChainController: hydrationController,
+    signer: createOwnerKeyPair(origin),
+    onDestinationChainEvent: (event) => print(
+        "🌐 Destination chain status: ${event.status}, deposits: ${event.deposits.map((e) => e.toJson()).toList()}"),
+    onUpdateTransactionStatus: (event) => print(
+        "📡 Local chain status: ${event.status}, block: ${event.blockNumber}"),
+    onTransactionSubmited: (txId, blockNumber) =>
+        print("📝 Transaction submitted: $txId"),
+  );
+
+  await submit.toList();
+
+  print("🎉 XCM transfer simulation and submission complete!");
 
 ```
 

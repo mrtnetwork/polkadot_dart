@@ -33,10 +33,10 @@ class PalletStorageMetadataV14
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {
       "prefix": prefix,
-      "items": items.map((e) => e.scaleJsonSerialize()).toList()
+      "items": items.map((e) => e.serializeJson()).toList()
     };
   }
 }

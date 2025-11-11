@@ -3,9 +3,10 @@ import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_type.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
-import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
+import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type_def_sequence.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/portable_type_v14.dart';
@@ -31,8 +32,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
       SubstrateMetadataLayouts.portableRegistry(property: property);
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
-    return {"types": types.values.map((e) => e.scaleJsonSerialize()).toList()};
+  Map<String, dynamic> serializeJson({String? property}) {
+    return {"types": types.values.map((e) => e.serializeJson()).toList()};
   }
 
   PortableTypeV14 getLookupTByPath(List<String> paths) {
@@ -81,21 +82,18 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   }
 
   @override
-  Layout typeDefLayout(int id, dynamic value, {String? property}) {
-    return type(id).type.typeDefLayout(this, value, property: property);
-  }
-
-  @override
   List<int> encode(int id, dynamic value, {String? property}) {
-    final layout = typeDefLayout(id, value, property: property);
-    return layout.serialize(value);
+    final correctValue = getValue(id: id, value: value, fromTemplate: false);
+    final encode =
+        serializationLayout(id, property: property).serialize(correctValue);
+    return encode;
   }
 
   @override
-  dynamic decode(int id, List<int> bytes, {String? property, int offset = 0}) {
-    final decode = type(id)
-        .type
-        .typeDefDecode(registry: this, bytes: bytes, offset: offset);
+  dynamic decode(int id, List<int> bytes,
+      {String? property, int offset = 0, LookupDecodeParams? params}) {
+    final decode = serializationLayout(id, property: property)
+        .deserialize(bytes, offset: offset);
     return decode.value;
   }
 
@@ -139,7 +137,41 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
 
   @override
   PortableType? typeByPaths(List<String> paths) {
-    return types.values.firstWhereNullable(
-        (e) => CompareUtils.iterableIsEqual(e.type.path, paths));
+    return types.values.firstWhereNullable((e) {
+      return CompareUtils.iterableIsEqual(e.type.path, paths);
+    });
+  }
+
+  @override
+  PortableType? typeByPathTail(String path) {
+    return types.values.firstWhereNullable((e) {
+      return e.type.path.lastOrNull == path;
+    });
+  }
+
+  @override
+  int? typeByFieldName(String name) {
+    for (final i in types.values) {
+      final f = i.type.def.typeByFieldName(this, i.id, name);
+      if (f != null) return f;
+    }
+    return null;
+  }
+
+  @override
+  int? typeByName(String name) {
+    for (final i in types.values) {
+      final f = i.type.def.typeByName(this, i.id, name);
+      if (f != null) return f;
+    }
+    return null;
+  }
+
+  @override
+  Layout serializationLayout(int lookup,
+      {String? property, LookupDecodeParams? params}) {
+    return type(lookup)
+        .type
+        .serializationLayout(this, property: property, params: params);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:test/test.dart';
+
 import 'v14_metadata_hex.dart';
 
 void main() {
@@ -16,7 +17,11 @@ void _test(PortableRegistry registry) {
   test("loookup-8", () {
     const lookupId = 8;
     final typeTemplate = registry.typeTemplate(lookupId);
-    final Map<String, dynamic> template = {"type": "Bool", "value": null};
+    final Map<String, dynamic> template = {
+      "type": "Bool",
+      'lookup_id': 8,
+      "value": null
+    };
     expect(template, typeTemplate.buildJsonTemplate());
     template["value"] = false;
     final value =
@@ -29,7 +34,11 @@ void _test(PortableRegistry registry) {
   test("loookup-0", () {
     const lookupId = 0;
     final typeTemplate = registry.typeTemplate(lookupId);
-    final Map<String, dynamic> template = {"type": "[U8;32]", "value": null};
+    final Map<String, dynamic> template = {
+      "type": "[U8;32]",
+      'lookup_id': 1,
+      "value": null
+    };
     expect(template, typeTemplate.buildJsonTemplate());
     final bytes = List<int>.filled(32, 0);
     template["value"] = BytesUtils.toHexString(bytes);
@@ -48,17 +57,17 @@ void _test(PortableRegistry registry) {
     Map<String, dynamic> template = {
       "type": "Map",
       "value": {
-        "nonce": {"type": "U32", "value": null},
-        "consumers": {"type": "U32", "value": null},
-        "providers": {"type": "U32", "value": null},
-        "sufficients": {"type": "U32", "value": null},
+        "nonce": {"type": "U32", 'lookup_id': 4, "value": null},
+        "consumers": {"type": "U32", 'lookup_id': 4, "value": null},
+        "providers": {"type": "U32", 'lookup_id': 4, "value": null},
+        "sufficients": {"type": "U32", 'lookup_id': 4, "value": null},
         "data": {
           "type": "Map",
           "value": {
-            "free": {"type": "U128", "value": null},
-            "reserved": {"type": "U128", "value": null},
-            "frozen": {"type": "U128", "value": null},
-            "flags": {"type": "U128", "value": null}
+            "free": {"type": "U128", 'lookup_id': 6, "value": null},
+            "reserved": {"type": "U128", 'lookup_id': 6, "value": null},
+            "frozen": {"type": "U128", 'lookup_id': 6, "value": null},
+            "flags": {"type": "U128", 'lookup_id': 6, "value": null}
           }
         }
       }

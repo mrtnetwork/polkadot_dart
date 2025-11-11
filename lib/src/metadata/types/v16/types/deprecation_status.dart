@@ -1,7 +1,7 @@
+import 'package:blockchain_utils/exception/exception/exception.dart';
 import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
+import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 enum DeprecationStatusTypes {
   notDeprecated,
@@ -9,15 +9,8 @@ enum DeprecationStatusTypes {
   deprecated;
 
   static DeprecationStatusTypes fromName(String? name) {
-    return values.firstWhere(
-      (e) => e.name == name,
-      orElse: () => throw DartSubstratePluginException(
-          'DeprecationStatus type not found.',
-          details: {
-            'name': name,
-            'values': values.map((e) => e.name).join(', ')
-          }),
-    );
+    return values.firstWhere((e) => e.name == name,
+        orElse: () => throw ItemNotFoundException(value: name));
   }
 }
 
@@ -74,7 +67,7 @@ class MetadataStatusDeprecated extends DeprecationStatus {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {"note": note, "since": since};
   }
 }
@@ -89,7 +82,7 @@ class MetadataStatusNotDeprecated extends DeprecationStatus {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {};
   }
 }
@@ -104,7 +97,7 @@ class MetadataStatusDeprecatedWithoutNote extends DeprecationStatus {
   }
 
   @override
-  Map<String, dynamic> scaleJsonSerialize({String? property}) {
+  Map<String, dynamic> serializeJson({String? property}) {
     return {};
   }
 }

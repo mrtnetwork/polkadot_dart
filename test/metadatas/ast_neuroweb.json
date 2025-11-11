@@ -1,0 +1,56 @@
+[
+    {
+        "is_spendable": true,
+        "is_fee_token": true,
+        "min_balance": "100000000000",
+        "name": "NeuroWeb",
+        "symbol": "NEURO",
+        "decimals": 12,
+        "excution_pallet": "Balances"
+    },
+    {
+        "asset": {
+            "asset": {
+                "owner": "5HmGjqXkthjrb8J8fWWY6bMyu5wHdVHdmWLXNgyZgHbBMebA",
+                "issuer": "5HmGjqXkthjrb8J8fWWY6bMyu5wHdVHdmWLXNgyZgHbBMebA",
+                "admin": "5HmGjqXkthjrb8J8fWWY6bMyu5wHdVHdmWLXNgyZgHbBMebA",
+                "freezer": "5HmGjqXkthjrb8J8fWWY6bMyu5wHdVHdmWLXNgyZgHbBMebA",
+                "supply": "123545490322436000000000000",
+                "deposit": "100000000000000",
+                "is_sufficient": false,
+                "accounts": 523,
+                "sufficients": 0,
+                "approvals": 312,
+                "min_balance": "1",
+                "status": {
+                    "Live": null
+                }
+            },
+            "asset_id": "1"
+        },
+        "metadata": {
+            "deposit": "18000000000000",
+            "name": "TRAC",
+            "symbol": "TRAC",
+            "decimals": 18,
+            "is_frozen": false
+        },
+        "is_fee_token": false,
+        "units_per_second": null,
+        "location": {
+            "V4": {
+                "parents": 1,
+                "interior": {
+                    "X2": [
+                        {
+                            "Parachain": 2043
+                        },
+                        {
+                            "GeneralIndex": "1"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]

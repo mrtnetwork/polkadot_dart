@@ -1,3 +1,4 @@
+import 'package:polkadot_dart/src/api/models/models/storage.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
@@ -6,7 +7,7 @@ import 'package:polkadot_dart/src/models/generic/models/runtime_version.dart';
 import 'metadata_interface.dart';
 
 /// Interface providing methods for interacting with metadata in the Substrate framework.
-mixin MetadataApiInterface {
+abstract mixin class MetadataApiInterface {
   LatestMetadataInterface get metadata;
 
   /// Returns the list of supported metadata versions.
@@ -71,7 +72,7 @@ mixin MetadataApiInterface {
       String palletNameOrIndex, String methodName);
 
   /// Encodes storage input.
-  List<int> encodeStorageMethodInput({
+  List<int> encodeStorageInput({
     required String palletNameOrIndex,
     required String methodName,
     required bool fromTemplate,
@@ -85,27 +86,21 @@ mixin MetadataApiInterface {
       required List<int> bytes});
 
   /// Decodes storage output.
-  T decodeStorageResponse<T>(
+  T decodeStorageOutput<T>(
       {required String palletNameOrIndex,
       required String methodName,
       List<int>? queryResponse});
 
   /// Generates a query storage key.
-  List<int> getStorageKey({
-    required String palletNameOrIndex,
-    required String methodName,
-    required bool fromTemplate,
-    required Object? value,
-  });
-
-  /// Decodes a query storage key.
-  T decodeQueryStorageKey<T>(
+  StorageKey generateStorageKey(
       {required String palletNameOrIndex,
       required String methodName,
-      required List<int> bytes});
+      required bool fromTemplate,
+      required Object? value,
+      ENCODEINPUTS? onEncodeInputs});
 
   /// Generates an event storage key.
-  List<int> generateEventStorageKey();
+  MethodStorageKey generateEventStorageKey();
 
   /// Decodes an event.
   T decodeEvent<T>(
@@ -118,11 +113,14 @@ mixin MetadataApiInterface {
   /// Retrieves the list of storage methods for a pallet.
   List<String> getPalletStorageMethods(String palletNameOrIndex);
 
+  /// Runtime api names
   List<String> getRuntimeApis();
 
+  /// Runtime api methods
   List<String> getRuntimeApiMethods(String apiName);
 
-  String getRuntimeApiMethod(String apiName, String methodName);
+  ///
+  String generateRuntimeApiMethod(String apiName, String methodName);
   List<int> getRuntimeApiInputLookupIds(String apiName, String methodName);
 
   int getRuntimeApiOutputLookupId(String apiName, String methodName);
@@ -142,4 +140,8 @@ mixin MetadataApiInterface {
       required List<int> bytes});
 
   int getCallLookupId(String palletNameOrIndex);
+  bool palletExists(String palletNameOrIndex);
+  TypeTemlate getCallMethodTemplate(String palletNameOrIndex, String method);
+  int networkSS58Prefix();
+  List<String> getAllPalletsStorageMethods(String palletNameOrIndex);
 }

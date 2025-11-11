@@ -3,6 +3,7 @@ import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
+
 import 'public_key.dart';
 
 /// Class representing an ethereum private key, allowing for cryptographic operations and key-related functionality.
@@ -26,7 +27,7 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
       final Secp256k1PrivateKey key = Secp256k1PrivateKey.fromBytes(keyBytes);
       return SubstrateEthereumPrivateKey._(key);
     } catch (e) {
-      throw DartSubstratePluginException("invalid ethereum private key",
+      throw DartSubstratePluginException("invalid ecdsa private key",
           details: {"keyBytes": BytesUtils.tryToHexString(keyBytes)});
     }
   }
@@ -79,6 +80,10 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   @override
   SubstrateEthereumAddress toAddress() {
     return toPublicKey().toAddress();
+  }
+
+  SubstrateAddress toSS58Address() {
+    return toPublicKey().toSS58Address();
   }
 
   @override

@@ -1,7 +1,8 @@
 import 'package:blockchain_utils/utils/utils.dart';
-import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
 
@@ -44,17 +45,28 @@ class MetadataCastingUtils {
     required Object? value,
     required Si1TypeDefsIndexesConst type,
     required bool fromTemplate,
-    required int lookupId,
+    required int id,
+    required PortableRegistry registry,
     PrimitiveTypes? primitive,
   }) {
-    Object? val = fromTemplate
-        ? _getTemplateValue(value: value, lookupId: lookupId, type: type)
-        : value;
+    Object? val = value;
+    if (fromTemplate) {
+      val = _getTemplateValue(value: value, id: id, type: type);
+    }
+    if (value is LookupRawParam) {
+      final decode = registry
+          .type(id)
+          .type
+          .serializationLayout(registry)
+          .deserialize(value.bytes);
+      assert(decode.consumed == value.bytes.length,
+          "decode failed ${decode.consumed} ${decode.value} $id");
+      val = decode.value;
+    }
     switch (type) {
       case Si1TypeDefsIndexesConst.compact:
       case Si1TypeDefsIndexesConst.composite:
       case Si1TypeDefsIndexesConst.variant:
-        // case Si1TypeDefsIndexesConst.option:
         return val;
       default:
         val = nullOnException(
@@ -62,7 +74,7 @@ class MetadataCastingUtils {
               value: val,
               type: type,
               fromTemplate: fromTemplate,
-              lookupId: lookupId,
+              lookupId: id,
               primitive: primitive),
         );
         break;
@@ -71,7 +83,7 @@ class MetadataCastingUtils {
       throw MetadataException("Invalid value provided.", details: {
         "value": value,
         "type": primitive?.name ?? type.name,
-        "lookup_id": lookupId,
+        "lookup_id": id,
         "from_template": fromTemplate,
       });
     }
@@ -93,7 +105,7 @@ class MetadataCastingUtils {
         return _isList(value, primitive: PrimitiveTypes.u8);
 
       case Si1TypeDefsIndexesConst.historicMetaCompat:
-        throw UnimplementedError("HistoricMetaCompat does not implement.");
+        throw MetadataException("HistoricMetaCompat does not implement.");
       case Si1TypeDefsIndexesConst.primitive:
         return _primitiveOrNull(primitive: primitive, value: value);
       default:
@@ -113,7 +125,7 @@ class MetadataCastingUtils {
 
   static Object? _getTemplateValue(
       {required Object? value,
-      required int lookupId,
+      required int id,
       required Si1TypeDefsIndexesConst type}) {
     final map = mapOrNull<String, dynamic>(value);
     if (map?.containsKey("value") ?? false) {
@@ -121,7 +133,7 @@ class MetadataCastingUtils {
     }
     throw MetadataException(
         "Invalid data provided for encoding. Template value should be map and contains 'value' ",
-        details: {"value": value, "type": type.name, "lookup": lookupId});
+        details: {"value": value, "type": type.name, "lookup": id});
   }
 
   static String getVariantKey(Object? value, {String? property, String? type}) {
@@ -244,13 +256,12 @@ class MetadataCastingUtils {
       required bool sign,
       required int bitLength,
       String? property}) {
-    if (value is int || value is BigInt) {
-      final val = BigintUtils.parse(value);
-      if (isBigint(val, sign: sign, bitLength: bitLength)) {
-        return val;
-      }
+    final bigValue = BigintUtils.tryParse(value, allowHex: false);
+    if (bigValue != null &&
+        isBigint(bigValue, sign: sign, bitLength: bitLength)) {
+      return bigValue;
     }
-    throw LayoutException("Invalid value for type Bigint",
+    throw MetadataException("Invalid value for type Bigint",
         details: {"sign": sign, "bitLength": bitLength, "property": property});
   }
 
@@ -259,17 +270,11 @@ class MetadataCastingUtils {
       required bool sign,
       required int bitLength,
       String? property}) {
-    if (value is int) {
-      if (isInt(value, sign: sign, bitLength: bitLength)) {
-        return value;
-      }
-    } else if (value is BigInt && value.isValidInt) {
-      final intValue = value.toInt();
-      if (isInt(intValue, sign: sign, bitLength: bitLength)) {
-        return intValue;
-      }
+    final intValue = IntUtils.tryParse(value, allowHex: false);
+    if (intValue != null && isInt(intValue, sign: sign, bitLength: bitLength)) {
+      return intValue;
     }
-    throw LayoutException("Invalid value for type int", details: {
+    throw MetadataException("Invalid value for type int", details: {
       "sign": sign,
       "bitLength": bitLength,
       "property": property,
