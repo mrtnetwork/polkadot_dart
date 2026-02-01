@@ -38,8 +38,10 @@ class PrimitiveTypes {
     PrimitiveTypes.i256,
   ];
   static PrimitiveTypes fromValue(String? value) {
-    return values.firstWhere((element) => element.name == value,
-        orElse: () => throw ItemNotFoundException(value: value));
+    return values.firstWhere(
+      (element) => element.name == value,
+      orElse: () => throw ItemNotFoundException(value: value),
+    );
   }
 
   Layout toLayout({String? property}) {
@@ -55,11 +57,17 @@ class PrimitiveTypes {
         final byteLength = bitLength ~/ 8;
         final sign = name.startsWith("I");
         if (bitLength > 48) {
-          return LayoutConst.bigintLayout(byteLength,
-              sign: sign, property: property);
+          return LayoutConst.bigintLayout(
+            byteLength,
+            sign: sign,
+            property: property,
+          );
         }
-        return LayoutConst.intLayout(byteLength,
-            sign: sign, property: property);
+        return LayoutConst.intLayout(
+          byteLength,
+          sign: sign,
+          property: property,
+        );
     }
   }
 
@@ -74,10 +82,16 @@ class PrimitiveTypes {
         final bitLength = int.parse(this.name.substring(1));
         if (bitLength > 32) {
           return MetadataTypeInfoBigInt(
-              name: name, typeId: typeId, primitiveType: this);
+            name: name,
+            typeId: typeId,
+            primitiveType: this,
+          );
         }
         return MetadataTypeInfoInt(
-            name: name, typeId: typeId, primitiveType: this);
+          name: name,
+          typeId: typeId,
+          primitiveType: this,
+        );
     }
   }
 

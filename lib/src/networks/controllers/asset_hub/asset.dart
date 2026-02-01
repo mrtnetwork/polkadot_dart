@@ -16,8 +16,9 @@ enum PolkadotAssetBalanceStatus {
 
   const PolkadotAssetBalanceStatus(this.status);
   static PolkadotAssetBalanceStatus fromJson(Map<String, dynamic> json) {
-    final status =
-        values.firstWhereNullable((e) => e.status == json.keys.firstOrNull);
+    final status = values.firstWhereNullable(
+      (e) => e.status == json.keys.firstOrNull,
+    );
     return status ?? PolkadotAssetBalanceStatus.unknown;
   }
 
@@ -38,8 +39,9 @@ enum PolkadotAssetBalanceReasonType {
 
   const PolkadotAssetBalanceReasonType(this.type);
   static PolkadotAssetBalanceReasonType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? PolkadotAssetBalanceReasonType.unknown;
   }
 }
@@ -47,8 +49,10 @@ enum PolkadotAssetBalanceReasonType {
 abstract class BasePolkadotAssetBalanceReason {
   final Map<String, dynamic> identifier;
   final PolkadotAssetBalanceReasonType type;
-  const BasePolkadotAssetBalanceReason(
-      {required this.type, required this.identifier});
+  const BasePolkadotAssetBalanceReason({
+    required this.type,
+    required this.identifier,
+  });
   Map<String, dynamic> toJson() => identifier;
   factory BasePolkadotAssetBalanceReason.fromJson(Map<String, dynamic> json) {
     final type = PolkadotAssetBalanceReasonType.fromJson(json);
@@ -72,82 +76,92 @@ abstract class BasePolkadotAssetBalanceReason {
 class PolkadotAssetBalanceReasonConsumer
     extends BasePolkadotAssetBalanceReason {
   const PolkadotAssetBalanceReasonConsumer({required super.identifier})
-      : super(type: PolkadotAssetBalanceReasonType.consumer);
+    : super(type: PolkadotAssetBalanceReasonType.consumer);
   PolkadotAssetBalanceReasonConsumer.fromJson(Map<String, dynamic> json)
-      : super(type: PolkadotAssetBalanceReasonType.consumer, identifier: json);
+    : super(type: PolkadotAssetBalanceReasonType.consumer, identifier: json);
 }
 
 class PolkadotAssetBalanceReasonSufficient
     extends BasePolkadotAssetBalanceReason {
   const PolkadotAssetBalanceReasonSufficient({required super.identifier})
-      : super(type: PolkadotAssetBalanceReasonType.sufficient);
+    : super(type: PolkadotAssetBalanceReasonType.sufficient);
   PolkadotAssetBalanceReasonSufficient.fromJson(Map<String, dynamic> json)
-      : super(
-            type: PolkadotAssetBalanceReasonType.sufficient, identifier: json);
+    : super(type: PolkadotAssetBalanceReasonType.sufficient, identifier: json);
 }
 
 class PolkadotAssetBalanceReasonDepositRefunded
     extends BasePolkadotAssetBalanceReason {
   const PolkadotAssetBalanceReasonDepositRefunded({required super.identifier})
-      : super(type: PolkadotAssetBalanceReasonType.depositRefunded);
+    : super(type: PolkadotAssetBalanceReasonType.depositRefunded);
   PolkadotAssetBalanceReasonDepositRefunded.fromJson(Map<String, dynamic> json)
-      : super(
-            type: PolkadotAssetBalanceReasonType.depositRefunded,
-            identifier: json);
+    : super(
+        type: PolkadotAssetBalanceReasonType.depositRefunded,
+        identifier: json,
+      );
 }
 
 class PolkadotAssetBalanceReasonDepositHeld
     extends BasePolkadotAssetBalanceReason {
   final BigInt amount;
-  const PolkadotAssetBalanceReasonDepositHeld(
-      {required this.amount, required super.identifier})
-      : super(type: PolkadotAssetBalanceReasonType.depositHeld);
+  const PolkadotAssetBalanceReasonDepositHeld({
+    required this.amount,
+    required super.identifier,
+  }) : super(type: PolkadotAssetBalanceReasonType.depositHeld);
   PolkadotAssetBalanceReasonDepositHeld.fromJson(Map<String, dynamic> json)
-      : amount = json.valueAs(PolkadotAssetBalanceReasonType.depositHeld.type),
-        super(
-            type: PolkadotAssetBalanceReasonType.depositHeld, identifier: json);
+    : amount = json.valueAs(PolkadotAssetBalanceReasonType.depositHeld.type),
+      super(type: PolkadotAssetBalanceReasonType.depositHeld, identifier: json);
 }
 
 class PolkadotAssetBalanceReasonDepositFrom
     extends BasePolkadotAssetBalanceReason {
   final BigInt amount;
   final SubstrateAddress from;
-  const PolkadotAssetBalanceReasonDepositFrom(
-      {required this.from, required this.amount, required super.identifier})
-      : super(type: PolkadotAssetBalanceReasonType.depositFrom);
+  const PolkadotAssetBalanceReasonDepositFrom({
+    required this.from,
+    required this.amount,
+    required super.identifier,
+  }) : super(type: PolkadotAssetBalanceReasonType.depositFrom);
   PolkadotAssetBalanceReasonDepositFrom.fromJson(Map<String, dynamic> json)
-      : from = SubstrateAddress.fromBytes(BytesUtils.fromHexString(
-            json.valueEnsureAsList(
-                PolkadotAssetBalanceReasonType.depositFrom.type)[0])),
-        amount = BigintUtils.parse(json.valueEnsureAsList(
-            PolkadotAssetBalanceReasonType.depositFrom.type)[1]),
-        super(
-            type: PolkadotAssetBalanceReasonType.depositFrom, identifier: json);
+    : from = SubstrateAddress.fromBytes(
+        BytesUtils.fromHexString(
+          json.valueEnsureAsList(
+            PolkadotAssetBalanceReasonType.depositFrom.type,
+          )[0],
+        ),
+      ),
+      amount = BigintUtils.parse(
+        json.valueEnsureAsList(
+          PolkadotAssetBalanceReasonType.depositFrom.type,
+        )[1],
+      ),
+      super(type: PolkadotAssetBalanceReasonType.depositFrom, identifier: json);
 }
 
 class PolkadotAssetBalanceReasonUnknown extends BasePolkadotAssetBalanceReason {
   const PolkadotAssetBalanceReasonUnknown({required super.identifier})
-      : super(type: PolkadotAssetBalanceReasonType.unknown);
+    : super(type: PolkadotAssetBalanceReasonType.unknown);
   PolkadotAssetBalanceReasonUnknown.fromJson(Map<String, dynamic> json)
-      : super(type: PolkadotAssetBalanceReasonType.unknown, identifier: json);
+    : super(type: PolkadotAssetBalanceReasonType.unknown, identifier: json);
 }
 
 class PolkadotAssetBalance {
   final BigInt balance;
   final PolkadotAssetBalanceStatus status;
   final BasePolkadotAssetBalanceReason reason;
-  const PolkadotAssetBalance(
-      {required this.balance, required this.status, required this.reason});
+  const PolkadotAssetBalance({
+    required this.balance,
+    required this.status,
+    required this.reason,
+  });
   PolkadotAssetBalance.fromJson(Map<String, dynamic> json)
-      : balance = json.valueAs("balance"),
-        status = PolkadotAssetBalanceStatus.fromJson(json.valueAs("status")),
-        reason =
-            BasePolkadotAssetBalanceReason.fromJson(json.valueAs("reason"));
+    : balance = json.valueAs("balance"),
+      status = PolkadotAssetBalanceStatus.fromJson(json.valueAs("status")),
+      reason = BasePolkadotAssetBalanceReason.fromJson(json.valueAs("reason"));
   Map<String, dynamic> toJson() {
     return {
       "balance": balance.toString(),
       "status": status.toJson(),
-      "reason": reason.toJson()
+      "reason": reason.toJson(),
     };
   }
 }
@@ -162,8 +176,10 @@ enum BasePolkadotNetworkAssetsStatus {
   const BasePolkadotNetworkAssetsStatus(this.status);
   static BasePolkadotNetworkAssetsStatus fromJson(Map<String, dynamic> json) {
     final status = json.keys.firstOrNull;
-    return values.firstWhere((e) => e.status == status,
-        orElse: () => throw ItemNotFoundException(value: status));
+    return values.firstWhere(
+      (e) => e.status == status,
+      orElse: () => throw ItemNotFoundException(value: status),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -200,21 +216,22 @@ class PolkadotAssetHubAssetInfo {
   });
 
   PolkadotAssetHubAssetInfo.fromJson(Map<String, dynamic> json)
-      : owner = BaseSubstrateAddress.fromBytes(json.valueAsBytes("owner")),
-        issuer = BaseSubstrateAddress.fromBytes(json.valueAsBytes("issuer")),
-        admin = BaseSubstrateAddress.fromBytes(json.valueAsBytes("admin")),
-        freezer = BaseSubstrateAddress.fromBytes(json.valueAsBytes("freezer")),
-        supply = json.valueAsBigInt("supply"),
-        deposit = json.valueAs("deposit"),
-        // minBalance =,
-        isSufficient = json.valueAs("is_sufficient"),
-        accounts = json.valueAs("accounts"),
-        sufficients = json.valueAs("sufficients"),
-        approvals = json.valueAs("approvals"),
-        status = BasePolkadotNetworkAssetsStatus.fromJson(
-            json.valueEnsureAsMap<String, dynamic>("status")),
-        minBalance = json.valueAs("min_balance"),
-        super();
+    : owner = BaseSubstrateAddress.fromBytes(json.valueAsBytes("owner")),
+      issuer = BaseSubstrateAddress.fromBytes(json.valueAsBytes("issuer")),
+      admin = BaseSubstrateAddress.fromBytes(json.valueAsBytes("admin")),
+      freezer = BaseSubstrateAddress.fromBytes(json.valueAsBytes("freezer")),
+      supply = json.valueAsBigInt("supply"),
+      deposit = json.valueAs("deposit"),
+      // minBalance =,
+      isSufficient = json.valueAs("is_sufficient"),
+      accounts = json.valueAs("accounts"),
+      sufficients = json.valueAs("sufficients"),
+      approvals = json.valueAs("approvals"),
+      status = BasePolkadotNetworkAssetsStatus.fromJson(
+        json.valueEnsureAsMap<String, dynamic>("status"),
+      ),
+      minBalance = json.valueAs("min_balance"),
+      super();
   Map<String, dynamic> toJson() {
     return {
       "owner": owner.toHex(),
@@ -228,7 +245,7 @@ class PolkadotAssetHubAssetInfo {
       "sufficients": sufficients,
       "approvals": approvals,
       "min_balance": minBalance.toString(),
-      "status": status.toJson()
+      "status": status.toJson(),
     };
   }
 }
@@ -240,26 +257,28 @@ class PolkadotAssetHubAssetMetadata {
   final int decimals;
   final bool isFrozen;
   PolkadotAssetHubAssetMetadata.fromJson(Map<String, dynamic> json)
-      : deposit = json.valueAs("deposit"),
-        decimals = json.valueAs("decimals"),
-        name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
-        symbol =
-            SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("symbol")),
-        isFrozen = json.valueAsBool("is_frozen"),
-        super();
-  const PolkadotAssetHubAssetMetadata(
-      {required this.deposit,
-      required this.name,
-      required this.symbol,
-      required this.decimals,
-      required this.isFrozen});
+    : deposit = json.valueAs("deposit"),
+      decimals = json.valueAs("decimals"),
+      name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
+      symbol = SubstrateNetworkControllerUtils.tryToUtf8(
+        json.valueAs("symbol"),
+      ),
+      isFrozen = json.valueAsBool("is_frozen"),
+      super();
+  const PolkadotAssetHubAssetMetadata({
+    required this.deposit,
+    required this.name,
+    required this.symbol,
+    required this.decimals,
+    required this.isFrozen,
+  });
   Map<String, dynamic> toJson() {
     return {
       "deposit": deposit,
       "name": name,
       "symbol": symbol,
       "decimals": decimals,
-      "is_frozen": isFrozen
+      "is_frozen": isFrozen,
     };
   }
 }
@@ -288,16 +307,13 @@ class PolkadotAssetHubAsset implements BasePolkadotAssetHubAsset<BigInt> {
   final BigInt assetId;
 
   PolkadotAssetHubAsset.fromJson(Map<String, dynamic> json)
-      : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
-        assetId = json.valueAs("asset_id");
+    : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
+      assetId = json.valueAs("asset_id");
   PolkadotAssetHubAsset({required this.asset, required this.assetId});
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      "asset": asset.toJson(),
-      "asset_id": assetId.toString(),
-    };
+    return {"asset": asset.toJson(), "asset_id": assetId.toString()};
   }
 
   @override
@@ -317,18 +333,16 @@ class PolkadotAssetHubForeignAsset
   SubtrateMetadataPallet get type => SubtrateMetadataPallet.foreignAssets;
   @override
   final XCMVersionedLocation assetId;
-  PolkadotAssetHubForeignAsset.fromJson(Map<String, dynamic> json,
-      {XCMVersion version = XCMVersion.v4})
-      : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
-        assetId = XCMVersionedLocation.fromJson(json.valueAs("location"));
+  PolkadotAssetHubForeignAsset.fromJson(
+    Map<String, dynamic> json, {
+    XCMVersion version = XCMVersion.v4,
+  }) : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
+       assetId = XCMVersionedLocation.fromJson(json.valueAs("location"));
   PolkadotAssetHubForeignAsset({required this.asset, required this.assetId});
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      "asset": asset.toJson(),
-      "location": assetId.toJson(),
-    };
+    return {"asset": asset.toJson(), "location": assetId.toJson()};
   }
 
   @override
@@ -342,19 +356,22 @@ class PolkadotAssetHubForeignAsset
 
 abstract class BasePolkadotAssetHubNetworkAsset
     extends BaseSubstrateNetworkAsset {
-  BasePolkadotAssetHubNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet,
-      required super.chargeAssetTxPayment});
+  BasePolkadotAssetHubNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+    required super.chargeAssetTxPayment,
+  });
   BasePolkadotAssetHubNetworkAsset.fromJson(super.json) : super.fromJson();
   @override
-  Object? asChargeTxPaymentAssetId(
-      {required BaseSubstrateNetwork network, required XCMVersion version}) {
+  Object? asChargeTxPaymentAssetId({
+    required BaseSubstrateNetwork network,
+    required XCMVersion version,
+  }) {
     if (chargeAssetTxPayment) {
       return getAssetId(version: version, reserveNetwork: network).toJson();
     }
@@ -375,33 +392,37 @@ class PolkadotAssetHubNetworkAsset extends BasePolkadotAssetHubNetworkAsset {
     required super.isFeeToken,
     required super.chargeAssetTxPayment,
   }) : super(
-            decimals: metadata?.decimals,
-            excutionPallet: asset.type,
-            minBalance: asset.asset.minBalance,
-            name: metadata?.name,
-            symbol: metadata?.symbol,
-            isSpendable:
-                asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen);
+         decimals: metadata?.decimals,
+         excutionPallet: asset.type,
+         minBalance: asset.asset.minBalance,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+         isSpendable:
+             asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
+       );
   factory PolkadotAssetHubNetworkAsset.fromJson(Map<String, dynamic> json) {
     final asset = BasePolkadotAssetHubAsset.fromJson(json.valueAs("asset"));
-    final metadata =
-        json.valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
-      key: "metadata",
-      parse: (v) {
-        return PolkadotAssetHubAssetMetadata.fromJson(v);
-      },
-    );
+    final metadata = json
+        .valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
+          key: "metadata",
+          parse: (v) {
+            return PolkadotAssetHubAssetMetadata.fromJson(v);
+          },
+        );
     final bool isFeeToken = json.valueAs("is_fee_token");
     return PolkadotAssetHubNetworkAsset(
-        asset: asset,
-        metadata: metadata,
-        chargeAssetTxPayment: json.valueAs("charge_asset_tx_payment"),
-        location: (asset is PolkadotAssetHubForeignAsset)
-            ? asset.assetId
-            : json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
+      asset: asset,
+      metadata: metadata,
+      chargeAssetTxPayment: json.valueAs("charge_asset_tx_payment"),
+      location:
+          (asset is PolkadotAssetHubForeignAsset)
+              ? asset.assetId
+              : json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
                 key: "location",
-                parse: (v) => XCMVersionedLocation.fromJson(json)),
-        isFeeToken: isFeeToken);
+                parse: (v) => XCMVersionedLocation.fromJson(json),
+              ),
+      isFeeToken: isFeeToken,
+    );
   }
 
   @override
@@ -413,7 +434,8 @@ class PolkadotAssetHubNetworkAsset extends BasePolkadotAssetHubNetworkAsset {
       "metadata": metadata?.toJson(),
       "is_fee_token": isFeeToken,
       "charge_asset_tx_payment": chargeAssetTxPayment,
-      if (asset is! PolkadotAssetHubForeignAsset) "location": location?.toJson()
+      if (asset is! PolkadotAssetHubForeignAsset)
+        "location": location?.toJson(),
     };
   }
 
@@ -438,11 +460,12 @@ class PolkadotAssetHubNetworkNativeAsset
     required super.decimals,
     super.minBalance,
   }) : super(
-            excutionPallet: SubtrateMetadataPallet.balances,
-            chargeAssetTxPayment: true);
+         excutionPallet: SubtrateMetadataPallet.balances,
+         chargeAssetTxPayment: true,
+       );
   PolkadotAssetHubNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
 

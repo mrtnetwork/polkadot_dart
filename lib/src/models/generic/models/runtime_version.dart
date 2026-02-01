@@ -14,42 +14,49 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
   final int transactionVersion;
   final int? stateVersion;
   final int? systemVersion;
-  RuntimeVersion(
-      {required this.specName,
-      required this.implName,
-      required this.authoringVersion,
-      required this.specVersion,
-      required this.implVersion,
-      required List<RuntimeVersionApi> apis,
-      required this.transactionVersion,
-      this.stateVersion,
-      this.systemVersion})
-      : apis = List<RuntimeVersionApi>.unmodifiable(apis);
+  RuntimeVersion({
+    required this.specName,
+    required this.implName,
+    required this.authoringVersion,
+    required this.specVersion,
+    required this.implVersion,
+    required List<RuntimeVersionApi> apis,
+    required this.transactionVersion,
+    this.stateVersion,
+    this.systemVersion,
+  }) : apis = List<RuntimeVersionApi>.unmodifiable(apis);
   RuntimeVersion.deserializeJson(Map<String, dynamic> json)
-      : specVersion = json["spec_version"],
-        implVersion = json["impl_version"],
-        authoringVersion = json["authoring_version"],
-        transactionVersion = json["transaction_version"],
-        stateVersion = json["state_version"],
-        apis = List<RuntimeVersionApi>.unmodifiable((json["apis"] as List)
-            .map((e) => RuntimeVersionApi.deserializeJson(e))),
-        implName = json["impl_name"],
-        specName = json["spec_name"],
-        systemVersion = json["system_version"];
+    : specVersion = json["spec_version"],
+      implVersion = json["impl_version"],
+      authoringVersion = json["authoring_version"],
+      transactionVersion = json["transaction_version"],
+      stateVersion = json["state_version"],
+      apis = List<RuntimeVersionApi>.unmodifiable(
+        (json["apis"] as List).map((e) => RuntimeVersionApi.deserializeJson(e)),
+      ),
+      implName = json["impl_name"],
+      specName = json["spec_name"],
+      systemVersion = json["system_version"];
   factory RuntimeVersion.fromJson(Map<String, dynamic> json) {
     return RuntimeVersion(
-        specName: json["specName"],
-        implName: json["implName"],
-        authoringVersion: IntUtils.parse(json["authoringVersion"]),
-        specVersion: IntUtils.parse(json["specVersion"]),
-        implVersion: IntUtils.parse(json["implVersion"]),
-        apis: (json["apis"] as List)
-            .map((e) =>
-                RuntimeVersionApi(apiId: e[0], version: IntUtils.parse(e[1])))
-            .toList(),
-        transactionVersion: IntUtils.parse(json["transactionVersion"]),
-        stateVersion: IntUtils.tryParse(json["stateVersion"]),
-        systemVersion: IntUtils.tryParse(json["systemVersion"]));
+      specName: json["specName"],
+      implName: json["implName"],
+      authoringVersion: IntUtils.parse(json["authoringVersion"]),
+      specVersion: IntUtils.parse(json["specVersion"]),
+      implVersion: IntUtils.parse(json["implVersion"]),
+      apis:
+          (json["apis"] as List)
+              .map(
+                (e) => RuntimeVersionApi(
+                  apiId: e[0],
+                  version: IntUtils.parse(e[1]),
+                ),
+              )
+              .toList(),
+      transactionVersion: IntUtils.parse(json["transactionVersion"]),
+      stateVersion: IntUtils.tryParse(json["stateVersion"]),
+      systemVersion: IntUtils.tryParse(json["systemVersion"]),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -62,7 +69,7 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
       "apis": apis.map((e) => [e.apiId, e.version]).toList(),
       "transactionVersion": transactionVersion,
       "stateVersion": stateVersion,
-      "systemVersion": systemVersion
+      "systemVersion": systemVersion,
     };
   }
 
@@ -81,7 +88,7 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
       "apis": apis.map((e) => e.serializeJson()).toList(),
       "transaction_version": transactionVersion,
       "state_version": stateVersion,
-      "spec_version": specVersion
+      "spec_version": specVersion,
     };
   }
 }

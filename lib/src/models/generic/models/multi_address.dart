@@ -15,7 +15,8 @@ class SubstrateMultiAddress
     switch (key) {
       case GenericConstants.idIndexKey:
         account = SubstrateAccountId.deserializeJson(
-            json.valueEnsureAsList<int>(key!));
+          json.valueEnsureAsList<int>(key!),
+        );
         break;
       case GenericConstants.address32IndexKey:
         account = SubstrateAccount32(json.valueEnsureAsList<int>(key!));

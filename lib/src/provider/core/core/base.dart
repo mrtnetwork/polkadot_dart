@@ -34,8 +34,8 @@ class SubstrateRequestDetails extends BaseServiceRequestParams {
 
 /// An abstract class representing Ethereum JSON-RPC requests with generic response types.
 abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
-    extends BaseServiceRequest<SERVICERESPONSE, RESULT,
-        SubstrateRequestDetails> {
+    extends
+        BaseServiceRequest<SERVICERESPONSE, RESULT, SubstrateRequestDetails> {
   const SubstrateRequest();
 
   @override
@@ -67,9 +67,10 @@ abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
   SubstrateRequestDetails buildRequest(int requestId) {
     List<dynamic> inJson = toJson();
     inJson.removeWhere((v) => v == null);
-    inJson = inJson.map((e) {
-      return e;
-    }).toList();
+    inJson =
+        inJson.map((e) {
+          return e;
+        }).toList();
     final Map<String, dynamic> params = {
       "jsonrpc": "2.0",
       "method": rpcMethod,
@@ -77,11 +78,12 @@ abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
       "id": requestId,
     };
     return SubstrateRequestDetails(
-        requestID: requestId,
-        jsonBody: params,
-        method: rpcMethod,
-        type: requestType,
-        headers: ServiceConst.defaultPostHeaders);
+      requestID: requestId,
+      jsonBody: params,
+      method: rpcMethod,
+      type: requestType,
+      headers: ServiceConst.defaultPostHeaders,
+    );
   }
 
   @override

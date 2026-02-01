@@ -11,8 +11,10 @@ enum SubstrateAssetType {
 
   bool get isNative => this == native;
   static SubstrateAssetType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 }
 
@@ -61,19 +63,20 @@ abstract class BaseSubstrateNetworkAsset {
     required int? decimals,
     required this.excutionPallet,
     this.chargeAssetTxPayment = false,
-  }) : decimals = decimals?.asUint8;
+  }) : decimals = decimals?.asU8;
 
   /// Construct from JSON.
   BaseSubstrateNetworkAsset.fromJson(Map<String, dynamic> json)
-      : isFeeToken = json.valueAs("is_fee_token"),
-        isSpendable = json.valueAs("is_fee_token"),
-        minBalance = json.valueAs("min_balance"),
-        name = json.valueAs("name"),
-        symbol = json.valueAs("symbol"),
-        decimals = json.valueAsInt("decimals")?.asUint8,
-        chargeAssetTxPayment = json.valueAs("charge_asset_tx_payment"),
-        excutionPallet =
-            SubtrateMetadataPallet.fromName(json.valueAs("excution_pallet"));
+    : isFeeToken = json.valueAs("is_fee_token"),
+      isSpendable = json.valueAs("is_fee_token"),
+      minBalance = json.valueAs("min_balance"),
+      name = json.valueAs("name"),
+      symbol = json.valueAs("symbol"),
+      decimals = json.valueAsInt("decimals")?.asU8,
+      chargeAssetTxPayment = json.valueAs("charge_asset_tx_payment"),
+      excutionPallet = SubtrateMetadataPallet.fromName(
+        json.valueAs("excution_pallet"),
+      );
 
   /// Returns the asset type (default: token).
   SubstrateAssetType get type => SubstrateAssetType.token;
@@ -88,8 +91,7 @@ abstract class BaseSubstrateNetworkAsset {
   Object? asChargeTxPaymentAssetId({
     required BaseSubstrateNetwork network,
     required XCMVersion version,
-  }) =>
-      null;
+  }) => null;
 
   /// Checks equality with another identifier.
   bool identifierEqual(Object? identifier);
@@ -100,8 +102,10 @@ abstract class BaseSubstrateNetworkAsset {
       throw DartSubstratePluginException("Missing asset identifier");
     }
     if (identifier is! T) {
-      throw DartSubstratePluginException("Mismatch asset identifier.",
-          details: {"expected": "$T", "identifier": identifier.runtimeType});
+      throw DartSubstratePluginException(
+        "Mismatch asset identifier.",
+        details: {"expected": "$T", "identifier": identifier.runtimeType},
+      );
     }
     return identifier as T;
   }
@@ -112,11 +116,10 @@ abstract class BaseSubstrateNetworkAsset {
       throw DartSubstratePluginException("Missing asset identifier");
     }
     if (xTokenTransferId is! T) {
-      throw DartSubstratePluginException("Mismatch asset identifier.",
-          details: {
-            "expected": "$T",
-            "identifier": xTokenTransferId.runtimeType
-          });
+      throw DartSubstratePluginException(
+        "Mismatch asset identifier.",
+        details: {"expected": "$T", "identifier": xTokenTransferId.runtimeType},
+      );
     }
     return xTokenTransferId as T;
   }
@@ -130,11 +133,11 @@ abstract class BaseSubstrateNetworkAsset {
     final loc = location;
     if (loc == null) return null;
     return SubstrateNetworkControllerUtils.localizeFor(
-            reserveLocation: reserveLocation,
-            reserveNetwork: reserveNetwork,
-            location: loc.location,
-            version: version)
-        .asVersioned();
+      reserveLocation: reserveLocation,
+      reserveNetwork: reserveNetwork,
+      location: loc.location,
+      version: version,
+    ).asVersioned();
   }
 
   /// Returns the asset's XCM location, throwing if missing.
@@ -166,9 +169,10 @@ abstract class BaseSubstrateNetworkAsset {
     BaseSubstrateNetwork? reserveNetwork,
   }) {
     final loc = tryGetlocalizedLocation(
-        version: version,
-        reserveLocation: reserveLocation,
-        reserveNetwork: reserveNetwork);
+      version: version,
+      reserveLocation: reserveLocation,
+      reserveNetwork: reserveNetwork,
+    );
     return loc?.location.toAssetId();
   }
 
@@ -179,23 +183,22 @@ abstract class BaseSubstrateNetworkAsset {
     BaseSubstrateNetwork? reserveNetwork,
   }) =>
       getlocalizedLocation(
-              reserveLocation: reserveLocation,
-              reserveNetwork: reserveNetwork,
-              version: version)
-          .location
-          .toAssetId();
+        reserveLocation: reserveLocation,
+        reserveNetwork: reserveNetwork,
+        version: version,
+      ).location.toAssetId();
 
   /// Converts the asset to JSON.
   Map<String, dynamic> toJson() => {
-        "is_spendable": isSpendable,
-        "is_fee_token": isFeeToken,
-        "min_balance": minBalance?.toString(),
-        "name": name,
-        "symbol": symbol,
-        "decimals": decimals,
-        "excution_pallet": excutionPallet.name,
-        "charge_asset_tx_payment": chargeAssetTxPayment
-      };
+    "is_spendable": isSpendable,
+    "is_fee_token": isFeeToken,
+    "min_balance": minBalance?.toString(),
+    "name": name,
+    "symbol": symbol,
+    "decimals": decimals,
+    "excution_pallet": excutionPallet.name,
+    "charge_asset_tx_payment": chargeAssetTxPayment,
+  };
 
   /// Returns the reserve parachain ID if any.
   int? reserveChain() => location?.location.getParachain()?.id;
@@ -224,16 +227,17 @@ class GenericBaseSubstrateNativeAsset extends BaseSubstrateNetworkAsset {
   @override
   final Object? identifier;
 
-  GenericBaseSubstrateNativeAsset.withLocation(
-      {required super.name,
-      required super.decimals,
-      required super.symbol,
-      super.isFeeToken = true,
-      super.isSpendable = true,
-      required this.identifier,
-      required this.location,
-      required super.excutionPallet,
-      super.minBalance});
+  GenericBaseSubstrateNativeAsset.withLocation({
+    required super.name,
+    required super.decimals,
+    required super.symbol,
+    super.isFeeToken = true,
+    super.isSpendable = true,
+    required this.identifier,
+    required this.location,
+    required super.excutionPallet,
+    super.minBalance,
+  });
   GenericBaseSubstrateNativeAsset.withParaLocation({
     required super.name,
     required super.decimals,
@@ -245,16 +249,22 @@ class GenericBaseSubstrateNativeAsset extends BaseSubstrateNetworkAsset {
     required XCMVersion version,
     super.isFeeToken = true,
     super.isSpendable = true,
-  })  : location = XCMMultiLocation.fromVersion(
-                parents: parents ?? (parachain == null ? 0 : 1),
-                version: version,
-                interior: XCMJunctions.fromVersion(junctions: [
-                  if (parachain != null)
-                    XCMJunctionParaChain.fromVersion(
-                        id: parachain, version: version)
-                ], version: version))
-            .asVersioned(),
-        identifier = null;
+  }) : location =
+           XCMMultiLocation.fromVersion(
+             parents: parents ?? (parachain == null ? 0 : 1),
+             version: version,
+             interior: XCMJunctions.fromVersion(
+               junctions: [
+                 if (parachain != null)
+                   XCMJunctionParaChain.fromVersion(
+                     id: parachain,
+                     version: version,
+                   ),
+               ],
+               version: version,
+             ),
+           ).asVersioned(),
+       identifier = null;
 
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
@@ -278,7 +288,7 @@ class SubstrateNetworkAssets<ASSET extends BaseSubstrateNetworkAsset>
 
   /// Creates a new network assets container.
   SubstrateNetworkAssets({required List<ASSET> assets, required this.network})
-      : assets = assets.immutable;
+    : assets = assets.immutable;
 }
 
 /// Represents a pair of shared assets between two networks.
@@ -295,7 +305,8 @@ class SubstrateShareAsset<ASSET extends BaseSubstrateNetworkAsset> {
 
 /// Mixin for managing a collection of Substrate network assets.
 abstract mixin class BaseSubstrateNetworkAssets<
-    ASSET extends BaseSubstrateNetworkAsset> {
+  ASSET extends BaseSubstrateNetworkAsset
+> {
   /// List of assets in this network.
   List<ASSET> get assets;
 
@@ -314,30 +325,36 @@ abstract mixin class BaseSubstrateNetworkAssets<
       assets.where((e) => e.location != null).toList();
 
   /// Returns assets whose location is foreign to this network.
-  List<ASSET> getForeignAssets() => assets.where((e) {
+  List<ASSET> getForeignAssets() =>
+      assets.where((e) {
         final loc = e.location?.location;
         return loc != null && !loc.hasParachain(network.paraId);
       }).toList();
 
   /// Returns assets located on a specific parachain.
-  List<ASSET> getParaAssets(int paraId) => assets.where((e) {
+  List<ASSET> getParaAssets(int paraId) =>
+      assets.where((e) {
         final loc = e.location?.location;
         return loc != null && loc.hasParachain(paraId);
       }).toList();
 
   /// Returns the first asset whose symbol contains the given string (case-insensitive).
   ASSET? containsSymbol(String symbol) => assets.firstWhereNullable(
-      (e) => e.symbol?.contains(symbol.toLowerCase()) ?? false);
+    (e) => e.symbol?.contains(symbol.toLowerCase()) ?? false,
+  );
 
   /// Returns the asset corresponding to a given XCM multi-location.
   ASSET? getAssetFromLocation(XCMMultiLocation location) {
     final assets = getAssetsWithLocation();
     if (location.isZeroParents() && !network.role.isRelay) {
       location = SubstrateNetworkControllerUtils.asForeignLocation(
-          from: network, location: location);
+        from: network,
+        location: location,
+      );
     }
     return assets.firstWhereNullable(
-        (e) => e.location?.location.isEqual(location) ?? false);
+      (e) => e.location?.location.isEqual(location) ?? false,
+    );
   }
 
   /// Returns the first asset with an exact symbol match.
@@ -366,24 +383,28 @@ abstract mixin class BaseSubstrateNetworkAssets<
 
   /// Finds shared assets between this network and a destination network.
   List<SubstrateShareAsset<ASSET>> findShareAssets(
-      BaseSubstrateNetworkAssets destination,
-      {bool canPayFee = false}) {
+    BaseSubstrateNetworkAssets destination, {
+    bool canPayFee = false,
+  }) {
     List<SubstrateShareAsset<ASSET>> shareAssets = [];
     final assets = getAssetsWithLocation();
-    final destinationAssets = canPayFee
-        ? destination.feeAssetsWithLocation()
-        : destination.getAssetsWithLocation();
+    final destinationAssets =
+        canPayFee
+            ? destination.feeAssetsWithLocation()
+            : destination.getAssetsWithLocation();
     for (final asset in assets) {
       for (final destAsset in destinationAssets) {
         final oLocation = asset.location?.location;
         final dLocation = destAsset.location?.location;
         if (SubstrateNetworkControllerUtils.locationEquality(
-            networkA: network,
-            networkB: destination.network,
-            a: oLocation,
-            b: dLocation)) {
-          shareAssets
-              .add(SubstrateShareAsset(origin: asset, destination: destAsset));
+          networkA: network,
+          networkB: destination.network,
+          a: oLocation,
+          b: dLocation,
+        )) {
+          shareAssets.add(
+            SubstrateShareAsset(origin: asset, destination: destAsset),
+          );
         }
       }
     }

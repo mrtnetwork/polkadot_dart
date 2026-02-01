@@ -8,10 +8,10 @@ class CustomValueMetadata15
   final int type;
   final List<int> value;
   CustomValueMetadata15({required this.type, required List<int> value})
-      : value = BytesUtils.toBytes(value, unmodifiable: true);
+    : value = BytesUtils.toBytes(value, unmodifiable: true);
   CustomValueMetadata15.deserializeJson(Map<String, dynamic> json)
-      : type = json["type"],
-        value = BytesUtils.toBytes(json["value"], unmodifiable: true);
+    : type = json["type"],
+      value = BytesUtils.toBytes(json["value"], unmodifiable: true);
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.customValueMetadata15(property: property);

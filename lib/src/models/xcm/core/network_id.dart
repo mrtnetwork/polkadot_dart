@@ -29,13 +29,17 @@ enum XCMNetworkIdType implements Comparable<XCMNetworkIdType> {
   const XCMNetworkIdType(this.type);
 
   static XCMNetworkIdType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMNetworkIdType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 
   @override
@@ -99,7 +103,7 @@ abstract mixin class XCMNetworkIdByGenesis implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type, genesis];
+  List get variables => [type, genesis];
 }
 
 abstract mixin class XCMNetworkIdByFork implements XCMNetworkId {
@@ -128,8 +132,10 @@ abstract mixin class XCMNetworkIdByFork implements XCMNetworkId {
     final type = this.type.compareTo(other.type);
     if (type != 0) return type;
     final current = other as XCMNetworkIdByFork;
-    final blockHash =
-        BytesUtils.compareBytes(this.blockHash, current.blockHash);
+    final blockHash = BytesUtils.compareBytes(
+      this.blockHash,
+      current.blockHash,
+    );
     if (blockHash != 0) return blockHash;
     return blockNumber.compareTo(other.blockNumber);
   }
@@ -139,12 +145,12 @@ abstract mixin class XCMNetworkIdByFork implements XCMNetworkId {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"block_hash": blockHash, "block_number": blockNumber}
+      type.type: {"block_hash": blockHash, "block_number": blockNumber},
     };
   }
 
   @override
-  List get variabels => [type, blockHash, blockNumber];
+  List get variables => [type, blockHash, blockNumber];
 }
 
 abstract mixin class XCMNetworkIdPolkadot implements XCMNetworkId {
@@ -175,7 +181,7 @@ abstract mixin class XCMNetworkIdPolkadot implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdKusama implements XCMNetworkId {
@@ -206,7 +212,7 @@ abstract mixin class XCMNetworkIdKusama implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdWestend implements XCMNetworkId {
@@ -237,7 +243,7 @@ abstract mixin class XCMNetworkIdWestend implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdRococo implements XCMNetworkId {
@@ -268,7 +274,7 @@ abstract mixin class XCMNetworkIdRococo implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdWococo implements XCMNetworkId {
@@ -299,7 +305,7 @@ abstract mixin class XCMNetworkIdWococo implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdEthereum implements XCMNetworkId {
@@ -336,7 +342,7 @@ abstract mixin class XCMNetworkIdEthereum implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type, chainId];
+  List get variables => [type, chainId];
 }
 
 abstract mixin class XCMNetworkIdBitcoinCore implements XCMNetworkId {
@@ -367,7 +373,7 @@ abstract mixin class XCMNetworkIdBitcoinCore implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdBitcoinCash implements XCMNetworkId {
@@ -398,7 +404,7 @@ abstract mixin class XCMNetworkIdBitcoinCash implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdPolkadotBulletIn implements XCMNetworkId {
@@ -429,7 +435,7 @@ abstract mixin class XCMNetworkIdPolkadotBulletIn implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdAny implements XCMNetworkId {
@@ -461,7 +467,7 @@ abstract mixin class XCMNetworkIdAny implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMNetworkIdNamed implements XCMNetworkId {
@@ -500,7 +506,7 @@ abstract mixin class XCMNetworkIdNamed implements XCMNetworkId {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 extension NetworkComparable on XCMNetworkId? {
@@ -524,26 +530,29 @@ abstract class XCMVersionedNetworkId extends SubstrateVariantSerialization
       XCMVersion.v3 => XCMVersionedNetworkIdV3.deserializeJson(decode.value),
       XCMVersion.v4 => XCMVersionedNetworkIdV4.deserializeJson(decode.value),
       XCMVersion.v5 => XCMVersionedNetworkIdV5.deserializeJson(decode.value),
-      _ => throw DartSubstratePluginException("Unsuported xcm version.")
+      _ => throw DartSubstratePluginException("Unsuported xcm version."),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMVersionedNetworkIdV3.layout_(property: property),
-          property: XCMVersion.v3.name,
-          index: 3),
+        layout:
+            ({property}) => XCMVersionedNetworkIdV3.layout_(property: property),
+        property: XCMVersion.v3.name,
+        index: 3,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMVersionedNetworkIdV4.layout_(property: property),
-          property: XCMVersion.v4.name,
-          index: 4),
+        layout:
+            ({property}) => XCMVersionedNetworkIdV4.layout_(property: property),
+        property: XCMVersion.v4.name,
+        index: 4,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMVersionedNetworkIdV5.layout_(property: property),
-          property: XCMVersion.v5.name,
-          index: 5),
+        layout:
+            ({property}) => XCMVersionedNetworkIdV5.layout_(property: property),
+        property: XCMVersion.v5.name,
+        index: 5,
+      ),
     ], property: property);
   }
 
@@ -555,7 +564,7 @@ abstract class XCMVersionedNetworkId extends SubstrateVariantSerialization
   @override
   String get variantName => type.name;
   @override
-  List get variabels => [type, network];
+  List get variables => [type, network];
 }
 
 class XCMVersionedNetworkIdV3 extends XCMVersionedNetworkId {
@@ -565,11 +574,13 @@ class XCMVersionedNetworkIdV3 extends XCMVersionedNetworkId {
 
   factory XCMVersionedNetworkIdV3.deserializeJson(Map<String, dynamic> json) {
     return XCMVersionedNetworkIdV3(
-        network: XCMV3NetworkId.deserializeJson(json["network"]));
+      network: XCMV3NetworkId.deserializeJson(json["network"]),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV3NetworkId.layout_(property: "network")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV3NetworkId.layout_(property: "network"),
+    ], property: property);
   }
 
   @override
@@ -590,11 +601,13 @@ class XCMVersionedNetworkIdV4 extends XCMVersionedNetworkId {
 
   factory XCMVersionedNetworkIdV4.deserializeJson(Map<String, dynamic> json) {
     return XCMVersionedNetworkIdV4(
-        network: XCMV4NetworkId.deserializeJson(json["network"]));
+      network: XCMV4NetworkId.deserializeJson(json["network"]),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV4NetworkId.layout_(property: "network")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV4NetworkId.layout_(property: "network"),
+    ], property: property);
   }
 
   @override
@@ -615,11 +628,13 @@ class XCMVersionedNetworkIdV5 extends XCMVersionedNetworkId {
 
   factory XCMVersionedNetworkIdV5.deserializeJson(Map<String, dynamic> json) {
     return XCMVersionedNetworkIdV5(
-        network: XCMV5NetworkId.deserializeJson(json["network"]));
+      network: XCMV5NetworkId.deserializeJson(json["network"]),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5NetworkId.layout_(property: "network")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5NetworkId.layout_(property: "network"),
+    ], property: property);
   }
 
   @override

@@ -43,28 +43,30 @@ class TypeTemlate {
     this.variantIndex,
   });
 
-  TypeTemlate copyWith(
-      {int? lookupId,
-      String? name,
-      String? typeName,
-      Si0TypeDefPrimitive? primitive,
-      Si1TypeDefsIndexesConst? type,
-      List<TypeTemlate>? children,
-      int? length,
-      List<String>? path,
-      bool? isCompact,
-      int? variantIndex}) {
+  TypeTemlate copyWith({
+    int? lookupId,
+    String? name,
+    String? typeName,
+    Si0TypeDefPrimitive? primitive,
+    Si1TypeDefsIndexesConst? type,
+    List<TypeTemlate>? children,
+    int? length,
+    List<String>? path,
+    bool? isCompact,
+    int? variantIndex,
+  }) {
     return TypeTemlate(
-        lookupId: lookupId ?? this.lookupId,
-        type: type ?? this.type,
-        children: children ?? this.children,
-        length: length ?? this.length,
-        name: name ?? this.name,
-        primitive: primitive ?? this.primitive,
-        typeName: typeName ?? this.typeName,
-        path: path ?? this.path,
-        isCompact: isCompact ?? this.isCompact,
-        variantIndex: variantIndex ?? this.variantIndex);
+      lookupId: lookupId ?? this.lookupId,
+      type: type ?? this.type,
+      children: children ?? this.children,
+      length: length ?? this.length,
+      name: name ?? this.name,
+      primitive: primitive ?? this.primitive,
+      typeName: typeName ?? this.typeName,
+      path: path ?? this.path,
+      isCompact: isCompact ?? this.isCompact,
+      variantIndex: variantIndex ?? this.variantIndex,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -78,7 +80,7 @@ class TypeTemlate {
       "children": children.map((e) => e.toJson()).toList(),
       "path": path,
       "isCompact": isCompact,
-      "variantIndex": variantIndex
+      "variantIndex": variantIndex,
     };
   }
 

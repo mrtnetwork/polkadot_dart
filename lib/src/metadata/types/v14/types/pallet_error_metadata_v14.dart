@@ -15,7 +15,7 @@ class PalletErrorMetadataV14 extends PalletErrorMetadata {
   final int type;
   const PalletErrorMetadataV14(this.type);
   PalletErrorMetadataV14.deserializeJson(Map<String, dynamic> json)
-      : type = json["type"];
+    : type = json["type"];
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {

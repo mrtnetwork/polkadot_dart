@@ -12,7 +12,7 @@ class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
   final int type;
   Si1TypeDefSequence(this.type);
   Si1TypeDefSequence.deserializeJson(Map<String, dynamic> json)
-      : type = json["type"];
+    : type = json["type"];
   @override
   StructLayout layout({String? property}) =>
       SubstrateMetadataLayouts.si1TypeDefSequence(property: property);
@@ -35,36 +35,46 @@ class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
   /// Checks the provided [value] and returns the correct data compared to the template or simple design,
   /// using the provided [registry], [fromTemplate] flag, and optional [property].
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     final parent = registry.scaleType(type);
     final isPrimitive = parent.toPrimitive();
     final Object? data = MetadataCastingUtils.getValue(
-        value: value,
-        type: typeName,
-        fromTemplate: fromTemplate,
-        id: self,
-        primitive: isPrimitive,
-        registry: registry);
+      value: value,
+      type: typeName,
+      fromTemplate: fromTemplate,
+      id: self,
+      primitive: isPrimitive,
+      registry: registry,
+    );
 
     if (isPrimitive != null) {
       return data;
     }
     final listValue = MetadataCastingUtils.asList(
-        value: data, lookupId: self, type: typeName);
+      value: data,
+      lookupId: self,
+      type: typeName,
+    );
     return listValue
-        .map((e) =>
-            registry.getValue(id: type, value: e, fromTemplate: fromTemplate))
+        .map(
+          (e) =>
+              registry.getValue(id: type, value: e, fromTemplate: fromTemplate),
+        )
         .toList();
   }
 
   @override
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
     return MetadataTypeInfoSequence(
-        name: null, typeId: id, type: registry.typeInfo(type));
+      name: null,
+      typeId: id,
+      type: registry.typeInfo(type),
+    );
   }
 
   @override
@@ -78,14 +88,19 @@ class Si1TypeDefSequence extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     final layout = registry.serializationLayout(type, params: params);
     final parent = registry.scaleType(type);
     final tryAsPrimitive = parent.toPrimitive();
     if (tryAsPrimitive == PrimitiveTypes.u8) {
       return LayoutConst.compactBytes(
-          property: property, resultAsHex: params?.bytesAsHex ?? true);
+        property: property,
+        resultAsHex: params?.bytesAsHex ?? true,
+      );
     }
     return LayoutConst.compactVec(layout, property: property);
   }

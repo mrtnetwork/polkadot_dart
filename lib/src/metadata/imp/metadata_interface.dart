@@ -33,19 +33,28 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   abstract final List<RuntimeApiMetadata> apis;
 
   /// Decodes a lookup.
-  T decodeLookup<T extends Object?>(int id, List<int> bytes,
-      {LookupDecodeParams params = const LookupDecodeParams(),
-      int offset = 0}) {
+  T decodeLookup<T extends Object?>(
+    int id,
+    List<int> bytes, {
+    LookupDecodeParams params = const LookupDecodeParams(),
+    int offset = 0,
+  }) {
     final layout = registry.serializationLayout(id, params: params);
     final data = layout.deserialize(bytes, offset: offset);
     return JsonParser.valueAs<T>(data.value);
   }
 
   /// encode lookup
-  List<int> encodeLookup(
-      {required int id, required Object? value, required bool fromTemplate}) {
-    final Object? correctValue =
-        registry.getValue(id: id, value: value, fromTemplate: fromTemplate);
+  List<int> encodeLookup({
+    required int id,
+    required Object? value,
+    required bool fromTemplate,
+  }) {
+    final Object? correctValue = registry.getValue(
+      id: id,
+      value: value,
+      fromTemplate: fromTemplate,
+    );
     final layout = registry.serializationLayout(id);
     final toBytes = layout.serialize(correctValue);
     return toBytes;
@@ -56,21 +65,26 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     int? index = int.tryParse(nameOrIndex);
     if (index != null) {
       if (!pallets.containsKey(index)) {
-        throw MetadataException("Pallet does not exist.", details: {
-          "index": index,
-          "pallets": getPalletIndexes().join(", ")
-        });
+        throw MetadataException(
+          "Pallet does not exist.",
+          details: {"index": index, "pallets": getPalletIndexes().join(", ")},
+        );
       }
       return index;
     }
     index = pallets.keys.firstWhere(
-        (element) =>
-            pallets[element]!.name.toLowerCase() == nameOrIndex.toLowerCase(),
-        orElse: () => throw MetadataException("Pallet does not exist.",
+      (element) =>
+          pallets[element]!.name.toLowerCase() == nameOrIndex.toLowerCase(),
+      orElse:
+          () =>
+              throw MetadataException(
+                "Pallet does not exist.",
                 details: {
                   "name": nameOrIndex,
-                  "pallets": getPalletNames().join(", ")
-                }));
+                  "pallets": getPalletNames().join(", "),
+                },
+              ),
+    );
     return index;
   }
 
@@ -97,31 +111,40 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     }
   }
 
-  T decodeError<T extends Object>(
-      {required String nameOrIndex,
-      required List<int> bytes,
-      LookupDecodeParams params = const LookupDecodeParams()}) {
+  T decodeError<T extends Object>({
+    required String nameOrIndex,
+    required List<int> bytes,
+    LookupDecodeParams params = const LookupDecodeParams(),
+  }) {
     final pallet = pallets[_toPalletIndex(nameOrIndex)];
     final error = pallet?.errors?.type;
     if (error == null) {
-      throw MetadataException("Error does not exist.",
-          details: {"pallet": nameOrIndex});
+      throw MetadataException(
+        "Error does not exist.",
+        details: {"pallet": nameOrIndex},
+      );
     }
     return decodeLookup(error, bytes);
   }
 
   Map<String, dynamic>? decodeErrorWithDescription<T extends Object?>(
-      String nameOrIndex, List<int> erorr,
-      {LookupDecodeParams params = const LookupDecodeParams()}) {
+    String nameOrIndex,
+    List<int> erorr, {
+    LookupDecodeParams params = const LookupDecodeParams(),
+  }) {
     final pallet = pallets[_toPalletIndex(nameOrIndex)];
     final type = pallet?.errors?.type;
     if (type != null) {
       final lookup = getLookup(type);
       final variations = (lookup.def as Si1TypeDefVariant).variants;
-      final errorVariant =
-          variations.firstWhereNullable((e) => e.index == erorr[0]);
-      final value =
-          decodeLookup<Map<String, dynamic>>(type, erorr, params: params);
+      final errorVariant = variations.firstWhereNullable(
+        (e) => e.index == erorr[0],
+      );
+      final value = decodeLookup<Map<String, dynamic>>(
+        type,
+        erorr,
+        params: params,
+      );
       return {...value, "description": errorVariant?.docs};
     }
     return null;
@@ -141,8 +164,10 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   int getCallLookupId(String nameOrIndex) {
     final pallet = getPallet(nameOrIndex);
     if (pallet.calls == null) {
-      throw MetadataException("Call does not exist.",
-          details: {"pallet": pallet.name});
+      throw MetadataException(
+        "Call does not exist.",
+        details: {"pallet": pallet.name},
+      );
     }
     return pallet.calls!.type;
   }
@@ -151,24 +176,32 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   PalletStorageMetadata getStorage(String palletNameOrIndex) {
     final storage = getPallet(palletNameOrIndex);
     if (storage.storage == null) {
-      throw MetadataException("Storage does not exist.",
-          details: {"pallet": storage.name});
+      throw MetadataException(
+        "Storage does not exist.",
+        details: {"pallet": storage.name},
+      );
     }
     return storage.storage!;
   }
 
   /// Retrieves the storage method metadata for the given pallet and method name.
   StorageEntryMetadataV14 getStorageMethod(
-      String palletNameOrIndex, String methodName) {
+    String palletNameOrIndex,
+    String methodName,
+  ) {
     final storage = getStorage(palletNameOrIndex);
     final method = storage.items.firstWhere(
       (e) => e.name.toLowerCase() == methodName.toLowerCase(),
-      orElse: () =>
-          throw MetadataException("Storage method does not exist", details: {
-        "pallet": palletNameOrIndex,
-        "method": methodName,
-        "methods": storage.items.map((e) => e.name).join(", ")
-      }),
+      orElse:
+          () =>
+              throw MetadataException(
+                "Storage method does not exist",
+                details: {
+                  "pallet": palletNameOrIndex,
+                  "method": methodName,
+                  "methods": storage.items.map((e) => e.name).join(", "),
+                },
+              ),
     );
     return method;
   }
@@ -185,45 +218,61 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
 
   /// Retrieves the prefix hash for the given pallet and method name.
   MethodStorageKey getStoragePrefixHash(
-      String palletNameOrIndex, String methodName) {
+    String palletNameOrIndex,
+    String methodName,
+  ) {
     final storage = getStorage(palletNameOrIndex);
     final method = getStorageMethod(palletNameOrIndex, methodName);
     final prefixHash = MetadataUtils.createQueryPrefixHash(
-        prefix: storage.prefix, method: method.name);
+      prefix: storage.prefix,
+      method: method.name,
+    );
     return MethodStorageKey(keyBytes: prefixHash);
   }
 
   /// Retrieves the list of hashers for the given pallet and method name.
   List<StorageHasher> getStorageHasher(
-      String palletNameOrIndex, String methodName) {
+    String palletNameOrIndex,
+    String methodName,
+  ) {
     final method = getStorageMethod(palletNameOrIndex, methodName).type;
     if (method is! StorageEntryTypeV14Map) {
       throw const MetadataException(
-          "plain storage entery does not have hasher option");
+        "plain storage entery does not have hasher option",
+      );
     }
     return method.hashers.map((e) => e.option).toList();
   }
 
   /// Retrieves the constant value for the given pallet and constant name.
   T getConstant<T extends Object?>(
-      String palletNameOrIndex, String constantName) {
+    String palletNameOrIndex,
+    String constantName,
+  ) {
     final pallet = getPallet(palletNameOrIndex);
     final constant = pallet.constants.firstWhere(
-        (element) => element.name.toLowerCase() == constantName.toLowerCase(),
-        orElse: () => throw DartSubstratePluginException(
+      (element) => element.name.toLowerCase() == constantName.toLowerCase(),
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
                 "Constant does not exist.",
                 details: {
                   "name": constantName,
-                  "constants": pallet.constants.map((e) => e.name).join(", ")
-                }));
+                  "constants": pallet.constants.map((e) => e.name).join(", "),
+                },
+              ),
+    );
     return decodeLookup(constant.type, constant.value);
   }
 
   T? tryGetConstant<T extends Object?>(
-      String palletNameOrIndex, String constantName) {
+    String palletNameOrIndex,
+    String constantName,
+  ) {
     final pallet = tryGetPallet(palletNameOrIndex);
     final constant = pallet?.constants.firstWhereNullable(
-        (element) => element.name.toLowerCase() == constantName.toLowerCase());
+      (element) => element.name.toLowerCase() == constantName.toLowerCase(),
+    );
     if (constant == null) return null;
     return decodeLookup(constant.type, constant.value);
   }
@@ -250,16 +299,20 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   }
 
   /// Decodes the storage output for the given pallet and method name.
-  T decodeStorageOutput<T extends Object?>(
-      {required String palletNameOrIndex,
-      required String methodName,
-      required List<int>? queryResponse}) {
-    final StorageEntryMetadataV14 storage =
-        getStorageMethod(palletNameOrIndex, methodName);
+  T decodeStorageOutput<T extends Object?>({
+    required String palletNameOrIndex,
+    required String methodName,
+    required List<int>? queryResponse,
+  }) {
+    final StorageEntryMetadataV14 storage = getStorageMethod(
+      palletNameOrIndex,
+      methodName,
+    );
     if (queryResponse == null && storage.modifier.isOptional) {
       if (null is T) return null as T;
       throw MetadataException(
-          "Storage '$palletNameOrIndex.$methodName' is optional, but the provided response is null.");
+        "Storage '$palletNameOrIndex.$methodName' is optional, but the provided response is null.",
+      );
     }
     final lookupId = getStorageOutputId(palletNameOrIndex, methodName);
 
@@ -274,8 +327,9 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
 
   bool storageMethodExists(String palletNameOrIndex, String methodName) {
     final pallet = tryGetPallet(palletNameOrIndex);
-    return pallet?.storage?.items
-            .any((e) => e.name.toLowerCase() == methodName.toLowerCase()) ??
+    return pallet?.storage?.items.any(
+          (e) => e.name.toLowerCase() == methodName.toLowerCase(),
+        ) ??
         false;
   }
 
@@ -284,8 +338,9 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     if (callId == null) return false;
     final type = getLookup(callId);
     final variants = type.def.cast<Si1TypeDefVariant>().variants;
-    return variants
-        .any((e) => e.name.toLowerCase() == methodName.toLowerCase());
+    return variants.any(
+      (e) => e.name.toLowerCase() == methodName.toLowerCase(),
+    );
   }
 
   bool runtimeMethodExists(String apiName, {String? methodName});
@@ -301,7 +356,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   List<String> getRuntimeApis() {
     if (!MetadataConstant.supportRuntimeApi.contains(version)) {
       throw MetadataException(
-          "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}");
+        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+      );
     }
     throw UnimplementedError();
   }
@@ -309,7 +365,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   List<String> getRuntimeApiMethods(String apiName) {
     if (!MetadataConstant.supportRuntimeApi.contains(version)) {
       throw MetadataException(
-          "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}");
+        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+      );
     }
     throw UnimplementedError();
   }
@@ -317,7 +374,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   String generateRuntimeApiMethod(String apiName, String methodName) {
     if (!MetadataConstant.supportRuntimeApi.contains(version)) {
       throw MetadataException(
-          "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}");
+        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+      );
     }
     throw UnimplementedError();
   }
@@ -325,7 +383,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   List<int> getRutimeApiInputLookupIds(String apiName, String methodName) {
     if (!MetadataConstant.supportRuntimeApi.contains(version)) {
       throw MetadataException(
-          "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}");
+        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+      );
     }
     throw UnimplementedError();
   }
@@ -333,7 +392,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   int getRutimeOutputLookupId(String apiName, String methodName) {
     if (!MetadataConstant.supportRuntimeApi.contains(version)) {
       throw MetadataException(
-          "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}");
+        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+      );
     }
     throw UnimplementedError();
   }
@@ -351,52 +411,78 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     final type = getLookup(callId);
     final variants = type.def.cast<Si1TypeDefVariant>().variants;
     return CallInfo(
-        id: callId,
-        palletName: palletNameOrIndex,
-        methods: variants
-            .map((e) => CallMethodInfo(variant: e, name: e.name, docs: e.docs))
-            .toList());
+      id: callId,
+      palletName: palletNameOrIndex,
+      methods:
+          variants
+              .map(
+                (e) => CallMethodInfo(variant: e, name: e.name, docs: e.docs),
+              )
+              .toList(),
+    );
   }
 
   PalletInfo palletInfo(String palletNameOrIndex) {
     final pallet = getPallet(palletNameOrIndex);
-    final constant = pallet.constants.map((e) {
-      final value = getConstant(pallet.name, e.name);
-      return ConstantInfo(name: e.name, value: value, docs: e.docs);
-    }).toList();
-    final storage = pallet.storage?.items.map((e) {
-      return StorageInfo(
-          name: e.name, inputLookupId: e.type.inputTypeId, docs: e.docs);
-    }).toList();
+    final constant =
+        pallet.constants.map((e) {
+          final value = getConstant(pallet.name, e.name);
+          return ConstantInfo(name: e.name, value: value, docs: e.docs);
+        }).toList();
+    final storage =
+        pallet.storage?.items.map((e) {
+          return StorageInfo(
+            name: e.name,
+            inputLookupId: e.type.inputTypeId,
+            docs: e.docs,
+          );
+        }).toList();
 
     return PalletInfo(
-        name: pallet.name,
-        contants: constant,
-        calls: pallet.calls == null ? null : _callInfo(palletNameOrIndex),
-        storage: storage,
-        docs: pallet.docs);
+      name: pallet.name,
+      contants: constant,
+      calls: pallet.calls == null ? null : _callInfo(palletNameOrIndex),
+      storage: storage,
+      docs: pallet.docs,
+    );
   }
 
   List<TransactionExtrinsicInfo> extrinsicInfo();
 
   MetadataInfo palletsInfos() {
-    final apiMethods = apis
-        .map((e) => RuntimeApiInfo(
-            docs: e.docs,
-            name: e.name,
-            methods: e.methods
-                .map((e) => RuntimeApiMethodInfo(
-                    name: e.name,
-                    docs: e.docs,
-                    inputs: e.inputs
-                        .map((e) =>
-                            RuntimeApiInputInfo(name: e.name, lockupId: e.type))
-                        .toList()))
-                .toList()))
-        .toList();
+    final apiMethods =
+        apis
+            .map(
+              (e) => RuntimeApiInfo(
+                docs: e.docs,
+                name: e.name,
+                methods:
+                    e.methods
+                        .map(
+                          (e) => RuntimeApiMethodInfo(
+                            name: e.name,
+                            docs: e.docs,
+                            inputs:
+                                e.inputs
+                                    .map(
+                                      (e) => RuntimeApiInputInfo(
+                                        name: e.name,
+                                        lockupId: e.type,
+                                      ),
+                                    )
+                                    .toList(),
+                          ),
+                        )
+                        .toList(),
+              ),
+            )
+            .toList();
     final pallets = getPalletNames().map((e) => palletInfo(e)).toList();
     return MetadataInfo(
-        pallets: pallets, apis: apiMethods, extrinsic: extrinsicInfo());
+      pallets: pallets,
+      apis: apiMethods,
+      extrinsic: extrinsicInfo(),
+    );
   }
 
   int? typeByName(String name) {
@@ -407,21 +493,33 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     return registry.typeByPathTail(name)?.id;
   }
 
-  Layout? typeLayoutByName(String name,
-      {String? property, LookupDecodeParams? params}) {
+  Layout? typeLayoutByName(
+    String name, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     final lookup = registry.typeByName(name);
     if (lookup == null) return null;
 
-    return registry.serializationLayout(lookup,
-        params: params, property: property);
+    return registry.serializationLayout(
+      lookup,
+      params: params,
+      property: property,
+    );
   }
 
-  Layout? typeLayoutByPathTail(String name,
-      {String? property, LookupDecodeParams? params}) {
+  Layout? typeLayoutByPathTail(
+    String name, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     final lookup = registry.typeByPathTail(name);
     if (lookup == null) return null;
 
-    return registry.serializationLayout(lookup.id,
-        params: params, property: property);
+    return registry.serializationLayout(
+      lookup.id,
+      params: params,
+      property: property,
+    );
   }
 }

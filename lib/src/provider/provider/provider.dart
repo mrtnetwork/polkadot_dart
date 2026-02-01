@@ -14,9 +14,10 @@ class SubstrateProvider implements BaseProvider<SubstrateRequestDetails> {
 
   /// Finds the result in the JSON-RPC response data or throws an [RPCError]
   /// if an error is encountered.
-  static SERVICERESPONSE _findError<SERVICERESPONSE>(
-      {required BaseServiceResponse<Map<String, dynamic>> response,
-      required SubstrateRequestDetails params}) {
+  static SERVICERESPONSE _findError<SERVICERESPONSE>({
+    required BaseServiceResponse<Map<String, dynamic>> response,
+    required SubstrateRequestDetails params,
+  }) {
     final Map<String, dynamic> r = response.getResult(params);
     final error = r["error"];
     if (error != null) {
@@ -24,10 +25,11 @@ class SubstrateProvider implements BaseProvider<SubstrateRequestDetails> {
       final String message =
           error['message']?.toString() ?? ServiceConst.defaultError;
       throw RPCError(
-          errorCode: errorCode,
-          message: message,
-          request: params.toJson(),
-          details: StringUtils.tryToJson(error));
+        errorCode: errorCode,
+        message: message,
+        request: params.toJson(),
+        details: StringUtils.tryToJson(error),
+      );
     }
     return r["result"];
   }
@@ -40,9 +42,10 @@ class SubstrateProvider implements BaseProvider<SubstrateRequestDetails> {
   /// The [timeout] parameter, if provided, sets the maximum duration for the request.
   @override
   Future<RESULT> request<RESULT, SERVICERESPONSE>(
-      BaseServiceRequest<RESULT, SERVICERESPONSE, SubstrateRequestDetails>
-          request,
-      {Duration? timeout}) async {
+    BaseServiceRequest<RESULT, SERVICERESPONSE, SubstrateRequestDetails>
+    request, {
+    Duration? timeout,
+  }) async {
     final r = await requestDynamic(request, timeout: timeout);
     return request.onResonse(r);
   }
@@ -53,12 +56,15 @@ class SubstrateProvider implements BaseProvider<SubstrateRequestDetails> {
   /// Whatever is received will be returned
   @override
   Future<SERVICERESPONSE> requestDynamic<RESULT, SERVICERESPONSE>(
-      BaseServiceRequest<RESULT, SERVICERESPONSE, SubstrateRequestDetails>
-          request,
-      {Duration? timeout}) async {
+    BaseServiceRequest<RESULT, SERVICERESPONSE, SubstrateRequestDetails>
+    request, {
+    Duration? timeout,
+  }) async {
     final params = request.buildRequest(_id++);
-    final response =
-        await rpc.doRequest<Map<String, dynamic>>(params, timeout: timeout);
+    final response = await rpc.doRequest<Map<String, dynamic>>(
+      params,
+      timeout: timeout,
+    );
     return _findError(params: params, response: response);
   }
 }

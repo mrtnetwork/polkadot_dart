@@ -5,18 +5,19 @@ class SignedExtensionMetadataV14 extends SignedExtensionMetadata {
   final int additionalSigned;
 
   SignedExtensionMetadataV14.deserializeJson(super.json)
-      : additionalSigned = json["additionalSigned"],
-        super.deserializeJson();
-  SignedExtensionMetadataV14(
-      {required super.identifier,
-      required super.type,
-      required this.additionalSigned});
+    : additionalSigned = json["additionalSigned"],
+      super.deserializeJson();
+  SignedExtensionMetadataV14({
+    required super.identifier,
+    required super.type,
+    required this.additionalSigned,
+  });
 
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       ...super.serializeJson(property: property),
-      "additionalSigned": additionalSigned
+      "additionalSigned": additionalSigned,
     };
   }
 }

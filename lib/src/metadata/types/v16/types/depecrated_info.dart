@@ -9,8 +9,10 @@ enum DeprecationInfoTypes {
   variantsDeprecated;
 
   static DeprecationInfoTypes fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 }
 
@@ -18,10 +20,14 @@ abstract class MetadataDeprecationInfo extends SubstrateVariantSerialization {
   final DeprecationInfoTypes type;
   const MetadataDeprecationInfo._(this.type);
 
-  factory MetadataDeprecationInfo.deserialize(List<int> bytes,
-      {String? property}) {
+  factory MetadataDeprecationInfo.deserialize(
+    List<int> bytes, {
+    String? property,
+  }) {
     final decode = SubstrateVariantSerialization.deserialize(
-        bytes: bytes, layout: layout_(property: property));
+      bytes: bytes,
+      layout: layout_(property: property),
+    );
     return MetadataDeprecationInfo.deserializeJson(decode);
   }
   factory MetadataDeprecationInfo.deserializeJson(Map<String, dynamic> json) {
@@ -53,13 +59,17 @@ abstract class MetadataDeprecationInfo extends SubstrateVariantSerialization {
 class MetadataVariantsDeprecated extends MetadataDeprecationInfo {
   final Map<int, DeprecationStatus> depecreatedVariants;
   MetadataVariantsDeprecated(Map<int, DeprecationStatus> depecreatedVariants)
-      : depecreatedVariants = depecreatedVariants.immutable,
-        super._(DeprecationInfoTypes.variantsDeprecated);
+    : depecreatedVariants = depecreatedVariants.immutable,
+      super._(DeprecationInfoTypes.variantsDeprecated);
 
   factory MetadataVariantsDeprecated.deserializeJson(
-      Map<String, dynamic> json) {
-    return MetadataVariantsDeprecated((json["depecreatedVariants"] as Map)
-        .map((k, v) => MapEntry(k, DeprecationStatus.deserializeJson(v))));
+    Map<String, dynamic> json,
+  ) {
+    return MetadataVariantsDeprecated(
+      (json["depecreatedVariants"] as Map).map(
+        (k, v) => MapEntry(k, DeprecationStatus.deserializeJson(v)),
+      ),
+    );
   }
 
   @override
@@ -70,8 +80,9 @@ class MetadataVariantsDeprecated extends MetadataDeprecationInfo {
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
-      'depecreatedVariants': depecreatedVariants
-          .map((k, v) => MapEntry(k, v.serializeJsonVariant()))
+      'depecreatedVariants': depecreatedVariants.map(
+        (k, v) => MapEntry(k, v.serializeJsonVariant()),
+      ),
     };
   }
 }
@@ -95,10 +106,11 @@ class MetadataNotDeprecated extends MetadataDeprecationInfo {
 class MetadataItemDeprecated extends MetadataDeprecationInfo {
   final DeprecationStatus status;
   const MetadataItemDeprecated(this.status)
-      : super._(DeprecationInfoTypes.itemDeprecated);
+    : super._(DeprecationInfoTypes.itemDeprecated);
   factory MetadataItemDeprecated.deserializeJson(Map<String, dynamic> json) {
     return MetadataItemDeprecated(
-        DeprecationStatus.deserializeJson(json['status']));
+      DeprecationStatus.deserializeJson(json['status']),
+    );
   }
 
   @override

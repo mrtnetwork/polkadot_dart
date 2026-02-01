@@ -32,8 +32,10 @@ enum XCMJunctionType implements Comparable<XCMJunctionType> {
   }
 
   static XCMJunctionType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   @override
@@ -63,16 +65,19 @@ abstract mixin class XCMJunction
 abstract mixin class XCMJunctionAccountId32 implements XCMJunction {
   XCMNetworkId? get network;
   List<int> get id;
-  factory XCMJunctionAccountId32.fromVersion(
-      {required List<int> keyBytes,
-      XCMVersion version = XCMVersion.v4,
-      XCMV2NetworkId? v2Network}) {
+  factory XCMJunctionAccountId32.fromVersion({
+    required List<int> keyBytes,
+    XCMVersion version = XCMVersion.v4,
+    XCMV2NetworkId? v2Network,
+  }) {
     return switch (version) {
       XCMVersion.v2 => XCMV2JunctionAccountId32(
-          id: keyBytes, network: v2Network ?? XCMV2Any()),
+        id: keyBytes,
+        network: v2Network ?? XCMV2Any(),
+      ),
       XCMVersion.v3 => XCMV3JunctionAccountId32(id: keyBytes),
       XCMVersion.v4 => XCMV4JunctionAccountId32(id: keyBytes),
-      XCMVersion.v5 => XCMV5JunctionAccountId32(id: keyBytes)
+      XCMVersion.v5 => XCMV5JunctionAccountId32(id: keyBytes),
     };
   }
 
@@ -95,15 +100,15 @@ abstract mixin class XCMJunctionAccountId32 implements XCMJunction {
   XCMJunctionType get type => XCMJunctionType.accountId32;
 
   @override
-  List get variabels => [type, network, id];
+  List get variables => [type, network, id];
 
   @override
   Map<String, dynamic> toJson() {
     return {
       type.type: {
         "network": MetadataUtils.toOptionalJson(network?.toJson()),
-        "id": id
-      }
+        "id": id,
+      },
     };
   }
 }
@@ -112,16 +117,19 @@ abstract mixin class XCMJunctionAccountKey20 implements XCMJunction {
   XCMNetworkId? get network;
   List<int> get key;
 
-  factory XCMJunctionAccountKey20.fromVersion(
-      {required List<int> keyBytes,
-      XCMVersion version = XCMVersion.v4,
-      XCMV2NetworkId? v2Network}) {
+  factory XCMJunctionAccountKey20.fromVersion({
+    required List<int> keyBytes,
+    XCMVersion version = XCMVersion.v4,
+    XCMV2NetworkId? v2Network,
+  }) {
     return switch (version) {
       XCMVersion.v2 => XCMV2JunctionAccountKey20(
-          key: keyBytes, network: v2Network ?? XCMV2Any()),
+        key: keyBytes,
+        network: v2Network ?? XCMV2Any(),
+      ),
       XCMVersion.v3 => XCMV3JunctionAccountKey20(key: keyBytes),
       XCMVersion.v4 => XCMV4JunctionAccountKey20(key: keyBytes),
-      XCMVersion.v5 => XCMV5JunctionAccountKey20(key: keyBytes)
+      XCMVersion.v5 => XCMV5JunctionAccountKey20(key: keyBytes),
     };
   }
 
@@ -148,30 +156,33 @@ abstract mixin class XCMJunctionAccountKey20 implements XCMJunction {
     return {
       type.type: {
         "network": MetadataUtils.toOptionalJson(network?.toJson()),
-        "key": key
-      }
+        "key": key,
+      },
     };
   }
 
   @override
-  List get variabels => [type, network, key];
+  List get variables => [type, network, key];
 }
 
 abstract mixin class XCMJunctionParaChain implements XCMJunction {
   int get id;
-  factory XCMJunctionParaChain.fromVersion(
-      {required int id, XCMVersion version = XCMVersion.v4}) {
+  factory XCMJunctionParaChain.fromVersion({
+    required int id,
+    XCMVersion version = XCMVersion.v4,
+  }) {
     return switch (version) {
       XCMVersion.v2 => XCMV2JunctionParaChain(id: id),
       XCMVersion.v3 => XCMV3JunctionParaChain(id: id),
       XCMVersion.v4 => XCMV4JunctionParaChain(id: id),
-      XCMVersion.v5 => XCMV5JunctionParaChain(id: id)
+      XCMVersion.v5 => XCMV5JunctionParaChain(id: id),
     };
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.compactIntU32(property: "id")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactIntU32(property: "id"),
+    ], property: property);
   }
 
   @override
@@ -200,20 +211,22 @@ abstract mixin class XCMJunctionParaChain implements XCMJunction {
   }
 
   @override
-  List get variabels {
+  List get variables {
     return [type, id];
   }
 }
 
 abstract mixin class XCMJunctionPalletInstance implements XCMJunction {
   int get index;
-  factory XCMJunctionPalletInstance.fromVersion(
-      {required int index, XCMVersion version = XCMVersion.v4}) {
+  factory XCMJunctionPalletInstance.fromVersion({
+    required int index,
+    XCMVersion version = XCMVersion.v4,
+  }) {
     return switch (version) {
       XCMVersion.v2 => XCMV2JunctionPalletInstance(index: index),
       XCMVersion.v3 => XCMV3JunctionPalletInstance(index: index),
       XCMVersion.v4 => XCMV4JunctionPalletInstance(index: index),
-      XCMVersion.v5 => XCMV5JunctionPalletInstance(index: index)
+      XCMVersion.v5 => XCMV5JunctionPalletInstance(index: index),
     };
   }
 
@@ -244,7 +257,7 @@ abstract mixin class XCMJunctionPalletInstance implements XCMJunction {
   @override
   XCMJunctionType get type => XCMJunctionType.palletInstance;
   @override
-  List get variabels => [type, index];
+  List get variables => [type, index];
 
   @override
   Map<String, dynamic> toJson() {
@@ -254,13 +267,15 @@ abstract mixin class XCMJunctionPalletInstance implements XCMJunction {
 
 abstract mixin class XCMJunctionGeneralIndex implements XCMJunction {
   BigInt get index;
-  factory XCMJunctionGeneralIndex.fromVersion(
-      {required BigInt index, XCMVersion version = XCMVersion.v4}) {
+  factory XCMJunctionGeneralIndex.fromVersion({
+    required BigInt index,
+    XCMVersion version = XCMVersion.v4,
+  }) {
     return switch (version) {
       XCMVersion.v2 => XCMV2JunctionGeneralIndex(index: index),
       XCMVersion.v3 => XCMV3JunctionGeneralIndex(index: index),
       XCMVersion.v4 => XCMV4JunctionGeneralIndex(index: index),
-      XCMVersion.v5 => XCMV5JunctionGeneralIndex(index: index)
+      XCMVersion.v5 => XCMV5JunctionGeneralIndex(index: index),
     };
   }
 
@@ -297,7 +312,7 @@ abstract mixin class XCMJunctionGeneralIndex implements XCMJunction {
   }
 
   @override
-  List get variabels => [type, index];
+  List get variables => [type, index];
 }
 
 abstract mixin class XCMJunctionAccountIndex64 implements XCMJunction {
@@ -322,15 +337,15 @@ abstract mixin class XCMJunctionAccountIndex64 implements XCMJunction {
   @override
   XCMJunctionType get type => XCMJunctionType.accountIndex64;
   @override
-  List get variabels => [type, index, network];
+  List get variables => [type, index, network];
 
   @override
   Map<String, dynamic> toJson() {
     return {
       type.type: {
         "network": MetadataUtils.toOptionalJson(network?.toJson()),
-        "index": index
-      }
+        "index": index,
+      },
     };
   }
 }
@@ -338,23 +353,26 @@ abstract mixin class XCMJunctionAccountIndex64 implements XCMJunction {
 abstract mixin class XCMJunctionGeneralKey implements XCMJunction {
   int get length;
   List<int> get data;
-  factory XCMJunctionGeneralKey.fromVersion(
-      {required List<int> data,
-      required int length,
-      XCMVersion version = XCMVersion.v4}) {
+  factory XCMJunctionGeneralKey.fromVersion({
+    required List<int> data,
+    required int length,
+    XCMVersion version = XCMVersion.v4,
+  }) {
     return switch (version) {
-      XCMVersion.v2 =>
-        XCMV2JunctionGeneralKey(data: data.sublist(0, length), length: length),
+      XCMVersion.v2 => XCMV2JunctionGeneralKey(
+        data: data.sublist(0, length),
+        length: length,
+      ),
       XCMVersion.v3 => XCMV3JunctionGeneralKey(data: data, length: length),
       XCMVersion.v4 => XCMV4JunctionGeneralKey(data: data, length: length),
-      XCMVersion.v5 => XCMV5JunctionGeneralKey(data: data, length: length)
+      XCMVersion.v5 => XCMV5JunctionGeneralKey(data: data, length: length),
     };
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.u8(property: "length"),
-      LayoutConst.fixedBlob32(property: "data")
+      LayoutConst.fixedBlob32(property: "data"),
     ], property: property);
   }
 
@@ -384,12 +402,12 @@ abstract mixin class XCMJunctionGeneralKey implements XCMJunction {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"length": length, "data": data}
+      type.type: {"length": length, "data": data},
     };
   }
 
   @override
-  List get variabels => [type, length, data];
+  List get variables => [type, length, data];
 }
 
 abstract mixin class XCMJunctionOnlyChild implements XCMJunction {
@@ -420,7 +438,7 @@ abstract mixin class XCMJunctionOnlyChild implements XCMJunction {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMJunctionPlurality implements XCMJunction {
@@ -430,7 +448,7 @@ abstract mixin class XCMJunctionPlurality implements XCMJunction {
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV3BodyId.layout_(property: "id"),
-      XCMV3BodyPart.layout_(property: "part")
+      XCMV3BodyPart.layout_(property: "part"),
     ], property: property);
   }
 
@@ -443,7 +461,7 @@ abstract mixin class XCMJunctionPlurality implements XCMJunction {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "id": id.serializeJsonVariant(),
-      "part": part.serializeJsonVariant()
+      "part": part.serializeJsonVariant(),
     };
   }
 
@@ -462,12 +480,12 @@ abstract mixin class XCMJunctionPlurality implements XCMJunction {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"id": id.toJson(), "part": part.toJson()}
+      type.type: {"id": id.toJson(), "part": part.toJson()},
     };
   }
 
   @override
-  List get variabels => [type, id, part];
+  List get variables => [type, id, part];
 }
 
 abstract mixin class XCMJunctionGlobalConsensus implements XCMJunction {
@@ -498,7 +516,7 @@ abstract mixin class XCMJunctionGlobalConsensus implements XCMJunction {
   bool get isEthereum => network.type == XCMNetworkIdType.ethereum;
 
   @override
-  List get variabels => [type, network];
+  List get variables => [type, network];
 }
 
 enum XCMJunctionsType implements Comparable<XCMJunctionsType> {
@@ -516,13 +534,17 @@ enum XCMJunctionsType implements Comparable<XCMJunctionsType> {
   const XCMJunctionsType(this.type, this.junctionsLength);
   final String type;
   static XCMJunctionsType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMJunctionsType fromLength(int length) {
-    return values.firstWhere((e) => e.junctionsLength == length,
-        orElse: () => throw ItemNotFoundException(value: length));
+    return values.firstWhere(
+      (e) => e.junctionsLength == length,
+      orElse: () => throw ItemNotFoundException(value: length),
+    );
   }
 
   static XCMJunctionsType fromType(String? type) {
@@ -554,31 +576,45 @@ abstract class XCMJunctions<JUNCTION extends XCMJunction>
   }
 
   XCMJunctions({required this.type, required List<JUNCTION> junctions})
-      : junctions =
-            junctions.exc(type.junctionsLength, name: "junctions").immutable;
+    : junctions =
+          junctions
+              .exc(
+                length: type.junctionsLength,
+                name: "junctions",
+                operation: "XCMJunctions",
+                reason: "Invalid junctions length.",
+              )
+              .immutable;
 
-  factory XCMJunctions.fromVersion(
-      {required List<JUNCTION> junctions,
-      XCMVersion version = XCMVersion.v4,
-      XCMV2NetworkId? v2Network}) {
+  factory XCMJunctions.fromVersion({
+    required List<JUNCTION> junctions,
+    XCMVersion version = XCMVersion.v4,
+    XCMV2NetworkId? v2Network,
+  }) {
     return (switch (version) {
-      XCMVersion.v2 =>
-        XCMV2Junctions.fromJunctions(junctions.cast<XCMV2Junction>()),
-      XCMVersion.v3 =>
-        XCMV3Junctions.fromJunctions(junctions.cast<XCMV3Junction>()),
-      XCMVersion.v4 =>
-        XCMV4Junctions.fromJunctions(junctions.cast<XCMV4Junction>()),
-      XCMVersion.v5 =>
-        XCMV5Junctions.fromJunctions(junctions.cast<XCMV5Junction>())
-    } as XCMJunctions)
+              XCMVersion.v2 => XCMV2Junctions.fromJunctions(
+                junctions.cast<XCMV2Junction>(),
+              ),
+              XCMVersion.v3 => XCMV3Junctions.fromJunctions(
+                junctions.cast<XCMV3Junction>(),
+              ),
+              XCMVersion.v4 => XCMV4Junctions.fromJunctions(
+                junctions.cast<XCMV4Junction>(),
+              ),
+              XCMVersion.v5 => XCMV5Junctions.fromJunctions(
+                junctions.cast<XCMV5Junction>(),
+              ),
+            }
+            as XCMJunctions)
         .cast<XCMJunctions<JUNCTION>>();
   }
 
   @override
   int compareTo(XCMJunctions<JUNCTION> other) {
-    final len = junctions.length < other.junctions.length
-        ? junctions.length
-        : other.junctions.length;
+    final len =
+        junctions.length < other.junctions.length
+            ? junctions.length
+            : other.junctions.length;
     for (int i = 0; i < len; i++) {
       final cmp = junctions[i].compareTo(other.junctions[i]);
       if (cmp != 0) return cmp;
@@ -588,5 +624,5 @@ abstract class XCMJunctions<JUNCTION extends XCMJunction>
 
   Map<String, dynamic> toJson();
   @override
-  List get variabels => [type, junctions];
+  List get variables => [type, junctions];
 }

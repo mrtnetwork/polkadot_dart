@@ -6,10 +6,11 @@ class SyncStateResponse with JsonSerialization {
   final int startingBlock;
   final int currentBlock;
   final int? highestBlock;
-  const SyncStateResponse(
-      {required this.startingBlock,
-      required this.currentBlock,
-      required this.highestBlock});
+  const SyncStateResponse({
+    required this.startingBlock,
+    required this.currentBlock,
+    required this.highestBlock,
+  });
   factory SyncStateResponse.fromJson(Map<String, dynamic> json) {
     return SyncStateResponse(
       startingBlock: IntUtils.parse(json["startingBlock"]),
@@ -22,7 +23,7 @@ class SyncStateResponse with JsonSerialization {
     return {
       "startingBlock": startingBlock,
       "currentBlock": currentBlock,
-      "highestBlock": highestBlock
+      "highestBlock": highestBlock,
     };
   }
 }

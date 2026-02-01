@@ -13,8 +13,10 @@ enum SubstrateKeyAlgorithm {
   const SubstrateKeyAlgorithm({required this.name, required this.value});
 
   static SubstrateKeyAlgorithm fromValue(int? value) {
-    return values.firstWhere((e) => e.value == value,
-        orElse: () => throw ItemNotFoundException(value: value));
+    return values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => throw ItemNotFoundException(value: value),
+    );
   }
 
   final String name;
@@ -22,10 +24,9 @@ enum SubstrateKeyAlgorithm {
   EllipticCurveTypes get curve {
     return switch (this) {
       SubstrateKeyAlgorithm.ecdsa ||
-      SubstrateKeyAlgorithm.ethereum =>
-        EllipticCurveTypes.secp256k1,
+      SubstrateKeyAlgorithm.ethereum => EllipticCurveTypes.secp256k1,
       SubstrateKeyAlgorithm.ed25519 => EllipticCurveTypes.ed25519,
-      SubstrateKeyAlgorithm.sr25519 => EllipticCurveTypes.sr25519
+      SubstrateKeyAlgorithm.sr25519 => EllipticCurveTypes.sr25519,
     };
   }
 
@@ -45,7 +46,8 @@ enum SubstrateKeyAlgorithm {
   SubstrateCoins get substrateCoinInfo {
     if (this == SubstrateKeyAlgorithm.ethereum) {
       throw DartSubstratePluginException(
-          "Please use SubstrateEthereumPrivateKey or SubstrateEthereumPublickey for ethereum coin info.");
+        "Please use SubstrateEthereumPrivateKey or SubstrateEthereumPublickey for ethereum coin info.",
+      );
     }
     return coinInfo as SubstrateCoins;
   }
@@ -53,8 +55,7 @@ enum SubstrateKeyAlgorithm {
   int get signatureLength {
     return switch (this) {
       SubstrateKeyAlgorithm.ecdsa ||
-      SubstrateKeyAlgorithm.ethereum =>
-        SubstrateConstant.ecdsaSignatureLength,
+      SubstrateKeyAlgorithm.ethereum => SubstrateConstant.ecdsaSignatureLength,
       SubstrateKeyAlgorithm.ed25519 => SubstrateConstant.signatureLength,
       SubstrateKeyAlgorithm.sr25519 => SubstrateConstant.signatureLength,
     };
@@ -78,8 +79,10 @@ abstract class BaseSubstratePublicKey<ADDRESS extends BaseSubstrateAddress> {
   ADDRESS toAddress();
 }
 
-abstract class BaseSubstratePrivateKey<ADDRESS extends BaseSubstrateAddress,
-        PUBLICKEY extends BaseSubstratePublicKey<ADDRESS>>
+abstract class BaseSubstratePrivateKey<
+  ADDRESS extends BaseSubstrateAddress,
+  PUBLICKEY extends BaseSubstratePublicKey<ADDRESS>
+>
     with SubstrateTransactionSigner {
   const BaseSubstratePrivateKey();
   @override

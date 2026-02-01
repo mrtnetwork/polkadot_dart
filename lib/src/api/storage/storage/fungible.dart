@@ -18,36 +18,45 @@ class SubstrateStorageFungible extends SubstrateStorageApi {
   const SubstrateStorageFungible();
   @override
   SubstrateStorageApis get api => SubstrateStorageApis.fungible;
-  Future<List<(T, QueryStorageFullResponse<BigInt>)>> balance<T extends Object>(
-      {required MetadataApi api,
-      required SubstrateProvider rpc,
-      required BaseSubstrateAddress address,
-      required List<T> assetsIdentifier}) async {
+  Future<List<(T, QueryStorageFullResponse<BigInt>)>>
+  balance<T extends Object>({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+    required BaseSubstrateAddress address,
+    required List<T> assetsIdentifier,
+  }) async {
     if (assetsIdentifier.isEmpty) return [];
     final addressBytes = address.toBytes().asImmutableBytes;
     final Map<String, dynamic> addr = switch (address.type) {
       SubstrateAddressType.ethereum => {"Ethereum": addressBytes},
-      SubstrateAddressType.substrate => {"Substrate": addressBytes}
+      SubstrateAddressType.substrate => {"Substrate": addressBytes},
     };
     final entries = api.queryStreamStorageAtBlock(
-        requestes: () async* {
-          yield assetsIdentifier
-              .map((e) => GetStorageRequest<
-                      (T, QueryStorageFullResponse<BigInt>)?, BigInt>(
-                    palletNameOrIndex: this.api.name,
-                    methodName: SubstrateStorageFungibleMethods.balance.name,
-                    inputs: [e, addr],
-                    onJsonResponse: (response, bytes, storageKey) => (
+      requestes: () async* {
+        yield assetsIdentifier
+            .map(
+              (e) => GetStorageRequest<
+                (T, QueryStorageFullResponse<BigInt>)?,
+                BigInt
+              >(
+                palletNameOrIndex: this.api.name,
+                methodName: SubstrateStorageFungibleMethods.balance.name,
+                inputs: [e, addr],
+                onJsonResponse:
+                    (response, bytes, storageKey) => (
                       e,
                       QueryStorageFullResponse(
-                          storageKey: storageKey,
-                          responseBytes: bytes,
-                          response: response)
+                        storageKey: storageKey,
+                        responseBytes: bytes,
+                        response: response,
+                      ),
                     ),
-                  ))
-              .toList();
-        }(),
-        rpc: rpc);
+              ),
+            )
+            .toList();
+      }(),
+      rpc: rpc,
+    );
     final result = await entries.toList();
     return result
         .expand((e) => e.results)

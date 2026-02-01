@@ -17,8 +17,10 @@ class SubstrateRequestRuntimeMetadataGetMetadataAtVersion
 
   @override
   List<dynamic> toJson() {
-    final val = BytesUtils.toHexString(LayoutConst.u32().serialize(version),
-        prefix: "0x");
+    final val = BytesUtils.toHexString(
+      LayoutConst.u32().serialize(version),
+      prefix: "0x",
+    );
 
     return ["Metadata_metadata_at_version", val, null];
   }

@@ -23,14 +23,16 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.withdrawAsset.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ReserveAssetDeposited.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5ReserveAssetDeposited.layout_(property: property),
         property: XCMInstructionType.reserveAssetDeposited.name,
         index: XCMInstructionType.reserveAssetDeposited.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ReceiveTeleportedAsset.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5ReceiveTeleportedAsset.layout_(property: property),
         property: XCMInstructionType.receiveTeleportedAsset.name,
         index: XCMInstructionType.receiveTeleportedAsset.variantIndex,
       ),
@@ -45,8 +47,9 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.transferAsset.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5TransferReserveAsset.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5TransferReserveAsset.layout_(property: property),
         property: XCMInstructionType.transferReserveAsset.name,
         index: XCMInstructionType.transferReserveAsset.variantIndex,
       ),
@@ -56,26 +59,28 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.transact.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5HrmpNewChannelOpenRequest.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5HrmpNewChannelOpenRequest.layout_(property: property),
         property: XCMInstructionType.hrmpNewChannelOpenRequest.name,
         index: XCMInstructionType.hrmpNewChannelOpenRequest.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5HrmpChannelAccepted.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5HrmpChannelAccepted.layout_(property: property),
         property: XCMInstructionType.hrmpChannelAccepted.name,
         index: XCMInstructionType.hrmpChannelAccepted.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5HrmpChannelClosing.layout_(property: property),
+        layout:
+            ({property}) => XCMV5HrmpChannelClosing.layout_(property: property),
         property: XCMInstructionType.hrmpChannelClosing.name,
         index: XCMInstructionType.hrmpChannelClosing.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            SubstrateVariantNoArgs.layout_(property: property),
+        layout:
+            ({property}) => SubstrateVariantNoArgs.layout_(property: property),
         property: XCMInstructionType.clearOrigin.name,
         index: XCMInstructionType.clearOrigin.variantIndex,
       ),
@@ -95,8 +100,9 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.depositAsset.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5DepositReserveAsset.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5DepositReserveAsset.layout_(property: property),
         property: XCMInstructionType.depositReserveAsset.name,
         index: XCMInstructionType.depositReserveAsset.variantIndex,
       ),
@@ -106,14 +112,15 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.exchangeAsset.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5InitiateReserveWithdraw.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5InitiateReserveWithdraw.layout_(property: property),
         property: XCMInstructionType.initiateReserveWithdraw.name,
         index: XCMInstructionType.initiateReserveWithdraw.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5InitiateTeleport.layout_(property: property),
+        layout:
+            ({property}) => XCMV5InitiateTeleport.layout_(property: property),
         property: XCMInstructionType.initiateTeleport.name,
         index: XCMInstructionType.initiateTeleport.variantIndex,
       ),
@@ -128,14 +135,14 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.buyExecution.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            SubstrateVariantNoArgs.layout_(property: property),
+        layout:
+            ({property}) => SubstrateVariantNoArgs.layout_(property: property),
         property: XCMInstructionType.refundSurplus.name,
         index: XCMInstructionType.refundSurplus.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5SetErrorHandler.layout_(property: property),
+        layout:
+            ({property}) => XCMV5SetErrorHandler.layout_(property: property),
         property: XCMInstructionType.setErrorHandler.name,
         index: XCMInstructionType.setErrorHandler.variantIndex,
       ),
@@ -145,8 +152,8 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.setAppendix.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            SubstrateVariantNoArgs.layout_(property: property),
+        layout:
+            ({property}) => SubstrateVariantNoArgs.layout_(property: property),
         property: XCMInstructionType.clearError.name,
         index: XCMInstructionType.clearError.variantIndex,
       ),
@@ -161,14 +168,14 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.trap.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5SubscribeVersion.layout_(property: property),
+        layout:
+            ({property}) => XCMV5SubscribeVersion.layout_(property: property),
         property: XCMInstructionType.subscribeVersion.name,
         index: XCMInstructionType.subscribeVersion.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            SubstrateVariantNoArgs.layout_(property: property),
+        layout:
+            ({property}) => SubstrateVariantNoArgs.layout_(property: property),
         property: XCMInstructionType.unsubscribeVersion.name,
         index: XCMInstructionType.unsubscribeVersion.variantIndex,
       ),
@@ -193,8 +200,9 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.expectError.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ExpectTransactStatus.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5ExpectTransactStatus.layout_(property: property),
         property: XCMInstructionType.expectTransactStatus.name,
         index: XCMInstructionType.expectTransactStatus.variantIndex,
       ),
@@ -209,20 +217,21 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.expectPallet.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ReportTransactStatus.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5ReportTransactStatus.layout_(property: property),
         property: XCMInstructionType.reportTransactStatus.name,
         index: XCMInstructionType.reportTransactStatus.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            SubstrateVariantNoArgs.layout_(property: property),
+        layout:
+            ({property}) => SubstrateVariantNoArgs.layout_(property: property),
         property: XCMInstructionType.clearTransactStatus.name,
         index: XCMInstructionType.clearTransactStatus.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5UniversalOrigin.layout_(property: property),
+        layout:
+            ({property}) => XCMV5UniversalOrigin.layout_(property: property),
         property: XCMInstructionType.universalOrigin.name,
         index: XCMInstructionType.universalOrigin.variantIndex,
       ),
@@ -262,8 +271,8 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.setTopic.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            SubstrateVariantNoArgs.layout_(property: property),
+        layout:
+            ({property}) => SubstrateVariantNoArgs.layout_(property: property),
         property: XCMInstructionType.clearTopic.name,
         index: XCMInstructionType.clearTopic.variantIndex,
       ),
@@ -273,8 +282,8 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.aliasOrigin.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5UnpaidExecution.layout_(property: property),
+        layout:
+            ({property}) => XCMV5UnpaidExecution.layout_(property: property),
         property: XCMInstructionType.unpaidExecution.name,
         index: XCMInstructionType.unpaidExecution.variantIndex,
       ),
@@ -284,14 +293,14 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         index: XCMInstructionType.payFees.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5InitiateTransfer.layout_(property: property),
+        layout:
+            ({property}) => XCMV5InitiateTransfer.layout_(property: property),
         property: XCMInstructionType.initiateTransfer.name,
         index: XCMInstructionType.initiateTransfer.variantIndex,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ExecuteWithOrigin.layout_(property: property),
+        layout:
+            ({property}) => XCMV5ExecuteWithOrigin.layout_(property: property),
         property: XCMInstructionType.executeWithOrigin.name,
         index: XCMInstructionType.executeWithOrigin.variantIndex,
       ),
@@ -307,20 +316,24 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
     final decode = SubstrateVariantSerialization.toVariantDecodeResult(json);
     final type = XCMInstructionType.fromName(decode.variantName);
     return switch (type) {
-      XCMInstructionType.withdrawAsset =>
-        XCMV5WithdrawAsset.deserializeJson(decode.value),
+      XCMInstructionType.withdrawAsset => XCMV5WithdrawAsset.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.reserveAssetDeposited =>
         XCMV5ReserveAssetDeposited.deserializeJson(decode.value),
       XCMInstructionType.receiveTeleportedAsset =>
         XCMV5ReceiveTeleportedAsset.deserializeJson(decode.value),
-      XCMInstructionType.queryResponse =>
-        XCMV5QueryResponse.deserializeJson(decode.value),
-      XCMInstructionType.transferAsset =>
-        XCMV5TransferAsset.deserializeJson(decode.value),
+      XCMInstructionType.queryResponse => XCMV5QueryResponse.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.transferAsset => XCMV5TransferAsset.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.transferReserveAsset =>
         XCMV5TransferReserveAsset.deserializeJson(decode.value),
-      XCMInstructionType.transact =>
-        XCMV5Transact.deserializeJson(decode.value),
+      XCMInstructionType.transact => XCMV5Transact.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.hrmpNewChannelOpenRequest =>
         XCMV5HrmpNewChannelOpenRequest.deserializeJson(decode.value),
       XCMInstructionType.hrmpChannelAccepted =>
@@ -328,72 +341,94 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
       XCMInstructionType.hrmpChannelClosing =>
         XCMV5HrmpChannelClosing.deserializeJson(decode.value),
       XCMInstructionType.clearOrigin => XCMV5ClearOrigin(),
-      XCMInstructionType.descendOrigin =>
-        XCMV5DescendOrigin.deserializeJson(decode.value),
-      XCMInstructionType.reportError =>
-        XCMV5ReportError.deserializeJson(decode.value),
-      XCMInstructionType.depositAsset =>
-        XCMV5DepositAsset.deserializeJson(decode.value),
+      XCMInstructionType.descendOrigin => XCMV5DescendOrigin.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.reportError => XCMV5ReportError.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.depositAsset => XCMV5DepositAsset.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.depositReserveAsset =>
         XCMV5DepositReserveAsset.deserializeJson(decode.value),
-      XCMInstructionType.exchangeAsset =>
-        XCMV5ExchangeAsset.deserializeJson(decode.value),
+      XCMInstructionType.exchangeAsset => XCMV5ExchangeAsset.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.initiateReserveWithdraw =>
         XCMV5InitiateReserveWithdraw.deserializeJson(decode.value),
       XCMInstructionType.initiateTeleport =>
         XCMV5InitiateTeleport.deserializeJson(decode.value),
-      XCMInstructionType.reportHolding =>
-        XCMV5ReportHolding.deserializeJson(decode.value),
-      XCMInstructionType.buyExecution =>
-        XCMV5BuyExecution.deserializeJson(decode.value),
+      XCMInstructionType.reportHolding => XCMV5ReportHolding.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.buyExecution => XCMV5BuyExecution.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.refundSurplus => XCMV5RefundSurplus(),
       XCMInstructionType.setErrorHandler =>
         XCMV5SetErrorHandler.deserializeJson(decode.value),
-      XCMInstructionType.setAppendix =>
-        XCMV5SetAppendix.deserializeJson(decode.value),
+      XCMInstructionType.setAppendix => XCMV5SetAppendix.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.clearError => XCMV5ClearError(),
-      XCMInstructionType.claimAsset =>
-        XCMV5ClaimAsset.deserializeJson(decode.value),
+      XCMInstructionType.claimAsset => XCMV5ClaimAsset.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.trap => XCMV5Trap.deserializeJson(decode.value),
       XCMInstructionType.subscribeVersion =>
         XCMV5SubscribeVersion.deserializeJson(decode.value),
       XCMInstructionType.unsubscribeVersion => XCMV5UnsubscribeVersion(),
-      XCMInstructionType.burnAsset =>
-        XCMV5BurnAsset.deserializeJson(decode.value),
-      XCMInstructionType.expectAsset =>
-        XCMV5ExpectAsset.deserializeJson(decode.value),
-      XCMInstructionType.expectOrigin =>
-        XCMV5ExpectOrigin.deserializeJson(decode.value),
-      XCMInstructionType.expectError =>
-        XCMV5ExpectError.deserializeJson(decode.value),
+      XCMInstructionType.burnAsset => XCMV5BurnAsset.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.expectAsset => XCMV5ExpectAsset.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.expectOrigin => XCMV5ExpectOrigin.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.expectError => XCMV5ExpectError.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.expectTransactStatus =>
         XCMV5ExpectTransactStatus.deserializeJson(decode.value),
-      XCMInstructionType.queryPallet =>
-        XCMV5QueryPallet.deserializeJson(decode.value),
-      XCMInstructionType.expectPallet =>
-        XCMV5ExpectPallet.deserializeJson(decode.value),
+      XCMInstructionType.queryPallet => XCMV5QueryPallet.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.expectPallet => XCMV5ExpectPallet.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.reportTransactStatus =>
         XCMV5ReportTransactStatus.deserializeJson(decode.value),
       XCMInstructionType.clearTransactStatus => XCMV5ClearTransactStatus(),
       XCMInstructionType.universalOrigin =>
         XCMV5UniversalOrigin.deserializeJson(decode.value),
-      XCMInstructionType.exportMessage =>
-        XCMV5ExportMessage.deserializeJson(decode.value),
-      XCMInstructionType.lockAsset =>
-        XCMV5LockAsset.deserializeJson(decode.value),
-      XCMInstructionType.unlockAsset =>
-        XCMV5UnlockAsset.deserializeJson(decode.value),
-      XCMInstructionType.noteUnlockable =>
-        XCMV5NoteUnlockable.deserializeJson(decode.value),
-      XCMInstructionType.requestUnlock =>
-        XCMV5RequestUnlock.deserializeJson(decode.value),
-      XCMInstructionType.setFeesMode =>
-        XCMV5SetFeesMode.deserializeJson(decode.value),
-      XCMInstructionType.setTopic =>
-        XCMV5SetTopic.deserializeJson(decode.value),
+      XCMInstructionType.exportMessage => XCMV5ExportMessage.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.lockAsset => XCMV5LockAsset.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.unlockAsset => XCMV5UnlockAsset.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.noteUnlockable => XCMV5NoteUnlockable.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.requestUnlock => XCMV5RequestUnlock.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.setFeesMode => XCMV5SetFeesMode.deserializeJson(
+        decode.value,
+      ),
+      XCMInstructionType.setTopic => XCMV5SetTopic.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.clearTopic => XCMV5ClearTopic(),
-      XCMInstructionType.aliasOrigin =>
-        XCMV5AliasOrigin.deserializeJson(decode.value),
+      XCMInstructionType.aliasOrigin => XCMV5AliasOrigin.deserializeJson(
+        decode.value,
+      ),
       XCMInstructionType.unpaidExecution =>
         XCMV5UnpaidExecution.deserializeJson(decode.value),
       XCMInstructionType.payFees => XCMV5PayFees.deserializeJson(decode.value),
@@ -401,11 +436,14 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         XCMV5InitiateTransfer.deserializeJson(decode.value),
       XCMInstructionType.executeWithOrigin =>
         XCMV5ExecuteWithOrigin.deserializeJson(decode.value),
-      XCMInstructionType.setHints =>
-        XCMV5SetHints.deserializeJson(decode.value),
-      _ => throw DartSubstratePluginException(
+      XCMInstructionType.setHints => XCMV5SetHints.deserializeJson(
+        decode.value,
+      ),
+      _ =>
+        throw DartSubstratePluginException(
           "Unsupported xcm instruction by version 5.",
-          details: {"type": type.type})
+          details: {"type": type.type},
+        ),
     };
   }
   factory XCMInstructionV5.fromJson(Map<String, dynamic> json) {
@@ -425,8 +463,9 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         XCMV5HrmpNewChannelOpenRequest.fromJson(json),
       XCMInstructionType.hrmpChannelAccepted =>
         XCMV5HrmpChannelAccepted.fromJson(json),
-      XCMInstructionType.hrmpChannelClosing =>
-        XCMV5HrmpChannelClosing.fromJson(json),
+      XCMInstructionType.hrmpChannelClosing => XCMV5HrmpChannelClosing.fromJson(
+        json,
+      ),
       XCMInstructionType.clearOrigin => XCMV5ClearOrigin.fromJson(json),
       XCMInstructionType.descendOrigin => XCMV5DescendOrigin.fromJson(json),
       XCMInstructionType.reportError => XCMV5ReportError.fromJson(json),
@@ -436,8 +475,9 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
       XCMInstructionType.exchangeAsset => XCMV5ExchangeAsset.fromJson(json),
       XCMInstructionType.initiateReserveWithdraw =>
         XCMV5InitiateReserveWithdraw.fromJson(json),
-      XCMInstructionType.initiateTeleport =>
-        XCMV5InitiateTeleport.fromJson(json),
+      XCMInstructionType.initiateTeleport => XCMV5InitiateTeleport.fromJson(
+        json,
+      ),
       XCMInstructionType.reportHolding => XCMV5ReportHolding.fromJson(json),
       XCMInstructionType.buyExecution => XCMV5BuyExecution.fromJson(json),
       XCMInstructionType.refundSurplus => XCMV5RefundSurplus.fromJson(json),
@@ -446,10 +486,12 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
       XCMInstructionType.clearError => XCMV5ClearError.fromJson(json),
       XCMInstructionType.claimAsset => XCMV5ClaimAsset.fromJson(json),
       XCMInstructionType.trap => XCMV5Trap.fromJson(json),
-      XCMInstructionType.subscribeVersion =>
-        XCMV5SubscribeVersion.fromJson(json),
-      XCMInstructionType.unsubscribeVersion =>
-        XCMV5UnsubscribeVersion.fromJson(json),
+      XCMInstructionType.subscribeVersion => XCMV5SubscribeVersion.fromJson(
+        json,
+      ),
+      XCMInstructionType.unsubscribeVersion => XCMV5UnsubscribeVersion.fromJson(
+        json,
+      ),
       XCMInstructionType.burnAsset => XCMV5BurnAsset.fromJson(json),
       XCMInstructionType.expectAsset => XCMV5ExpectAsset.fromJson(json),
       XCMInstructionType.expectOrigin => XCMV5ExpectOrigin.fromJson(json),
@@ -474,14 +516,18 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
       XCMInstructionType.aliasOrigin => XCMV5AliasOrigin.fromJson(json),
       XCMInstructionType.unpaidExecution => XCMV5UnpaidExecution.fromJson(json),
       XCMInstructionType.payFees => XCMV5PayFees.fromJson(json),
-      XCMInstructionType.initiateTransfer =>
-        XCMV5InitiateTransfer.fromJson(json),
-      XCMInstructionType.executeWithOrigin =>
-        XCMV5ExecuteWithOrigin.fromJson(json),
+      XCMInstructionType.initiateTransfer => XCMV5InitiateTransfer.fromJson(
+        json,
+      ),
+      XCMInstructionType.executeWithOrigin => XCMV5ExecuteWithOrigin.fromJson(
+        json,
+      ),
       XCMInstructionType.setHints => XCMV5SetHints.fromJson(json),
-      _ => throw DartSubstratePluginException(
+      _ =>
+        throw DartSubstratePluginException(
           "Unsupported xcm instruction by version 5.",
-          details: {"type": type.type})
+          details: {"type": type.type},
+        ),
     };
   }
 
@@ -502,20 +548,25 @@ class XCMV5WithdrawAsset extends XCMInstructionV5 with XCMWithdrawAsset {
   XCMV5WithdrawAsset({required this.assets});
   factory XCMV5WithdrawAsset.deserializeJson(Map<String, dynamic> json) {
     return XCMV5WithdrawAsset(
-        assets: XCMV5Assets.deserializeJson(json.valueAs("assets")));
+      assets: XCMV5Assets.deserializeJson(json.valueAs("assets")),
+    );
   }
   factory XCMV5WithdrawAsset.fromJson(Map<String, dynamic> json) {
     final assets = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.withdrawAsset.type);
+      XCMInstructionType.withdrawAsset.type,
+    );
 
     return XCMV5WithdrawAsset(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Assets.layout_(property: "assets")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Assets.layout_(property: "assets"),
+    ], property: property);
   }
 
   @override
@@ -535,21 +586,27 @@ class XCMV5ReserveAssetDeposited extends XCMInstructionV5
   final XCMV5Assets assets;
   XCMV5ReserveAssetDeposited({required this.assets});
   factory XCMV5ReserveAssetDeposited.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5ReserveAssetDeposited(
-        assets: XCMV5Assets.deserializeJson(json.valueAs("assets")));
+      assets: XCMV5Assets.deserializeJson(json.valueAs("assets")),
+    );
   }
   factory XCMV5ReserveAssetDeposited.fromJson(Map<String, dynamic> json) {
     final assets = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.reserveAssetDeposited.type);
+      XCMInstructionType.reserveAssetDeposited.type,
+    );
     return XCMV5ReserveAssetDeposited(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Assets.layout_(property: "assets")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Assets.layout_(property: "assets"),
+    ], property: property);
   }
 
   @override
@@ -569,20 +626,26 @@ class XCMV5ReceiveTeleportedAsset extends XCMInstructionV5
   final XCMV5Assets assets;
   XCMV5ReceiveTeleportedAsset({required this.assets});
   factory XCMV5ReceiveTeleportedAsset.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5ReceiveTeleportedAsset(
-        assets: XCMV5Assets.deserializeJson(json.valueAs("assets")));
+      assets: XCMV5Assets.deserializeJson(json.valueAs("assets")),
+    );
   }
   factory XCMV5ReceiveTeleportedAsset.fromJson(Map<String, dynamic> json) {
     final assets = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.receiveTeleportedAsset.type);
+      XCMInstructionType.receiveTeleportedAsset.type,
+    );
     return XCMV5ReceiveTeleportedAsset(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Assets.layout_(property: "assets")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Assets.layout_(property: "assets"),
+    ], property: property);
   }
 
   @override
@@ -602,31 +665,37 @@ class XCMV5QueryResponse extends XCMInstructionV5 with XCMQueryResponse {
   final SubstrateWeightV2 maxWeight;
   final XCMV5Location? querier;
 
-  XCMV5QueryResponse(
-      {required this.queryId,
-      required this.response,
-      required this.maxWeight,
-      required this.querier});
+  XCMV5QueryResponse({
+    required this.queryId,
+    required this.response,
+    required this.maxWeight,
+    required this.querier,
+  });
   factory XCMV5QueryResponse.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.queryResponse.type);
-    final Map<String, dynamic>? querier =
-        MetadataUtils.parseOptional(data.valueAs("querier"));
+      XCMInstructionType.queryResponse.type,
+    );
+    final Map<String, dynamic>? querier = MetadataUtils.parseOptional(
+      data.valueAs("querier"),
+    );
     return XCMV5QueryResponse(
-        queryId: data.valueAs("query_id"),
-        response: XCMV5Response.fromJson(data.valueAs("response")),
-        maxWeight: SubstrateWeightV2.fromJson(data.valueAs("max_weight")),
-        querier: querier == null ? null : XCMV5Location.fromJson(querier));
+      queryId: data.valueAs("query_id"),
+      response: XCMV5Response.fromJson(data.valueAs("response")),
+      maxWeight: SubstrateWeightV2.fromJson(data.valueAs("max_weight")),
+      querier: querier == null ? null : XCMV5Location.fromJson(querier),
+    );
   }
 
   factory XCMV5QueryResponse.deserializeJson(Map<String, dynamic> json) {
     return XCMV5QueryResponse(
-        queryId: json.valueAs("query_id"),
-        response: XCMV5Response.deserializeJson(json.valueAs("response")),
-        maxWeight:
-            SubstrateWeightV2.deserializeJson(json.valueAs("max_weight")),
-        querier: json.valueTo<XCMV5Location?, Map<String, dynamic>>(
-            key: "querier", parse: (v) => XCMV5Location.deserializeJson(v)));
+      queryId: json.valueAs("query_id"),
+      response: XCMV5Response.deserializeJson(json.valueAs("response")),
+      maxWeight: SubstrateWeightV2.deserializeJson(json.valueAs("max_weight")),
+      querier: json.valueTo<XCMV5Location?, Map<String, dynamic>>(
+        key: "querier",
+        parse: (v) => XCMV5Location.deserializeJson(v),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -634,7 +703,7 @@ class XCMV5QueryResponse extends XCMInstructionV5 with XCMQueryResponse {
       LayoutConst.compactBigintU64(property: "query_id"),
       XCMV5Response.layout_(property: "response"),
       SubstrateWeightV2.layout_(property: "max_weight"),
-      LayoutConst.optional(XCMV5Location.layout_(), property: "querier")
+      LayoutConst.optional(XCMV5Location.layout_(), property: "querier"),
     ], property: property);
   }
 
@@ -649,7 +718,7 @@ class XCMV5QueryResponse extends XCMInstructionV5 with XCMQueryResponse {
       "query_id": queryId,
       "response": response.serializeJsonVariant(),
       "max_weight": maxWeight.serializeJson(),
-      "querier": querier?.serializeJson()
+      "querier": querier?.serializeJson(),
     };
   }
 
@@ -660,13 +729,13 @@ class XCMV5QueryResponse extends XCMInstructionV5 with XCMQueryResponse {
         "query_id": queryId,
         "response": response.toJson(),
         "max_weight": maxWeight.toJson(),
-        "querier": MetadataUtils.toOptionalJson(querier?.toJson())
-      }
+        "querier": MetadataUtils.toOptionalJson(querier?.toJson()),
+      },
     };
   }
 
   @override
-  List get variabels => [type, queryId, response, maxWeight, querier];
+  List get variables => [type, queryId, response, maxWeight, querier];
 }
 
 class XCMV5TransferAsset extends XCMInstructionV5 with XCMTransferAsset {
@@ -683,18 +752,21 @@ class XCMV5TransferAsset extends XCMInstructionV5 with XCMTransferAsset {
   }
   factory XCMV5TransferAsset.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.transferAsset.type);
+      XCMInstructionType.transferAsset.type,
+    );
     final assets = data.valueEnsureAsList<Map<String, dynamic>>("assets");
     return XCMV5TransferAsset(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()),
-        beneficiary: XCMV5Location.fromJson(data.valueAs("beneficiary")));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+      beneficiary: XCMV5Location.fromJson(data.valueAs("beneficiary")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Assets.layout_(property: "assets"),
-      XCMV5Location.layout_(property: "beneficiary")
+      XCMV5Location.layout_(property: "beneficiary"),
     ], property: property);
   }
 
@@ -712,7 +784,7 @@ class XCMV5TransferAsset extends XCMInstructionV5 with XCMTransferAsset {
   }
 
   @override
-  List get variabels => [type, assets, beneficiary];
+  List get variables => [type, assets, beneficiary];
 }
 
 class XCMV5TransferReserveAsset extends XCMInstructionV5
@@ -723,34 +795,41 @@ class XCMV5TransferReserveAsset extends XCMInstructionV5
   final XCMV5Location dest;
   @override
   final XCMV5 xcm;
-  XCMV5TransferReserveAsset(
-      {required this.assets, required this.dest, required this.xcm});
+  XCMV5TransferReserveAsset({
+    required this.assets,
+    required this.dest,
+    required this.xcm,
+  });
   factory XCMV5TransferReserveAsset.deserializeJson(Map<String, dynamic> json) {
     return XCMV5TransferReserveAsset(
-        assets: XCMV5Assets.deserializeJson(json.valueAs("assets")),
-        dest: XCMV5Location.deserializeJson(json.valueAs("dest")),
-        xcm: XCMV5.deserializeJson(json.valueAs("xcm")));
+      assets: XCMV5Assets.deserializeJson(json.valueAs("assets")),
+      dest: XCMV5Location.deserializeJson(json.valueAs("dest")),
+      xcm: XCMV5.deserializeJson(json.valueAs("xcm")),
+    );
   }
 
   factory XCMV5TransferReserveAsset.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.transferReserveAsset.type);
+      XCMInstructionType.transferReserveAsset.type,
+    );
     final assets = data.valueEnsureAsList<Map<String, dynamic>>("assets");
     final xcm = data.valueEnsureAsList<Map<String, dynamic>>("xcm");
     return XCMV5TransferReserveAsset(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()),
-        dest: XCMV5Location.fromJson(data.valueAs("dest")),
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+      dest: XCMV5Location.fromJson(data.valueAs("dest")),
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Assets.layout_(property: "assets"),
       XCMV5Location.layout_(property: "dest"),
-      XCMV5.layout_(property: "xcm")
+      XCMV5.layout_(property: "xcm"),
     ], property: property);
   }
 
@@ -764,12 +843,12 @@ class XCMV5TransferReserveAsset extends XCMInstructionV5
     return {
       "assets": assets.serializeJson(),
       "dest": dest.serializeJson(),
-      "xcm": xcm.serializeJson()
+      "xcm": xcm.serializeJson(),
     };
   }
 
   @override
-  List get variabels => [type, assets, dest, xcm];
+  List get variables => [type, assets, dest, xcm];
 }
 
 class XCMV5Transact extends XCMInstructionV5 with XCMTransact {
@@ -777,43 +856,47 @@ class XCMV5Transact extends XCMInstructionV5 with XCMTransact {
   final SubstrateWeightV2? fallBackMaxWeight;
   @override
   final List<int> call;
-  XCMV5Transact(
-      {required this.originKind,
-      required this.fallBackMaxWeight,
-      required List<int> call})
-      : call = call.asImmutableBytes;
+  XCMV5Transact({
+    required this.originKind,
+    required this.fallBackMaxWeight,
+    required List<int> call,
+  }) : call = call.asImmutableBytes;
   factory XCMV5Transact.deserializeJson(Map<String, dynamic> json) {
     return XCMV5Transact(
-        originKind:
-            XCMV3OriginKind.deserializeJson(json.valueAs("origin_kind")),
-        fallBackMaxWeight:
-            json.valueTo<SubstrateWeightV2?, Map<String, dynamic>>(
-          key: "fallback_max_weight",
-          parse: (v) => SubstrateWeightV2.deserializeJson(v),
-        ),
-        call: json.valueAsBytes("call"));
+      originKind: XCMV3OriginKind.deserializeJson(json.valueAs("origin_kind")),
+      fallBackMaxWeight: json.valueTo<SubstrateWeightV2?, Map<String, dynamic>>(
+        key: "fallback_max_weight",
+        parse: (v) => SubstrateWeightV2.deserializeJson(v),
+      ),
+      call: json.valueAsBytes("call"),
+    );
   }
   factory XCMV5Transact.fromJson(Map<String, dynamic> json) {
-    final data = json
-        .valueEnsureAsMap<String, dynamic>(XCMInstructionType.transact.type);
-    final optWeight =
-        data.valueEnsureAsMap<String, dynamic>("fallback_max_weight");
+    final data = json.valueEnsureAsMap<String, dynamic>(
+      XCMInstructionType.transact.type,
+    );
+    final optWeight = data.valueEnsureAsMap<String, dynamic>(
+      "fallback_max_weight",
+    );
     final Map<String, dynamic>? weight = MetadataUtils.parseOptional(optWeight);
     return XCMV5Transact(
-        originKind: XCMV3OriginKind.fromJson(data.valueAs("origin_kind")),
-        fallBackMaxWeight:
-            weight == null ? null : SubstrateWeightV2.fromJson(weight),
-        call: data
-            .valueEnsureAsMap<String, dynamic>("call")
-            .valueAsBytes("encoded"));
+      originKind: XCMV3OriginKind.fromJson(data.valueAs("origin_kind")),
+      fallBackMaxWeight:
+          weight == null ? null : SubstrateWeightV2.fromJson(weight),
+      call: data
+          .valueEnsureAsMap<String, dynamic>("call")
+          .valueAsBytes("encoded"),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV3OriginKind.layout_(property: "origin_kind"),
-      LayoutConst.optional(SubstrateWeightV2.layout_(),
-          property: "fallback_max_weight"),
-      LayoutConst.bytes(property: "call")
+      LayoutConst.optional(
+        SubstrateWeightV2.layout_(),
+        property: "fallback_max_weight",
+      ),
+      LayoutConst.bytes(property: "call"),
     ], property: property);
   }
 
@@ -827,7 +910,7 @@ class XCMV5Transact extends XCMInstructionV5 with XCMTransact {
     return {
       "origin_kind": originKind.serializeJsonVariant(),
       "fallback_max_weight": fallBackMaxWeight?.serializeJson(),
-      "call": call
+      "call": call,
     };
   }
 
@@ -836,15 +919,16 @@ class XCMV5Transact extends XCMInstructionV5 with XCMTransact {
     return {
       type.type: {
         "origin_kind": originKind.toJson(),
-        "fallback_max_weight":
-            MetadataUtils.toOptionalJson(fallBackMaxWeight?.toJson()),
-        "call": {"encoded": call}
-      }
+        "fallback_max_weight": MetadataUtils.toOptionalJson(
+          fallBackMaxWeight?.toJson(),
+        ),
+        "call": {"encoded": call},
+      },
     };
   }
 
   @override
-  List get variabels => [type, originKind, fallBackMaxWeight, call];
+  List get variables => [type, originKind, fallBackMaxWeight, call];
 }
 
 class XCMV5HrmpNewChannelOpenRequest extends XCMInstructionV5
@@ -855,27 +939,31 @@ class XCMV5HrmpNewChannelOpenRequest extends XCMInstructionV5
   final int maxMessageSize;
   @override
   final int maxCapacity;
-  XCMV5HrmpNewChannelOpenRequest(
-      {required int sender,
-      required int maxMessageSize,
-      required int maxCapacity})
-      : sender = sender.asUint32,
-        maxMessageSize = maxMessageSize.asUint32,
-        maxCapacity = maxCapacity.asUint32;
+  XCMV5HrmpNewChannelOpenRequest({
+    required int sender,
+    required int maxMessageSize,
+    required int maxCapacity,
+  }) : sender = sender.asU32,
+       maxMessageSize = maxMessageSize.asU32,
+       maxCapacity = maxCapacity.asU32;
   factory XCMV5HrmpNewChannelOpenRequest.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5HrmpNewChannelOpenRequest(
-        sender: json.valueAs("sender"),
-        maxCapacity: json.valueAs("max_capacity"),
-        maxMessageSize: json.valueAs("max_message_size"));
+      sender: json.valueAs("sender"),
+      maxCapacity: json.valueAs("max_capacity"),
+      maxMessageSize: json.valueAs("max_message_size"),
+    );
   }
   factory XCMV5HrmpNewChannelOpenRequest.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.hrmpNewChannelOpenRequest.type);
+      XCMInstructionType.hrmpNewChannelOpenRequest.type,
+    );
     return XCMV5HrmpNewChannelOpenRequest(
-        maxCapacity: data.valueAs("max_capacity"),
-        maxMessageSize: data.valueAs("max_message_size"),
-        sender: data.valueAs("sender"));
+      maxCapacity: data.valueAs("max_capacity"),
+      maxMessageSize: data.valueAs("max_message_size"),
+      sender: data.valueAs("sender"),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -896,7 +984,7 @@ class XCMV5HrmpNewChannelOpenRequest extends XCMInstructionV5
     return {
       "sender": sender,
       "max_message_size": maxMessageSize,
-      "max_capacity": maxCapacity
+      "max_capacity": maxCapacity,
     };
   }
 }
@@ -907,19 +995,20 @@ class XCMV5HrmpChannelAccepted extends XCMInstructionV5
   final int recipient;
 
   XCMV5HrmpChannelAccepted({required int recipient})
-      : recipient = recipient.asUint32;
+    : recipient = recipient.asU32;
   factory XCMV5HrmpChannelAccepted.deserializeJson(Map<String, dynamic> json) {
     return XCMV5HrmpChannelAccepted(recipient: json.valueAs("recipient"));
   }
   factory XCMV5HrmpChannelAccepted.fromJson(Map<String, dynamic> json) {
     return XCMV5HrmpChannelAccepted(
-        recipient: json.valueAs(XCMInstructionType.hrmpChannelAccepted.type));
+      recipient: json.valueAs(XCMInstructionType.hrmpChannelAccepted.type),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [LayoutConst.compactIntU32(property: "recipient")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactIntU32(property: "recipient"),
+    ], property: property);
   }
 
   @override
@@ -941,24 +1030,29 @@ class XCMV5HrmpChannelClosing extends XCMInstructionV5
   final int sender;
   @override
   final int recipient;
-  XCMV5HrmpChannelClosing(
-      {required int sender, required int initiator, required int recipient})
-      : sender = sender.asUint32,
-        initiator = initiator.asUint32,
-        recipient = recipient.asUint32;
+  XCMV5HrmpChannelClosing({
+    required int sender,
+    required int initiator,
+    required int recipient,
+  }) : sender = sender.asU32,
+       initiator = initiator.asU32,
+       recipient = recipient.asU32;
   factory XCMV5HrmpChannelClosing.deserializeJson(Map<String, dynamic> json) {
     return XCMV5HrmpChannelClosing(
-        sender: json.valueAs("sender"),
-        recipient: json.valueAs("recipient"),
-        initiator: json.valueAs("initiator"));
+      sender: json.valueAs("sender"),
+      recipient: json.valueAs("recipient"),
+      initiator: json.valueAs("initiator"),
+    );
   }
   factory XCMV5HrmpChannelClosing.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.hrmpChannelClosing.type);
+      XCMInstructionType.hrmpChannelClosing.type,
+    );
     return XCMV5HrmpChannelClosing(
-        initiator: data.valueAs("initiator"),
-        recipient: data.valueAs("recipient"),
-        sender: data.valueAs("sender"));
+      initiator: data.valueAs("initiator"),
+      recipient: data.valueAs("recipient"),
+      sender: data.valueAs("sender"),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -995,16 +1089,20 @@ class XCMV5DescendOrigin extends XCMInstructionV5 with XCMDescendOrigin {
   XCMV5DescendOrigin({required this.interior});
   factory XCMV5DescendOrigin.deserializeJson(Map<String, dynamic> json) {
     return XCMV5DescendOrigin(
-        interior: XCMV5Junctions.deserializeJson(json.valueAs("interior")));
+      interior: XCMV5Junctions.deserializeJson(json.valueAs("interior")),
+    );
   }
   factory XCMV5DescendOrigin.fromJson(Map<String, dynamic> json) {
     return XCMV5DescendOrigin(
-        interior: XCMV5Junctions.fromJson(
-            json.valueAs(XCMInstructionType.descendOrigin.type)));
+      interior: XCMV5Junctions.fromJson(
+        json.valueAs(XCMInstructionType.descendOrigin.type),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Junctions.layout_(property: "interior")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Junctions.layout_(property: "interior"),
+    ], property: property);
   }
 
   @override
@@ -1024,19 +1122,23 @@ class XCMV5ReportError extends XCMInstructionV5 with XCMReportError {
   XCMV5ReportError({required this.responseInfo});
   factory XCMV5ReportError.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ReportError(
-        responseInfo: XCMV5QueryResponseInfo.deserializeJson(
-            json.valueAs("response_info")));
+      responseInfo: XCMV5QueryResponseInfo.deserializeJson(
+        json.valueAs("response_info"),
+      ),
+    );
   }
   factory XCMV5ReportError.fromJson(Map<String, dynamic> json) {
     return XCMV5ReportError(
-        responseInfo: XCMV5QueryResponseInfo.fromJson(
-            json.valueAs(XCMInstructionType.reportError.type)));
+      responseInfo: XCMV5QueryResponseInfo.fromJson(
+        json.valueAs(XCMInstructionType.reportError.type),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [XCMV5QueryResponseInfo.layout_(property: "response_info")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5QueryResponseInfo.layout_(property: "response_info"),
+    ], property: property);
   }
 
   @override
@@ -1055,7 +1157,7 @@ class XCMV5ReportError extends XCMInstructionV5 with XCMReportError {
   }
 
   @override
-  List get variabels => [type, responseInfo];
+  List get variables => [type, responseInfo];
 }
 
 class XCMV5DepositAsset extends XCMInstructionV5 with XCMDepositAsset {
@@ -1072,16 +1174,18 @@ class XCMV5DepositAsset extends XCMInstructionV5 with XCMDepositAsset {
   }
   factory XCMV5DepositAsset.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.depositAsset.type);
+      XCMInstructionType.depositAsset.type,
+    );
     return XCMV5DepositAsset(
-        assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
-        beneficiary: XCMV5Location.fromJson(data.valueAs("beneficiary")));
+      assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
+      beneficiary: XCMV5Location.fromJson(data.valueAs("beneficiary")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5AssetFilter.layout_(property: "assets"),
-      XCMV5Location.layout_(property: "beneficiary")
+      XCMV5Location.layout_(property: "beneficiary"),
     ], property: property);
   }
 
@@ -1103,13 +1207,13 @@ class XCMV5DepositAsset extends XCMInstructionV5 with XCMDepositAsset {
     return {
       type.type: {
         "assets": assets.toJson(),
-        "beneficiary": beneficiary.toJson()
-      }
+        "beneficiary": beneficiary.toJson(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, beneficiary];
+  List get variables => [type, assets, beneficiary];
 }
 
 class XCMV5DepositReserveAsset extends XCMInstructionV5
@@ -1121,30 +1225,36 @@ class XCMV5DepositReserveAsset extends XCMInstructionV5
   @override
   final XCMV5 xcm;
 
-  XCMV5DepositReserveAsset(
-      {required this.assets, required this.dest, required this.xcm});
+  XCMV5DepositReserveAsset({
+    required this.assets,
+    required this.dest,
+    required this.xcm,
+  });
   factory XCMV5DepositReserveAsset.deserializeJson(Map<String, dynamic> json) {
     return XCMV5DepositReserveAsset(
-        assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
-        dest: XCMV5Location.deserializeJson(json.valueAs("dest")),
-        xcm: XCMV5.deserializeJson(json.valueAs("xcm")));
+      assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
+      dest: XCMV5Location.deserializeJson(json.valueAs("dest")),
+      xcm: XCMV5.deserializeJson(json.valueAs("xcm")),
+    );
   }
   factory XCMV5DepositReserveAsset.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.depositReserveAsset.type);
+      XCMInstructionType.depositReserveAsset.type,
+    );
     final xcm = data.valueEnsureAsList<Map<String, dynamic>>("xcm");
     return XCMV5DepositReserveAsset(
-        assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
-        dest: XCMV5Location.fromJson(data.valueAs("dest")),
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
+      dest: XCMV5Location.fromJson(data.valueAs("dest")),
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5AssetFilter.layout_(property: "assets"),
       XCMV5Location.layout_(property: "dest"),
-      XCMV5.layout_(property: "xcm")
+      XCMV5.layout_(property: "xcm"),
     ], property: property);
   }
 
@@ -1158,7 +1268,7 @@ class XCMV5DepositReserveAsset extends XCMInstructionV5
     return {
       "assets": assets.serializeJsonVariant(),
       "dest": dest.serializeJson(),
-      "xcm": xcm.serializeJson()
+      "xcm": xcm.serializeJson(),
     };
   }
 
@@ -1169,12 +1279,12 @@ class XCMV5DepositReserveAsset extends XCMInstructionV5
         "assets": assets.toJson(),
         "dest": dest.toJson(),
         "xcm": xcm.instructions.map((e) => e.toJson()).toList(),
-      }
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, dest, xcm];
+  List get variables => [type, assets, dest, xcm];
 }
 
 class XCMV5ExchangeAsset extends XCMInstructionV5 with XCMExchangeAsset {
@@ -1183,29 +1293,36 @@ class XCMV5ExchangeAsset extends XCMInstructionV5 with XCMExchangeAsset {
   final XCMV5Assets want;
   final bool maximal;
 
-  XCMV5ExchangeAsset(
-      {required this.give, required this.want, required this.maximal});
+  XCMV5ExchangeAsset({
+    required this.give,
+    required this.want,
+    required this.maximal,
+  });
   factory XCMV5ExchangeAsset.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ExchangeAsset(
-        give: XCMV5AssetFilter.deserializeJson(json.valueAs("give")),
-        want: XCMV5Assets.deserializeJson(json.valueAs("want")),
-        maximal: json.valueAs("maximal"));
+      give: XCMV5AssetFilter.deserializeJson(json.valueAs("give")),
+      want: XCMV5Assets.deserializeJson(json.valueAs("want")),
+      maximal: json.valueAs("maximal"),
+    );
   }
   factory XCMV5ExchangeAsset.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.exchangeAsset.type);
+      XCMInstructionType.exchangeAsset.type,
+    );
     final assets = data.valueEnsureAsList<Map<String, dynamic>>("want");
     return XCMV5ExchangeAsset(
-        want: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()),
-        give: XCMV5AssetFilter.fromJson(data.valueAs("give")),
-        maximal: data.valueAs("maximal"));
+      want: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+      give: XCMV5AssetFilter.fromJson(data.valueAs("give")),
+      maximal: data.valueAs("maximal"),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5AssetFilter.layout_(property: "give"),
       XCMV5Assets.layout_(property: "want"),
-      LayoutConst.boolean(property: "maximal")
+      LayoutConst.boolean(property: "maximal"),
     ], property: property);
   }
 
@@ -1219,7 +1336,7 @@ class XCMV5ExchangeAsset extends XCMInstructionV5 with XCMExchangeAsset {
     return {
       "give": give.serializeJsonVariant(),
       "want": want.serializeJson(),
-      "maximal": maximal
+      "maximal": maximal,
     };
   }
 
@@ -1229,13 +1346,13 @@ class XCMV5ExchangeAsset extends XCMInstructionV5 with XCMExchangeAsset {
       type.type: {
         "give": give.toJson(),
         "want": want.assets.map((e) => e.toJson()).toList(),
-        "maximal": maximal
-      }
+        "maximal": maximal,
+      },
     };
   }
 
   @override
-  List get variabels => [type, give, want, maximal];
+  List get variables => [type, give, want, maximal];
 }
 
 class XCMV5InitiateReserveWithdraw extends XCMInstructionV5
@@ -1246,25 +1363,32 @@ class XCMV5InitiateReserveWithdraw extends XCMInstructionV5
   final XCMV5Location reserve;
   @override
   final XCMV5 xcm;
-  XCMV5InitiateReserveWithdraw(
-      {required this.assets, required this.reserve, required this.xcm});
+  XCMV5InitiateReserveWithdraw({
+    required this.assets,
+    required this.reserve,
+    required this.xcm,
+  });
   factory XCMV5InitiateReserveWithdraw.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5InitiateReserveWithdraw(
-        assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
-        reserve: XCMV5Location.deserializeJson(json.valueAs("reserve")),
-        xcm: XCMV5.deserializeJson(json.valueAs("xcm")));
+      assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
+      reserve: XCMV5Location.deserializeJson(json.valueAs("reserve")),
+      xcm: XCMV5.deserializeJson(json.valueAs("xcm")),
+    );
   }
   factory XCMV5InitiateReserveWithdraw.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.initiateReserveWithdraw.type);
+      XCMInstructionType.initiateReserveWithdraw.type,
+    );
     final xcm = data.valueEnsureAsList<Map<String, dynamic>>("xcm");
     return XCMV5InitiateReserveWithdraw(
-        assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
-        reserve: XCMV5Location.fromJson(data.valueAs("reserve")),
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
+      reserve: XCMV5Location.fromJson(data.valueAs("reserve")),
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -1285,7 +1409,7 @@ class XCMV5InitiateReserveWithdraw extends XCMInstructionV5
     return {
       "assets": assets.serializeJsonVariant(),
       "reserve": reserve.serializeJson(),
-      "xcm": xcm.serializeJson()
+      "xcm": xcm.serializeJson(),
     };
   }
 
@@ -1295,13 +1419,13 @@ class XCMV5InitiateReserveWithdraw extends XCMInstructionV5
       type.type: {
         "assets": assets.toJson(),
         "reserve": reserve.toJson(),
-        "xcm": xcm.instructions.map((e) => e.toJson()).toList()
-      }
+        "xcm": xcm.instructions.map((e) => e.toJson()).toList(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, reserve, xcm];
+  List get variables => [type, assets, reserve, xcm];
 }
 
 class XCMV5InitiateTeleport extends XCMInstructionV5 with XCMInitiateTeleport {
@@ -1310,30 +1434,36 @@ class XCMV5InitiateTeleport extends XCMInstructionV5 with XCMInitiateTeleport {
   final XCMV5Location dest;
   @override
   final XCMV5 xcm;
-  XCMV5InitiateTeleport(
-      {required this.assets, required this.dest, required this.xcm});
+  XCMV5InitiateTeleport({
+    required this.assets,
+    required this.dest,
+    required this.xcm,
+  });
   factory XCMV5InitiateTeleport.deserializeJson(Map<String, dynamic> json) {
     return XCMV5InitiateTeleport(
-        assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
-        dest: XCMV5Location.deserializeJson(json.valueAs("dest")),
-        xcm: XCMV5.deserializeJson(json.valueAs("xcm")));
+      assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
+      dest: XCMV5Location.deserializeJson(json.valueAs("dest")),
+      xcm: XCMV5.deserializeJson(json.valueAs("xcm")),
+    );
   }
   factory XCMV5InitiateTeleport.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.initiateTeleport.type);
+      XCMInstructionType.initiateTeleport.type,
+    );
     final xcm = data.valueEnsureAsList<Map<String, dynamic>>("xcm");
     return XCMV5InitiateTeleport(
-        assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
-        dest: XCMV5Location.fromJson(data.valueAs("dest")),
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
+      dest: XCMV5Location.fromJson(data.valueAs("dest")),
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5AssetFilter.layout_(property: "assets"),
       XCMV5Location.layout_(property: "dest"),
-      XCMV5.layout_(property: "xcm")
+      XCMV5.layout_(property: "xcm"),
     ], property: property);
   }
 
@@ -1347,7 +1477,7 @@ class XCMV5InitiateTeleport extends XCMInstructionV5 with XCMInitiateTeleport {
     return {
       "assets": assets.serializeJsonVariant(),
       "dest": dest.serializeJson(),
-      "xcm": xcm.serializeJson()
+      "xcm": xcm.serializeJson(),
     };
   }
 
@@ -1357,13 +1487,13 @@ class XCMV5InitiateTeleport extends XCMInstructionV5 with XCMInitiateTeleport {
       type.type: {
         "assets": assets.toJson(),
         "dest": dest.toJson(),
-        "xcm": xcm.instructions.map((e) => e.toJson()).toList()
-      }
+        "xcm": xcm.instructions.map((e) => e.toJson()).toList(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, dest, xcm];
+  List get variables => [type, assets, dest, xcm];
 }
 
 class XCMV5ReportHolding extends XCMInstructionV5 with XCMReportHolding {
@@ -1373,17 +1503,22 @@ class XCMV5ReportHolding extends XCMInstructionV5 with XCMReportHolding {
   XCMV5ReportHolding({required this.assets, required this.responseInfo});
   factory XCMV5ReportHolding.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ReportHolding(
-        assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
-        responseInfo: XCMV5QueryResponseInfo.deserializeJson(
-            json.valueAs("response_info")));
+      assets: XCMV5AssetFilter.deserializeJson(json.valueAs("assets")),
+      responseInfo: XCMV5QueryResponseInfo.deserializeJson(
+        json.valueAs("response_info"),
+      ),
+    );
   }
   factory XCMV5ReportHolding.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.reportHolding.type);
+      XCMInstructionType.reportHolding.type,
+    );
     return XCMV5ReportHolding(
-        assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
-        responseInfo:
-            XCMV5QueryResponseInfo.fromJson(data.valueAs("response_info")));
+      assets: XCMV5AssetFilter.fromJson(data.valueAs("assets")),
+      responseInfo: XCMV5QueryResponseInfo.fromJson(
+        data.valueAs("response_info"),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -1401,7 +1536,7 @@ class XCMV5ReportHolding extends XCMInstructionV5 with XCMReportHolding {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "assets": assets.serializeJsonVariant(),
-      "response_info": responseInfo.serializeJson()
+      "response_info": responseInfo.serializeJson(),
     };
   }
 
@@ -1410,13 +1545,13 @@ class XCMV5ReportHolding extends XCMInstructionV5 with XCMReportHolding {
     return {
       type.type: {
         "assets": assets.toJson(),
-        "response_info": responseInfo.toJson()
-      }
+        "response_info": responseInfo.toJson(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, responseInfo];
+  List get variables => [type, assets, responseInfo];
 }
 
 class XCMV5BuyExecution extends XCMInstructionV5 with XCMBuyExecution {
@@ -1428,16 +1563,20 @@ class XCMV5BuyExecution extends XCMInstructionV5 with XCMBuyExecution {
   XCMV5BuyExecution({required this.fees, required this.weightLimit});
   factory XCMV5BuyExecution.deserializeJson(Map<String, dynamic> json) {
     return XCMV5BuyExecution(
-        fees: XCMV5Asset.deserializeJson(json.valueAs("fees")),
-        weightLimit:
-            XCMV3WeightLimit.deserializeJson(json.valueAs("weight_limit")));
+      fees: XCMV5Asset.deserializeJson(json.valueAs("fees")),
+      weightLimit: XCMV3WeightLimit.deserializeJson(
+        json.valueAs("weight_limit"),
+      ),
+    );
   }
   factory XCMV5BuyExecution.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.buyExecution.type);
+      XCMInstructionType.buyExecution.type,
+    );
     return XCMV5BuyExecution(
-        fees: XCMV5Asset.fromJson(data.valueAs("fees")),
-        weightLimit: XCMV3WeightLimit.fromJson(data.valueAs("weight_limit")));
+      fees: XCMV5Asset.fromJson(data.valueAs("fees")),
+      weightLimit: XCMV3WeightLimit.fromJson(data.valueAs("weight_limit")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -1456,19 +1595,19 @@ class XCMV5BuyExecution extends XCMInstructionV5 with XCMBuyExecution {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "fees": fees.serializeJson(),
-      "weight_limit": weightLimit.serializeJsonVariant()
+      "weight_limit": weightLimit.serializeJsonVariant(),
     };
   }
 
   @override
   Map<String, dynamic> toJson({String? property}) {
     return {
-      type.type: {"fees": fees.toJson(), "weight_limit": weightLimit.toJson()}
+      type.type: {"fees": fees.toJson(), "weight_limit": weightLimit.toJson()},
     };
   }
 
   @override
-  List get variabels => [type, fees, weightLimit];
+  List get variables => [type, fees, weightLimit];
 }
 
 class XCMV5RefundSurplus extends XCMInstructionV5
@@ -1479,7 +1618,7 @@ class XCMV5RefundSurplus extends XCMInstructionV5
     return XCMV5RefundSurplus();
   }
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 class XCMV5SetErrorHandler extends XCMInstructionV5 with XCMSetErrorHandler {
@@ -1488,19 +1627,23 @@ class XCMV5SetErrorHandler extends XCMInstructionV5 with XCMSetErrorHandler {
   XCMV5SetErrorHandler({required this.xcm});
   factory XCMV5SetErrorHandler.deserializeJson(Map<String, dynamic> json) {
     return XCMV5SetErrorHandler(
-        xcm: XCMV5.deserializeJson(json.valueAs("xcm")));
+      xcm: XCMV5.deserializeJson(json.valueAs("xcm")),
+    );
   }
   factory XCMV5SetErrorHandler.fromJson(Map<String, dynamic> json) {
     final xcm = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.setErrorHandler.type);
+      XCMInstructionType.setErrorHandler.type,
+    );
     return XCMV5SetErrorHandler(
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5.layout_(property: "xcm")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5.layout_(property: "xcm"),
+    ], property: property);
   }
 
   @override
@@ -1514,7 +1657,7 @@ class XCMV5SetErrorHandler extends XCMInstructionV5 with XCMSetErrorHandler {
   }
 
   @override
-  List get variabels => [type, xcm];
+  List get variables => [type, xcm];
 }
 
 class XCMV5SetAppendix extends XCMInstructionV5 with XCMSetAppendix {
@@ -1526,15 +1669,18 @@ class XCMV5SetAppendix extends XCMInstructionV5 with XCMSetAppendix {
   }
   factory XCMV5SetAppendix.fromJson(Map<String, dynamic> json) {
     final xcm = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.setAppendix.type);
+      XCMInstructionType.setAppendix.type,
+    );
     return XCMV5SetAppendix(
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5.layout_(property: "xcm")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5.layout_(property: "xcm"),
+    ], property: property);
   }
 
   @override
@@ -1548,7 +1694,7 @@ class XCMV5SetAppendix extends XCMInstructionV5 with XCMSetAppendix {
   }
 
   @override
-  List get variabels => [type, xcm];
+  List get variables => [type, xcm];
 }
 
 class XCMV5ClearError extends XCMInstructionV5
@@ -1559,7 +1705,7 @@ class XCMV5ClearError extends XCMInstructionV5
     return XCMV5ClearError();
   }
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 class XCMV5ClaimAsset extends XCMInstructionV5 with XCMClaimAsset {
@@ -1575,13 +1721,16 @@ class XCMV5ClaimAsset extends XCMInstructionV5 with XCMClaimAsset {
     );
   }
   factory XCMV5ClaimAsset.fromJson(Map<String, dynamic> json) {
-    final data = json
-        .valueEnsureAsMap<String, dynamic>(XCMInstructionType.claimAsset.type);
+    final data = json.valueEnsureAsMap<String, dynamic>(
+      XCMInstructionType.claimAsset.type,
+    );
     final assets = data.valueEnsureAsList<Map<String, dynamic>>("assets");
     return XCMV5ClaimAsset(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()),
-        ticket: XCMV5Location.fromJson(data.valueAs("ticket")));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+      ticket: XCMV5Location.fromJson(data.valueAs("ticket")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -1602,13 +1751,13 @@ class XCMV5ClaimAsset extends XCMInstructionV5 with XCMClaimAsset {
   }
 
   @override
-  List get variabels => [type, assets, ticket];
+  List get variables => [type, assets, ticket];
 }
 
 class XCMV5Trap extends XCMInstructionV5 with XCMTrap {
   @override
   final BigInt trap;
-  XCMV5Trap({required BigInt trap}) : trap = trap.asUint64;
+  XCMV5Trap({required BigInt trap}) : trap = trap.asU64;
   factory XCMV5Trap.deserializeJson(Map<String, dynamic> json) {
     return XCMV5Trap(trap: json.valueAs("trap"));
   }
@@ -1617,8 +1766,9 @@ class XCMV5Trap extends XCMInstructionV5 with XCMTrap {
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.compactBigintU64(property: "trap")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactBigintU64(property: "trap"),
+    ], property: property);
   }
 
   @override
@@ -1632,35 +1782,41 @@ class XCMV5Trap extends XCMInstructionV5 with XCMTrap {
   }
 
   @override
-  List get variabels => [type, trap];
+  List get variables => [type, trap];
 }
 
 class XCMV5SubscribeVersion extends XCMInstructionV5 with XCMSubscribeVersion {
   @override
   final BigInt queryId;
   final SubstrateWeightV2 maxResponseWeight;
-  XCMV5SubscribeVersion(
-      {required BigInt queryId, required this.maxResponseWeight})
-      : queryId = queryId.asUint64;
+  XCMV5SubscribeVersion({
+    required BigInt queryId,
+    required this.maxResponseWeight,
+  }) : queryId = queryId.asU64;
   factory XCMV5SubscribeVersion.deserializeJson(Map<String, dynamic> json) {
     return XCMV5SubscribeVersion(
-        queryId: json.valueAs("query_id"),
-        maxResponseWeight: SubstrateWeightV2.deserializeJson(
-            json.valueAs("max_response_weight")));
+      queryId: json.valueAs("query_id"),
+      maxResponseWeight: SubstrateWeightV2.deserializeJson(
+        json.valueAs("max_response_weight"),
+      ),
+    );
   }
   factory XCMV5SubscribeVersion.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.subscribeVersion.type);
+      XCMInstructionType.subscribeVersion.type,
+    );
     return XCMV5SubscribeVersion(
-        maxResponseWeight:
-            SubstrateWeightV2.fromJson(data.valueAs("max_response_weight")),
-        queryId: data.valueAs("query_id"));
+      maxResponseWeight: SubstrateWeightV2.fromJson(
+        data.valueAs("max_response_weight"),
+      ),
+      queryId: data.valueAs("query_id"),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactBigintU64(property: "query_id"),
-      SubstrateWeightV2.layout_(property: "max_response_weight")
+      SubstrateWeightV2.layout_(property: "max_response_weight"),
     ], property: property);
   }
 
@@ -1673,7 +1829,7 @@ class XCMV5SubscribeVersion extends XCMInstructionV5 with XCMSubscribeVersion {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "query_id": queryId,
-      "max_response_weight": maxResponseWeight.serializeJson()
+      "max_response_weight": maxResponseWeight.serializeJson(),
     };
   }
 
@@ -1682,13 +1838,13 @@ class XCMV5SubscribeVersion extends XCMInstructionV5 with XCMSubscribeVersion {
     return {
       type.type: {
         "query_id": queryId,
-        "max_response_weight": maxResponseWeight.toJson()
-      }
+        "max_response_weight": maxResponseWeight.toJson(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, queryId, maxResponseWeight];
+  List get variables => [type, queryId, maxResponseWeight];
 }
 
 class XCMV5UnsubscribeVersion extends XCMInstructionV5
@@ -1699,7 +1855,7 @@ class XCMV5UnsubscribeVersion extends XCMInstructionV5
     return XCMV5UnsubscribeVersion();
   }
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 class XCMV5BurnAsset extends XCMInstructionV5 with XCMBurnAsset {
@@ -1713,10 +1869,13 @@ class XCMV5BurnAsset extends XCMInstructionV5 with XCMBurnAsset {
   }
   factory XCMV5BurnAsset.fromJson(Map<String, dynamic> json) {
     final assets = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.burnAsset.type);
+      XCMInstructionType.burnAsset.type,
+    );
     return XCMV5BurnAsset(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -1735,7 +1894,7 @@ class XCMV5BurnAsset extends XCMInstructionV5 with XCMBurnAsset {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 class XCMV5ExpectAsset extends XCMInstructionV5 with XCMExpectAsset {
@@ -1749,10 +1908,13 @@ class XCMV5ExpectAsset extends XCMInstructionV5 with XCMExpectAsset {
   }
   factory XCMV5ExpectAsset.fromJson(Map<String, dynamic> json) {
     final assets = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.expectAsset.type);
+      XCMInstructionType.expectAsset.type,
+    );
     return XCMV5ExpectAsset(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -1772,7 +1934,7 @@ class XCMV5ExpectAsset extends XCMInstructionV5 with XCMExpectAsset {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 class XCMV5ExpectOrigin extends XCMInstructionV5 with XCMExpectOrigin {
@@ -1782,16 +1944,21 @@ class XCMV5ExpectOrigin extends XCMInstructionV5 with XCMExpectOrigin {
   factory XCMV5ExpectOrigin.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ExpectOrigin(
       location: json.valueTo<XCMV5Location?, Map<String, dynamic>>(
-          key: "location", parse: (v) => XCMV5Location.deserializeJson(v)),
+        key: "location",
+        parse: (v) => XCMV5Location.deserializeJson(v),
+      ),
     );
   }
   factory XCMV5ExpectOrigin.fromJson(Map<String, dynamic> json) {
     final Map<String, dynamic>? location = MetadataUtils.parseOptional(
-        json.valueEnsureAsMap<String, dynamic>(
-            XCMInstructionType.expectOrigin.type));
+      json.valueEnsureAsMap<String, dynamic>(
+        XCMInstructionType.expectOrigin.type,
+      ),
+    );
 
     return XCMV5ExpectOrigin(
-        location: location == null ? null : XCMV5Location.fromJson(location));
+      location: location == null ? null : XCMV5Location.fromJson(location),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -1815,39 +1982,44 @@ class XCMV5ExpectOrigin extends XCMInstructionV5 with XCMExpectOrigin {
   }
 
   @override
-  List get variabels => [type, location];
+  List get variables => [type, location];
 }
 
 class XCMV5ExpectError extends XCMInstructionV5 with XCMExpectError {
   final int? index;
   final XCMV5Error? error;
 
-  XCMV5ExpectError({int? index, this.error}) : index = index?.asUint32;
+  XCMV5ExpectError({int? index, this.error}) : index = index?.asU32;
 
   factory XCMV5ExpectError.deserializeJson(Map<String, dynamic> json) {
     final error = json.valueAs<Map<String, dynamic>?>("error");
     if (error == null) return XCMV5ExpectError();
     return XCMV5ExpectError(
-        index: error.valueAs<int>("index"),
-        error: XCMV5Error.deserializeJson(error.valueAs("error")));
+      index: error.valueAs<int>("index"),
+      error: XCMV5Error.deserializeJson(error.valueAs("error")),
+    );
   }
   factory XCMV5ExpectError.fromJson(Map<String, dynamic> json) {
-    final data = json
-        .valueEnsureAsMap<String, dynamic>(XCMInstructionType.expectError.type);
+    final data = json.valueEnsureAsMap<String, dynamic>(
+      XCMInstructionType.expectError.type,
+    );
     final List? opt = MetadataUtils.parseOptional(data);
     if (opt == null) return XCMV5ExpectError();
     return XCMV5ExpectError(
-        index: IntUtils.parse(opt[0]), error: XCMV5Error.fromJson(opt[1]));
+      index: IntUtils.parse(opt[0]),
+      error: XCMV5Error.fromJson(opt[1]),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.optional(
-          LayoutConst.struct([
-            LayoutConst.u32(property: "index"),
-            XCMV5Error.layout_(property: "error")
-          ]),
-          property: "error")
+        LayoutConst.struct([
+          LayoutConst.u32(property: "index"),
+          XCMV5Error.layout_(property: "error"),
+        ]),
+        property: "error",
+      ),
     ], property: property);
   }
 
@@ -1859,9 +2031,10 @@ class XCMV5ExpectError extends XCMInstructionV5 with XCMExpectError {
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "error": (index == null || error == null)
-          ? null
-          : {"index": index, "error": error?.serializeJsonVariant()}
+      "error":
+          (index == null || error == null)
+              ? null
+              : {"index": index, "error": error?.serializeJsonVariant()},
     };
   }
 
@@ -1869,12 +2042,13 @@ class XCMV5ExpectError extends XCMInstructionV5 with XCMExpectError {
   Map<String, dynamic> toJson() {
     return {
       type.type: MetadataUtils.toOptionalJson(
-          (index == null || error == null) ? null : [index, error?.toJson()])
+        (index == null || error == null) ? null : [index, error?.toJson()],
+      ),
     };
   }
 
   @override
-  List get variabels => [type, index, error];
+  List get variables => [type, index, error];
 }
 
 class XCMV5ExpectTransactStatus extends XCMInstructionV5
@@ -1886,17 +2060,21 @@ class XCMV5ExpectTransactStatus extends XCMInstructionV5
 
   factory XCMV5ExpectTransactStatus.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ExpectTransactStatus(
-        code: XCMV3MaybeErrorCode.deserializeJson(json.valueAs("code")));
+      code: XCMV3MaybeErrorCode.deserializeJson(json.valueAs("code")),
+    );
   }
   factory XCMV5ExpectTransactStatus.fromJson(Map<String, dynamic> json) {
     return XCMV5ExpectTransactStatus(
-        code: XCMV3MaybeErrorCode.fromJson(
-            json.valueAs(XCMInstructionType.expectTransactStatus.type)));
+      code: XCMV3MaybeErrorCode.fromJson(
+        json.valueAs(XCMInstructionType.expectTransactStatus.type),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV3MaybeErrorCode.layout_(property: "code")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV3MaybeErrorCode.layout_(property: "code"),
+    ], property: property);
   }
 
   @override
@@ -1910,7 +2088,7 @@ class XCMV5ExpectTransactStatus extends XCMInstructionV5
   }
 
   @override
-  List get variabels => [type, code];
+  List get variables => [type, code];
 }
 
 class XCMV5QueryPallet extends XCMInstructionV5 with XCMQueryPallet {
@@ -1918,29 +2096,32 @@ class XCMV5QueryPallet extends XCMInstructionV5 with XCMQueryPallet {
   final List<int> moduleName;
   final XCMV5QueryResponseInfo responseInfo;
 
-  XCMV5QueryPallet({
-    required List<int> moduleName,
-    required this.responseInfo,
-  }) : moduleName = moduleName.asImmutableBytes;
+  XCMV5QueryPallet({required List<int> moduleName, required this.responseInfo})
+    : moduleName = moduleName.asImmutableBytes;
 
   factory XCMV5QueryPallet.deserializeJson(Map<String, dynamic> json) {
     return XCMV5QueryPallet(
-        moduleName: json.valueAsBytes("module_name"),
-        responseInfo: XCMV5QueryResponseInfo.deserializeJson(
-            json.valueAs("response_info")));
+      moduleName: json.valueAsBytes("module_name"),
+      responseInfo: XCMV5QueryResponseInfo.deserializeJson(
+        json.valueAs("response_info"),
+      ),
+    );
   }
   factory XCMV5QueryPallet.fromJson(Map<String, dynamic> json) {
-    final data = json
-        .valueEnsureAsMap<String, dynamic>(XCMInstructionType.queryPallet.type);
+    final data = json.valueEnsureAsMap<String, dynamic>(
+      XCMInstructionType.queryPallet.type,
+    );
     return XCMV5QueryPallet(
-        moduleName: data.valueAsBytes("module_name"),
-        responseInfo:
-            XCMV5QueryResponseInfo.fromJson(data.valueAs("response_info")));
+      moduleName: data.valueAsBytes("module_name"),
+      responseInfo: XCMV5QueryResponseInfo.fromJson(
+        data.valueAs("response_info"),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.bytes(property: "module_name"),
-      XCMV5QueryResponseInfo.layout_(property: "response_info")
+      XCMV5QueryResponseInfo.layout_(property: "response_info"),
     ], property: property);
   }
 
@@ -1953,7 +2134,7 @@ class XCMV5QueryPallet extends XCMInstructionV5 with XCMQueryPallet {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "module_name": moduleName,
-      "response_info": responseInfo.serializeJson()
+      "response_info": responseInfo.serializeJson(),
     };
   }
 
@@ -1962,13 +2143,13 @@ class XCMV5QueryPallet extends XCMInstructionV5 with XCMQueryPallet {
     return {
       type.type: {
         "module_name": moduleName,
-        "response_info": responseInfo.toJson()
-      }
+        "response_info": responseInfo.toJson(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, moduleName, responseInfo];
+  List get variables => [type, moduleName, responseInfo];
 }
 
 class XCMV5ExpectPallet extends XCMInstructionV5 with XCMExpectPallet {
@@ -1989,29 +2170,32 @@ class XCMV5ExpectPallet extends XCMInstructionV5 with XCMExpectPallet {
     required List<int> moduleName,
     required int crateMajor,
     required int minCrateMinor,
-  })  : moduleName = moduleName.asImmutableBytes,
-        index = index.asUint32,
-        name = name.asImmutableBytes,
-        crateMajor = crateMajor.asUint32,
-        minCrateMinor = minCrateMinor.asUint32;
+  }) : moduleName = moduleName.asImmutableBytes,
+       index = index.asU32,
+       name = name.asImmutableBytes,
+       crateMajor = crateMajor.asU32,
+       minCrateMinor = minCrateMinor.asU32;
 
   factory XCMV5ExpectPallet.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ExpectPallet(
-        name: json.valueAsBytes("name"),
-        moduleName: json.valueAsBytes("module_name"),
-        index: json.valueAs("index"),
-        crateMajor: json.valueAs("crate_major"),
-        minCrateMinor: json.valueAs("min_crate_minor"));
+      name: json.valueAsBytes("name"),
+      moduleName: json.valueAsBytes("module_name"),
+      index: json.valueAs("index"),
+      crateMajor: json.valueAs("crate_major"),
+      minCrateMinor: json.valueAs("min_crate_minor"),
+    );
   }
   factory XCMV5ExpectPallet.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.expectPallet.type);
+      XCMInstructionType.expectPallet.type,
+    );
     return XCMV5ExpectPallet(
-        name: data.valueAsBytes("name"),
-        moduleName: data.valueAsBytes("module_name"),
-        index: data.valueAs("index"),
-        crateMajor: data.valueAs("crate_major"),
-        minCrateMinor: data.valueAs("min_crate_minor"));
+      name: data.valueAsBytes("name"),
+      moduleName: data.valueAsBytes("module_name"),
+      index: data.valueAs("index"),
+      crateMajor: data.valueAs("crate_major"),
+      minCrateMinor: data.valueAs("min_crate_minor"),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -2035,7 +2219,7 @@ class XCMV5ExpectPallet extends XCMInstructionV5 with XCMExpectPallet {
       "name": name,
       "module_name": moduleName,
       "crate_major": crateMajor,
-      "min_crate_minor": minCrateMinor
+      "min_crate_minor": minCrateMinor,
     };
   }
 
@@ -2047,14 +2231,20 @@ class XCMV5ExpectPallet extends XCMInstructionV5 with XCMExpectPallet {
         "name": name,
         "module_name": moduleName,
         "crate_major": crateMajor,
-        "min_crate_minor": minCrateMinor
-      }
+        "min_crate_minor": minCrateMinor,
+      },
     };
   }
 
   @override
-  List get variabels =>
-      [type, index, name, moduleName, crateMajor, minCrateMinor];
+  List get variables => [
+    type,
+    index,
+    name,
+    moduleName,
+    crateMajor,
+    minCrateMinor,
+  ];
 }
 
 class XCMV5ReportTransactStatus extends XCMInstructionV5
@@ -2065,18 +2255,22 @@ class XCMV5ReportTransactStatus extends XCMInstructionV5
 
   factory XCMV5ReportTransactStatus.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ReportTransactStatus(
-        responseInfo: XCMV5QueryResponseInfo.deserializeJson(
-            json.valueAs("response_info")));
+      responseInfo: XCMV5QueryResponseInfo.deserializeJson(
+        json.valueAs("response_info"),
+      ),
+    );
   }
   factory XCMV5ReportTransactStatus.fromJson(Map<String, dynamic> json) {
     return XCMV5ReportTransactStatus(
-        responseInfo: XCMV5QueryResponseInfo.fromJson(
-            json.valueAs(XCMInstructionType.reportTransactStatus.type)));
+      responseInfo: XCMV5QueryResponseInfo.fromJson(
+        json.valueAs(XCMInstructionType.reportTransactStatus.type),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [XCMV5QueryResponseInfo.layout_(property: "response_info")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5QueryResponseInfo.layout_(property: "response_info"),
+    ], property: property);
   }
 
   @override
@@ -2095,7 +2289,7 @@ class XCMV5ReportTransactStatus extends XCMInstructionV5
   }
 
   @override
-  List get variabels => [type, responseInfo];
+  List get variables => [type, responseInfo];
 }
 
 class XCMV5ClearTransactStatus extends XCMInstructionV5
@@ -2115,16 +2309,20 @@ class XCMV5UniversalOrigin extends XCMInstructionV5 with XCMUniversalOrigin {
 
   factory XCMV5UniversalOrigin.deserializeJson(Map<String, dynamic> json) {
     return XCMV5UniversalOrigin(
-        origin: XCMV5Junction.deserializeJson(json.valueAs("origin")));
+      origin: XCMV5Junction.deserializeJson(json.valueAs("origin")),
+    );
   }
   factory XCMV5UniversalOrigin.fromJson(Map<String, dynamic> json) {
     return XCMV5UniversalOrigin(
-        origin: XCMV5Junction.fromJson(
-            json.valueAs(XCMInstructionType.universalOrigin.type)));
+      origin: XCMV5Junction.fromJson(
+        json.valueAs(XCMInstructionType.universalOrigin.type),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Junction.layout_(property: "origin")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Junction.layout_(property: "origin"),
+    ], property: property);
   }
 
   @override
@@ -2145,31 +2343,36 @@ class XCMV5ExportMessage extends XCMInstructionV5 with XCMExportMessage {
   final XCMV5InteriorMultiLocation destination;
   @override
   final XCMV5 xcm;
-  XCMV5ExportMessage(
-      {required this.network, required this.destination, required this.xcm});
+  XCMV5ExportMessage({
+    required this.network,
+    required this.destination,
+    required this.xcm,
+  });
   factory XCMV5ExportMessage.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ExportMessage(
-        network: XCMV5NetworkId.deserializeJson(json.valueAs("network")),
-        destination:
-            XCMV5Junctions.deserializeJson(json.valueAs("destination")),
-        xcm: XCMV5.deserializeJson(json.valueAs("xcm")));
+      network: XCMV5NetworkId.deserializeJson(json.valueAs("network")),
+      destination: XCMV5Junctions.deserializeJson(json.valueAs("destination")),
+      xcm: XCMV5.deserializeJson(json.valueAs("xcm")),
+    );
   }
   factory XCMV5ExportMessage.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.exportMessage.type);
+      XCMInstructionType.exportMessage.type,
+    );
     final xcm = data.valueEnsureAsList<Map<String, dynamic>>("xcm");
     return XCMV5ExportMessage(
-        network: XCMV5NetworkId.fromJson(data.valueAs("network")),
-        destination: XCMV5Junctions.fromJson(data.valueAs("destination")),
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      network: XCMV5NetworkId.fromJson(data.valueAs("network")),
+      destination: XCMV5Junctions.fromJson(data.valueAs("destination")),
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5NetworkId.layout_(property: "network"),
       XCMV5Junctions.layout_(property: "destination"),
-      XCMV5.layout_(property: "xcm")
+      XCMV5.layout_(property: "xcm"),
     ], property: property);
   }
 
@@ -2183,7 +2386,7 @@ class XCMV5ExportMessage extends XCMInstructionV5 with XCMExportMessage {
     return {
       "network": network.serializeJsonVariant(),
       "destination": destination.serializeJsonVariant(),
-      "xcm": xcm.serializeJson()
+      "xcm": xcm.serializeJson(),
     };
   }
 
@@ -2193,8 +2396,8 @@ class XCMV5ExportMessage extends XCMInstructionV5 with XCMExportMessage {
       type.type: {
         "network": network.toJson(),
         "destination": destination.toJson(),
-        "xcm": xcm.instructions.map((e) => e.toJson()).toList()
-      }
+        "xcm": xcm.instructions.map((e) => e.toJson()).toList(),
+      },
     };
   }
 }
@@ -2212,17 +2415,19 @@ class XCMV5LockAsset extends XCMInstructionV5 with XCMLockAsset {
     );
   }
   factory XCMV5LockAsset.fromJson(Map<String, dynamic> json) {
-    final data = json
-        .valueEnsureAsMap<String, dynamic>(XCMInstructionType.lockAsset.type);
+    final data = json.valueEnsureAsMap<String, dynamic>(
+      XCMInstructionType.lockAsset.type,
+    );
     return XCMV5LockAsset(
-        asset: XCMV5Asset.fromJson(data.valueAs("asset")),
-        unlocker: XCMV5Location.fromJson(data.valueAs("unlocker")));
+      asset: XCMV5Asset.fromJson(data.valueAs("asset")),
+      unlocker: XCMV5Location.fromJson(data.valueAs("unlocker")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Asset.layout_(property: "asset"),
-      XCMV5Location.layout_(property: "unlocker")
+      XCMV5Location.layout_(property: "unlocker"),
     ], property: property);
   }
 
@@ -2235,7 +2440,7 @@ class XCMV5LockAsset extends XCMInstructionV5 with XCMLockAsset {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "asset": asset.serializeJson(),
-      "unlocker": unlocker.serializeJson()
+      "unlocker": unlocker.serializeJson(),
     };
   }
 }
@@ -2253,17 +2458,19 @@ class XCMV5UnlockAsset extends XCMInstructionV5 with XCMUnlockAsset {
     );
   }
   factory XCMV5UnlockAsset.fromJson(Map<String, dynamic> json) {
-    final data = json
-        .valueEnsureAsMap<String, dynamic>(XCMInstructionType.unlockAsset.type);
+    final data = json.valueEnsureAsMap<String, dynamic>(
+      XCMInstructionType.unlockAsset.type,
+    );
     return XCMV5UnlockAsset(
-        asset: XCMV5Asset.fromJson(data.valueAs("asset")),
-        target: XCMV5Location.fromJson(data.valueAs("target")));
+      asset: XCMV5Asset.fromJson(data.valueAs("asset")),
+      target: XCMV5Location.fromJson(data.valueAs("target")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Asset.layout_(property: "asset"),
-      XCMV5Location.layout_(property: "target")
+      XCMV5Location.layout_(property: "target"),
     ], property: property);
   }
 
@@ -2292,16 +2499,18 @@ class XCMV5NoteUnlockable extends XCMInstructionV5 with XCMNoteUnlockable {
   }
   factory XCMV5NoteUnlockable.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.noteUnlockable.type);
+      XCMInstructionType.noteUnlockable.type,
+    );
     return XCMV5NoteUnlockable(
-        asset: XCMV5Asset.fromJson(data.valueAs("asset")),
-        owner: XCMV5Location.fromJson(data.valueAs("owner")));
+      asset: XCMV5Asset.fromJson(data.valueAs("asset")),
+      owner: XCMV5Location.fromJson(data.valueAs("owner")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Asset.layout_(property: "asset"),
-      XCMV5Location.layout_(property: "owner")
+      XCMV5Location.layout_(property: "owner"),
     ], property: property);
   }
 
@@ -2330,15 +2539,17 @@ class XCMV5RequestUnlock extends XCMInstructionV5 with XCMRequestUnlock {
   }
   factory XCMV5RequestUnlock.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.requestUnlock.type);
+      XCMInstructionType.requestUnlock.type,
+    );
     return XCMV5RequestUnlock(
-        asset: XCMV5Asset.fromJson(data.valueAs("asset")),
-        locker: XCMV5Location.fromJson(data.valueAs("locker")));
+      asset: XCMV5Asset.fromJson(data.valueAs("asset")),
+      locker: XCMV5Location.fromJson(data.valueAs("locker")),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Asset.layout_(property: "asset"),
-      XCMV5Location.layout_(property: "locker")
+      XCMV5Location.layout_(property: "locker"),
     ], property: property);
   }
 
@@ -2362,12 +2573,14 @@ class XCMV5SetFeesMode extends XCMInstructionV5 with XCMSetFeesMode {
   }
   factory XCMV5SetFeesMode.fromJson(Map<String, dynamic> json) {
     return XCMV5SetFeesMode(
-        jitWithdraw: json.valueAs(XCMInstructionType.setFeesMode.type));
+      jitWithdraw: json.valueAs(XCMInstructionType.setFeesMode.type),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.boolean(property: "jit_withdraw")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.boolean(property: "jit_withdraw"),
+    ], property: property);
   }
 
   @override
@@ -2385,20 +2598,29 @@ class XCMV5SetTopic extends XCMInstructionV5 with XCMSetTopic {
   @override
   final List<int> topic;
   XCMV5SetTopic({required List<int> topic})
-      : topic = topic
-            .exc(SubstrateAddressUtils.addressBytesLength)
-            .asImmutableBytes;
+    : topic =
+          topic
+              .exc(
+                length: SubstrateAddressUtils.addressBytesLength,
+                operation: "XCMV5SetTopic",
+                name: "topic",
+                reason: "Invalid topic bytes length.",
+              )
+              .asImmutableBytes;
   factory XCMV5SetTopic.deserializeJson(Map<String, dynamic> json) {
     return XCMV5SetTopic(topic: json.valueAsBytes("topic"));
   }
   factory XCMV5SetTopic.fromJson(Map<String, dynamic> json) {
     return XCMV5SetTopic(
-        topic: json.valueAsBytes(XCMInstructionType.setTopic.type));
+      topic: json.valueAsBytes(XCMInstructionType.setTopic.type),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
-      LayoutConst.fixedBlobN(SubstrateAddressUtils.addressBytesLength,
-          property: "topic")
+      LayoutConst.fixedBlobN(
+        SubstrateAddressUtils.addressBytesLength,
+        property: "topic",
+      ),
     ], property: property);
   }
 
@@ -2428,12 +2650,15 @@ class XCMV5AliasOrigin extends XCMInstructionV5 with XCMAliasOrigin {
   XCMV5AliasOrigin({required this.origin});
   factory XCMV5AliasOrigin.deserializeJson(Map<String, dynamic> json) {
     return XCMV5AliasOrigin(
-        origin: XCMV5Location.deserializeJson(json.valueAs("origin")));
+      origin: XCMV5Location.deserializeJson(json.valueAs("origin")),
+    );
   }
   factory XCMV5AliasOrigin.fromJson(Map<String, dynamic> json) {
     return XCMV5AliasOrigin(
-        origin: XCMV5Location.fromJson(
-            json.valueAs(XCMInstructionType.aliasOrigin.type)));
+      origin: XCMV5Location.fromJson(
+        json.valueAs(XCMInstructionType.aliasOrigin.type),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -2460,20 +2685,25 @@ class XCMV5UnpaidExecution extends XCMInstructionV5 with XCMUnpaidExecution {
   XCMV5UnpaidExecution({required this.weightLimit, this.checkOrigin});
   factory XCMV5UnpaidExecution.deserializeJson(Map<String, dynamic> json) {
     return XCMV5UnpaidExecution(
-        weightLimit:
-            XCMV3WeightLimit.deserializeJson(json.valueAs("weight_limit")),
-        checkOrigin: json.valueTo<XCMV5Location?, Map<String, dynamic>>(
-            key: "check_origin",
-            parse: (v) => XCMV5Location.deserializeJson(v)));
+      weightLimit: XCMV3WeightLimit.deserializeJson(
+        json.valueAs("weight_limit"),
+      ),
+      checkOrigin: json.valueTo<XCMV5Location?, Map<String, dynamic>>(
+        key: "check_origin",
+        parse: (v) => XCMV5Location.deserializeJson(v),
+      ),
+    );
   }
   factory XCMV5UnpaidExecution.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap(XCMInstructionType.unpaidExecution.type);
-    final Map<String, dynamic>? checkOrigin =
-        MetadataUtils.parseOptional(data.valueAs("check_origin"));
+    final Map<String, dynamic>? checkOrigin = MetadataUtils.parseOptional(
+      data.valueAs("check_origin"),
+    );
     return XCMV5UnpaidExecution(
-        weightLimit: XCMV3WeightLimit.fromJson(data.valueAs("weight_limit")),
-        checkOrigin:
-            checkOrigin == null ? null : XCMV5Location.fromJson(checkOrigin));
+      weightLimit: XCMV3WeightLimit.fromJson(data.valueAs("weight_limit")),
+      checkOrigin:
+          checkOrigin == null ? null : XCMV5Location.fromJson(checkOrigin),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -2491,7 +2721,7 @@ class XCMV5UnpaidExecution extends XCMInstructionV5 with XCMUnpaidExecution {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "check_origin": checkOrigin?.serializeJson(),
-      "weight_limit": weightLimit.serializeJsonVariant()
+      "weight_limit": weightLimit.serializeJsonVariant(),
     };
   }
 }
@@ -2502,17 +2732,19 @@ class XCMV5PayFees extends XCMInstructionV5 with XCMPayFees {
   XCMV5PayFees({required this.asset});
   factory XCMV5PayFees.deserializeJson(Map<String, dynamic> json) {
     return XCMV5PayFees(
-        asset: XCMV5Asset.deserializeJson(json.valueAs("asset")));
+      asset: XCMV5Asset.deserializeJson(json.valueAs("asset")),
+    );
   }
   factory XCMV5PayFees.fromJson(Map<String, dynamic> json) {
     return XCMV5PayFees(
-        asset:
-            XCMV5Asset.fromJson(json.valueAs(XCMInstructionType.payFees.type)));
+      asset: XCMV5Asset.fromJson(json.valueAs(XCMInstructionType.payFees.type)),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Asset.layout_(property: "asset")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Asset.layout_(property: "asset"),
+    ], property: property);
   }
 
   @override
@@ -2534,13 +2766,17 @@ enum XCMV5AssetTransferFilterType {
   const XCMV5AssetTransferFilterType(this.type);
   final String type;
   static XCMV5AssetTransferFilterType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMV5AssetTransferFilterType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -2558,7 +2794,7 @@ abstract class XCMV5AssetTransfer extends SubstrateVariantSerialization
       XCMV5AssetTransferFilterType.reserveDeposit =>
         XCMV5AssetTransferReserveDeposit.deserializeJson(decode.value),
       XCMV5AssetTransferFilterType.reserveWithdraw =>
-        XCMV5AssetTransferReserveWithdraw.deserializeJson(decode.value)
+        XCMV5AssetTransferReserveWithdraw.deserializeJson(decode.value),
     };
   }
   factory XCMV5AssetTransfer.fromJson(Map<String, dynamic> json) {
@@ -2569,27 +2805,30 @@ abstract class XCMV5AssetTransfer extends SubstrateVariantSerialization
       XCMV5AssetTransferFilterType.reserveDeposit =>
         XCMV5AssetTransferReserveDeposit.fromJson(json),
       XCMV5AssetTransferFilterType.reserveWithdraw =>
-        XCMV5AssetTransferReserveWithdraw.fromJson(json)
+        XCMV5AssetTransferReserveWithdraw.fromJson(json),
     };
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5AssetTransferTeleport.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5AssetTransferTeleport.layout_(property: property),
         property: XCMV5AssetTransferFilterType.teleport.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5AssetTransferReserveDeposit.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5AssetTransferReserveDeposit.layout_(property: property),
         property: XCMV5AssetTransferFilterType.reserveDeposit.name,
         index: 1,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5AssetTransferReserveWithdraw.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5AssetTransferReserveWithdraw.layout_(property: property),
         property: XCMV5AssetTransferFilterType.reserveWithdraw.name,
         index: 2,
       ),
@@ -2612,19 +2851,24 @@ class XCMV5AssetTransferTeleport extends XCMV5AssetTransfer {
 
   XCMV5AssetTransferTeleport({required this.asset});
   factory XCMV5AssetTransferTeleport.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5AssetTransferTeleport(
-        asset: XCMV5AssetFilter.deserializeJson(json.valueAs("asset")));
+      asset: XCMV5AssetFilter.deserializeJson(json.valueAs("asset")),
+    );
   }
   factory XCMV5AssetTransferTeleport.fromJson(Map<String, dynamic> json) {
     return XCMV5AssetTransferTeleport(
-        asset: XCMV5AssetFilter.fromJson(
-            json.valueAs(XCMV5AssetTransferFilterType.teleport.type)));
+      asset: XCMV5AssetFilter.fromJson(
+        json.valueAs(XCMV5AssetTransferFilterType.teleport.type),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5AssetFilter.layout_(property: "asset")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5AssetFilter.layout_(property: "asset"),
+    ], property: property);
   }
 
   @override
@@ -2646,26 +2890,31 @@ class XCMV5AssetTransferTeleport extends XCMV5AssetTransfer {
   }
 
   @override
-  List get variabels => [type, asset];
+  List get variables => [type, asset];
 }
 
 class XCMV5AssetTransferReserveDeposit extends XCMV5AssetTransfer {
   final XCMV5AssetFilter asset;
   factory XCMV5AssetTransferReserveDeposit.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5AssetTransferReserveDeposit(
-        asset: XCMV5AssetFilter.deserializeJson(json.valueAs("asset")));
+      asset: XCMV5AssetFilter.deserializeJson(json.valueAs("asset")),
+    );
   }
   factory XCMV5AssetTransferReserveDeposit.fromJson(Map<String, dynamic> json) {
     return XCMV5AssetTransferReserveDeposit(
-        asset: XCMV5AssetFilter.fromJson(
-            json.valueAs(XCMV5AssetTransferFilterType.reserveDeposit.type)));
+      asset: XCMV5AssetFilter.fromJson(
+        json.valueAs(XCMV5AssetTransferFilterType.reserveDeposit.type),
+      ),
+    );
   }
   XCMV5AssetTransferReserveDeposit({required this.asset});
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5AssetFilter.layout_(property: "asset")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5AssetFilter.layout_(property: "asset"),
+    ], property: property);
   }
 
   @override
@@ -2687,27 +2936,33 @@ class XCMV5AssetTransferReserveDeposit extends XCMV5AssetTransfer {
   }
 
   @override
-  List get variabels => [type, asset];
+  List get variables => [type, asset];
 }
 
 class XCMV5AssetTransferReserveWithdraw extends XCMV5AssetTransfer {
   final XCMV5AssetFilter asset;
   factory XCMV5AssetTransferReserveWithdraw.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5AssetTransferReserveWithdraw(
-        asset: XCMV5AssetFilter.deserializeJson(json.valueAs("asset")));
+      asset: XCMV5AssetFilter.deserializeJson(json.valueAs("asset")),
+    );
   }
   factory XCMV5AssetTransferReserveWithdraw.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5AssetTransferReserveWithdraw(
-        asset: XCMV5AssetFilter.fromJson(
-            json.valueAs(XCMV5AssetTransferFilterType.reserveWithdraw.type)));
+      asset: XCMV5AssetFilter.fromJson(
+        json.valueAs(XCMV5AssetTransferFilterType.reserveWithdraw.type),
+      ),
+    );
   }
   XCMV5AssetTransferReserveWithdraw({required this.asset});
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5AssetFilter.layout_(property: "asset")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5AssetFilter.layout_(property: "asset"),
+    ], property: property);
   }
 
   @override
@@ -2729,7 +2984,7 @@ class XCMV5AssetTransferReserveWithdraw extends XCMV5AssetTransfer {
   }
 
   @override
-  List get variabels => [type, asset];
+  List get variables => [type, asset];
 }
 
 class XCMV5InitiateTransfer extends XCMInstructionV5 with XCMInitiateTransfer {
@@ -2739,58 +2994,75 @@ class XCMV5InitiateTransfer extends XCMInstructionV5 with XCMInitiateTransfer {
   final List<XCMV5AssetTransfer> assets;
   final XCMV5 xcm;
 
-  XCMV5InitiateTransfer(
-      {required this.destination,
-      required this.remoteFees,
-      required this.preserveOrigin,
-      required List<XCMV5AssetTransfer> assets,
-      required this.xcm})
-      : assets =
-            assets.max(_XCMV5Constants.maxAssetTransferFilters).toImutableList;
+  XCMV5InitiateTransfer({
+    required this.destination,
+    required this.remoteFees,
+    required this.preserveOrigin,
+    required List<XCMV5AssetTransfer> assets,
+    required this.xcm,
+  }) : assets =
+           assets
+               .max(
+                 length: _XCMV5Constants.maxAssetTransferFilters,
+                 operation: "XCMV5InitiateTransfer",
+                 name: "assets",
+                 reason: "Invalid assets length.",
+               )
+               .toImutableList;
   factory XCMV5InitiateTransfer.deserializeJson(Map<String, dynamic> json) {
     return XCMV5InitiateTransfer(
-        destination: XCMV5Location.deserializeJson(json.valueAs("destination")),
-        remoteFees: json.valueTo<XCMV5AssetTransfer?, Map<String, dynamic>>(
-          key: "remote_fees",
-          parse: (v) {
-            return XCMV5AssetTransfer.deserializeJson(v);
-          },
-        ),
-        preserveOrigin: json.valueAs("preserve_origin"),
-        assets: json
-            .valueEnsureAsList<Map<String, dynamic>>("assets")
-            .map((e) => XCMV5AssetTransfer.deserializeJson(e))
-            .toList(),
-        xcm: XCMV5.deserializeJson(json.valueAs("remote_xcm")));
+      destination: XCMV5Location.deserializeJson(json.valueAs("destination")),
+      remoteFees: json.valueTo<XCMV5AssetTransfer?, Map<String, dynamic>>(
+        key: "remote_fees",
+        parse: (v) {
+          return XCMV5AssetTransfer.deserializeJson(v);
+        },
+      ),
+      preserveOrigin: json.valueAs("preserve_origin"),
+      assets:
+          json
+              .valueEnsureAsList<Map<String, dynamic>>("assets")
+              .map((e) => XCMV5AssetTransfer.deserializeJson(e))
+              .toList(),
+      xcm: XCMV5.deserializeJson(json.valueAs("remote_xcm")),
+    );
   }
   factory XCMV5InitiateTransfer.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.initiateTransfer.type);
+      XCMInstructionType.initiateTransfer.type,
+    );
     final assets = data.valueEnsureAsList<Map<String, dynamic>>("assets");
     final xcm = data.valueEnsureAsList<Map<String, dynamic>>("remote_xcm");
-    final Map<String, dynamic>? optRemoteFees =
-        MetadataUtils.parseOptional(data.valueAs("remote_fees"));
+    final Map<String, dynamic>? optRemoteFees = MetadataUtils.parseOptional(
+      data.valueAs("remote_fees"),
+    );
     return XCMV5InitiateTransfer(
-        destination: XCMV5Location.fromJson(data.valueAs("destination")),
-        remoteFees: optRemoteFees == null
-            ? null
-            : XCMV5AssetTransfer.fromJson(optRemoteFees),
-        preserveOrigin: data.valueAs("preserve_origin"),
-        assets: assets.map((e) => XCMV5AssetTransfer.fromJson(e)).toList(),
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      destination: XCMV5Location.fromJson(data.valueAs("destination")),
+      remoteFees:
+          optRemoteFees == null
+              ? null
+              : XCMV5AssetTransfer.fromJson(optRemoteFees),
+      preserveOrigin: data.valueAs("preserve_origin"),
+      assets: assets.map((e) => XCMV5AssetTransfer.fromJson(e)).toList(),
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Location.layout_(property: "destination"),
-      LayoutConst.optional(XCMV5AssetTransfer.layout_(),
-          property: "remote_fees"),
+      LayoutConst.optional(
+        XCMV5AssetTransfer.layout_(),
+        property: "remote_fees",
+      ),
       LayoutConst.boolean(property: "preserve_origin"),
-      LayoutConst.compactArray(XCMV5AssetTransfer.layout_(),
-          property: "assets"),
-      XCMV5.layout_(property: "remote_xcm")
+      LayoutConst.compactArray(
+        XCMV5AssetTransfer.layout_(),
+        property: "assets",
+      ),
+      XCMV5.layout_(property: "remote_xcm"),
     ], property: property);
   }
 
@@ -2806,7 +3078,7 @@ class XCMV5InitiateTransfer extends XCMInstructionV5 with XCMInitiateTransfer {
       "remote_fees": remoteFees?.serializeJsonVariant(),
       "preserve_origin": preserveOrigin,
       "assets": assets.map((e) => e.serializeJsonVariant()).toList(),
-      "remote_xcm": xcm.serializeJson()
+      "remote_xcm": xcm.serializeJson(),
     };
   }
 
@@ -2818,14 +3090,20 @@ class XCMV5InitiateTransfer extends XCMInstructionV5 with XCMInitiateTransfer {
         "preserve_origin": preserveOrigin,
         "remote_xcm": xcm.instructions.map((e) => e.toJson()).toList(),
         "assets": assets.map((e) => e.toJson()).toList(),
-        "remote_fees": MetadataUtils.toOptionalJson(remoteFees?.toJson())
-      }
+        "remote_fees": MetadataUtils.toOptionalJson(remoteFees?.toJson()),
+      },
     };
   }
 
   @override
-  List get variabels =>
-      [type, destination, remoteFees, preserveOrigin, assets, xcm];
+  List get variables => [
+    type,
+    destination,
+    remoteFees,
+    preserveOrigin,
+    assets,
+    xcm,
+  ];
 }
 
 class XCMV5ExecuteWithOrigin extends XCMInstructionV5
@@ -2836,31 +3114,38 @@ class XCMV5ExecuteWithOrigin extends XCMInstructionV5
   XCMV5ExecuteWithOrigin({required this.descendantOrigin, required this.xcm});
   factory XCMV5ExecuteWithOrigin.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ExecuteWithOrigin(
-        descendantOrigin: json.valueTo<XCMV5Junctions?, Map<String, dynamic>>(
-            key: "descendant_origin",
-            parse: (v) => XCMV5Junctions.deserializeJson(v)),
-        xcm: XCMV5.deserializeJson(json.valueAs("xcm")));
+      descendantOrigin: json.valueTo<XCMV5Junctions?, Map<String, dynamic>>(
+        key: "descendant_origin",
+        parse: (v) => XCMV5Junctions.deserializeJson(v),
+      ),
+      xcm: XCMV5.deserializeJson(json.valueAs("xcm")),
+    );
   }
   factory XCMV5ExecuteWithOrigin.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMInstructionType.executeWithOrigin.type);
+      XCMInstructionType.executeWithOrigin.type,
+    );
     final xcm = data.valueEnsureAsList<Map<String, dynamic>>("xcm");
     final Map<String, dynamic>? optDescendantOrigin =
         MetadataUtils.parseOptional(data.valueAs("descendant_origin"));
     return XCMV5ExecuteWithOrigin(
-        descendantOrigin: optDescendantOrigin == null
-            ? null
-            : XCMV5Junctions.fromJson(optDescendantOrigin),
-        xcm: XCMV5(
-            instructions:
-                xcm.map((e) => XCMInstructionV5.fromJson(e)).toList()));
+      descendantOrigin:
+          optDescendantOrigin == null
+              ? null
+              : XCMV5Junctions.fromJson(optDescendantOrigin),
+      xcm: XCMV5(
+        instructions: xcm.map((e) => XCMInstructionV5.fromJson(e)).toList(),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
-      LayoutConst.optional(XCMV5Junctions.layout_(),
-          property: "descendant_origin"),
-      XCMV5.layout_(property: "xcm")
+      LayoutConst.optional(
+        XCMV5Junctions.layout_(),
+        property: "descendant_origin",
+      ),
+      XCMV5.layout_(property: "xcm"),
     ], property: property);
   }
 
@@ -2873,7 +3158,7 @@ class XCMV5ExecuteWithOrigin extends XCMInstructionV5
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "descendant_origin": descendantOrigin?.serializeJsonVariant(),
-      "xcm": xcm.serializeJson()
+      "xcm": xcm.serializeJson(),
     };
   }
 
@@ -2882,14 +3167,15 @@ class XCMV5ExecuteWithOrigin extends XCMInstructionV5
     return {
       type.type: {
         "xcm": xcm.instructions.map((e) => e.toJson()).toList(),
-        "descendant_origin":
-            MetadataUtils.toOptionalJson(descendantOrigin?.toJson())
-      }
+        "descendant_origin": MetadataUtils.toOptionalJson(
+          descendantOrigin?.toJson(),
+        ),
+      },
     };
   }
 
   @override
-  List get variabels => [type, descendantOrigin, xcm];
+  List get variables => [type, descendantOrigin, xcm];
 }
 
 class XCMV5SetHints extends XCMInstructionV5 with XCMSetHints {
@@ -2898,22 +3184,26 @@ class XCMV5SetHints extends XCMInstructionV5 with XCMSetHints {
   XCMV5SetHints({required List<XCMV5Hint> hints}) : hints = hints.immutable;
   factory XCMV5SetHints.deserializeJson(Map<String, dynamic> json) {
     return XCMV5SetHints(
-        hints: json
-            .valueEnsureAsList<Map<String, dynamic>>("hints")
-            .map((e) => XCMV5Hint.deserializeJson(e))
-            .toList());
+      hints:
+          json
+              .valueEnsureAsList<Map<String, dynamic>>("hints")
+              .map((e) => XCMV5Hint.deserializeJson(e))
+              .toList(),
+    );
   }
   factory XCMV5SetHints.fromJson(Map<String, dynamic> json) {
     final hints = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMInstructionType.setHints.type);
+      XCMInstructionType.setHints.type,
+    );
     return XCMV5SetHints(
-        hints: hints.map((e) => XCMV5Hint.fromJson(e)).toList());
+      hints: hints.map((e) => XCMV5Hint.fromJson(e)).toList(),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [LayoutConst.compactArray(XCMV5Hint.layout_(), property: "hints")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactArray(XCMV5Hint.layout_(), property: "hints"),
+    ], property: property);
   }
 
   @override
@@ -2932,7 +3222,7 @@ class XCMV5SetHints extends XCMInstructionV5 with XCMSetHints {
   }
 
   @override
-  List get variabels => [type, hints];
+  List get variables => [type, hints];
 }
 
 enum XCMV5HintType {
@@ -2942,13 +3232,17 @@ enum XCMV5HintType {
   final String type;
 
   static XCMV5HintType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 
   static XCMV5HintType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 }
 
@@ -2961,21 +3255,22 @@ abstract class XCMV5Hint extends SubstrateVariantSerialization
     final decode = SubstrateVariantSerialization.toVariantDecodeResult(json);
     final type = XCMV5HintType.fromName(decode.variantName);
     return switch (type) {
-      XCMV5HintType.assetClaimer =>
-        XCMV5HintAssetClaimer.deserializeJson(decode.value)
+      XCMV5HintType.assetClaimer => XCMV5HintAssetClaimer.deserializeJson(
+        decode.value,
+      ),
     };
   }
   factory XCMV5Hint.fromJson(Map<String, dynamic> json) {
     final type = XCMV5HintType.fromType(json.keys.firstOrNull);
     return switch (type) {
-      XCMV5HintType.assetClaimer => XCMV5HintAssetClaimer.fromJson(json)
+      XCMV5HintType.assetClaimer => XCMV5HintAssetClaimer.fromJson(json),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5HintAssetClaimer.layout_(property: property),
+        layout:
+            ({property}) => XCMV5HintAssetClaimer.layout_(property: property),
         property: XCMV5HintType.assetClaimer.name,
         index: 0,
       ),
@@ -3000,18 +3295,22 @@ class XCMV5HintAssetClaimer extends XCMV5Hint {
 
   factory XCMV5HintAssetClaimer.deserializeJson(Map<String, dynamic> json) {
     return XCMV5HintAssetClaimer(
-        location: XCMV5Location.deserializeJson(json["location"]));
+      location: XCMV5Location.deserializeJson(json["location"]),
+    );
   }
 
   factory XCMV5HintAssetClaimer.fromJson(Map<String, dynamic> json) {
     return XCMV5HintAssetClaimer(
-        location: XCMV5Location.fromJson(
-            json.valueAs(XCMV5HintType.assetClaimer.type)));
+      location: XCMV5Location.fromJson(
+        json.valueAs(XCMV5HintType.assetClaimer.type),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Location.layout_(property: "location")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Location.layout_(property: "location"),
+    ], property: property);
   }
 
   @override
@@ -3033,7 +3332,7 @@ class XCMV5HintAssetClaimer extends XCMV5Hint {
   }
 
   @override
-  List get variabels => [type, location];
+  List get variables => [type, location];
 }
 
 enum XCMV5ResponseType {
@@ -3048,13 +3347,17 @@ enum XCMV5ResponseType {
   final String type;
 
   static XCMV5ResponseType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 
   static XCMV5ResponseType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 }
 
@@ -3068,14 +3371,17 @@ abstract class XCMV5Response extends SubstrateVariantSerialization
     final type = XCMV5ResponseType.fromName(decode.variantName);
     return switch (type) {
       XCMV5ResponseType.nullResponse => XCMV5ResponseNull(),
-      XCMV5ResponseType.assets =>
-        XCMV5ResponseAssets.deserializeJson(decode.value),
+      XCMV5ResponseType.assets => XCMV5ResponseAssets.deserializeJson(
+        decode.value,
+      ),
       XCMV5ResponseType.executionResult =>
         XCMV5ResponseExecutionResult.deserializeJson(decode.value),
-      XCMV5ResponseType.version =>
-        XCMV5ResponseVersion.deserializeJson(decode.value),
-      XCMV5ResponseType.palletsInfo =>
-        XCMV5ResponsePalletsInfo.deserializeJson(decode.value),
+      XCMV5ResponseType.version => XCMV5ResponseVersion.deserializeJson(
+        decode.value,
+      ),
+      XCMV5ResponseType.palletsInfo => XCMV5ResponsePalletsInfo.deserializeJson(
+        decode.value,
+      ),
       XCMV5ResponseType.dispatchResult =>
         XCMV5ResponseDispatchResult.deserializeJson(decode.value),
     };
@@ -3089,15 +3395,16 @@ abstract class XCMV5Response extends SubstrateVariantSerialization
         XCMV5ResponseExecutionResult.fromJson(json),
       XCMV5ResponseType.version => XCMV5ResponseVersion.fromJson(json),
       XCMV5ResponseType.palletsInfo => XCMV5ResponsePalletsInfo.fromJson(json),
-      XCMV5ResponseType.dispatchResult =>
-        XCMV5ResponseDispatchResult.fromJson(json),
+      XCMV5ResponseType.dispatchResult => XCMV5ResponseDispatchResult.fromJson(
+        json,
+      ),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            SubstrateVariantNoArgs.layout_(property: property),
+        layout:
+            ({property}) => SubstrateVariantNoArgs.layout_(property: property),
         property: XCMV5ResponseType.nullResponse.name,
         index: 0,
       ),
@@ -3107,26 +3414,29 @@ abstract class XCMV5Response extends SubstrateVariantSerialization
         index: 1,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ResponseExecutionResult.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5ResponseExecutionResult.layout_(property: property),
         property: XCMV5ResponseType.executionResult.name,
         index: 2,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ResponseVersion.layout_(property: property),
+        layout:
+            ({property}) => XCMV5ResponseVersion.layout_(property: property),
         property: XCMV5ResponseType.version.name,
         index: 3,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ResponsePalletsInfo.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5ResponsePalletsInfo.layout_(property: property),
         property: XCMV5ResponseType.palletsInfo.name,
         index: 4,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV5ResponseDispatchResult.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV5ResponseDispatchResult.layout_(property: property),
         property: XCMV5ResponseType.dispatchResult.name,
         index: 5,
       ),
@@ -3160,7 +3470,7 @@ class XCMV5ResponseNull extends XCMV5Response with SubstrateVariantNoArgs {
   XCMV5ResponseType get type => XCMV5ResponseType.nullResponse;
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 class XCMV5ResponseAssets extends XCMV5Response {
@@ -3169,18 +3479,23 @@ class XCMV5ResponseAssets extends XCMV5Response {
 
   factory XCMV5ResponseAssets.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ResponseAssets(
-        assets: XCMV5Assets.deserializeJson(json["assets"]));
+      assets: XCMV5Assets.deserializeJson(json["assets"]),
+    );
   }
   factory XCMV5ResponseAssets.fromJson(Map<String, dynamic> json) {
-    final assets = json
-        .valueEnsureAsList<Map<String, dynamic>>(XCMV5ResponseType.assets.type);
+    final assets = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMV5ResponseType.assets.type,
+    );
     return XCMV5ResponseAssets(
-        assets: XCMV5Assets(
-            assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList()));
+      assets: XCMV5Assets(
+        assets: assets.map((e) => XCMV5Asset.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV5Assets.layout_(property: "assets")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV5Assets.layout_(property: "assets"),
+    ], property: property);
   }
 
   @override
@@ -3201,39 +3516,44 @@ class XCMV5ResponseAssets extends XCMV5Response {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 class XCMV5ResponseExecutionResult extends XCMV5Response {
   final int? index;
   final XCMV5Error? error;
-  XCMV5ResponseExecutionResult({int? index, this.error})
-      : index = index?.asUint32;
+  XCMV5ResponseExecutionResult({int? index, this.error}) : index = index?.asU32;
 
   factory XCMV5ResponseExecutionResult.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     final error = json["error"];
     if (error == null) return XCMV5ResponseExecutionResult();
     return XCMV5ResponseExecutionResult(
-        index: IntUtils.parse(error["index"]),
-        error: XCMV5Error.deserializeJson(error["error"]));
+      index: IntUtils.parse(error["index"]),
+      error: XCMV5Error.deserializeJson(error["error"]),
+    );
   }
   factory XCMV5ResponseExecutionResult.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsMap<String, dynamic>(
-        XCMV5ResponseType.executionResult.type);
+      XCMV5ResponseType.executionResult.type,
+    );
     final List? opt = MetadataUtils.parseOptional(data);
     if (opt == null) return XCMV5ResponseExecutionResult();
     return XCMV5ResponseExecutionResult(
-        index: IntUtils.parse(opt[0]), error: XCMV5Error.fromJson(opt[1]));
+      index: IntUtils.parse(opt[0]),
+      error: XCMV5Error.fromJson(opt[1]),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.optional(
-          LayoutConst.struct([
-            LayoutConst.u32(property: "index"),
-            XCMV5Error.layout_(property: "error")
-          ]),
-          property: "error")
+        LayoutConst.struct([
+          LayoutConst.u32(property: "index"),
+          XCMV5Error.layout_(property: "error"),
+        ]),
+        property: "error",
+      ),
     ], property: property);
   }
 
@@ -3245,9 +3565,10 @@ class XCMV5ResponseExecutionResult extends XCMV5Response {
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "error": (index == null || error == null)
-          ? null
-          : {"index": index, "error": error?.serializeJsonVariant()}
+      "error":
+          (index == null || error == null)
+              ? null
+              : {"index": index, "error": error?.serializeJsonVariant()},
     };
   }
 
@@ -3257,30 +3578,32 @@ class XCMV5ResponseExecutionResult extends XCMV5Response {
   Map<String, dynamic> toJson() {
     return {
       type.type: MetadataUtils.toOptionalJson(
-          (index == null || error == null) ? null : [index, error?.toJson()])
+        (index == null || error == null) ? null : [index, error?.toJson()],
+      ),
     };
   }
 
   @override
-  List get variabels => [type, index, error];
+  List get variables => [type, index, error];
 }
 
 class XCMV5ResponseVersion extends XCMV5Response {
   final int versionNumber;
-  XCMV5ResponseVersion({required int version})
-      : versionNumber = version.asUint32;
+  XCMV5ResponseVersion({required int version}) : versionNumber = version.asU32;
 
   factory XCMV5ResponseVersion.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ResponseVersion(version: IntUtils.parse(json["version"]));
   }
   factory XCMV5ResponseVersion.fromJson(Map<String, dynamic> json) {
     return XCMV5ResponseVersion(
-        version: json.valueAs(XCMV5ResponseType.version.type));
+      version: json.valueAs(XCMV5ResponseType.version.type),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.u32(property: "version")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.u32(property: "version"),
+    ], property: property);
   }
 
   @override
@@ -3301,29 +3624,41 @@ class XCMV5ResponseVersion extends XCMV5Response {
   }
 
   @override
-  List get variabels => [type, versionNumber];
+  List get variables => [type, versionNumber];
 }
 
 class XCMV5ResponsePalletsInfo extends XCMV5Response {
   final List<XCMPalletInfo> pallets;
   XCMV5ResponsePalletsInfo({required List<XCMPalletInfo> pallets})
-      : pallets = pallets.max(_XCMV5Constants.maxPalletInfo).immutable;
+    : pallets =
+          pallets
+              .max(
+                length: _XCMV5Constants.maxPalletInfo,
+                operation: "XCMV5ResponsePalletsInfo",
+                name: "pallets",
+                reason: "Invalid pallets length.",
+              )
+              .immutable;
 
   factory XCMV5ResponsePalletsInfo.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ResponsePalletsInfo(
-        pallets: (json.valueEnsureAsList<Map<String, dynamic>>("pallets"))
-            .map((e) => XCMPalletInfo.deserializeJson(e))
-            .toList());
+      pallets:
+          (json.valueEnsureAsList<Map<String, dynamic>>(
+            "pallets",
+          )).map((e) => XCMPalletInfo.deserializeJson(e)).toList(),
+    );
   }
   factory XCMV5ResponsePalletsInfo.fromJson(Map<String, dynamic> json) {
     final pallets = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMV5ResponseType.palletsInfo.type);
+      XCMV5ResponseType.palletsInfo.type,
+    );
     return XCMV5ResponsePalletsInfo(
-        pallets: pallets.map((e) => XCMPalletInfo.fromJson(e)).toList());
+      pallets: pallets.map((e) => XCMPalletInfo.fromJson(e)).toList(),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
-      LayoutConst.compactArray(XCMPalletInfo.layout_(), property: "pallets")
+      LayoutConst.compactArray(XCMPalletInfo.layout_(), property: "pallets"),
     ], property: property);
   }
 
@@ -3346,7 +3681,7 @@ class XCMV5ResponsePalletsInfo extends XCMV5Response {
   }
 
   @override
-  List get variabels => [type, pallets];
+  List get variables => [type, pallets];
 }
 
 class XCMV5ResponseDispatchResult extends XCMV5Response {
@@ -3354,20 +3689,26 @@ class XCMV5ResponseDispatchResult extends XCMV5Response {
   XCMV5ResponseDispatchResult({required this.error});
 
   factory XCMV5ResponseDispatchResult.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5ResponseDispatchResult(
-        error: XCMV3MaybeErrorCode.deserializeJson(
-            json.valueEnsureAsMap("error")));
+      error: XCMV3MaybeErrorCode.deserializeJson(
+        json.valueEnsureAsMap("error"),
+      ),
+    );
   }
   factory XCMV5ResponseDispatchResult.fromJson(Map<String, dynamic> json) {
     return XCMV5ResponseDispatchResult(
-        error: XCMV3MaybeErrorCode.fromJson(
-            json.valueAs(XCMV3ResponseType.dispatchResult.type)));
+      error: XCMV3MaybeErrorCode.fromJson(
+        json.valueAs(XCMV3ResponseType.dispatchResult.type),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV3MaybeErrorCode.layout_(property: "error")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV3MaybeErrorCode.layout_(property: "error"),
+    ], property: property);
   }
 
   @override
@@ -3388,7 +3729,7 @@ class XCMV5ResponseDispatchResult extends XCMV5Response {
   }
 
   @override
-  List get variabels => [type, error];
+  List get variables => [type, error];
 }
 
 class XCMV5QueryResponseInfo
@@ -3398,29 +3739,30 @@ class XCMV5QueryResponseInfo
   final BigInt queryId;
   final SubstrateWeightV2 maxWeight;
 
-  XCMV5QueryResponseInfo(
-      {required this.destination,
-      required BigInt queryId,
-      required this.maxWeight})
-      : queryId = queryId.asUint64;
+  XCMV5QueryResponseInfo({
+    required this.destination,
+    required BigInt queryId,
+    required this.maxWeight,
+  }) : queryId = queryId.asU64;
   factory XCMV5QueryResponseInfo.deserializeJson(Map<String, dynamic> json) {
     return XCMV5QueryResponseInfo(
-        destination: XCMV5Location.deserializeJson(json.valueAs("destination")),
-        queryId: json.valueAs("query_id"),
-        maxWeight:
-            SubstrateWeightV2.deserializeJson(json.valueAs("max_weight")));
+      destination: XCMV5Location.deserializeJson(json.valueAs("destination")),
+      queryId: json.valueAs("query_id"),
+      maxWeight: SubstrateWeightV2.deserializeJson(json.valueAs("max_weight")),
+    );
   }
   factory XCMV5QueryResponseInfo.fromJson(Map<String, dynamic> json) {
     return XCMV5QueryResponseInfo(
-        destination: XCMV5Location.fromJson(json.valueAs("destination")),
-        queryId: json.valueAs("query_id"),
-        maxWeight: SubstrateWeightV2.fromJson(json.valueAs("max_weight")));
+      destination: XCMV5Location.fromJson(json.valueAs("destination")),
+      queryId: json.valueAs("query_id"),
+      maxWeight: SubstrateWeightV2.fromJson(json.valueAs("max_weight")),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV5Location.layout_(property: "destination"),
       LayoutConst.compactBigintU64(property: "query_id"),
-      SubstrateWeightV2.layout_(property: "max_weight")
+      SubstrateWeightV2.layout_(property: "max_weight"),
     ], property: property);
   }
 
@@ -3434,7 +3776,7 @@ class XCMV5QueryResponseInfo
     return {
       "destination": destination.serializeJson(),
       "query_id": queryId,
-      "max_weight": maxWeight.serializeJson()
+      "max_weight": maxWeight.serializeJson(),
     };
   }
 
@@ -3442,12 +3784,12 @@ class XCMV5QueryResponseInfo
     return {
       "destination": destination.toJson(),
       "query_id": queryId,
-      "max_weight": maxWeight.toJson()
+      "max_weight": maxWeight.toJson(),
     };
   }
 
   @override
-  List get variabels => [destination, queryId, maxWeight];
+  List get variables => [destination, queryId, maxWeight];
 
   @override
   XCMVersion get version => XCMVersion.v5;
@@ -3501,13 +3843,17 @@ enum XCMV5ErrorType {
   final int variantIndex;
 
   static XCMV5ErrorType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 
   static XCMV5ErrorType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 }
 
@@ -3580,13 +3926,15 @@ abstract class XCMV5Error extends SubstrateVariantSerialization
       XCMV5ErrorType.locationNotInvertible =>
         XCMV5ErrorLocationNotInvertible.fromJson(json),
       XCMV5ErrorType.badOrigin => XCMV5ErrorBadOrigin.fromJson(json),
-      XCMV5ErrorType.invalidLocation =>
-        XCMV5ErrorInvalidLocation.fromJson(json),
+      XCMV5ErrorType.invalidLocation => XCMV5ErrorInvalidLocation.fromJson(
+        json,
+      ),
       XCMV5ErrorType.assetNotFound => XCMV5ErrorAssetNotFound.fromJson(json),
       XCMV5ErrorType.failedToTransactAsset =>
         XCMV5ErrorFailedToTransactAsset.fromJson(json),
-      XCMV5ErrorType.notWithdrawable =>
-        XCMV5ErrorNotWithdrawable.fromJson(json),
+      XCMV5ErrorType.notWithdrawable => XCMV5ErrorNotWithdrawable.fromJson(
+        json,
+      ),
       XCMV5ErrorType.locationCannotHold =>
         XCMV5ErrorLocationCannotHold.fromJson(json),
       XCMV5ErrorType.exceedsMaxMessageSize =>
@@ -3597,13 +3945,15 @@ abstract class XCMV5Error extends SubstrateVariantSerialization
       XCMV5ErrorType.unroutable => XCMV5ErrorUnroutable.fromJson(json),
       XCMV5ErrorType.unknownClaim => XCMV5ErrorUnknownClaim.fromJson(json),
       XCMV5ErrorType.failedToDecode => XCMV5ErrorFailedToDecode.fromJson(json),
-      XCMV5ErrorType.maxWeightInvalid =>
-        XCMV5ErrorMaxWeightInvalid.fromJson(json),
+      XCMV5ErrorType.maxWeightInvalid => XCMV5ErrorMaxWeightInvalid.fromJson(
+        json,
+      ),
       XCMV5ErrorType.notHodingFees => XCMV5ErrorNotHoldingFees.fromJson(json),
       XCMV5ErrorType.tooExpensive => XCMV5ErrorTooExpensive.fromJson(json),
       XCMV5ErrorType.trap => XCMV5ErrorTrap.fromJson(json),
-      XCMV5ErrorType.expectationFale =>
-        XCMV5ErrorExpectationFalse.fromJson(json),
+      XCMV5ErrorType.expectationFale => XCMV5ErrorExpectationFalse.fromJson(
+        json,
+      ),
       XCMV5ErrorType.palletNotFound => XCMV5ErrorPalletNotFound.fromJson(json),
       XCMV5ErrorType.nameMismatch => XCMV5ErrorNameMismatch.fromJson(json),
       XCMV5ErrorType.versionIncompatible =>
@@ -3626,30 +3976,32 @@ abstract class XCMV5Error extends SubstrateVariantSerialization
       XCMV5ErrorType.barrier => XCMV5ErrorBarrier.fromJson(json),
       XCMV5ErrorType.weightNotComputable =>
         XCMV5ErrorWeightNotComputable.fromJson(json),
-      XCMV5ErrorType.exceedsStackLimit =>
-        XCMV5ErrorExceedsStackLimit.fromJson(json),
+      XCMV5ErrorType.exceedsStackLimit => XCMV5ErrorExceedsStackLimit.fromJson(
+        json,
+      ),
     };
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum(
-        XCMV5ErrorType.values.map((e) {
-          return LazyVariantModel(
-              layout: ({property}) {
-                switch (e) {
-                  case XCMV5ErrorType.trap:
-                    return XCMV5ErrorTrap.layout_(property: property);
-                  case XCMV5ErrorType.weightLimitReached:
-                    return XCMV5ErrorWeightLimitReached.layout_(
-                        property: property);
-                  default:
-                    return SubstrateVariantNoArgs.layout_(property: property);
-                }
-              },
-              property: e.name,
-              index: e.variantIndex);
-        }).toList(),
-        property: property);
+      XCMV5ErrorType.values.map((e) {
+        return LazyVariantModel(
+          layout: ({property}) {
+            switch (e) {
+              case XCMV5ErrorType.trap:
+                return XCMV5ErrorTrap.layout_(property: property);
+              case XCMV5ErrorType.weightLimitReached:
+                return XCMV5ErrorWeightLimitReached.layout_(property: property);
+              default:
+                return SubstrateVariantNoArgs.layout_(property: property);
+            }
+          },
+          property: e.name,
+          index: e.variantIndex,
+        );
+      }).toList(),
+      property: property,
+    );
   }
 
   @override
@@ -3661,7 +4013,7 @@ abstract class XCMV5Error extends SubstrateVariantSerialization
   String get variantName => type.name;
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
   @override
   XCMVersion get version => XCMVersion.v5;
 }
@@ -3700,7 +4052,8 @@ class XCMV5ErrorUntrustedReserveLocation extends XCMV5Error
   XCMV5ErrorType get type => XCMV5ErrorType.untrustedReserveLocation;
   const XCMV5ErrorUntrustedReserveLocation();
   factory XCMV5ErrorUntrustedReserveLocation.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     json.ensureKeyExists(XCMV5ErrorType.untrustedReserveLocation.type);
     return XCMV5ErrorUntrustedReserveLocation();
   }
@@ -3716,7 +4069,8 @@ class XCMV5ErrorUntrustedTeleportLocation extends XCMV5Error
   XCMV5ErrorType get type => XCMV5ErrorType.untrustedTeleportLocation;
   const XCMV5ErrorUntrustedTeleportLocation();
   factory XCMV5ErrorUntrustedTeleportLocation.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     json.ensureKeyExists(XCMV5ErrorType.untrustedTeleportLocation.type);
     return XCMV5ErrorUntrustedTeleportLocation();
   }
@@ -3972,7 +4326,7 @@ class XCMV5ErrorTooExpensive extends XCMV5Error with SubstrateVariantNoArgs {
 
 class XCMV5ErrorTrap extends XCMV5Error {
   final BigInt code;
-  XCMV5ErrorTrap({required BigInt code}) : code = code.asUint64;
+  XCMV5ErrorTrap({required BigInt code}) : code = code.asU64;
   factory XCMV5ErrorTrap.deserializeJson(Map<String, dynamic> json) {
     return XCMV5ErrorTrap(code: BigintUtils.parse(json["code"]));
   }
@@ -3985,8 +4339,9 @@ class XCMV5ErrorTrap extends XCMV5Error {
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.u64(property: "code")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.u64(property: "code"),
+    ], property: property);
   }
 
   @override
@@ -4002,7 +4357,7 @@ class XCMV5ErrorTrap extends XCMV5Error {
   }
 
   @override
-  List get variabels => [type, code];
+  List get variables => [type, code];
 }
 
 class XCMV5ErrorExpectationFalse extends XCMV5Error
@@ -4224,18 +4579,23 @@ class XCMV5ErrorWeightLimitReached extends XCMV5Error
   final SubstrateWeightV2 weight;
   XCMV5ErrorWeightLimitReached({required this.weight});
   factory XCMV5ErrorWeightLimitReached.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV5ErrorWeightLimitReached(
-        weight: SubstrateWeightV2.deserializeJson(json["weight"]));
+      weight: SubstrateWeightV2.deserializeJson(json["weight"]),
+    );
   }
   factory XCMV5ErrorWeightLimitReached.fromJson(Map<String, dynamic> json) {
     return XCMV5ErrorWeightLimitReached(
-        weight: SubstrateWeightV2.fromJson(
-            json.valueAs(XCMV5ErrorType.weightLimitReached.type)));
+      weight: SubstrateWeightV2.fromJson(
+        json.valueAs(XCMV5ErrorType.weightLimitReached.type),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([SubstrateWeightV2.layout_(property: "weight")],
-        property: property);
+    return LayoutConst.struct([
+      SubstrateWeightV2.layout_(property: "weight"),
+    ], property: property);
   }
 
   @override
@@ -4256,7 +4616,7 @@ class XCMV5ErrorWeightLimitReached extends XCMV5Error
   }
 
   @override
-  List get variabels => [type, weight];
+  List get variables => [type, weight];
 }
 
 class XCMV5ErrorBarrier extends XCMV5Error with SubstrateVariantNoArgs {
@@ -4309,19 +4669,23 @@ class XCMV5 extends SubstrateSerialization<Map<String, dynamic>>
   final List<XCMInstructionV5> instructions;
 
   XCMV5({required List<XCMInstructionV5> instructions})
-      : instructions = instructions.immutable;
+    : instructions = instructions.immutable;
   factory XCMV5.deserializeJson(Map<String, dynamic> json) {
     return XCMV5(
-        instructions: json
-            .valueEnsureAsList<Map<String, dynamic>>("instructions")
-            .map((e) => XCMInstructionV5.deserializeJson(e))
-            .toList());
+      instructions:
+          json
+              .valueEnsureAsList<Map<String, dynamic>>("instructions")
+              .map((e) => XCMInstructionV5.deserializeJson(e))
+              .toList(),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
-      LayoutConst.compactArray(XCMInstructionV5.layout_(),
-          property: "instructions")
+      LayoutConst.compactArray(
+        XCMInstructionV5.layout_(),
+        property: "instructions",
+      ),
     ], property: property);
   }
 
@@ -4333,7 +4697,8 @@ class XCMV5 extends SubstrateSerialization<Map<String, dynamic>>
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "instructions": instructions.map((e) => e.serializeJsonVariant()).toList()
+      "instructions":
+          instructions.map((e) => e.serializeJsonVariant()).toList(),
     };
   }
 

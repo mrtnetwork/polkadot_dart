@@ -5,11 +5,12 @@ class RpcMethods with JsonSerialization {
   final int? version;
   final List<String> methods;
   RpcMethods({required this.version, required List<String> methods})
-      : methods = List<String>.unmodifiable(methods);
+    : methods = List<String>.unmodifiable(methods);
   factory RpcMethods.fromJson(Map<String, dynamic> json) {
     return RpcMethods(
-        version: IntUtils.tryParse(json["version"]),
-        methods: (json["methods"] as List).cast());
+      version: IntUtils.tryParse(json["version"]),
+      methods: (json["methods"] as List).cast(),
+    );
   }
 
   @override

@@ -9,27 +9,25 @@ class MantaAsset {
   final BigInt assetId;
 
   MantaAsset.fromJson(Map<String, dynamic> json)
-      : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
-        assetId = json.valueAs("asset_id");
+    : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
+      assetId = json.valueAs("asset_id");
   MantaAsset({required this.asset, required this.assetId});
 
   Map<String, dynamic> toJson() {
-    return {
-      "asset": asset.toJson(),
-      "asset_id": assetId.toString(),
-    };
+    return {"asset": asset.toJson(), "asset_id": assetId.toString()};
   }
 }
 
 abstract class BaseMantaNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseMantaNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseMantaNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseMantaNetworkAsset.fromJson(super.json) : super.fromJson();
 
   @override
@@ -43,32 +41,33 @@ class MantaNetworkAsset extends BaseMantaNetworkAsset {
   final XCMVersionedLocation? location;
   final BigInt? unitsPerSecond;
   MantaNetworkAsset.fromJson(super.json)
-      : asset = PolkadotAssetHubAsset.fromJson(json.valueAs("asset")),
-        metadata =
-            json.valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
-          key: "metadata",
-          parse: (v) => PolkadotAssetHubAssetMetadata.fromJson(v),
-        ),
-        location = json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
-          key: "location",
-          parse: (v) => XCMVersionedLocation.fromJson(v),
-        ),
-        unitsPerSecond = json.valueAs("units_per_second"),
-        super.fromJson();
-  MantaNetworkAsset(
-      {required this.asset,
-      required this.metadata,
-      required super.isFeeToken,
-      this.unitsPerSecond,
-      this.location})
-      : super(
-            decimals: metadata?.decimals,
-            isSpendable:
-                asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
-            excutionPallet: SubtrateMetadataPallet.assets,
-            minBalance: asset.asset.minBalance,
-            name: metadata?.name,
-            symbol: metadata?.symbol);
+    : asset = PolkadotAssetHubAsset.fromJson(json.valueAs("asset")),
+      metadata = json
+          .valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
+            key: "metadata",
+            parse: (v) => PolkadotAssetHubAssetMetadata.fromJson(v),
+          ),
+      location = json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
+        key: "location",
+        parse: (v) => XCMVersionedLocation.fromJson(v),
+      ),
+      unitsPerSecond = json.valueAs("units_per_second"),
+      super.fromJson();
+  MantaNetworkAsset({
+    required this.asset,
+    required this.metadata,
+    required super.isFeeToken,
+    this.unitsPerSecond,
+    this.location,
+  }) : super(
+         decimals: metadata?.decimals,
+         isSpendable:
+             asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
+         excutionPallet: SubtrateMetadataPallet.assets,
+         minBalance: asset.asset.minBalance,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+       );
 
   @override
   BigInt get identifier => asset.assetId;
@@ -80,7 +79,7 @@ class MantaNetworkAsset extends BaseMantaNetworkAsset {
       "metadata": metadata?.toJson(),
       "units_per_second": unitsPerSecond?.toString(),
       "location": location?.toJson(),
-      ...super.toJson()
+      ...super.toJson(),
     };
   }
 
@@ -95,19 +94,19 @@ class MantaNetworkNativeAsset extends BaseMantaNetworkAsset {
   final XCMVersionedLocation location;
   @override
   final Object? identifier = null;
-  MantaNetworkNativeAsset(
-      {required this.location,
-      super.isFeeToken = true,
-      super.isSpendable = true,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      super.minBalance})
-      : super(excutionPallet: SubtrateMetadataPallet.balances);
+  MantaNetworkNativeAsset({
+    required this.location,
+    super.isFeeToken = true,
+    super.isSpendable = true,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    super.minBalance,
+  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
 
   MantaNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
 
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;

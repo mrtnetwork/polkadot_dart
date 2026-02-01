@@ -9,7 +9,9 @@ class MoonbeamNetworkControllerUtils {
     }
     final inBig = BigInt.parse(id);
     final bytes = BigintUtils.toBytes(inBig, length: 16);
-    return SubstrateEthereumAddress.fromBytes(
-        [...MoonbeamNetworkControllerConst.moonbeamAssetIdPrefix, ...bytes]);
+    return SubstrateEthereumAddress.fromBytes([
+      ...MoonbeamNetworkControllerConst.moonbeamAssetIdPrefix,
+      ...bytes,
+    ]);
   }
 }

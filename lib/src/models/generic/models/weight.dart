@@ -7,12 +7,13 @@ class SubstrateWeightV2 extends SubstrateSerialization<Map<String, dynamic>>
   final BigInt proofSize;
   const SubstrateWeightV2({required this.refTime, required this.proofSize});
   SubstrateWeightV2.deserializeJson(Map<String, dynamic> json)
-      : refTime = json.valueAs("ref_time"),
-        proofSize = json.valueAs("proof_size");
+    : refTime = json.valueAs("ref_time"),
+      proofSize = json.valueAs("proof_size");
   factory SubstrateWeightV2.fromJson(Map<String, dynamic> json) {
     return SubstrateWeightV2(
-        refTime: json.valueAs("ref_time"),
-        proofSize: json.valueAs("proof_size"));
+      refTime: json.valueAs("ref_time"),
+      proofSize: json.valueAs("proof_size"),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -37,5 +38,5 @@ class SubstrateWeightV2 extends SubstrateSerialization<Map<String, dynamic>>
   }
 
   @override
-  List get variabels => [refTime, proofSize];
+  List get variables => [refTime, proofSize];
 }

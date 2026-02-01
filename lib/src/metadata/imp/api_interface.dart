@@ -27,14 +27,18 @@ abstract mixin class MetadataApiInterface {
   TypeTemlate getCallTemplate(String palletNameOrIndex);
 
   /// Encodes a call.
-  List<int> encodeCall(
-      {required String palletNameOrIndex,
-      required Object? value,
-      required bool fromTemplate});
+  List<int> encodeCall({
+    required String palletNameOrIndex,
+    required Object? value,
+    required bool fromTemplate,
+  });
 
   /// Encodes a lookup.
-  List<int> encodeLookup(
-      {required int id, required Object? value, required bool fromTemplate});
+  List<int> encodeLookup({
+    required int id,
+    required Object? value,
+    required bool fromTemplate,
+  });
 
   /// Decodes a lookup.
   T decodeLookup<T>(int id, List<int> bytes);
@@ -65,11 +69,15 @@ abstract mixin class MetadataApiInterface {
 
   /// Retrieves the template for storage input.
   TypeTemlate? getStorageInputTemplate(
-      String palletNameOrIndex, String methodName);
+    String palletNameOrIndex,
+    String methodName,
+  );
 
   /// Retrieves the template for storage output.
   TypeTemlate getStorageOutputTemplate(
-      String palletNameOrIndex, String methodName);
+    String palletNameOrIndex,
+    String methodName,
+  );
 
   /// Encodes storage input.
   List<int> encodeStorageInput({
@@ -80,32 +88,36 @@ abstract mixin class MetadataApiInterface {
   });
 
   /// Decodes storage input.
-  T decodeStorageInput<T>(
-      {required String palletNameOrIndex,
-      required String methodName,
-      required List<int> bytes});
+  T decodeStorageInput<T>({
+    required String palletNameOrIndex,
+    required String methodName,
+    required List<int> bytes,
+  });
 
   /// Decodes storage output.
-  T decodeStorageOutput<T>(
-      {required String palletNameOrIndex,
-      required String methodName,
-      List<int>? queryResponse});
+  T decodeStorageOutput<T>({
+    required String palletNameOrIndex,
+    required String methodName,
+    List<int>? queryResponse,
+  });
 
   /// Generates a query storage key.
-  StorageKey generateStorageKey(
-      {required String palletNameOrIndex,
-      required String methodName,
-      required bool fromTemplate,
-      required Object? value,
-      ENCODEINPUTS? onEncodeInputs});
+  StorageKey generateStorageKey({
+    required String palletNameOrIndex,
+    required String methodName,
+    required bool fromTemplate,
+    required Object? value,
+    ENCODEINPUTS? onEncodeInputs,
+  });
 
   /// Generates an event storage key.
   MethodStorageKey generateEventStorageKey();
 
   /// Decodes an event.
-  T decodeEvent<T>(
-      {String palletNameOrIndex = MetadataConstant.genericSystemPalletName,
-      required List<int> bytes});
+  T decodeEvent<T>({
+    String palletNameOrIndex = MetadataConstant.genericSystemPalletName,
+    required List<int> bytes,
+  });
 
   /// Retrieves runtime version information.
   RuntimeVersion runtimeVersion();
@@ -126,18 +138,22 @@ abstract mixin class MetadataApiInterface {
   int getRuntimeApiOutputLookupId(String apiName, String methodName);
 
   List<TypeTemlate> getRuntimeApiInputsTemplates(
-      String apiName, String methodName);
+    String apiName,
+    String methodName,
+  );
   TypeTemlate getRuntimeApiOutputTemplate(String apiName, String methodName);
 
-  List<int> encodeRuntimeApiInputs(
-      {required String apiName,
-      required String methodName,
-      required List<Object?> params,
-      bool fromTemplate = true});
-  T decodeRuntimeApiOutput<T>(
-      {required String apiName,
-      required String methodName,
-      required List<int> bytes});
+  List<int> encodeRuntimeApiInputs({
+    required String apiName,
+    required String methodName,
+    required List<Object?> params,
+    bool fromTemplate = true,
+  });
+  T decodeRuntimeApiOutput<T>({
+    required String apiName,
+    required String methodName,
+    required List<int> bytes,
+  });
 
   int getCallLookupId(String palletNameOrIndex);
   bool palletExists(String palletNameOrIndex);

@@ -22,16 +22,16 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
   final int nonce;
   final int specVersion;
   final int transactionVersion;
-  BaseTransactionPayload(
-      {required this.blockHash,
-      required this.era,
-      required this.genesisHash,
-      required List<int> method,
-      required this.nonce,
-      required this.specVersion,
-      required this.transactionVersion,
-      this.tip})
-      : method = method.asImmutableBytes;
+  BaseTransactionPayload({
+    required this.blockHash,
+    required this.era,
+    required this.genesisHash,
+    required List<int> method,
+    required this.nonce,
+    required this.specVersion,
+    required this.transactionVersion,
+    this.tip,
+  }) : method = method.asImmutableBytes;
   static StructLayout layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.greedyArray(LayoutConst.u8(), property: "method"),
@@ -48,14 +48,17 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
   @override
   StructLayout layout({String? property}) => layout_(property: property);
 
-  BaseExtrinsicSignature toExtrinsicSignature(
-      {required SubstrateMultiSignature signature, required ADDRESS signer}) {
+  BaseExtrinsicSignature toExtrinsicSignature({
+    required SubstrateMultiSignature signature,
+    required ADDRESS signer,
+  }) {
     return LegacyExtrinsicSignature(
-        signature: signature,
-        address: signer.toMultiAddress(),
-        era: era,
-        tip: BigInt.zero,
-        nonce: nonce);
+      signature: signature,
+      address: signer.toMultiAddress(),
+      era: era,
+      tip: BigInt.zero,
+      nonce: nonce,
+    );
   }
 
   @override
@@ -68,7 +71,7 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
       "specVersion": specVersion,
       "transactionVersion": transactionVersion,
       "genesisHash": genesisHash.serializeJson(),
-      "blockHash": blockHash.serializeJson()
+      "blockHash": blockHash.serializeJson(),
     };
   }
 
@@ -81,11 +84,14 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
     return digest;
   }
 
-  Extrinsic toExtrinsic(
-      {required SubstrateMultiSignature signature, required ADDRESS signer}) {
+  Extrinsic toExtrinsic({
+    required SubstrateMultiSignature signature,
+    required ADDRESS signer,
+  }) {
     return Extrinsic(
-        signature: toExtrinsicSignature(signature: signature, signer: signer),
-        methodBytes: method);
+      signature: toExtrinsicSignature(signature: signature, signer: signer),
+      methodBytes: method,
+    );
   }
 }
 
@@ -93,18 +99,18 @@ class TransactionPayload extends BaseTransactionPayload<SubstrateAddress> {
   final int mode;
   final List<int>? metadataHash;
 
-  TransactionPayload(
-      {required super.blockHash,
-      required super.era,
-      required super.genesisHash,
-      required super.method,
-      required super.nonce,
-      required super.specVersion,
-      required super.transactionVersion,
-      this.mode = 0,
-      super.tip,
-      List<int>? metadataHash})
-      : metadataHash = metadataHash?.asImmutableBytes;
+  TransactionPayload({
+    required super.blockHash,
+    required super.era,
+    required super.genesisHash,
+    required super.method,
+    required super.nonce,
+    required super.specVersion,
+    required super.transactionVersion,
+    this.mode = 0,
+    super.tip,
+    List<int>? metadataHash,
+  }) : metadataHash = metadataHash?.asImmutableBytes;
   static StructLayout layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.greedyArray(LayoutConst.u8(), property: "method"),
@@ -127,16 +133,18 @@ class TransactionPayload extends BaseTransactionPayload<SubstrateAddress> {
   @override
   StructLayout layout({String? property}) => layout_(property: property);
   @override
-  ExtrinsicSignature toExtrinsicSignature(
-      {required SubstrateMultiSignature signature,
-      required BaseSubstrateAddress signer}) {
+  ExtrinsicSignature toExtrinsicSignature({
+    required SubstrateMultiSignature signature,
+    required BaseSubstrateAddress signer,
+  }) {
     return ExtrinsicSignature(
-        signature: signature,
-        address: signer.toMultiAddress(),
-        era: era,
-        tip: BigInt.zero,
-        nonce: nonce,
-        mode: mode);
+      signature: signature,
+      address: signer.toMultiAddress(),
+      era: era,
+      tip: BigInt.zero,
+      nonce: nonce,
+      mode: mode,
+    );
   }
 
   @override
@@ -151,19 +159,19 @@ class TransactionPayload extends BaseTransactionPayload<SubstrateAddress> {
 
 class AssetTransactionPayload extends TransactionPayload {
   final List<int>? asset;
-  AssetTransactionPayload(
-      {required super.blockHash,
-      required super.era,
-      required super.genesisHash,
-      required super.method,
-      required super.nonce,
-      required super.specVersion,
-      required super.transactionVersion,
-      super.mode = 0,
-      super.tip,
-      super.metadataHash,
-      List<int>? asset})
-      : asset = asset?.immutable;
+  AssetTransactionPayload({
+    required super.blockHash,
+    required super.era,
+    required super.genesisHash,
+    required super.method,
+    required super.nonce,
+    required super.specVersion,
+    required super.transactionVersion,
+    super.mode = 0,
+    super.tip,
+    super.metadataHash,
+    List<int>? asset,
+  }) : asset = asset?.immutable;
 
   static StructLayout layout_({String? property}) {
     return LayoutConst.struct([
@@ -171,8 +179,10 @@ class AssetTransactionPayload extends TransactionPayload {
       SubstrateBaseEra.layout_(property: "era"),
       LayoutConst.compactIntU32(property: "nonce"),
       LayoutConst.compactBigintU128(property: "tip"),
-      LayoutConst.optional(LayoutConst.blob(LayoutConst.greedy()),
-          property: "asset"),
+      LayoutConst.optional(
+        LayoutConst.blob(LayoutConst.greedy()),
+        property: "asset",
+      ),
       LayoutConst.u8(property: "mode"),
       LayoutConst.u32(property: "specVersion"),
       LayoutConst.u32(property: "transactionVersion"),
@@ -185,17 +195,19 @@ class AssetTransactionPayload extends TransactionPayload {
   @override
   StructLayout layout({String? property}) => layout_(property: property);
   @override
-  AssetExtrinsicSignature toExtrinsicSignature(
-      {required SubstrateMultiSignature signature,
-      required BaseSubstrateAddress signer}) {
+  AssetExtrinsicSignature toExtrinsicSignature({
+    required SubstrateMultiSignature signature,
+    required BaseSubstrateAddress signer,
+  }) {
     return AssetExtrinsicSignature(
-        signature: signature,
-        address: signer.toMultiAddress(),
-        era: era,
-        tip: BigInt.zero,
-        nonce: nonce,
-        mode: mode,
-        asset: asset);
+      signature: signature,
+      address: signer.toMultiAddress(),
+      era: era,
+      tip: BigInt.zero,
+      nonce: nonce,
+      mode: mode,
+      asset: asset,
+    );
   }
 
   @override
@@ -206,15 +218,16 @@ class AssetTransactionPayload extends TransactionPayload {
 
 class LegacyTransactionPayload
     extends BaseTransactionPayload<SubstrateAddress> {
-  LegacyTransactionPayload(
-      {required super.blockHash,
-      required super.era,
-      required super.genesisHash,
-      required super.method,
-      required super.nonce,
-      required super.specVersion,
-      required super.transactionVersion,
-      super.tip});
+  LegacyTransactionPayload({
+    required super.blockHash,
+    required super.era,
+    required super.genesisHash,
+    required super.method,
+    required super.nonce,
+    required super.specVersion,
+    required super.transactionVersion,
+    super.tip,
+  });
 }
 
 class MoonbeamTransactionPayload
@@ -222,18 +235,18 @@ class MoonbeamTransactionPayload
   final int mode;
   final List<int>? metadataHash;
 
-  MoonbeamTransactionPayload(
-      {required super.blockHash,
-      required super.era,
-      required super.genesisHash,
-      required super.method,
-      required super.nonce,
-      required super.specVersion,
-      required super.transactionVersion,
-      this.mode = 0,
-      super.tip,
-      List<int>? metadataHash})
-      : metadataHash = metadataHash?.asImmutableBytes;
+  MoonbeamTransactionPayload({
+    required super.blockHash,
+    required super.era,
+    required super.genesisHash,
+    required super.method,
+    required super.nonce,
+    required super.specVersion,
+    required super.transactionVersion,
+    this.mode = 0,
+    super.tip,
+    List<int>? metadataHash,
+  }) : metadataHash = metadataHash?.asImmutableBytes;
 
   @override
   StructLayout layout({String? property}) =>
@@ -249,14 +262,16 @@ class MoonbeamTransactionPayload
   }
 
   @override
-  EthereumExtrinsicSignature toExtrinsicSignature(
-      {required SubstrateMultiSignature signature,
-      required SubstrateEthereumAddress signer}) {
+  EthereumExtrinsicSignature toExtrinsicSignature({
+    required SubstrateMultiSignature signature,
+    required SubstrateEthereumAddress signer,
+  }) {
     return EthereumExtrinsicSignature(
-        signature: signature,
-        address: signer.toMultiAddress(),
-        era: era,
-        tip: tip,
-        nonce: nonce);
+      signature: signature,
+      address: signer.toMultiAddress(),
+      era: era,
+      tip: tip,
+      nonce: nonce,
+    );
   }
 }

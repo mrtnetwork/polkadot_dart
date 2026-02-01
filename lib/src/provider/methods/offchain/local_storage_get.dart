@@ -21,4 +21,5 @@ class SubstrateRequestOffChainLocalStorageGet
     return [kind, key];
   }
 }
+
 //localStorageGet(kind: StorageKind, key: Bytes): Option<Bytes>

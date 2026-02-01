@@ -5,8 +5,12 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#state
 class SubstrateRequestStateTraceBlock
     extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRequestStateTraceBlock(
-      {required this.block, this.targets, this.storageKeys, this.methods});
+  const SubstrateRequestStateTraceBlock({
+    required this.block,
+    this.targets,
+    this.storageKeys,
+    this.methods,
+  });
   final String block;
   final List<String>? targets;
   final List<String>? storageKeys;

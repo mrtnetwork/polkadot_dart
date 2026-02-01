@@ -7,8 +7,12 @@ import 'package:polkadot_dart/src/models/generic/generic.dart';
 import 'public_key.dart';
 
 /// Class representing an ethereum private key, allowing for cryptographic operations and key-related functionality.
-class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
-    SubstrateEthereumAddress, SubstrateEthereumPublicKey> {
+class SubstrateEthereumPrivateKey
+    extends
+        BaseSubstratePrivateKey<
+          SubstrateEthereumAddress,
+          SubstrateEthereumPublicKey
+        > {
   /// Private constructor for creating an instance of [SubstrateEthereumPrivateKey] with a given private key.
   const SubstrateEthereumPrivateKey._(this._privateKey);
 
@@ -18,7 +22,8 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   /// Creates an [SubstrateEthereumPrivateKey] instance from a hexadecimal private key string.
   factory SubstrateEthereumPrivateKey(String privateKeyHex) {
     return SubstrateEthereumPrivateKey.fromBytes(
-        BytesUtils.fromHexString(privateKeyHex));
+      BytesUtils.fromHexString(privateKeyHex),
+    );
   }
 
   /// Creates an [SubstrateEthereumPrivateKey] instance from a list of bytes representing the private key.
@@ -27,8 +32,10 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
       final Secp256k1PrivateKey key = Secp256k1PrivateKey.fromBytes(keyBytes);
       return SubstrateEthereumPrivateKey._(key);
     } catch (e) {
-      throw DartSubstratePluginException("invalid ecdsa private key",
-          details: {"keyBytes": BytesUtils.tryToHexString(keyBytes)});
+      throw DartSubstratePluginException(
+        "invalid ecdsa private key",
+        details: {"keyBytes": BytesUtils.tryToHexString(keyBytes)},
+      );
     }
   }
 
@@ -48,7 +55,8 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   @override
   SubstrateEthereumPublicKey toPublicKey() {
     return SubstrateEthereumPublicKey.fromBytes(
-        _privateKey.publicKey.compressed);
+      _privateKey.publicKey.compressed,
+    );
   }
 
   /// Signs a transaction digest using the private key.
@@ -57,8 +65,10 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   @override
   List<int> sign(List<int> transactionDigest, {bool hashMessage = true}) {
     final ethsigner = ETHSigner.fromKeyBytes(toBytes());
-    final sign =
-        ethsigner.signConst(transactionDigest, hashMessage: hashMessage);
+    final sign = ethsigner.signConst(
+      transactionDigest,
+      hashMessage: hashMessage,
+    );
     return sign.toBytes();
   }
 
@@ -67,8 +77,10 @@ class SubstrateEthereumPrivateKey extends BaseSubstratePrivateKey<
   /// Optionally, [payloadLength] can be set to specify the payload length for the message.
   String signPersonalMessage(List<int> message, {int? payloadLength}) {
     final ethsigner = ETHSigner.fromKeyBytes(toBytes());
-    final sign = ethsigner.signProsonalMessageConst(message,
-        payloadLength: payloadLength);
+    final sign = ethsigner.signProsonalMessageConst(
+      message,
+      payloadLength: payloadLength,
+    );
     return BytesUtils.toHexString(sign);
   }
 

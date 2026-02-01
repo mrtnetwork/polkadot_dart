@@ -9,19 +9,24 @@ import 'package:polkadot_dart/src/provider/models/runtime/query_fee_info.dart';
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
 class SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails
     extends SubstrateRequest<String, QueryFeeDetails> {
-  const SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails(
-      {required this.data, this.atBlockHash});
-  factory SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails.fromExtrinsic(
-      {required List<int> exirceBytes, String? atBlockHash}) {
+  const SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails({
+    required this.data,
+    this.atBlockHash,
+  });
+  factory SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails.fromExtrinsic({
+    required List<int> exirceBytes,
+    String? atBlockHash,
+  }) {
     final length = LayoutConst.u32().serialize(exirceBytes.length);
     final data = [
-      ...LayoutSerializationUtils.encodeLength(exirceBytes),
+      ...LayoutSerializationUtils.encodeLength(exirceBytes.length.toString()),
       ...exirceBytes,
-      ...length
+      ...length,
     ];
     return SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails(
-        data: BytesUtils.toHexString(data, prefix: "0x"),
-        atBlockHash: atBlockHash);
+      data: BytesUtils.toHexString(data, prefix: "0x"),
+      atBlockHash: atBlockHash,
+    );
   }
 
   final String? atBlockHash;

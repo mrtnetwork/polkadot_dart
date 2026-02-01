@@ -9,17 +9,17 @@ class Si1Field extends SubstrateSerialization<Map<String, dynamic>> {
   final int type;
   final String? typeName;
   final List<String> docs;
-  Si1Field(
-      {required this.name,
-      required this.type,
-      required this.typeName,
-      required List<String> docs})
-      : docs = List<String>.unmodifiable(docs);
+  Si1Field({
+    required this.name,
+    required this.type,
+    required this.typeName,
+    required List<String> docs,
+  }) : docs = List<String>.unmodifiable(docs);
   Si1Field.deserializeJson(Map<String, dynamic> json)
-      : name = json["name"],
-        docs = (json["docs"] as List).cast(),
-        type = json["type"],
-        typeName = json["typeName"];
+    : name = json["name"],
+      docs = (json["docs"] as List).cast(),
+      type = json["type"],
+      typeName = json["typeName"];
 
   bool get hasName => name != null;
 

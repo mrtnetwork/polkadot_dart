@@ -29,11 +29,12 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
   }
 
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     throw UnimplementedError();
   }
 
@@ -53,8 +54,11 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     throw UnimplementedError();
   }
 }

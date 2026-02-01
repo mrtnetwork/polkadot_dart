@@ -10,22 +10,27 @@ class ChainProperties {
       final tokenSymbol = json["tokenSymbol"];
       if (tokenSymbol is String) {
         return ChainProperties(
-            ss58Format: IntUtils.tryParse(json["ss58Format"]),
-            tokens: [
-              ChainPropertiesToken(
-                  decimals: IntUtils.parse(json["tokenDecimals"]),
-                  tokenSymbol: tokenSymbol)
-            ]);
+          ss58Format: IntUtils.tryParse(json["ss58Format"]),
+          tokens: [
+            ChainPropertiesToken(
+              decimals: IntUtils.parse(json["tokenDecimals"]),
+              tokenSymbol: tokenSymbol,
+            ),
+          ],
+        );
       }
       if (decimals is List && tokenSymbol is List) {
         if (decimals.length == tokenSymbol.length) {
           return ChainProperties(
-              ss58Format: IntUtils.tryParse(json["ss58Format"]),
-              tokens: List.generate(
-                  tokenSymbol.length,
-                  (index) => ChainPropertiesToken(
-                      decimals: IntUtils.parse(decimals[index]),
-                      tokenSymbol: tokenSymbol[index])));
+            ss58Format: IntUtils.tryParse(json["ss58Format"]),
+            tokens: List.generate(
+              tokenSymbol.length,
+              (index) => ChainPropertiesToken(
+                decimals: IntUtils.parse(decimals[index]),
+                tokenSymbol: tokenSymbol[index],
+              ),
+            ),
+          );
         }
       }
     } catch (_) {}
@@ -38,12 +43,14 @@ class ChainProperties {
     }
     return {
       "ss58Format": ss58Format,
-      "tokenDecimals": tokens.length > 1
-          ? tokens.map((e) => e.decimals).toList()
-          : tokens.firstOrNull?.decimals,
-      "tokenSymbol": tokens.length > 1
-          ? tokens.map((e) => e.tokenSymbol).toList()
-          : tokens.firstOrNull?.tokenSymbol
+      "tokenDecimals":
+          tokens.length > 1
+              ? tokens.map((e) => e.decimals).toList()
+              : tokens.firstOrNull?.decimals,
+      "tokenSymbol":
+          tokens.length > 1
+              ? tokens.map((e) => e.tokenSymbol).toList()
+              : tokens.firstOrNull?.tokenSymbol,
     };
   }
 
@@ -56,6 +63,8 @@ class ChainProperties {
 class ChainPropertiesToken {
   final int decimals;
   final String tokenSymbol;
-  const ChainPropertiesToken(
-      {required this.decimals, required this.tokenSymbol});
+  const ChainPropertiesToken({
+    required this.decimals,
+    required this.tokenSymbol,
+  });
 }

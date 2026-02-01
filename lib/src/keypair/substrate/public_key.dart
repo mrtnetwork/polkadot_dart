@@ -11,11 +11,14 @@ class SubstratePublicKey extends BaseSubstratePublicKey<SubstrateAddress> {
   const SubstratePublicKey._(this._substrate, this.algorithm);
 
   /// Constructs a [SubstratePublicKey] from a byte array.
-  factory SubstratePublicKey.fromBytes(
-      {required List<int> pubkeyBytes,
-      SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519}) {
-    final substrate =
-        Substrate.fromPublicKey(pubkeyBytes, algorithm.substrateCoinInfo);
+  factory SubstratePublicKey.fromBytes({
+    required List<int> pubkeyBytes,
+    SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
+  }) {
+    final substrate = Substrate.fromPublicKey(
+      pubkeyBytes,
+      algorithm.substrateCoinInfo,
+    );
     return SubstratePublicKey._(substrate, algorithm);
   }
 
@@ -38,8 +41,11 @@ class SubstratePublicKey extends BaseSubstratePublicKey<SubstrateAddress> {
   /// Converts the public key to hexadecimal string.
   @override
   String toHex({bool upperCase = false}) {
-    return BytesUtils.toHexString(toBytes(),
-        lowerCase: !upperCase, prefix: "0x");
+    return BytesUtils.toHexString(
+      toBytes(),
+      lowerCase: !upperCase,
+      prefix: "0x",
+    );
   }
 
   /// Verifies a given message and signature using the public key.
@@ -50,8 +56,12 @@ class SubstratePublicKey extends BaseSubstratePublicKey<SubstrateAddress> {
   }
 
   /// Verifies a given message and VRF (Verifiable Random Function) signature using the public key.
-  bool vrfVerify(List<int> message, List<int> vrfSign,
-      {List<int>? context, List<int>? extra}) {
+  bool vrfVerify(
+    List<int> message,
+    List<int> vrfSign, {
+    List<int>? context,
+    List<int>? extra,
+  }) {
     final verifier = SubstrateVerifier.fromSubstrate(_substrate);
     return verifier.vrfVerify(message, vrfSign, context: context, extra: extra);
   }
@@ -60,12 +70,14 @@ class SubstratePublicKey extends BaseSubstratePublicKey<SubstrateAddress> {
   @override
   SubstrateAddress toAddress({int ss58Format = SS58Const.genericSubstrate}) {
     return SubstrateAddress(
-        _substrate.publicKey.toSS58Address(ss58Format: ss58Format),
-        ss58Format: ss58Format);
+      _substrate.publicKey.toSS58Address(ss58Format: ss58Format),
+      ss58Format: ss58Format,
+    );
   }
 
-  SubstrateEthereumAddress toEthereumAddress(
-      {int ss58Format = SS58Const.genericSubstrate}) {
+  SubstrateEthereumAddress toEthereumAddress({
+    int ss58Format = SS58Const.genericSubstrate,
+  }) {
     return SubstrateEthereumAddress.fromBytes(toBytes().sublist(0, 20));
   }
 }

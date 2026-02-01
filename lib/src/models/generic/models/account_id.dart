@@ -14,9 +14,9 @@ abstract class SubstrateBaseAccountId<T> extends SubstrateSerialization<T> {
 class SubstrateAccount32 extends ScaleFixedBytes
     implements SubstrateBaseAccountId<List<int>> {
   SubstrateAccount32.fromHex(super.hex)
-      : super.fromHex(lengthInBytes: SubstrateConstant.accountIdLengthInBytes);
+    : super.fromHex(lengthInBytes: SubstrateConstant.accountIdLengthInBytes);
   SubstrateAccount32(super.bytes)
-      : super(lengthInBytes: SubstrateConstant.accountIdLengthInBytes);
+    : super(lengthInBytes: SubstrateConstant.accountIdLengthInBytes);
 
   @override
   String get name => GenericConstants.address32IndexKey;
@@ -30,12 +30,11 @@ class SubstrateAccount32 extends ScaleFixedBytes
 class SubstrateAccount20 extends ScaleFixedBytes
     implements SubstrateBaseAccountId<List<int>> {
   SubstrateAccount20.fromHex(super.hex)
-      : super.fromHex(
-            lengthInBytes: SubstrateConstant.accountId20LengthInBytes);
+    : super.fromHex(lengthInBytes: SubstrateConstant.accountId20LengthInBytes);
   SubstrateAccount20(super.bytes)
-      : super(lengthInBytes: SubstrateConstant.accountId20LengthInBytes);
+    : super(lengthInBytes: SubstrateConstant.accountId20LengthInBytes);
   SubstrateAccount20.deserializeJson(super.bytes)
-      : super(lengthInBytes: SubstrateConstant.accountId20LengthInBytes);
+    : super(lengthInBytes: SubstrateConstant.accountId20LengthInBytes);
   @override
   String get name => GenericConstants.address20IndexKey;
   @override
@@ -71,7 +70,8 @@ class SubstrateAccountIndex extends SubstrateBaseAccountId<int> {
   @override
   List<int> accountBytes() {
     throw DartSubstratePluginException(
-        "Cannot access account bytes from account index.");
+      "Cannot access account bytes from account index.",
+    );
   }
 
   @override

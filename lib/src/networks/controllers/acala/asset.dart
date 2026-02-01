@@ -27,8 +27,9 @@ enum AcalaAssetTokenType {
 
   const AcalaAssetTokenType(this.type);
   static AcalaAssetTokenType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? AcalaAssetTokenType.unknown;
   }
 }
@@ -46,69 +47,98 @@ enum AcalaAssetType {
 
   const AcalaAssetType(this.type);
   static AcalaAssetType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? AcalaAssetType.unknown;
   }
 }
 
 class AcalaAsstConst {
-  static final BaseAcalaAsset tap =
-      AcalaAssetToken(token: AcalaAssetTokenType.tap, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.tap.type: null}
-  });
-  static final BaseAcalaAsset lksm =
-      AcalaAssetToken(token: AcalaAssetTokenType.lksm, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.lksm.type: null}
-  });
-  static final BaseAcalaAsset kint =
-      AcalaAssetToken(token: AcalaAssetTokenType.kint, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.kint.type: null}
-  });
-  static final BaseAcalaAsset kusd =
-      AcalaAssetToken(token: AcalaAssetTokenType.kusd, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.kusd.type: null}
-  });
-  static final BaseAcalaAsset kbtc =
-      AcalaAssetToken(token: AcalaAssetTokenType.kbtc, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.kbtc.type: null}
-  });
-  static final BaseAcalaAsset tai =
-      AcalaAssetToken(token: AcalaAssetTokenType.tai, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.tai.type: null}
-  });
-  static final BaseAcalaAsset ausd =
-      AcalaAssetToken(token: AcalaAssetTokenType.ausd, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.ausd.type: null}
-  });
-  static final BaseAcalaAsset lDot =
-      AcalaAssetToken(token: AcalaAssetTokenType.ldot, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.ldot.type: null}
-  });
-  static final BaseAcalaAsset dot =
-      AcalaAssetToken(token: AcalaAssetTokenType.dot, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.dot.type: null}
-  });
-  static final BaseAcalaAsset aca =
-      AcalaAssetToken(token: AcalaAssetTokenType.aca, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.aca.type: null}
-  });
-  static final BaseAcalaAsset vskSm =
-      AcalaAssetToken(token: AcalaAssetTokenType.vskSm, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.vskSm.type: null}
-  });
-  static final BaseAcalaAsset pha =
-      AcalaAssetToken(token: AcalaAssetTokenType.pha, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.pha.type: null}
-  });
-  static final BaseAcalaAsset ksm =
-      AcalaAssetToken(token: AcalaAssetTokenType.ksm, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.ksm.type: null}
-  });
-  static final BaseAcalaAsset bnc =
-      AcalaAssetToken(token: AcalaAssetTokenType.bnc, identifier: {
-    AcalaAssetType.token.type: {AcalaAssetTokenType.bnc.type: null}
-  });
+  static final BaseAcalaAsset tap = AcalaAssetToken(
+    token: AcalaAssetTokenType.tap,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.tap.type: null},
+    },
+  );
+  static final BaseAcalaAsset lksm = AcalaAssetToken(
+    token: AcalaAssetTokenType.lksm,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.lksm.type: null},
+    },
+  );
+  static final BaseAcalaAsset kint = AcalaAssetToken(
+    token: AcalaAssetTokenType.kint,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.kint.type: null},
+    },
+  );
+  static final BaseAcalaAsset kusd = AcalaAssetToken(
+    token: AcalaAssetTokenType.kusd,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.kusd.type: null},
+    },
+  );
+  static final BaseAcalaAsset kbtc = AcalaAssetToken(
+    token: AcalaAssetTokenType.kbtc,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.kbtc.type: null},
+    },
+  );
+  static final BaseAcalaAsset tai = AcalaAssetToken(
+    token: AcalaAssetTokenType.tai,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.tai.type: null},
+    },
+  );
+  static final BaseAcalaAsset ausd = AcalaAssetToken(
+    token: AcalaAssetTokenType.ausd,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.ausd.type: null},
+    },
+  );
+  static final BaseAcalaAsset lDot = AcalaAssetToken(
+    token: AcalaAssetTokenType.ldot,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.ldot.type: null},
+    },
+  );
+  static final BaseAcalaAsset dot = AcalaAssetToken(
+    token: AcalaAssetTokenType.dot,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.dot.type: null},
+    },
+  );
+  static final BaseAcalaAsset aca = AcalaAssetToken(
+    token: AcalaAssetTokenType.aca,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.aca.type: null},
+    },
+  );
+  static final BaseAcalaAsset vskSm = AcalaAssetToken(
+    token: AcalaAssetTokenType.vskSm,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.vskSm.type: null},
+    },
+  );
+  static final BaseAcalaAsset pha = AcalaAssetToken(
+    token: AcalaAssetTokenType.pha,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.pha.type: null},
+    },
+  );
+  static final BaseAcalaAsset ksm = AcalaAssetToken(
+    token: AcalaAssetTokenType.ksm,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.ksm.type: null},
+    },
+  );
+  static final BaseAcalaAsset bnc = AcalaAssetToken(
+    token: AcalaAssetTokenType.bnc,
+    identifier: {
+      AcalaAssetType.token.type: {AcalaAssetTokenType.bnc.type: null},
+    },
+  );
   // static final Map<String, dynamic> acaIdentifier = {
   //   AcalaAssetType.token.type: {AcalaAssetTokenType.aca.type: null}
   // };
@@ -126,8 +156,9 @@ abstract class BaseAcalaAsset {
       AcalaAssetType.erc20 => AcalaAssetErc20.fromJson(json),
       AcalaAssetType.stableAssetPoolToken =>
         AcalaAssetStableAssetPoolToken.fromJson(json),
-      AcalaAssetType.liquidCrowdloan =>
-        AcalaAssetLiquidCrowdloanToken.fromJson(json),
+      AcalaAssetType.liquidCrowdloan => AcalaAssetLiquidCrowdloanToken.fromJson(
+        json,
+      ),
       AcalaAssetType.foreignAsset => AcalaAssetForeignAsset.fromJson(json),
       AcalaAssetType.dexShare => AcalaAssetDexShare.fromJson(json),
       AcalaAssetType.unknown => AcalaAssetUnknown.fromJson(json),
@@ -138,69 +169,74 @@ abstract class BaseAcalaAsset {
 class AcalaAssetToken extends BaseAcalaAsset {
   final AcalaAssetTokenType token;
   const AcalaAssetToken({required this.token, required super.identifier})
-      : super(type: AcalaAssetType.token);
+    : super(type: AcalaAssetType.token);
   AcalaAssetToken.fromJson(Map<String, dynamic> json)
-      : token = AcalaAssetTokenType.fromJson(
-            json.valueAs(AcalaAssetType.token.type)),
-        super(type: AcalaAssetType.token, identifier: json);
+    : token = AcalaAssetTokenType.fromJson(
+        json.valueAs(AcalaAssetType.token.type),
+      ),
+      super(type: AcalaAssetType.token, identifier: json);
 }
 
 class AcalaAssetErc20 extends BaseAcalaAsset {
   final SubstrateEthereumAddress address;
   const AcalaAssetErc20({required this.address, required super.identifier})
-      : super(type: AcalaAssetType.erc20);
+    : super(type: AcalaAssetType.erc20);
   AcalaAssetErc20.fromJson(Map<String, dynamic> json)
-      : address = SubstrateEthereumAddress.fromBytes(
-            json.valueAsBytes(AcalaAssetType.erc20.type)),
-        super(type: AcalaAssetType.erc20, identifier: json);
+    : address = SubstrateEthereumAddress.fromBytes(
+        json.valueAsBytes(AcalaAssetType.erc20.type),
+      ),
+      super(type: AcalaAssetType.erc20, identifier: json);
 }
 
 class AcalaAssetStableAssetPoolToken extends BaseAcalaAsset {
   final int id;
-  const AcalaAssetStableAssetPoolToken(
-      {required this.id, required super.identifier})
-      : super(type: AcalaAssetType.stableAssetPoolToken);
+  const AcalaAssetStableAssetPoolToken({
+    required this.id,
+    required super.identifier,
+  }) : super(type: AcalaAssetType.stableAssetPoolToken);
   AcalaAssetStableAssetPoolToken.fromJson(Map<String, dynamic> json)
-      : id = json.valueAs(AcalaAssetType.stableAssetPoolToken.type),
-        super(type: AcalaAssetType.stableAssetPoolToken, identifier: json);
+    : id = json.valueAs(AcalaAssetType.stableAssetPoolToken.type),
+      super(type: AcalaAssetType.stableAssetPoolToken, identifier: json);
 }
 
 class AcalaAssetLiquidCrowdloanToken extends BaseAcalaAsset {
   final int id;
-  const AcalaAssetLiquidCrowdloanToken(
-      {required this.id, required super.identifier})
-      : super(type: AcalaAssetType.liquidCrowdloan);
+  const AcalaAssetLiquidCrowdloanToken({
+    required this.id,
+    required super.identifier,
+  }) : super(type: AcalaAssetType.liquidCrowdloan);
   AcalaAssetLiquidCrowdloanToken.fromJson(Map<String, dynamic> json)
-      : id = json.valueAs(AcalaAssetType.liquidCrowdloan.type),
-        super(type: AcalaAssetType.liquidCrowdloan, identifier: json);
+    : id = json.valueAs(AcalaAssetType.liquidCrowdloan.type),
+      super(type: AcalaAssetType.liquidCrowdloan, identifier: json);
 }
 
 class AcalaAssetForeignAsset extends BaseAcalaAsset {
   final int id;
   const AcalaAssetForeignAsset({required this.id, required super.identifier})
-      : super(type: AcalaAssetType.foreignAsset);
+    : super(type: AcalaAssetType.foreignAsset);
   AcalaAssetForeignAsset.fromJson(Map<String, dynamic> json)
-      : id = json.valueAs(AcalaAssetType.foreignAsset.type),
-        super(type: AcalaAssetType.foreignAsset, identifier: json);
+    : id = json.valueAs(AcalaAssetType.foreignAsset.type),
+      super(type: AcalaAssetType.foreignAsset, identifier: json);
 }
 
 class AcalaAssetUnknown extends BaseAcalaAsset {
   const AcalaAssetUnknown({required super.identifier})
-      : super(type: AcalaAssetType.foreignAsset);
+    : super(type: AcalaAssetType.foreignAsset);
   AcalaAssetUnknown.fromJson(Map<String, dynamic> json)
-      : super(type: AcalaAssetType.unknown, identifier: json);
+    : super(type: AcalaAssetType.unknown, identifier: json);
 }
 
 class AcalaAssetDexShare extends BaseAcalaAsset {
   final List<BaseAcalaAsset> assets;
   const AcalaAssetDexShare({required this.assets, required super.identifier})
-      : super(type: AcalaAssetType.dexShare);
+    : super(type: AcalaAssetType.dexShare);
   AcalaAssetDexShare.fromJson(Map<String, dynamic> json)
-      : assets = json
-            .valueEnsureAsList(AcalaAssetType.dexShare.type)
-            .map((e) => BaseAcalaAsset.fromJson(e))
-            .toList(),
-        super(type: AcalaAssetType.dexShare, identifier: json);
+    : assets =
+          json
+              .valueEnsureAsList(AcalaAssetType.dexShare.type)
+              .map((e) => BaseAcalaAsset.fromJson(e))
+              .toList(),
+      super(type: AcalaAssetType.dexShare, identifier: json);
 }
 
 class AcalaAssetMetadata {
@@ -210,17 +246,19 @@ class AcalaAssetMetadata {
   final int decimals;
   // final bool isFrozen;
   AcalaAssetMetadata.fromJson(Map<String, dynamic> json)
-      : minimalBalance = json.valueAs("minimal_balance"),
-        decimals = json.valueAs("decimals"),
-        name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
-        symbol =
-            SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("symbol")),
-        super();
-  const AcalaAssetMetadata(
-      {required this.minimalBalance,
-      required this.name,
-      required this.symbol,
-      required this.decimals});
+    : minimalBalance = json.valueAs("minimal_balance"),
+      decimals = json.valueAs("decimals"),
+      name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
+      symbol = SubstrateNetworkControllerUtils.tryToUtf8(
+        json.valueAs("symbol"),
+      ),
+      super();
+  const AcalaAssetMetadata({
+    required this.minimalBalance,
+    required this.name,
+    required this.symbol,
+    required this.decimals,
+  });
   Map<String, dynamic> toJson() {
     return {
       "minimal_balance": minimalBalance,
@@ -236,27 +274,34 @@ class AcalaNetworkAsset extends BaseSubstrateNetworkAsset {
   final AcalaAssetMetadata? metadata;
   @override
   final XCMVersionedLocation? location;
-  AcalaNetworkAsset(
-      {required this.asset,
-      required this.metadata,
-      required super.isFeeToken,
-      this.location})
-      : super(
-            isSpendable: asset.type == AcalaAssetType.token ||
-                asset.type == AcalaAssetType.foreignAsset,
-            minBalance: metadata?.minimalBalance,
-            name: metadata?.name,
-            symbol: metadata?.symbol,
-            decimals: metadata?.decimals,
-            excutionPallet: SubtrateMetadataPallet.currencies);
+  AcalaNetworkAsset({
+    required this.asset,
+    required this.metadata,
+    required super.isFeeToken,
+    this.location,
+  }) : super(
+         isSpendable:
+             asset.type == AcalaAssetType.token ||
+             asset.type == AcalaAssetType.foreignAsset,
+         minBalance: metadata?.minimalBalance,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+         decimals: metadata?.decimals,
+         excutionPallet: SubtrateMetadataPallet.currencies,
+       );
   factory AcalaNetworkAsset.fromJson(Map<String, dynamic> json) {
     return AcalaNetworkAsset(
-        asset: BaseAcalaAsset.fromJson(json.valueAs("asset")),
-        metadata: json.valueTo<AcalaAssetMetadata?, Map<String, dynamic>>(
-            key: "metadata", parse: AcalaAssetMetadata.fromJson),
-        isFeeToken: json.valueAs("is_fee_token"),
-        location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
-            key: "location", parse: XCMVersionedLocation.fromJson));
+      asset: BaseAcalaAsset.fromJson(json.valueAs("asset")),
+      metadata: json.valueTo<AcalaAssetMetadata?, Map<String, dynamic>>(
+        key: "metadata",
+        parse: AcalaAssetMetadata.fromJson,
+      ),
+      isFeeToken: json.valueAs("is_fee_token"),
+      location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
+        key: "location",
+        parse: XCMVersionedLocation.fromJson,
+      ),
+    );
   }
   @override
   int? get decimals => metadata?.decimals;
@@ -271,7 +316,7 @@ class AcalaNetworkAsset extends BaseSubstrateNetworkAsset {
       "metadata": metadata?.toJson(),
       "location": location?.toJson(),
       "is_fee_token": isFeeToken,
-      "type": type.name
+      "type": type.name,
     };
   }
 
@@ -287,17 +332,20 @@ class AcalaNetworkAsset extends BaseSubstrateNetworkAsset {
 }
 
 class AcalaNetworkNativeAsset extends AcalaNetworkAsset {
-  AcalaNetworkNativeAsset({
-    required super.metadata,
-    required super.location,
-  }) : super(asset: AcalaAsstConst.aca, isFeeToken: true);
+  AcalaNetworkNativeAsset({required super.metadata, required super.location})
+    : super(asset: AcalaAsstConst.aca, isFeeToken: true);
 
   factory AcalaNetworkNativeAsset.fromJson(Map<String, dynamic> json) {
     return AcalaNetworkNativeAsset(
-        metadata: json.valueTo<AcalaAssetMetadata?, Map<String, dynamic>>(
-            key: "metadata", parse: AcalaAssetMetadata.fromJson),
-        location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
-            key: "location", parse: XCMVersionedLocation.fromJson));
+      metadata: json.valueTo<AcalaAssetMetadata?, Map<String, dynamic>>(
+        key: "metadata",
+        parse: AcalaAssetMetadata.fromJson,
+      ),
+      location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
+        key: "location",
+        parse: XCMVersionedLocation.fromJson,
+      ),
+    );
   }
 
   @override
@@ -310,12 +358,15 @@ class TokenPalletAccountBalance {
   final BigInt free;
   final BigInt reserved;
   final BigInt frozen;
-  const TokenPalletAccountBalance(
-      {required this.free, required this.reserved, required this.frozen});
+  const TokenPalletAccountBalance({
+    required this.free,
+    required this.reserved,
+    required this.frozen,
+  });
   TokenPalletAccountBalance.fromJson(Map<String, dynamic> json)
-      : free = json.valueAs("free"),
-        reserved = json.valueAs("reserved"),
-        frozen = json.valueAs("frozen");
+    : free = json.valueAs("free"),
+      reserved = json.valueAs("reserved"),
+      frozen = json.valueAs("frozen");
   Map<String, dynamic> toJson() {
     return {
       "free": free.toString(),

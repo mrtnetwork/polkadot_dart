@@ -6,14 +6,15 @@ import 'package:polkadot_dart/src/networks/controllers/asset_hub/asset.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
 
 abstract class BaseKLITSpiritNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseKLITSpiritNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseKLITSpiritNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseKLITSpiritNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -30,26 +31,31 @@ class KLITSpiritnetNetworkAsset extends BaseKLITSpiritNetworkAsset {
     required this.location,
     required super.isFeeToken,
   }) : super(
-            decimals: metadata?.decimals,
-            excutionPallet: SubtrateMetadataPallet.fungibles,
-            minBalance: asset.asset.minBalance,
-            name: metadata?.name,
-            symbol: metadata?.symbol,
-            isSpendable:
-                asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen);
+         decimals: metadata?.decimals,
+         excutionPallet: SubtrateMetadataPallet.fungibles,
+         minBalance: asset.asset.minBalance,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+         isSpendable:
+             asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
+       );
   factory KLITSpiritnetNetworkAsset.fromJson(Map<String, dynamic> json) {
     final asset = PolkadotAssetHubForeignAsset.fromJson(json.valueAs("asset"));
     final bool isFeeToken = json.valueAs("is_fee_token");
-    final metadata =
-        json.valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
-            key: "metadata",
-            parse: (v) => PolkadotAssetHubAssetMetadata.fromJson(json));
+    final metadata = json
+        .valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
+          key: "metadata",
+          parse: (v) => PolkadotAssetHubAssetMetadata.fromJson(json),
+        );
     return KLITSpiritnetNetworkAsset(
-        asset: asset,
-        location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
-            key: "location", parse: (v) => XCMVersionedLocation.fromJson(json)),
-        isFeeToken: isFeeToken,
-        metadata: metadata);
+      asset: asset,
+      location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
+        key: "location",
+        parse: (v) => XCMVersionedLocation.fromJson(json),
+      ),
+      isFeeToken: isFeeToken,
+      metadata: metadata,
+    );
   }
 
   @override
@@ -60,7 +66,7 @@ class KLITSpiritnetNetworkAsset extends BaseKLITSpiritNetworkAsset {
       "asset": asset.toJson(),
       "metadata": metadata?.toJson(),
       "is_fee_token": isFeeToken,
-      "location": location?.toJson()
+      "location": location?.toJson(),
     };
   }
 
@@ -85,8 +91,8 @@ class KLITSpiritnetNetworkNativeAsset extends BaseKLITSpiritNetworkAsset {
     super.minBalance,
   }) : super(excutionPallet: SubtrateMetadataPallet.balances);
   KLITSpiritnetNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
 

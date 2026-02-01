@@ -13,13 +13,17 @@ enum XTransferCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   final int variantIndex;
   const XTransferCallPalletMethod(this.method, this.variantIndex);
   static XTransferCallPalletMethod fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XTransferCallPalletMethod fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 }
 
@@ -40,21 +44,23 @@ class XTransferCallPalletTransfer extends XTransferCallPallet {
   @override
   XCMMultiLocation get destination => dest;
 
-  const XTransferCallPalletTransfer(
-      {required this.asset,
-      required this.dest,
-      required this.destWeight,
-      super.pallet = SubtrateMetadataPallet.xTransfer})
-      : super(type: XTransferCallPalletMethod.transfer);
+  const XTransferCallPalletTransfer({
+    required this.asset,
+    required this.dest,
+    required this.destWeight,
+    super.pallet = SubtrateMetadataPallet.xTransfer,
+  }) : super(type: XTransferCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -63,8 +69,8 @@ class XTransferCallPalletTransfer extends XTransferCallPallet {
       method ?? type.method: {
         "asset": asset.toJson(),
         "dest": dest.toJson(),
-        "dest_weight": MetadataUtils.toOptionalJson(destWeight?.toJson())
-      }
+        "dest_weight": MetadataUtils.toOptionalJson(destWeight?.toJson()),
+      },
     };
   }
 }
@@ -76,22 +82,24 @@ class XTransferCallPalletTransferGeneric extends XTransferCallPallet {
   @override
   XCMMultiLocation get destination => dest;
 
-  XTransferCallPalletTransferGeneric(
-      {required List<int> data,
-      required this.dest,
-      required this.destWeight,
-      super.pallet = SubtrateMetadataPallet.xTransfer})
-      : data = data.asImmutableBytes,
-        super(type: XTransferCallPalletMethod.transferGeneric);
+  XTransferCallPalletTransferGeneric({
+    required List<int> data,
+    required this.dest,
+    required this.destWeight,
+    super.pallet = SubtrateMetadataPallet.xTransfer,
+  }) : data = data.asImmutableBytes,
+       super(type: XTransferCallPalletMethod.transferGeneric);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -100,8 +108,8 @@ class XTransferCallPalletTransferGeneric extends XTransferCallPallet {
       method ?? type.method: {
         "data": data,
         "dest": dest.toJson(),
-        "dest_weight": MetadataUtils.toOptionalJson(destWeight?.toJson())
-      }
+        "dest_weight": MetadataUtils.toOptionalJson(destWeight?.toJson()),
+      },
     };
   }
 }

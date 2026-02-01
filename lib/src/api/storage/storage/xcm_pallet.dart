@@ -15,16 +15,19 @@ enum SubstrateStorageXCMPalletMethods {
 /// safexcmversion
 class SubstrateStorageXCMPallet extends SubstrateStorageApi {
   const SubstrateStorageXCMPallet();
-  Future<XCMVersion> safeXCMVersion(
-      {required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<XCMVersion> safeXCMVersion({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     return api.getStorageRequest(
-        rpc: rpc,
-        request: GetStorageRequest<XCMVersion, int>(
-            onJsonResponse: (response, _, storageKey) =>
-                XCMVersion.fromVersion(response),
-            palletNameOrIndex: this.api.name,
-            methodName:
-                SubstrateStorageXCMPalletMethods.safeXcmVersion.method));
+      rpc: rpc,
+      request: GetStorageRequest<XCMVersion, int>(
+        onJsonResponse:
+            (response, _, storageKey) => XCMVersion.fromVersion(response),
+        palletNameOrIndex: this.api.name,
+        methodName: SubstrateStorageXCMPalletMethods.safeXcmVersion.method,
+      ),
+    );
   }
 
   @override

@@ -9,27 +9,25 @@ class AstarAsset {
   final BigInt assetId;
 
   AstarAsset.fromJson(Map<String, dynamic> json)
-      : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
-        assetId = json.valueAs("asset_id");
+    : asset = PolkadotAssetHubAssetInfo.fromJson(json.valueAs("asset")),
+      assetId = json.valueAs("asset_id");
   AstarAsset({required this.asset, required this.assetId});
 
   Map<String, dynamic> toJson() {
-    return {
-      "asset": asset.toJson(),
-      "asset_id": assetId.toString(),
-    };
+    return {"asset": asset.toJson(), "asset_id": assetId.toString()};
   }
 }
 
 abstract class BaseAstarNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseAstarNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseAstarNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseAstarNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -40,39 +38,43 @@ class AstarNetworkAsset extends BaseAstarNetworkAsset {
   final XCMVersionedLocation? location;
 
   final BigInt? unitsPerSecond;
-  AstarNetworkAsset(
-      {required this.asset,
-      required this.metadata,
-      required super.isFeeToken,
-      this.unitsPerSecond,
-      this.location})
-      : super(
-            decimals: metadata?.decimals,
-            isSpendable:
-                asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
-            excutionPallet: SubtrateMetadataPallet.assets,
-            minBalance: asset.asset.minBalance,
-            name: metadata?.name,
-            symbol: metadata?.symbol);
+  AstarNetworkAsset({
+    required this.asset,
+    required this.metadata,
+    required super.isFeeToken,
+    this.unitsPerSecond,
+    this.location,
+  }) : super(
+         decimals: metadata?.decimals,
+         isSpendable:
+             asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
+         excutionPallet: SubtrateMetadataPallet.assets,
+         minBalance: asset.asset.minBalance,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+       );
   @override
   BigInt get identifier => asset.assetId;
   factory AstarNetworkAsset.fromJson(Map<String, dynamic> json) {
     final asset = PolkadotAssetHubAsset.fromJson(json.valueAs("asset"));
-    final metadata =
-        json.valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
-      key: "metadata",
-      parse: (v) {
-        return PolkadotAssetHubAssetMetadata.fromJson(v);
-      },
-    );
+    final metadata = json
+        .valueTo<PolkadotAssetHubAssetMetadata?, Map<String, dynamic>>(
+          key: "metadata",
+          parse: (v) {
+            return PolkadotAssetHubAssetMetadata.fromJson(v);
+          },
+        );
     final bool isFeeToken = json.valueAs("is_fee_token");
     return AstarNetworkAsset(
-        asset: asset,
-        metadata: metadata,
-        location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
-            key: "location", parse: (v) => XCMVersionedLocation.fromJson(json)),
-        isFeeToken: isFeeToken,
-        unitsPerSecond: json.valueAsBigInt("units_per_second"));
+      asset: asset,
+      metadata: metadata,
+      location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
+        key: "location",
+        parse: (v) => XCMVersionedLocation.fromJson(json),
+      ),
+      isFeeToken: isFeeToken,
+      unitsPerSecond: json.valueAsBigInt("units_per_second"),
+    );
   }
 
   @override
@@ -82,7 +84,7 @@ class AstarNetworkAsset extends BaseAstarNetworkAsset {
       "metadata": metadata?.toJson(),
       "is_fee_token": isFeeToken,
       "units_per_second": unitsPerSecond?.toString(),
-      "location": location?.toJson()
+      "location": location?.toJson(),
     };
   }
 
@@ -97,26 +99,23 @@ class AstarNetworkNativeAsset extends BaseAstarNetworkAsset {
   final XCMVersionedLocation location;
   @override
   final Object? identifier = null;
-  AstarNetworkNativeAsset(
-      {required this.location,
-      super.isFeeToken = true,
-      super.isSpendable = true,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      super.minBalance})
-      : super(excutionPallet: SubtrateMetadataPallet.balances);
+  AstarNetworkNativeAsset({
+    required this.location,
+    super.isFeeToken = true,
+    super.isSpendable = true,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    super.minBalance,
+  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
   AstarNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
   @override
   Map<String, dynamic> toJson() {
-    return {
-      ...super.toJson(),
-      "location": location.toJson(),
-    };
+    return {...super.toJson(), "location": location.toJson()};
   }
 
   @override

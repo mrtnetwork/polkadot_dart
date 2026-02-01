@@ -14,8 +14,11 @@ abstract class ScaleTypeDef<T> extends SubstrateSerialization<T> {
   const ScaleTypeDef();
 
   /// Returns the serialization layout of a type definition for the given [registry], [value], and optional [property].
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params});
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  });
 
   /// Gets the constant indexes for the type name.
   Si1TypeDefsIndexesConst get typeName;
@@ -24,16 +27,19 @@ abstract class ScaleTypeDef<T> extends SubstrateSerialization<T> {
   TypeTemlate typeTemplate(PortableRegistry registry, int id);
 
   /// Gets the value of the type definition for the given [registry], [value], [fromTemplate].
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self});
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  });
 
   TYPE cast<TYPE extends ScaleTypeDef>() {
     if (this is! TYPE) {
-      throw MetadataException("Type defination casting failed.",
-          details: {"expected": "$Type", "type": typeName.name});
+      throw MetadataException(
+        "Type defination casting failed.",
+        details: {"expected": "$Type", "type": typeName.name},
+      );
     }
     return this as TYPE;
   }

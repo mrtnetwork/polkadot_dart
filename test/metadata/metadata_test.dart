@@ -15,8 +15,9 @@ void main() {
 void _encodeDecode() {
   test("V16 Encode and Decode", () {
     final metadataBytesV16 = BytesUtils.fromHexString(metadataV16);
-    final VersionedMetadata<MetadataV16> metadata =
-        VersionedMetadata.fromBytes(metadataBytesV16);
+    final VersionedMetadata<MetadataV16> metadata = VersionedMetadata.fromBytes(
+      metadataBytesV16,
+    );
     final encode = metadata.serialize();
     expect(encode, metadataBytesV16);
     expect(metadata.version, 16);
@@ -24,8 +25,9 @@ void _encodeDecode() {
   });
   test("V15 Encode and Decode", () {
     final metadataBytesV15 = BytesUtils.fromHexString(metadataV15);
-    final VersionedMetadata<MetadataV15> metadata =
-        VersionedMetadata.fromBytes(metadataBytesV15);
+    final VersionedMetadata<MetadataV15> metadata = VersionedMetadata.fromBytes(
+      metadataBytesV15,
+    );
     final encode = metadata.serialize();
     expect(encode, metadataBytesV15);
     expect(metadata.version, 15);
@@ -33,8 +35,9 @@ void _encodeDecode() {
   });
   test("V14 Encode and Decode", () {
     final metadataBytesV14 = BytesUtils.fromHexString(metadataV14);
-    final VersionedMetadata<MetadataV14> metadata =
-        VersionedMetadata.fromBytes(metadataBytesV14);
+    final VersionedMetadata<MetadataV14> metadata = VersionedMetadata.fromBytes(
+      metadataBytesV14,
+    );
     final encode = metadata.serialize();
     expect(encode, metadataBytesV14);
     expect(metadata.version, 14);

@@ -17,42 +17,53 @@ class SubstrateStorageAssetsRegistry extends SubstrateStorageApi {
   const SubstrateStorageAssetsRegistry();
   @override
   SubstrateStorageApis get api => SubstrateStorageApis.assetsRegistry;
-  Future<List<QueryStorageFullResponse<BigInt>>> idByLocations(
-      {required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<List<QueryStorageFullResponse<BigInt>>> idByLocations({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request: GetStreamStorageEntriesRequest<
-                QueryStorageFullResponse<BigInt>, int>(
+      request:
+          GetStreamStorageEntriesRequest<QueryStorageFullResponse<BigInt>, int>(
             palletNameOrIndex: this.api.name,
             methodName:
                 SubstrateStorageAssetsRegistryMethods.idByLocations.name,
             onJsonResponse: (response, responseBytes, storageKey) {
               return QueryStorageFullResponse(
-                  storageKey: storageKey,
-                  responseBytes: responseBytes,
-                  response: BigInt.from(response));
-            }),
-        rpc: rpc);
+                storageKey: storageKey,
+                responseBytes: responseBytes,
+                response: BigInt.from(response),
+              );
+            },
+          ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }
 
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
-      registryInfoByIds(
-          {required MetadataApi api, required SubstrateProvider rpc}) async {
+  registryInfoByIds({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request: GetStreamStorageEntriesRequest<
-                QueryStorageFullResponse<Map<String, dynamic>>,
-                Map<String, dynamic>>(
-            palletNameOrIndex: this.api.name,
-            methodName:
-                SubstrateStorageAssetsRegistryMethods.registryInfoByIds.name,
-            onJsonResponse: (response, responseBytes, storageKey) {
-              return QueryStorageFullResponse(
-                  storageKey: storageKey,
-                  responseBytes: responseBytes,
-                  response: response);
-            }),
-        rpc: rpc);
+      request: GetStreamStorageEntriesRequest<
+        QueryStorageFullResponse<Map<String, dynamic>>,
+        Map<String, dynamic>
+      >(
+        palletNameOrIndex: this.api.name,
+        methodName:
+            SubstrateStorageAssetsRegistryMethods.registryInfoByIds.name,
+        onJsonResponse: (response, responseBytes, storageKey) {
+          return QueryStorageFullResponse(
+            storageKey: storageKey,
+            responseBytes: responseBytes,
+            response: response,
+          );
+        },
+      ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }

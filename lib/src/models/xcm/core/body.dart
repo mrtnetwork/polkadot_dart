@@ -21,8 +21,10 @@ enum XCMBodyIdType implements Comparable<XCMBodyIdType> {
   const XCMBodyIdType(this.type);
 
   static XCMBodyIdType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMBodyIdType fromType(String? type) {
@@ -89,7 +91,7 @@ abstract mixin class XCMBodyIdMoniker implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.moniker;
   @override
-  List get variabels => [type, moniker];
+  List get variables => [type, moniker];
 }
 
 abstract mixin class XCMBodyIdNamed implements XCMBodyId {
@@ -119,7 +121,7 @@ abstract mixin class XCMBodyIdNamed implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.named;
   @override
-  List get variabels => [type, name];
+  List get variables => [type, name];
 }
 
 abstract mixin class XCMBodyIdUnit implements XCMBodyId {
@@ -145,7 +147,7 @@ abstract mixin class XCMBodyIdUnit implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.unit;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyIdIndex implements XCMBodyId {
@@ -178,7 +180,7 @@ abstract mixin class XCMBodyIdIndex implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.indexId;
   @override
-  List get variabels => [type, index];
+  List get variables => [type, index];
 }
 
 abstract mixin class XCMBodyIdExecutive implements XCMBodyId {
@@ -204,7 +206,7 @@ abstract mixin class XCMBodyIdExecutive implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.executive;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyIdTechnical implements XCMBodyId {
@@ -230,7 +232,7 @@ abstract mixin class XCMBodyIdTechnical implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.technical;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyIdLegislative implements XCMBodyId {
@@ -256,7 +258,7 @@ abstract mixin class XCMBodyIdLegislative implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.legislative;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyIdJudical implements XCMBodyId {
@@ -282,7 +284,7 @@ abstract mixin class XCMBodyIdJudical implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.judical;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyIdDefense implements XCMBodyId {
@@ -308,7 +310,7 @@ abstract mixin class XCMBodyIdDefense implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.defense;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyIdAdministration implements XCMBodyId {
@@ -334,7 +336,7 @@ abstract mixin class XCMBodyIdAdministration implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.administration;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyIdTreasury implements XCMBodyId {
@@ -360,7 +362,7 @@ abstract mixin class XCMBodyIdTreasury implements XCMBodyId {
   @override
   XCMBodyIdType get type => XCMBodyIdType.treasury;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 enum XCMBodyPartType implements Comparable<XCMBodyPartType> {
@@ -374,8 +376,10 @@ enum XCMBodyPartType implements Comparable<XCMBodyPartType> {
   const XCMBodyPartType(this.type);
 
   static XCMBodyPartType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMBodyPartType fromType(String? type) {
@@ -415,8 +419,9 @@ abstract mixin class XCMBodyPart
 abstract mixin class XCMBodyPartMembers implements XCMBodyPart {
   int get count;
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.compactIntU32(property: "count")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactIntU32(property: "count"),
+    ], property: property);
   }
 
   @override
@@ -445,7 +450,7 @@ abstract mixin class XCMBodyPartMembers implements XCMBodyPart {
   }
 
   @override
-  List get variabels => [type, count];
+  List get variables => [type, count];
 }
 
 abstract mixin class XCMBodyPartVoice implements XCMBodyPart {
@@ -476,7 +481,7 @@ abstract mixin class XCMBodyPartVoice implements XCMBodyPart {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBodyPartFraction implements XCMBodyPart {
@@ -515,12 +520,12 @@ abstract mixin class XCMBodyPartFraction implements XCMBodyPart {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"denom": denom, "nom": nom}
+      type.type: {"denom": denom, "nom": nom},
     };
   }
 
   @override
-  List get variabels => [type, nom, denom];
+  List get variables => [type, nom, denom];
 }
 
 abstract mixin class XCMBodyPartAtLeastProportion implements XCMBodyPart {
@@ -559,12 +564,12 @@ abstract mixin class XCMBodyPartAtLeastProportion implements XCMBodyPart {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"denom": denom, "nom": nom}
+      type.type: {"denom": denom, "nom": nom},
     };
   }
 
   @override
-  List get variabels => [type, nom, denom];
+  List get variables => [type, nom, denom];
 }
 
 abstract mixin class XCMBodyPartMoreThanProportion implements XCMBodyPart {
@@ -602,10 +607,10 @@ abstract mixin class XCMBodyPartMoreThanProportion implements XCMBodyPart {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"denom": denom, "nom": nom}
+      type.type: {"denom": denom, "nom": nom},
     };
   }
 
   @override
-  List get variabels => [type, nom, denom];
+  List get variables => [type, nom, denom];
 }

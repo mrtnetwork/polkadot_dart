@@ -16,17 +16,22 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
     implements PortableRegistry {
   final Map<int, PortableTypeV14> types;
   PortableRegistryV14(List<PortableTypeV14> types)
-      : types = Map<int, PortableTypeV14>.unmodifiable(
-            Map<int, PortableTypeV14>.fromEntries(types.map((type) {
-          return MapEntry(type.id, type);
-        })));
+    : types = Map<int, PortableTypeV14>.unmodifiable(
+        Map<int, PortableTypeV14>.fromEntries(
+          types.map((type) {
+            return MapEntry(type.id, type);
+          }),
+        ),
+      );
   PortableRegistryV14.deserializeJson(Map<String, dynamic> json)
-      : types = Map<int, PortableTypeV14>.unmodifiable(
-            Map<int, PortableTypeV14>.fromEntries(
-                (json["types"] as List).map((e) {
-          final type = PortableTypeV14.deserializeJson(e);
-          return MapEntry(type.id, type);
-        })));
+    : types = Map<int, PortableTypeV14>.unmodifiable(
+        Map<int, PortableTypeV14>.fromEntries(
+          (json["types"] as List).map((e) {
+            final type = PortableTypeV14.deserializeJson(e);
+            return MapEntry(type.id, type);
+          }),
+        ),
+      );
   @override
   StructLayout layout({String? property}) =>
       SubstrateMetadataLayouts.portableRegistry(property: property);
@@ -37,36 +42,44 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   }
 
   PortableTypeV14 getLookupTByPath(List<String> paths) {
-    final id = types.entries
-        .firstWhere(
-          (element) =>
-              CompareUtils.iterableIsEqual(element.value.type.path, paths),
-          orElse: () => throw MetadataException("lookup id does not found.",
-              details: {"path": paths.join(", ")}),
-        )
-        .value;
+    final id =
+        types.entries
+            .firstWhere(
+              (element) =>
+                  CompareUtils.iterableIsEqual(element.value.type.path, paths),
+              orElse:
+                  () =>
+                      throw MetadataException(
+                        "lookup id does not found.",
+                        details: {"path": paths.join(", ")},
+                      ),
+            )
+            .value;
     return id;
   }
 
   PortableTypeV14 getTypeByPath(List<String> paths) {
-    final type = types.entries
-        .firstWhere(
-          (element) =>
-              CompareUtils.iterableIsEqual(element.value.type.path, paths),
-          orElse: () => throw MetadataException("lookup id does not found.",
-              details: {"path": paths.join(", ")}),
-        )
-        .value;
+    final type =
+        types.entries
+            .firstWhere(
+              (element) =>
+                  CompareUtils.iterableIsEqual(element.value.type.path, paths),
+              orElse:
+                  () =>
+                      throw MetadataException(
+                        "lookup id does not found.",
+                        details: {"path": paths.join(", ")},
+                      ),
+            )
+            .value;
     return type;
   }
 
   List<PortableTypeV14> getTypesByMainPath(String path) {
-    final type = types.entries.where(
-      (element) {
-        if (element.value.type.path.isEmpty) return false;
-        return element.value.type.path[0] == path;
-      },
-    );
+    final type = types.entries.where((element) {
+      if (element.value.type.path.isEmpty) return false;
+      return element.value.type.path[0] == path;
+    });
     return type.map((e) => e.value).toList();
   }
 
@@ -75,8 +88,10 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
     final lookup = types[id];
 
     if (lookup == null) {
-      throw MetadataException("lookup does not exist.",
-          details: {"id": id, "ids": types.keys.join(", ")});
+      throw MetadataException(
+        "lookup does not exist.",
+        details: {"id": id, "ids": types.keys.join(", ")},
+      );
     }
     return lookup;
   }
@@ -84,16 +99,25 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   @override
   List<int> encode(int id, dynamic value, {String? property}) {
     final correctValue = getValue(id: id, value: value, fromTemplate: false);
-    final encode =
-        serializationLayout(id, property: property).serialize(correctValue);
+    final encode = serializationLayout(
+      id,
+      property: property,
+    ).serialize(correctValue);
     return encode;
   }
 
   @override
-  dynamic decode(int id, List<int> bytes,
-      {String? property, int offset = 0, LookupDecodeParams? params}) {
-    final decode = serializationLayout(id, property: property)
-        .deserialize(bytes, offset: offset);
+  dynamic decode(
+    int id,
+    List<int> bytes, {
+    String? property,
+    int offset = 0,
+    LookupDecodeParams? params,
+  }) {
+    final decode = serializationLayout(
+      id,
+      property: property,
+    ).deserialize(bytes, offset: offset);
     return decode.value;
   }
 
@@ -102,14 +126,20 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
     if (knownId != null) {
       return Si1TypeDefSequence(knownId);
     }
-    final eventPalle = types.entries
-        .firstWhere(
-          (element) => CompareUtils.iterableIsEqual(
-              element.value.type.path, MetadataConstant.eventPath),
-          orElse: () =>
-              throw const MetadataException("lookup id does not found."),
-        )
-        .value;
+    final eventPalle =
+        types.entries
+            .firstWhere(
+              (element) => CompareUtils.iterableIsEqual(
+                element.value.type.path,
+                MetadataConstant.eventPath,
+              ),
+              orElse:
+                  () =>
+                      throw const MetadataException(
+                        "lookup id does not found.",
+                      ),
+            )
+            .value;
     return Si1TypeDefSequence(eventPalle.id);
   }
 
@@ -124,10 +154,17 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   }
 
   @override
-  Object? getValue(
-      {required int id, required Object? value, required bool fromTemplate}) {
+  Object? getValue({
+    required int id,
+    required Object? value,
+    required bool fromTemplate,
+  }) {
     return type(id).type.getValue(
-        registry: this, value: value, fromTemplate: fromTemplate, self: id);
+      registry: this,
+      value: value,
+      fromTemplate: fromTemplate,
+      self: id,
+    );
   }
 
   @override
@@ -168,10 +205,13 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
   }
 
   @override
-  Layout serializationLayout(int lookup,
-      {String? property, LookupDecodeParams? params}) {
-    return type(lookup)
-        .type
-        .serializationLayout(this, property: property, params: params);
+  Layout serializationLayout(
+    int lookup, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
+    return type(
+      lookup,
+    ).type.serializationLayout(this, property: property, params: params);
   }
 }

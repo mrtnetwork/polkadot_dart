@@ -12,7 +12,7 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
   final int type;
   Si1TypeDefCompact(this.type);
   Si1TypeDefCompact.deserializeJson(Map<String, dynamic> json)
-      : type = json["type"];
+    : type = json["type"];
   @override
   StructLayout layout({String? property}) =>
       SubstrateMetadataLayouts.si1TypeDefCompact(property: property);
@@ -37,7 +37,8 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
       return LayoutConst.compactIntU32(property: property);
     }
     throw const LayoutException(
-        "Somthing wrong. compact layout must be integer layout.");
+      "Somthing wrong. compact layout must be integer layout.",
+    );
   }
 
   /// Returns the type template using the provided [registry].
@@ -45,29 +46,38 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
   TypeTemlate typeTemplate(PortableRegistry registry, int id) {
     final parent = registry.typeTemplate(type).copyWith(isCompact: true);
     return TypeTemlate(
-        lookupId: id, type: typeName, children: [parent], isCompact: true);
+      lookupId: id,
+      type: typeName,
+      children: [parent],
+      isCompact: true,
+    );
   }
 
   /// Checks the provided [value] and returns the correct data compared to the template or simple design,
   /// using the provided [registry], [fromTemplate] flag, and optional [property].
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     final parent = registry.scaleType(type);
     if (parent.def.typeName == Si1TypeDefsIndexesConst.tuple) {
       return MetadataCastingUtils.getValue(
-          value: value,
-          type: typeName,
-          fromTemplate: fromTemplate,
-          id: self,
-          primitive: PrimitiveTypes.u32,
-          registry: registry);
+        value: value,
+        type: typeName,
+        fromTemplate: fromTemplate,
+        id: self,
+        primitive: PrimitiveTypes.u32,
+        registry: registry,
+      );
     }
     return registry.getValue(
-        id: type, value: value, fromTemplate: fromTemplate);
+      id: type,
+      value: value,
+      fromTemplate: fromTemplate,
+    );
   }
 
   @override
@@ -75,7 +85,10 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
     final type = registry.typeInfo(this.type);
     if (type.typeName == MetadataTypes.tuple) {
       return MetadataTypeInfoInt(
-          name: type.name, typeId: id, primitiveType: PrimitiveTypes.u32);
+        name: type.name,
+        typeId: id,
+        primitiveType: PrimitiveTypes.u32,
+      );
     }
 
     return type.copyWith(typeId: id);
@@ -92,8 +105,11 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     final parent = registry.serializationLayout(type, params: params);
     return _serializationLayout(parent, property: property);
   }

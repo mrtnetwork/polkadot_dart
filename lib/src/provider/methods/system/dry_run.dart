@@ -5,8 +5,10 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#system
 class SubstrateRequestSystemDryRun
     extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRequestSystemDryRun(
-      {required this.extrinsic, this.atBlockHash});
+  const SubstrateRequestSystemDryRun({
+    required this.extrinsic,
+    this.atBlockHash,
+  });
   final String extrinsic;
   final String? atBlockHash;
 

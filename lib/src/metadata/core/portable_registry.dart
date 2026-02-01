@@ -13,8 +13,11 @@ abstract class PortableRegistry {
   ///
   /// [lookup] is the identifier for the type definition.
   /// [property] is an optional property name.
-  Layout serializationLayout(int lookup,
-      {String? property, LookupDecodeParams? params});
+  Layout serializationLayout(
+    int lookup, {
+    String? property,
+    LookupDecodeParams? params,
+  });
 
   /// Encodes a value for the given type definition [id].
   ///
@@ -28,8 +31,12 @@ abstract class PortableRegistry {
   /// [id] is the identifier for the type definition.
   /// [bytes] is the byte array to decode.
   /// [property] is an optional property name.
-  dynamic decode(int id, List<int> bytes,
-      {LookupDecodeParams? params, String? property});
+  dynamic decode(
+    int id,
+    List<int> bytes, {
+    LookupDecodeParams? params,
+    String? property,
+  });
 
   /// Finds the lookup identifier for an event record sequence type definition.
   ///w
@@ -58,8 +65,11 @@ abstract class PortableRegistry {
   /// [id] is the identifier for the type definition.
   TypeTemlate typeTemplate(int id);
 
-  Object? getValue(
-      {required int id, required Object? value, required bool fromTemplate});
+  Object? getValue({
+    required int id,
+    required Object? value,
+    required bool fromTemplate,
+  });
 
   MetadataTypeInfo typeInfo(int id);
 }

@@ -13,7 +13,7 @@ class PalletEventMetadataV14 extends PalletEventMetadata {
   final int type;
   const PalletEventMetadataV14(this.type);
   PalletEventMetadataV14.deserializeJson(Map<String, dynamic> json)
-      : type = json["type"];
+    : type = json["type"];
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {

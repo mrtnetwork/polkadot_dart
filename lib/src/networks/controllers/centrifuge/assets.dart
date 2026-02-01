@@ -13,8 +13,9 @@ enum CentrifugeAssetStakingType {
 
   const CentrifugeAssetStakingType(this.type);
   static CentrifugeAssetStakingType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? CentrifugeAssetStakingType.unknown;
   }
 }
@@ -32,15 +33,17 @@ enum CentrifugeAssetType {
 
   const CentrifugeAssetType(this.type);
   static CentrifugeAssetType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? CentrifugeAssetType.unknown;
   }
 }
 
 class CentrifugeAsstConst {
   static final BaseCentrifugeAsset cfg = CentrifugeAssetNative(
-      identifier: {CentrifugeAssetType.native.type: null});
+    identifier: {CentrifugeAssetType.native.type: null},
+  );
 }
 
 abstract class BaseCentrifugeAsset {
@@ -55,10 +58,12 @@ abstract class BaseCentrifugeAsset {
       CentrifugeAssetType.tranche => CentrifugeAssetTranche.fromJson(json),
       CentrifugeAssetType.aUSD => CentrifugeAssetAUSD.fromJson(json),
       CentrifugeAssetType.staking => CentrifugeAssetStacking.fromJson(json),
-      CentrifugeAssetType.foreignAsset =>
-        CentrifugeAssetForeignAsset.fromJson(json),
-      CentrifugeAssetType.localAsset =>
-        CentrifugeAssetLocalAsset.fromJson(json),
+      CentrifugeAssetType.foreignAsset => CentrifugeAssetForeignAsset.fromJson(
+        json,
+      ),
+      CentrifugeAssetType.localAsset => CentrifugeAssetLocalAsset.fromJson(
+        json,
+      ),
       CentrifugeAssetType.unknown => CentrifugeAssetUnknown.fromJson(json),
     };
   }
@@ -66,19 +71,29 @@ abstract class BaseCentrifugeAsset {
 
 class CentrifugeAssetNative extends BaseCentrifugeAsset {
   const CentrifugeAssetNative({required super.identifier})
-      : super(type: CentrifugeAssetType.native);
+    : super(type: CentrifugeAssetType.native);
   CentrifugeAssetNative.fromJson(Map<String, dynamic> json)
-      : super(type: CentrifugeAssetType.native, identifier: json);
+    : super(type: CentrifugeAssetType.native, identifier: json);
 }
 
 class CentrifugeAssetTranche extends BaseCentrifugeAsset {
   final BigInt index;
   final List<int> id;
-  CentrifugeAssetTranche(
-      {required List<int> id, required BigInt index, required super.identifier})
-      : id = id.exc(16).asImmutableBytes,
-        index = index.asUint64,
-        super(type: CentrifugeAssetType.tranche);
+  CentrifugeAssetTranche({
+    required List<int> id,
+    required BigInt index,
+    required super.identifier,
+  }) : id =
+           id
+               .exc(
+                 length: 16,
+                 operation: "CentrifugeAssetTranche",
+                 name: "id",
+                 reason: "Invalid id bytes length.",
+               )
+               .asImmutableBytes,
+       index = index.asU64,
+       super(type: CentrifugeAssetType.tranche);
   factory CentrifugeAssetTranche.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(CentrifugeAssetType.tranche.type);
     List<int> id;
@@ -88,52 +103,58 @@ class CentrifugeAssetTranche extends BaseCentrifugeAsset {
       id = BytesUtils.fromHexString(data[1]);
     }
     return CentrifugeAssetTranche(
-        id: id, index: BigintUtils.parse(data[0]), identifier: json);
+      id: id,
+      index: BigintUtils.parse(data[0]),
+      identifier: json,
+    );
   }
 }
 
 class CentrifugeAssetAUSD extends BaseCentrifugeAsset {
   const CentrifugeAssetAUSD({required super.identifier})
-      : super(type: CentrifugeAssetType.aUSD);
+    : super(type: CentrifugeAssetType.aUSD);
   CentrifugeAssetAUSD.fromJson(Map<String, dynamic> json)
-      : super(type: CentrifugeAssetType.aUSD, identifier: json);
+    : super(type: CentrifugeAssetType.aUSD, identifier: json);
 }
 
 class CentrifugeAssetStacking extends BaseCentrifugeAsset {
   final CentrifugeAssetStakingType token;
-  const CentrifugeAssetStacking(
-      {required this.token, required super.identifier})
-      : super(type: CentrifugeAssetType.staking);
+  const CentrifugeAssetStacking({
+    required this.token,
+    required super.identifier,
+  }) : super(type: CentrifugeAssetType.staking);
   CentrifugeAssetStacking.fromJson(Map<String, dynamic> json)
-      : token = CentrifugeAssetStakingType.fromJson(
-            json.valueAs(CentrifugeAssetType.staking.type)),
-        super(type: CentrifugeAssetType.staking, identifier: json);
+    : token = CentrifugeAssetStakingType.fromJson(
+        json.valueAs(CentrifugeAssetType.staking.type),
+      ),
+      super(type: CentrifugeAssetType.staking, identifier: json);
 }
 
 class CentrifugeAssetForeignAsset extends BaseCentrifugeAsset {
   final int id;
-  const CentrifugeAssetForeignAsset(
-      {required this.id, required super.identifier})
-      : super(type: CentrifugeAssetType.foreignAsset);
+  const CentrifugeAssetForeignAsset({
+    required this.id,
+    required super.identifier,
+  }) : super(type: CentrifugeAssetType.foreignAsset);
   CentrifugeAssetForeignAsset.fromJson(Map<String, dynamic> json)
-      : id = json.valueAs(CentrifugeAssetType.foreignAsset.type),
-        super(type: CentrifugeAssetType.foreignAsset, identifier: json);
+    : id = json.valueAs(CentrifugeAssetType.foreignAsset.type),
+      super(type: CentrifugeAssetType.foreignAsset, identifier: json);
 }
 
 class CentrifugeAssetLocalAsset extends BaseCentrifugeAsset {
   final int id;
   const CentrifugeAssetLocalAsset({required this.id, required super.identifier})
-      : super(type: CentrifugeAssetType.localAsset);
+    : super(type: CentrifugeAssetType.localAsset);
   CentrifugeAssetLocalAsset.fromJson(Map<String, dynamic> json)
-      : id = json.valueAs(CentrifugeAssetType.localAsset.type),
-        super(type: CentrifugeAssetType.localAsset, identifier: json);
+    : id = json.valueAs(CentrifugeAssetType.localAsset.type),
+      super(type: CentrifugeAssetType.localAsset, identifier: json);
 }
 
 class CentrifugeAssetUnknown extends BaseCentrifugeAsset {
   const CentrifugeAssetUnknown({required super.identifier})
-      : super(type: CentrifugeAssetType.unknown);
+    : super(type: CentrifugeAssetType.unknown);
   CentrifugeAssetUnknown.fromJson(Map<String, dynamic> json)
-      : super(type: CentrifugeAssetType.unknown, identifier: json);
+    : super(type: CentrifugeAssetType.unknown, identifier: json);
 }
 
 enum CentrifugeAssetMetadatTransferabilityType {
@@ -146,9 +167,11 @@ enum CentrifugeAssetMetadatTransferabilityType {
 
   const CentrifugeAssetMetadatTransferabilityType(this.type);
   static CentrifugeAssetMetadatTransferabilityType fromJson(
-      Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    Map<String, dynamic>? json,
+  ) {
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? CentrifugeAssetMetadatTransferabilityType.unknown;
   }
 }
@@ -156,27 +179,35 @@ enum CentrifugeAssetMetadatTransferabilityType {
 class CentrifugeAssetMetadatTransferability {
   final BigInt? feePerSecond;
   final CentrifugeAssetMetadatTransferabilityType type;
-  const CentrifugeAssetMetadatTransferability(
-      {required this.type, required this.feePerSecond});
+  const CentrifugeAssetMetadatTransferability({
+    required this.type,
+    required this.feePerSecond,
+  });
   factory CentrifugeAssetMetadatTransferability.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     final type = CentrifugeAssetMetadatTransferabilityType.fromJson(json);
     BigInt? feePerSecond;
     if (type == CentrifugeAssetMetadatTransferabilityType.xcm) {
-      final xcm = json
-          .valueEnsureAsMap(CentrifugeAssetMetadatTransferabilityType.xcm.type);
+      final xcm = json.valueEnsureAsMap(
+        CentrifugeAssetMetadatTransferabilityType.xcm.type,
+      );
       feePerSecond = MetadataUtils.parseOptional(
-          xcm.valueEnsureAsMap("fee_per_second"),
-          parse: (v) => BigintUtils.parse(v, allowHex: false));
+        xcm.valueEnsureAsMap("fee_per_second"),
+        parse: (v) => BigintUtils.parse(v, allowHex: false),
+      );
     }
     return CentrifugeAssetMetadatTransferability(
-        type: type, feePerSecond: feePerSecond);
+      type: type,
+      feePerSecond: feePerSecond,
+    );
   }
   Map<String, dynamic> toJson() {
     return {
-      type.type: type != CentrifugeAssetMetadatTransferabilityType.xcm
-          ? null
-          : {"fee_per_second": MetadataUtils.toOptionalJson(feePerSecond)}
+      type.type:
+          type != CentrifugeAssetMetadatTransferabilityType.xcm
+              ? null
+              : {"fee_per_second": MetadataUtils.toOptionalJson(feePerSecond)},
     };
   }
 }
@@ -188,20 +219,22 @@ class CentrifugeAssetMetadatAdditional {
   final bool poolCurrency;
   final int? localRepresentation;
   CentrifugeAssetMetadatAdditional.fromJson(Map<String, dynamic> json)
-      : transferability = CentrifugeAssetMetadatTransferability.fromJson(
-            json.valueAs("transferability")),
-        mintable = json.valueAs("mintable"),
-        permissioned = json.valueAs("permissioned"),
-        poolCurrency = json.valueAs("pool_currency"),
-        localRepresentation = MetadataUtils.parseOptional(
-            json.valueEnsureAsMap("local_representation"));
+    : transferability = CentrifugeAssetMetadatTransferability.fromJson(
+        json.valueAs("transferability"),
+      ),
+      mintable = json.valueAs("mintable"),
+      permissioned = json.valueAs("permissioned"),
+      poolCurrency = json.valueAs("pool_currency"),
+      localRepresentation = MetadataUtils.parseOptional(
+        json.valueEnsureAsMap("local_representation"),
+      );
   Map<String, dynamic> toJson() {
     return {
       "transferability": transferability.toJson(),
       "mintable": mintable,
       "permissioned": permissioned,
       "pool_currency": poolCurrency,
-      "local_representation": MetadataUtils.toOptionalJson(localRepresentation)
+      "local_representation": MetadataUtils.toOptionalJson(localRepresentation),
     };
   }
 }
@@ -233,26 +266,33 @@ class CentrifugeAssetMetadata {
 
   // final bool isFrozen;
   CentrifugeAssetMetadata.fromJson(Map<String, dynamic> json)
-      : existentialDeposit = json.valueAs("existential_deposit"),
-        decimals = json.valueAs("decimals"),
-        name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
-        symbol =
-            SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("symbol")),
-        additional = json
-            .valueTo<CentrifugeAssetMetadatAdditional?, Map<String, dynamic>>(
-                key: "additional",
-                parse: (v) => CentrifugeAssetMetadatAdditional.fromJson(v)),
-        location = MetadataUtils.parseOptional<XCMVersionedLocation,
-                Map<String, dynamic>>(json.valueAs("location"),
-            parse: (v) => XCMVersionedLocation.fromJson(v)),
-        super();
-  const CentrifugeAssetMetadata(
-      {required this.location,
-      required this.name,
-      required this.symbol,
-      required this.decimals,
-      required this.existentialDeposit,
-      this.additional});
+    : existentialDeposit = json.valueAs("existential_deposit"),
+      decimals = json.valueAs("decimals"),
+      name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
+      symbol = SubstrateNetworkControllerUtils.tryToUtf8(
+        json.valueAs("symbol"),
+      ),
+      additional = json
+          .valueTo<CentrifugeAssetMetadatAdditional?, Map<String, dynamic>>(
+            key: "additional",
+            parse: (v) => CentrifugeAssetMetadatAdditional.fromJson(v),
+          ),
+      location = MetadataUtils.parseOptional<
+        XCMVersionedLocation,
+        Map<String, dynamic>
+      >(
+        json.valueAs("location"),
+        parse: (v) => XCMVersionedLocation.fromJson(v),
+      ),
+      super();
+  const CentrifugeAssetMetadata({
+    required this.location,
+    required this.name,
+    required this.symbol,
+    required this.decimals,
+    required this.existentialDeposit,
+    this.additional,
+  });
   Map<String, dynamic> toJson() {
     return {
       "existential_deposit": existentialDeposit.toString(),
@@ -260,20 +300,21 @@ class CentrifugeAssetMetadata {
       "symbol": symbol,
       "decimals": decimals,
       "additional": additional?.toJson(),
-      "location": MetadataUtils.toOptionalJson(location?.toJson())
+      "location": MetadataUtils.toOptionalJson(location?.toJson()),
     };
   }
 }
 
 abstract class BaseCentrifugeNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseCentrifugeNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseCentrifugeNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseCentrifugeNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -287,22 +328,27 @@ class CentrifugeNetworkAsset extends BaseCentrifugeNetworkAsset {
     required this.metadata,
     bool? isFeeToken,
   }) : super(
-            isFeeToken: isFeeToken ??
-                (metadata?.additional?.transferability.type ==
-                    CentrifugeAssetMetadatTransferabilityType.xcm),
-            isSpendable: true,
-            minBalance: metadata?.existentialDeposit,
-            name: metadata?.name,
-            symbol: metadata?.symbol,
-            decimals: metadata?.decimals,
-            excutionPallet: SubtrateMetadataPallet.tokens);
+         isFeeToken:
+             isFeeToken ??
+             (metadata?.additional?.transferability.type ==
+                 CentrifugeAssetMetadatTransferabilityType.xcm),
+         isSpendable: true,
+         minBalance: metadata?.existentialDeposit,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+         decimals: metadata?.decimals,
+         excutionPallet: SubtrateMetadataPallet.tokens,
+       );
 
   factory CentrifugeNetworkAsset.fromJson(Map<String, dynamic> json) {
     return CentrifugeNetworkAsset(
-        asset: BaseCentrifugeAsset.fromJson(json.valueAs("asset")),
-        metadata: json.valueTo<CentrifugeAssetMetadata?, Map<String, dynamic>>(
-            key: "metadata", parse: (v) => CentrifugeAssetMetadata.fromJson(v)),
-        isFeeToken: json.valueAs("is_fee_token"));
+      asset: BaseCentrifugeAsset.fromJson(json.valueAs("asset")),
+      metadata: json.valueTo<CentrifugeAssetMetadata?, Map<String, dynamic>>(
+        key: "metadata",
+        parse: (v) => CentrifugeAssetMetadata.fromJson(v),
+      ),
+      isFeeToken: json.valueAs("is_fee_token"),
+    );
   }
   @override
   int? get decimals => metadata?.decimals;
@@ -315,7 +361,7 @@ class CentrifugeNetworkAsset extends BaseCentrifugeNetworkAsset {
     return {
       "asset": asset.toJson(),
       "metadata": metadata?.toJson(),
-      "is_fee_token": isFeeToken
+      "is_fee_token": isFeeToken,
     };
   }
 
@@ -331,25 +377,32 @@ class CentrifugeNetworkNativeAsset extends BaseCentrifugeNetworkAsset {
   final CentrifugeAssetMetadata? metadata;
   @override
   XCMVersionedLocation? get location => metadata?.location;
-  CentrifugeNetworkNativeAsset(
-      {required this.metadata, BaseCentrifugeAsset? asset, bool? isFeeToken})
-      : asset = asset ?? CentrifugeAsstConst.cfg,
-        super(
-            isFeeToken: isFeeToken ??
-                (metadata?.additional?.transferability.type ==
-                    CentrifugeAssetMetadatTransferabilityType.xcm),
-            isSpendable: true,
-            minBalance: metadata?.existentialDeposit,
-            name: metadata?.name,
-            symbol: metadata?.symbol,
-            decimals: metadata?.decimals,
-            excutionPallet: SubtrateMetadataPallet.balances);
+  CentrifugeNetworkNativeAsset({
+    required this.metadata,
+    BaseCentrifugeAsset? asset,
+    bool? isFeeToken,
+  }) : asset = asset ?? CentrifugeAsstConst.cfg,
+       super(
+         isFeeToken:
+             isFeeToken ??
+             (metadata?.additional?.transferability.type ==
+                 CentrifugeAssetMetadatTransferabilityType.xcm),
+         isSpendable: true,
+         minBalance: metadata?.existentialDeposit,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+         decimals: metadata?.decimals,
+         excutionPallet: SubtrateMetadataPallet.balances,
+       );
   factory CentrifugeNetworkNativeAsset.fromJson(Map<String, dynamic> json) {
     return CentrifugeNetworkNativeAsset(
-        asset: BaseCentrifugeAsset.fromJson(json.valueAs("asset")),
-        metadata: json.valueTo<CentrifugeAssetMetadata?, Map<String, dynamic>>(
-            key: "metadata", parse: (v) => CentrifugeAssetMetadata.fromJson(v)),
-        isFeeToken: json.valueAs("is_fee_token"));
+      asset: BaseCentrifugeAsset.fromJson(json.valueAs("asset")),
+      metadata: json.valueTo<CentrifugeAssetMetadata?, Map<String, dynamic>>(
+        key: "metadata",
+        parse: (v) => CentrifugeAssetMetadata.fromJson(v),
+      ),
+      isFeeToken: json.valueAs("is_fee_token"),
+    );
   }
 
   @override
@@ -360,7 +413,7 @@ class CentrifugeNetworkNativeAsset extends BaseCentrifugeNetworkAsset {
     return {
       "asset": asset.toJson(),
       "metadata": metadata?.toJson(),
-      "is_fee_token": isFeeToken
+      "is_fee_token": isFeeToken,
     };
   }
 

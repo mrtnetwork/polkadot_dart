@@ -42,7 +42,7 @@ class SubstrateAccountAssetBalance<ASSET extends BaseSubstrateNetworkAsset> {
       "free": free,
       "reserved": reserved,
       "status": status?.toJson(),
-      "reason": reason?.toJson()
+      "reason": reason?.toJson(),
     }.notNullValue;
   }
 }
@@ -71,7 +71,7 @@ class SubstrateNetworkAccountBalances<ASSET extends BaseSubstrateNetworkAsset>
   Map<String, dynamic> toJson() {
     return {
       "network": network.networkName,
-      "assets": balances.map((e) => e.toJson()).toList()
+      "assets": balances.map((e) => e.toJson()).toList(),
     };
   }
 

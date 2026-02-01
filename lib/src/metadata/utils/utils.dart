@@ -14,8 +14,10 @@ class MetadataTemplateBuilder {
   }
 
   static String _getArrayType(List<TypeTemlate> children, int? length) {
-    assert((children.isEmpty || children.length == 1) && length != null,
-        "Array types must accept one element");
+    assert(
+      (children.isEmpty || children.length == 1) && length != null,
+      "Array types must accept one element",
+    );
     if (children.isEmpty) return "[]";
     final child = children[0];
     if (child.isPrimitive) return "[${child.primitive!.type.name};$length]";
@@ -28,8 +30,10 @@ class MetadataTemplateBuilder {
   }
 
   static String _getSequanceType(TypeTemlate template) {
-    assert(template.children.length == 1 && template.length == null,
-        "Array must have length 1");
+    assert(
+      template.children.length == 1 && template.length == null,
+      "Array must have length 1",
+    );
     final child = template.children[0];
     if (child.isPrimitive) return "Vec<${child.primitive!.type.name}>";
     if (template.typeName != null) return template.typeName!;
@@ -46,15 +50,12 @@ class MetadataTemplateBuilder {
       for (final i in children) {
         valueTemplate[i.name!] = buildJson(i);
       }
-      return {
-        "type": "Map",
-        "value": valueTemplate,
-      };
+      return {"type": "Map", "value": valueTemplate};
     }
 
     return {
       "type": "Tuple",
-      "value": children.map((e) => buildJson(e)).toList()
+      "value": children.map((e) => buildJson(e)).toList(),
     };
   }
 
@@ -83,7 +84,7 @@ class MetadataTemplateBuilder {
       return {
         "variants":
             "${template.typeName} does not support to build variants. please look at metadata json file",
-        "path": template.path
+        "path": template.path,
       };
     }
     for (final i in template.children) {
@@ -94,7 +95,8 @@ class MetadataTemplateBuilder {
   }
 
   static List<Map<String, dynamic>>? _createArrayAndSequanceValue(
-      TypeTemlate template) {
+    TypeTemlate template,
+  ) {
     assert(template.children.length == 1);
     final child = template.children[0];
     if (child.isPrimitive) return null;
@@ -102,7 +104,8 @@ class MetadataTemplateBuilder {
   }
 
   static List<Map<String, dynamic>> _createTuppleValue(
-      List<TypeTemlate> children) {
+    List<TypeTemlate> children,
+  ) {
     return children.map((e) => buildJson(e)).toList();
   }
 
@@ -137,10 +140,7 @@ class MetadataTemplateBuilder {
 
   static Map<String, Object?> _correctValue(TypeTemlate template) {
     if (template.isVariant) {
-      return {
-        "key": null,
-        "value": null,
-      };
+      return {"key": null, "value": null};
     }
     Object? val;
     switch (template.type) {
@@ -175,17 +175,20 @@ class MetadataTemplateBuilder {
 
   static String _getArrayStringType(TypeTemlate template) {
     assert(
-        (template.children.isEmpty || template.children.length == 1) &&
-            template.length != null,
-        "Array must have length 1");
+      (template.children.isEmpty || template.children.length == 1) &&
+          template.length != null,
+      "Array must have length 1",
+    );
     if (template.children.isEmpty) return "[;${template.length}]";
     final child = template.children[0];
     return "[${buildString(child)};${template.length}]";
   }
 
   static String _getSequanceStringType(TypeTemlate template) {
-    assert(template.children.length == 1 && template.length == null,
-        "Array shuld be have children");
+    assert(
+      template.children.length == 1 && template.length == null,
+      "Array shuld be have children",
+    );
     if (template.children.isEmpty) return "[]";
     final child = template.children[0];
     return "[${buildString(child)}]";
@@ -207,9 +210,7 @@ class MetadataTemplateBuilder {
       return buildString(template.children[0]);
     }
     if (isStruct) {
-      return "Map${{
-        for (final i in template.children) i.name: buildString(i)
-      }}";
+      return "Map${{for (final i in template.children) i.name: buildString(i)}}";
     }
     return _tupleStringType(template.children);
   }
@@ -223,14 +224,10 @@ class MetadataTemplateBuilder {
 
   static String _getVariantsStringType(TypeTemlate template) {
     if (!template.supported) {
-      return "OneOf${{
-        "variants":
-            "${template.typeName} does not support to build variants. please look at metadata json file",
-        "path": template.path
-      }}";
+      return "OneOf${{"variants": "${template.typeName} does not support to build variants. please look at metadata json file", "path": template.path}}";
     }
     final values = {
-      for (final i in template.children) i.name: _getVariantStringType(i)
+      for (final i in template.children) i.name: _getVariantStringType(i),
     };
     return "OneOf$values";
   }

@@ -9,8 +9,11 @@ import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 
 class ExtrinsicBuilderUtils {
-  static MetadataTypeInfo? getLookupTypeInfo(
-      {required MetadataApi metadata, int? lockupId, String? name}) {
+  static MetadataTypeInfo? getLookupTypeInfo({
+    required MetadataApi metadata,
+    int? lockupId,
+    String? name,
+  }) {
     if (lockupId == null) return null;
     final info = metadata.metadata
         .getLookup(lockupId)
@@ -20,54 +23,82 @@ class ExtrinsicBuilderUtils {
   }
 
   static ExtrinsicLookupField buildExtrinsicFieldsAtVersion(
-      MetadataApi metadata,
-      {int? version}) {
+    MetadataApi metadata, {
+    int? version,
+  }) {
     final metadataInfos = metadata.metadata.palletsInfos();
     const List<int> supportedExtrinsicVersions = [4, 5];
     final extrinsic = metadataInfos.extrinsic.firstWhere(
-        (e) =>
-            supportedExtrinsicVersions.contains(e.version) &&
-            e.addressType != null &&
-            e.signatureType != null,
-        orElse: () => throw DartSubstratePluginException(
-            'Unsuported metadata extrinsic.'));
+      (e) =>
+          supportedExtrinsicVersions.contains(e.version) &&
+          e.addressType != null &&
+          e.signatureType != null,
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                'Unsuported metadata extrinsic.',
+              ),
+    );
     return buildExtrinsicFields(metadata, extrinsic);
   }
 
   static ExtrinsicLookupField buildExtrinsicFields(
-      MetadataApi metadata, TransactionExtrinsicInfo extrinsic) {
+    MetadataApi metadata,
+    TransactionExtrinsicInfo extrinsic,
+  ) {
     List<MetadataTypeInfo> payloadTypes = [];
     List<MetadataTypeInfo> extrinsicTypes = [];
     if (extrinsic.addressType == null) {
       throw DartSubstratePluginException(
-          "Failed to find metadata address type.");
+        "Failed to find metadata address type.",
+      );
     }
     if (extrinsic.signatureType == null) {
       throw DartSubstratePluginException(
-          "Failed to find metadata signature type.");
+        "Failed to find metadata signature type.",
+      );
     }
-    MetadataTypeInfo address = getLookupTypeInfo(
-        metadata: metadata, lockupId: extrinsic.addressType!, name: "Address")!;
+    MetadataTypeInfo address =
+        getLookupTypeInfo(
+          metadata: metadata,
+          lockupId: extrinsic.addressType!,
+          name: "Address",
+        )!;
 
-    MetadataTypeInfo signature = getLookupTypeInfo(
-        metadata: metadata, lockupId: extrinsic.addressType!, name: "Address")!;
+    MetadataTypeInfo signature =
+        getLookupTypeInfo(
+          metadata: metadata,
+          lockupId: extrinsic.addressType!,
+          name: "Address",
+        )!;
 
     MetadataTypeInfo call;
     if (extrinsic.callType == null) {
-      final pallets =
-          metadata.metadata.pallets.values.where((e) => e.calls != null);
-      final variants = pallets.map((e) => Si1Variant(
+      final pallets = metadata.metadata.pallets.values.where(
+        (e) => e.calls != null,
+      );
+      final variants = pallets.map(
+        (e) => Si1Variant(
           name: e.name,
           fields: [
-            Si1Field(name: null, type: e.calls!.type, typeName: null, docs: [])
+            Si1Field(name: null, type: e.calls!.type, typeName: null, docs: []),
           ],
           index: e.index,
-          docs: e.docs ?? []));
+          docs: e.docs ?? [],
+        ),
+      );
       call = MetadataTypeInfoVariant(
-          variants: variants.toList(), typeId: -1, name: "Call");
+        variants: variants.toList(),
+        typeId: -1,
+        name: "Call",
+      );
     } else {
-      call = getLookupTypeInfo(
-          metadata: metadata, lockupId: extrinsic.callType!, name: "Call")!;
+      call =
+          getLookupTypeInfo(
+            metadata: metadata,
+            lockupId: extrinsic.callType!,
+            name: "Call",
+          )!;
     }
 
     for (final i in extrinsic.payloadExtrinsic) {
@@ -81,95 +112,113 @@ class ExtrinsicBuilderUtils {
       extrinsicTypes.add(loockup);
     }
 
-    final algorithm =
-        getNetworkCryptoInfo(metadata: metadata, extrinsic: extrinsic);
+    final algorithm = getNetworkCryptoInfo(
+      metadata: metadata,
+      extrinsic: extrinsic,
+    );
     return ExtrinsicLookupField(
-        call: call,
-        extrinsicValidators: extrinsicTypes,
-        extrinsicPayloadValidators: payloadTypes,
-        extrinsicInfo: extrinsic,
-        address: address,
-        signature: signature,
-        crypto: algorithm,
-        chargeAssetTxPayment: payloadTypes
-            .any((e) => e.name == MetadataConstant.chargeAssetTxPayment),
-        checkMetadataHash: payloadTypes
-            .any((e) => e.name == MetadataConstant.checkMetadataHash));
+      call: call,
+      extrinsicValidators: extrinsicTypes,
+      extrinsicPayloadValidators: payloadTypes,
+      extrinsicInfo: extrinsic,
+      address: address,
+      signature: signature,
+      crypto: algorithm,
+      chargeAssetTxPayment: payloadTypes.any(
+        (e) => e.name == MetadataConstant.chargeAssetTxPayment,
+      ),
+      checkMetadataHash: payloadTypes.any(
+        (e) => e.name == MetadataConstant.checkMetadataHash,
+      ),
+    );
   }
 
-  static SubstrateKeyAlgorithm? isEthereum(
-      {required MetadataApi metadata,
-      required TransactionExtrinsicInfo extrinsic}) {
+  static SubstrateKeyAlgorithm? isEthereum({
+    required MetadataApi metadata,
+    required TransactionExtrinsicInfo extrinsic,
+  }) {
     try {
       metadata.metadata.encodeLookup(
-          id: extrinsic.addressType!,
-          value: List<int>.filled(20, 0),
-          fromTemplate: false);
+        id: extrinsic.addressType!,
+        value: List<int>.filled(20, 0),
+        fromTemplate: false,
+      );
       metadata.metadata.encodeLookup(
-          id: extrinsic.signatureType!,
-          value: List<int>.filled(SubstrateConstant.ecdsaSignatureLength, 0),
-          fromTemplate: false);
+        id: extrinsic.signatureType!,
+        value: List<int>.filled(SubstrateConstant.ecdsaSignatureLength, 0),
+        fromTemplate: false,
+      );
       return SubstrateKeyAlgorithm.ethereum;
     } catch (_) {
       return null;
     }
   }
 
-  static SubstrateChainType getChainType(
-      {required MetadataApi metadata,
-      required TransactionExtrinsicInfo extrinsic}) {
+  static SubstrateChainType getChainType({
+    required MetadataApi metadata,
+    required TransactionExtrinsicInfo extrinsic,
+  }) {
     try {
       // metadata.getCallLookupId('ethereum');
       // metadata.getCallLookupId('evm');
       metadata.metadata.encodeLookup(
-          id: extrinsic.addressType!,
-          value: List<int>.filled(20, 0),
-          fromTemplate: false);
+        id: extrinsic.addressType!,
+        value: List<int>.filled(20, 0),
+        fromTemplate: false,
+      );
       metadata.metadata.encodeLookup(
-          id: extrinsic.signatureType!,
-          value: List<int>.filled(SubstrateConstant.ecdsaSignatureLength, 0),
-          fromTemplate: false);
+        id: extrinsic.signatureType!,
+        value: List<int>.filled(SubstrateConstant.ecdsaSignatureLength, 0),
+        fromTemplate: false,
+      );
       return SubstrateChainType.ethereum;
     } catch (_) {
       return SubstrateChainType.substrate;
     }
   }
 
-  static SubstrateAddressEncodingType? getAddressPalletType(
-      {required MetadataApi metadata,
-      required TransactionExtrinsicInfo extrinsic}) {
+  static SubstrateAddressEncodingType? getAddressPalletType({
+    required MetadataApi metadata,
+    required TransactionExtrinsicInfo extrinsic,
+  }) {
     try {
       metadata.metadata.encodeLookup(
-          id: extrinsic.addressType!,
-          value: List<int>.filled(20, 0),
-          fromTemplate: false);
+        id: extrinsic.addressType!,
+        value: List<int>.filled(20, 0),
+        fromTemplate: false,
+      );
       return SubstrateAddressEncodingType.ethereum;
     } catch (_) {}
     try {
       metadata.metadata.encodeLookup(
-          id: extrinsic.addressType!,
-          value: {
-            "Id": List<int>.filled(SubstrateConstant.accountIdLengthInBytes, 0)
-          },
-          fromTemplate: false);
+        id: extrinsic.addressType!,
+        value: {
+          "Id": List<int>.filled(SubstrateConstant.accountIdLengthInBytes, 0),
+        },
+        fromTemplate: false,
+      );
       return SubstrateAddressEncodingType.substrate;
     } catch (_) {}
     try {
       metadata.metadata.encodeLookup(
-          id: extrinsic.addressType!,
-          value: List<int>.filled(32, 0),
-          fromTemplate: false);
+        id: extrinsic.addressType!,
+        value: List<int>.filled(32, 0),
+        fromTemplate: false,
+      );
       return SubstrateAddressEncodingType.key32;
     } catch (_) {}
     return null;
   }
 
-  static List<SubstrateKeyAlgorithm>? getMetadataCryptoAlgorithm(
-      {required MetadataApi metadata,
-      required TransactionExtrinsicInfo extrinsic}) {
+  static List<SubstrateKeyAlgorithm>? getMetadataCryptoAlgorithm({
+    required MetadataApi metadata,
+    required TransactionExtrinsicInfo extrinsic,
+  }) {
     try {
       final sigType = getLookupTypeInfo(
-          metadata: metadata, lockupId: extrinsic.signatureType!);
+        metadata: metadata,
+        lockupId: extrinsic.signatureType!,
+      );
       if (sigType == null || sigType is! MetadataTypeInfoVariant) return [];
       List<SubstrateKeyAlgorithm> keyAlgorithms = [];
       for (final i in sigType.variants) {
@@ -180,12 +229,15 @@ class ExtrinsicBuilderUtils {
           continue;
         }
         metadata.metadata.encodeLookup(
-            id: extrinsic.signatureType!,
-            value: {
-              keyAlgorithm.name:
-                  List<int>.filled(keyAlgorithm.signatureLength, 0)
-            },
-            fromTemplate: false);
+          id: extrinsic.signatureType!,
+          value: {
+            keyAlgorithm.name: List<int>.filled(
+              keyAlgorithm.signatureLength,
+              0,
+            ),
+          },
+          fromTemplate: false,
+        );
         keyAlgorithms.add(keyAlgorithm);
       }
       return keyAlgorithms;
@@ -194,32 +246,39 @@ class ExtrinsicBuilderUtils {
     }
   }
 
-  static SubstrateNetworkCryptoInfo getNetworkCryptoInfo(
-      {required MetadataApi metadata,
-      required TransactionExtrinsicInfo extrinsic}) {
+  static SubstrateNetworkCryptoInfo getNetworkCryptoInfo({
+    required MetadataApi metadata,
+    required TransactionExtrinsicInfo extrinsic,
+  }) {
     final eth = isEthereum(metadata: metadata, extrinsic: extrinsic);
     if (eth != null) {
       return SubstrateNetworkCryptoInfo(
-          type: SubstrateChainType.ethereum,
-          cryptoAlgoritms: [SubstrateKeyAlgorithm.ethereum],
-          signaturePalletType: SubstrateSignatureEncodingType.signature,
-          addressPalletType: SubstrateAddressEncodingType.ethereum);
+        type: SubstrateChainType.ethereum,
+        cryptoAlgoritms: [SubstrateKeyAlgorithm.ethereum],
+        signaturePalletType: SubstrateSignatureEncodingType.signature,
+        addressPalletType: SubstrateAddressEncodingType.ethereum,
+      );
     }
-    final addressType =
-        getAddressPalletType(metadata: metadata, extrinsic: extrinsic);
+    final addressType = getAddressPalletType(
+      metadata: metadata,
+      extrinsic: extrinsic,
+    );
     if (addressType == null) {
       throw DartSubstratePluginException('Unknown metadata address type.');
     }
-    final cryptoAlgoritms =
-        getMetadataCryptoAlgorithm(metadata: metadata, extrinsic: extrinsic);
+    final cryptoAlgoritms = getMetadataCryptoAlgorithm(
+      metadata: metadata,
+      extrinsic: extrinsic,
+    );
     if (cryptoAlgoritms == null || cryptoAlgoritms.isEmpty) {
       throw DartSubstratePluginException('Unknow metadata crypto type.');
     }
     return SubstrateNetworkCryptoInfo(
-        type: SubstrateChainType.substrate,
-        cryptoAlgoritms: cryptoAlgoritms,
-        signaturePalletType: SubstrateSignatureEncodingType.substrate,
-        addressPalletType: addressType);
+      type: SubstrateChainType.substrate,
+      cryptoAlgoritms: cryptoAlgoritms,
+      signaturePalletType: SubstrateSignatureEncodingType.substrate,
+      addressPalletType: addressType,
+    );
   }
 
   static Map<String, dynamic> buildMultiSignatureTemplate({

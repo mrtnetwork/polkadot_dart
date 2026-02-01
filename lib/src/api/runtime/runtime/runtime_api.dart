@@ -10,5 +10,5 @@ class SubstrateQuickRuntimeApi {
   static const SubstrateRuntimeApiAssetConversion assetConversion =
       SubstrateRuntimeApiAssetConversion();
   static const SubstrateRuntimeApiEthereumRuntimeRPCApis
-      ethereumRuntimeRPCApis = SubstrateRuntimeApiEthereumRuntimeRPCApis();
+  ethereumRuntimeRPCApis = SubstrateRuntimeApiEthereumRuntimeRPCApis();
 }

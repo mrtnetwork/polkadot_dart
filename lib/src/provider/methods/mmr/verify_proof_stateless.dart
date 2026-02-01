@@ -5,8 +5,10 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#mmr
 class SubstrateRequestMMRVerifyProofStateless
     extends SubstrateRequest<bool, bool> {
-  const SubstrateRequestMMRVerifyProofStateless(
-      {required this.root, required this.proof});
+  const SubstrateRequestMMRVerifyProofStateless({
+    required this.root,
+    required this.proof,
+  });
   final String root;
   final String proof;
 

@@ -5,58 +5,70 @@ import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/signer.dart';
 import 'package:polkadot_dart/src/substrate.dart';
 
-typedef ONLOOKUPBLOCKEVENT<T extends Object> = T? Function(
-    String blockHash,
-    int blockId,
-    SubstrateBlockResponse blockExtrinsics,
-    SubstrateGroupEvents events);
+typedef ONLOOKUPBLOCKEVENT<T extends Object> =
+    T? Function(
+      String blockHash,
+      int blockId,
+      SubstrateBlockResponse blockExtrinsics,
+      SubstrateGroupEvents events,
+    );
 
 final class SubstrateTransactionBuilder {
-  static List<int> _getCallBytes(
-      {required SubstrateTransactionSubmitableParams calls,
-      required MetadataWithProvider provider}) {
+  static List<int> _getCallBytes({
+    required SubstrateTransactionSubmitableParams calls,
+    required MetadataWithProvider provider,
+  }) {
     if (calls.calls.length == 1) {
       return calls.calls.first.bytes;
     }
     if (!provider.metadata.api.metadata.callMethodExists(
-        SubtrateMetadataPallet.utility.name,
-        SubtrateMetadataUtilityMethods.batch.name)) {
+      SubtrateMetadataPallet.utility.name,
+      SubtrateMetadataUtilityMethods.batch.name,
+    )) {
       throw DartSubstratePluginException("Unsuported batch transaction.");
     }
     return provider.metadata.api.encodeCall(
-        palletNameOrIndex: SubtrateMetadataPallet.utility.name,
-        value: {
-          SubtrateMetadataUtilityMethods.batch.name:
-              calls.calls.map((e) => LookupRawParam(bytes: e.bytes)).toList()
-        });
+      palletNameOrIndex: SubtrateMetadataPallet.utility.name,
+      value: {
+        SubtrateMetadataUtilityMethods.batch.name:
+            calls.calls.map((e) => LookupRawParam(bytes: e.bytes)).toList(),
+      },
+    );
   }
 
   /// Builds a Substrate transaction payload; ready for signing.
-  static Future<SubstrateSubmitableTransactionPayload> buildTransactionStatic(
-      {required BaseSubstrateAddress owner,
-      TransactionBuilderParams params =
-          const TransactionBuilderParams.defaultParams(),
-      required SubstrateTransactionSubmitableParams calls,
-      required MetadataWithProvider provider}) async {
+  static Future<SubstrateSubmitableTransactionPayload> buildTransactionStatic({
+    required BaseSubstrateAddress owner,
+    TransactionBuilderParams params =
+        const TransactionBuilderParams.defaultParams(),
+    required SubstrateTransactionSubmitableParams calls,
+    required MetadataWithProvider provider,
+  }) async {
     if (calls.chargeAssetTxPayment != null &&
         !provider.metadata.extrinsic.chargeAssetTxPayment) {
       throw DartSubstratePluginException(
-          "Network does not support ChargeAssetTxPayment fee.");
+        "Network does not support ChargeAssetTxPayment fee.",
+      );
     }
     if (calls.calls.isEmpty) {
       throw DartSubstratePluginException(
-          "At least one call required for create transaction.");
+        "At least one call required for create transaction.",
+      );
     }
-    final List<int> methodBytes =
-        _getCallBytes(calls: calls, provider: provider);
+    final List<int> methodBytes = _getCallBytes(
+      calls: calls,
+      provider: provider,
+    );
     final SubstrateBlockHash genesis = await () async {
       final gnesis = params.genesisHash;
       if (gnesis != null) return SubstrateBlockHash.hash(gnesis);
-      final genesisHash = await provider.provider
-          .request(const SubstrateRequestChainGetBlockHash<String?>(number: 0));
+      final genesisHash = await provider.provider.request(
+        const SubstrateRequestChainGetBlockHash<String?>(number: 0),
+      );
       if (genesisHash == null) {
         throw DartSubstratePluginException(
-            "Unexpected null response when fetching genesis block hash.");
+          "Unexpected null response when fetching genesis block hash.",
+        );
       }
       return SubstrateBlockHash.hash(genesisHash);
     }();
@@ -64,56 +76,65 @@ final class SubstrateTransactionBuilder {
     final TransactionSubmitionBlock submitionBlock = await () async {
       final submitionBlock = params.submitionBlock;
       if (submitionBlock != null) return submitionBlock;
-      final blockHash = await provider.provider
-          .request(const SubstrateRequestChainChainGetFinalizedHead());
-      final blockHeader = await provider.provider
-          .request(SubstrateRequestChainChainGetHeader(atBlockHash: blockHash));
+      final blockHash = await provider.provider.request(
+        const SubstrateRequestChainChainGetFinalizedHead(),
+      );
+      final blockHeader = await provider.provider.request(
+        SubstrateRequestChainChainGetHeader(atBlockHash: blockHash),
+      );
       final era = blockHeader.toMortalEra(period: params.txExpireEra);
       return TransactionSubmitionBlock(
-          blockHash: SubstrateBlockHash.hash(blockHash),
-          era: era,
-          blockNumber: blockHeader.number);
+        blockHash: SubstrateBlockHash.hash(blockHash),
+        era: era,
+        blockNumber: blockHeader.number,
+      );
     }();
     final BigInt nonce = await () async {
       final nonce = params.nonce;
       if (nonce != null) return nonce;
       return await SubstrateQuickStorageApi.system.nonce(
-          address: owner, rpc: provider.provider, api: provider.metadata.api);
+        address: owner,
+        rpc: provider.provider,
+        api: provider.metadata.api,
+      );
     }();
     final runtimeVersion = provider.metadata.api.runtimeVersion();
     final int specVersion = params.specVersion ?? runtimeVersion.specVersion;
     final int transactionVersion =
         params.transactionVesrion ?? runtimeVersion.transactionVersion;
     final extrinsic = DynamicExtrinsicBuilder(
-        era: submitionBlock.era,
-        nonce: nonce,
-        specVersion: specVersion,
-        transactionVersion: transactionVersion,
-        genesis: genesis.bytes,
-        mortality: submitionBlock.blockHash.bytes,
-        tip: params.tip,
-        metadataHash: calls.metadataHash,
-        chargeAssetTxPayment: calls.chargeAssetTxPayment?.assetId,
-        metadataFields: provider.metadata.extrinsic);
+      era: submitionBlock.era,
+      nonce: nonce,
+      specVersion: specVersion,
+      transactionVersion: transactionVersion,
+      genesis: genesis.bytes,
+      mortality: submitionBlock.blockHash.bytes,
+      tip: params.tip,
+      metadataHash: calls.metadataHash,
+      chargeAssetTxPayment: calls.chargeAssetTxPayment?.assetId,
+      metadataFields: provider.metadata.extrinsic,
+    );
 
-    final extrinsicBytes =
-        extrinsic.encodeExtrinsicPayload(provider.metadata.api);
+    final extrinsicBytes = extrinsic.encodeExtrinsicPayload(
+      provider.metadata.api,
+    );
     List<int>? assetIdBytes;
     if (calls.chargeAssetTxPayment != null) {
       assetIdBytes = extrinsic.encodeAssetId(provider.metadata.api);
     }
     return SubstrateSubmitableTransactionPayload(
-        methodBytes: methodBytes,
-        specVersion: specVersion,
-        tip: params.tip ?? BigInt.zero,
-        transactionVersion: transactionVersion,
-        assetId: assetIdBytes,
-        nonce: nonce,
-        block: submitionBlock,
-        genesisHash: genesis.toHex(),
-        payloadBytes: [...methodBytes, ...extrinsicBytes],
-        builder: extrinsic,
-        owner: owner);
+      methodBytes: methodBytes,
+      specVersion: specVersion,
+      tip: params.tip ?? BigInt.zero,
+      transactionVersion: transactionVersion,
+      assetId: assetIdBytes,
+      nonce: nonce,
+      block: submitionBlock,
+      genesisHash: genesis.toHex(),
+      payloadBytes: [...methodBytes, ...extrinsicBytes],
+      builder: extrinsic,
+      owner: owner,
+    );
   }
 
   /// Simulates a Substrate transaction for fee/weight estimation.
@@ -127,26 +148,31 @@ final class SubstrateTransactionBuilder {
     SubstrateTransactionSigner? signer,
   }) async {
     final extrinsic = await buildAndSignTransactionStatic(
-        owner: owner,
-        calls: calls,
-        provider: provider,
-        params: params,
-        signer: signer,
-        fakeSignature: true);
+      owner: owner,
+      calls: calls,
+      provider: provider,
+      params: params,
+      signer: signer,
+      fakeSignature: true,
+    );
 
     final feeInfo = await provider.provider.request(
-        SubstrateRequestRuntimeTransactionPaymentApiQueryInfo.fromExtrinsic(
-            exirceBytes: extrinsic.serialize()));
+      SubstrateRequestRuntimeTransactionPaymentApiQueryInfo.fromExtrinsic(
+        exirceBytes: extrinsic.serialize(),
+      ),
+    );
     SubstrateDispatchResult<CallDryRunEffects>? dryRun;
     if (SubstrateQuickRuntimeApi.dryRun.methodExists(
-        method: SubstrateRuntimeApiDryRunMethods.dryRunCall,
-        api: provider.metadata.api)) {
+      method: SubstrateRuntimeApiDryRunMethods.dryRunCall,
+      api: provider.metadata.api,
+    )) {
       dryRun = await SubstrateQuickRuntimeApi.dryRun.dryRunCall(
-          owner: owner,
-          callBytes: _getCallBytes(calls: calls, provider: provider),
-          api: provider.metadata.api,
-          rpc: provider.provider,
-          version: xcmVersion);
+        owner: owner,
+        callBytes: _getCallBytes(calls: calls, provider: provider),
+        api: provider.metadata.api,
+        rpc: provider.provider,
+        version: xcmVersion,
+      );
     }
     final chargeAssetTxPayment = calls.chargeAssetTxPayment;
     final nativeLocation = chargeAssetTxPayment?.nativeAssetLocation;
@@ -157,21 +183,28 @@ final class SubstrateTransactionBuilder {
     } else if (nativeLocation != null &&
         assetLocation != null &&
         SubstrateQuickRuntimeApi.assetConversion.methodExists(
-            method: SubstrateRuntimeApiAssetConversionMethods
-                .quotePriceExactTokensForTokens,
-            api: provider.metadata.api)) {
+          method:
+              SubstrateRuntimeApiAssetConversionMethods
+                  .quotePriceExactTokensForTokens,
+          api: provider.metadata.api,
+        )) {
       fee = await SubstrateQuickRuntimeApi.assetConversion
           .quotePriceTokensForExactTokens(
-              params: QuotePriceParams(
-                  includeFee: true,
-                  amount: feeInfo.partialFee,
-                  assetA: assetLocation,
-                  assetB: nativeLocation),
-              api: provider.metadata.api,
-              rpc: provider.provider);
+            params: QuotePriceParams(
+              includeFee: true,
+              amount: feeInfo.partialFee,
+              assetA: assetLocation,
+              assetB: nativeLocation,
+            ),
+            api: provider.metadata.api,
+            rpc: provider.provider,
+          );
     }
     return SubstrateTransactionDryRunResult(
-        queryFeeInfo: feeInfo, dryRun: dryRun, fee: fee);
+      queryFeeInfo: feeInfo,
+      dryRun: dryRun,
+      fee: fee,
+    );
   }
 
   /// Builds and sign Substrate transaction payload;.
@@ -186,13 +219,18 @@ final class SubstrateTransactionBuilder {
     bool fakeSignature = false,
   }) async {
     final payload = await buildTransactionStatic(
-        owner: owner, calls: calls, provider: provider, params: params);
+      owner: owner,
+      calls: calls,
+      provider: provider,
+      params: params,
+    );
     return await signTransactionStatic(
-        payload: payload,
-        provider: provider,
-        fakeSignatureAlgorithm: fakeSignatureAlgorithm,
-        signer: signer,
-        fakeSignature: fakeSignature);
+      payload: payload,
+      provider: provider,
+      fakeSignatureAlgorithm: fakeSignatureAlgorithm,
+      signer: signer,
+      fakeSignature: fakeSignature,
+    );
   }
 
   /// Signs a Substrate transaction; uses fake signature if [signer] is null or [fakeSignature] is true.
@@ -206,10 +244,11 @@ final class SubstrateTransactionBuilder {
   }) async {
     if (encodedSignature != null) {
       return payload.builder.createFinalExtrinsic(
-          callBytes: payload.methodBytes,
-          api: provider.metadata.api,
-          owner: payload.owner,
-          encodedSignature: encodedSignature);
+        callBytes: payload.methodBytes,
+        api: provider.metadata.api,
+        owner: payload.owner,
+        encodedSignature: encodedSignature,
+      );
     }
     final digest = payload.serialzeSign();
     List<int>? signature;
@@ -217,20 +256,22 @@ final class SubstrateTransactionBuilder {
       signature = await signer.signAsync(digest);
     }
 
-    final algorithm = signer?.algorithm ??
+    final algorithm =
+        signer?.algorithm ??
         fakeSignatureAlgorithm ??
         payload.builder.metadataFields.crypto.cryptoAlgoritms.firstWhere(
           (e) => e == SubstrateKeyAlgorithm.ecdsa,
-          orElse: () =>
-              payload.builder.metadataFields.crypto.cryptoAlgoritms.first,
+          orElse:
+              () => payload.builder.metadataFields.crypto.cryptoAlgoritms.first,
         );
     signature ??= List<int>.filled(algorithm.signatureLength, 1);
     return payload.builder.createFinalExtrinsic(
-        callBytes: payload.methodBytes,
-        api: provider.metadata.api,
-        owner: payload.owner,
-        algorithm: algorithm,
-        signature: signature);
+      callBytes: payload.methodBytes,
+      api: provider.metadata.api,
+      owner: payload.owner,
+      algorithm: algorithm,
+      signature: signature,
+    );
   }
 
   /// Builds, signs, and sends a Substrate transaction in one step.
@@ -243,18 +284,26 @@ final class SubstrateTransactionBuilder {
         const TransactionBuilderParams.defaultParams(),
   }) async {
     final payload = await buildTransactionStatic(
-        owner: owner, calls: calls, params: params, provider: provider);
+      owner: owner,
+      calls: calls,
+      params: params,
+      provider: provider,
+    );
 
     final signedTx = await signTransactionStatic(
-        payload: payload, signer: signer, provider: provider);
+      payload: payload,
+      signer: signer,
+      provider: provider,
+    );
     final txId = await provider.provider.request(
-        SubstrateRequestAuthorSubmitExtrinsic(signedTx.serializeHex()));
+      SubstrateRequestAuthorSubmitExtrinsic(signedTx.serializeHex()),
+    );
     return txId;
   }
 
   /// Builds, signs, and submits a Substrate transaction while streaming status updates.
   static Future<Stream<SubtrateTransactionSubmitionResult>>
-      buildSignAndWatchTransactionStatic({
+  buildSignAndWatchTransactionStatic({
     required BaseSubstrateAddress owner,
     required SubstrateTransactionSigner signer,
     required SubstrateTransactionSubmitableParams calls,
@@ -263,17 +312,26 @@ final class SubstrateTransactionBuilder {
         const TransactionBuilderParams.defaultParams(),
   }) async {
     final payload = await buildTransactionStatic(
-        owner: owner, calls: calls, params: params, provider: provider);
+      owner: owner,
+      calls: calls,
+      params: params,
+      provider: provider,
+    );
 
     final signedTx = await signTransactionStatic(
-        payload: payload, signer: signer, provider: provider);
+      payload: payload,
+      signer: signer,
+      provider: provider,
+    );
     return submitExtrinsicAndWatchStatic(
-        extrinsic: signedTx, provider: provider);
+      extrinsic: signedTx,
+      provider: provider,
+    );
   }
 
   /// Builds, signs, and submits a Substrate transaction, returning the final async result.
   static Future<SubtrateTransactionSubmitionResult>
-      buildSignAndWatchTransactionStaticAsync({
+  buildSignAndWatchTransactionStaticAsync({
     required BaseSubstrateAddress owner,
     required SubstrateTransactionSigner signer,
     required SubstrateTransactionSubmitableParams calls,
@@ -286,55 +344,68 @@ final class SubstrateTransactionBuilder {
     int Function()? onLookupMoreBlock,
   }) async {
     final payload = await buildTransactionStatic(
-        owner: owner, calls: calls, params: params, provider: provider);
+      owner: owner,
+      calls: calls,
+      params: params,
+      provider: provider,
+    );
 
     final signedTx = await signTransactionStatic(
-        payload: payload, signer: signer, provider: provider);
+      payload: payload,
+      signer: signer,
+      provider: provider,
+    );
     return submitExtrinsicAndWatchStaticAsync(
-        extrinsic: signedTx,
-        provider: provider,
-        onSubmitxtrinsic: onSubmitxtrinsic,
-        maxRetryEachBlock: maxRetryEachBlock,
-        blockCount: blockCount,
-        onLookupMoreBlock: onLookupMoreBlock);
+      extrinsic: signedTx,
+      provider: provider,
+      onSubmitxtrinsic: onSubmitxtrinsic,
+      maxRetryEachBlock: maxRetryEachBlock,
+      blockCount: blockCount,
+      onLookupMoreBlock: onLookupMoreBlock,
+    );
   }
 
   /// Submits a signed extrinsic and streams its submission status with optional callbacks and retry logic.
   static Future<Stream<SubtrateTransactionSubmitionResult>>
-      submitExtrinsicAndWatchStatic(
-          {required SubstrateSubmitableTransaction extrinsic,
-          required MetadataWithProvider provider,
-          void Function(String txId, int blocId)? onSubmitxtrinsic,
-          int maxRetryEachBlock = 20,
-          int blockCount = 50,
-          int Function()? onLookupMoreBlock,
-          Duration requestTimeout = const Duration(milliseconds: 200),
-          Duration blockInterval = const Duration(seconds: 10)}) async {
-    final finalizeHash = await provider.provider
-        .request(SubstrateRequestChainChainGetFinalizedHead());
-    final finalBlockHead = await provider.provider
-        .request(SubstrateRequestChainGetBlock(atBlockHash: finalizeHash));
+  submitExtrinsicAndWatchStatic({
+    required SubstrateSubmitableTransaction extrinsic,
+    required MetadataWithProvider provider,
+    void Function(String txId, int blocId)? onSubmitxtrinsic,
+    int maxRetryEachBlock = 20,
+    int blockCount = 50,
+    int Function()? onLookupMoreBlock,
+    Duration requestTimeout = const Duration(milliseconds: 200),
+    Duration blockInterval = const Duration(seconds: 10),
+  }) async {
+    final finalizeHash = await provider.provider.request(
+      SubstrateRequestChainChainGetFinalizedHead(),
+    );
+    final finalBlockHead = await provider.provider.request(
+      SubstrateRequestChainGetBlock(atBlockHash: finalizeHash),
+    );
     final ext = extrinsic.serializeHex();
-    final txId = await provider.provider
-        .request(SubstrateRequestAuthorSubmitExtrinsic(ext));
+    final txId = await provider.provider.request(
+      SubstrateRequestAuthorSubmitExtrinsic(ext),
+    );
     if (onSubmitxtrinsic != null) {
       onSubmitxtrinsic(txId, finalBlockHead.block.header.number);
     }
     return findEextrinsic(
-        txId: txId,
-        extrinsic: ext,
-        blockCount: blockCount,
-        blockId: finalBlockHead.block.header.number,
-        maxRetryEachBlock: maxRetryEachBlock,
-        onLookupMoreBlock: onLookupMoreBlock,
-        provider: provider,
-        requestTimeout: requestTimeout,
-        blockInterval: blockInterval);
+      txId: txId,
+      extrinsic: ext,
+      blockCount: blockCount,
+      blockId: finalBlockHead.block.header.number,
+      maxRetryEachBlock: maxRetryEachBlock,
+      onLookupMoreBlock: onLookupMoreBlock,
+      provider: provider,
+      requestTimeout: requestTimeout,
+      blockInterval: blockInterval,
+    );
   }
 
   /// Submits a signed extrinsic and returns the final submission result asynchronously.
   static Future<SubtrateTransactionSubmitionResult>
-      submitExtrinsicAndWatchStaticAsync({
+  submitExtrinsicAndWatchStaticAsync({
     required SubstrateSubmitableTransaction extrinsic,
     required MetadataWithProvider provider,
     void Function(String txId, int blocId)? onSubmitxtrinsic,
@@ -345,17 +416,21 @@ final class SubstrateTransactionBuilder {
   }) async {
     final Completer<SubtrateTransactionSubmitionResult> completer = Completer();
     final stream = await submitExtrinsicAndWatchStatic(
-        extrinsic: extrinsic,
-        provider: provider,
-        blockCount: blockCount,
-        maxRetryEachBlock: maxRetryEachBlock,
-        onLookupMoreBlock: onLookupMoreBlock,
-        onSubmitxtrinsic: onSubmitxtrinsic);
-    stream.listen((event) {
-      if (!completer.isCompleted) completer.complete(event);
-    }, onError: (e) {
-      if (!completer.isCompleted) completer.completeError(e);
-    });
+      extrinsic: extrinsic,
+      provider: provider,
+      blockCount: blockCount,
+      maxRetryEachBlock: maxRetryEachBlock,
+      onLookupMoreBlock: onLookupMoreBlock,
+      onSubmitxtrinsic: onSubmitxtrinsic,
+    );
+    stream.listen(
+      (event) {
+        if (!completer.isCompleted) completer.complete(event);
+      },
+      onError: (e) {
+        if (!completer.isCompleted) completer.completeError(e);
+      },
+    );
     return completer.future;
   }
 
@@ -385,16 +460,19 @@ final class SubstrateTransactionBuilder {
           return null;
         }
         return SubtrateTransactionSubmitionResult(
-            events: events,
-            block: blockHash,
-            extrinsic: extrinsic,
-            blockNumber: blockId,
-            extrinsicIndex: index,
-            transactionHash: txId);
+          events: events,
+          block: blockHash,
+          extrinsic: extrinsic,
+          blockNumber: blockId,
+          extrinsicIndex: index,
+          transactionHash: txId,
+        );
       },
     ).handleError((_) {
       return SubtrateTransactionSubmitionResult.notFount(
-          extrinsic: extrinsic, transactionHash: txId);
+        extrinsic: extrinsic,
+        transactionHash: txId,
+      );
     }, test: (err) => err == SubstrateLookupBlockExceptionConst.blockNotFound);
   }
 
@@ -407,10 +485,12 @@ final class SubstrateTransactionBuilder {
     int? finalizeBlock = blockData.finalizeBlock;
     String? blockHash;
     if (finalizeBlock == null || blockId > finalizeBlock) {
-      final finalizeHead = await provider.provider
-          .request(SubstrateRequestChainChainGetFinalizedHead());
-      final finalBlockHead = await provider.provider
-          .request(SubstrateRequestChainGetBlock(atBlockHash: finalizeHead));
+      final finalizeHead = await provider.provider.request(
+        SubstrateRequestChainChainGetFinalizedHead(),
+      );
+      final finalBlockHead = await provider.provider.request(
+        SubstrateRequestChainGetBlock(atBlockHash: finalizeHead),
+      );
       finalizeBlock = finalBlockHead.block.header.number;
       if (blockId == finalizeBlock) {
         blockHash = finalizeHead;
@@ -419,19 +499,27 @@ final class SubstrateTransactionBuilder {
     if (blockId > finalizeBlock) {
       throw SubstrateLookupBlockExceptionConst.blockNotFound;
     }
-    blockHash ??= await provider.provider
-        .request(SubstrateRequestChainGetBlockHash<String>(number: blockId));
+    blockHash ??= await provider.provider.request(
+      SubstrateRequestChainGetBlockHash<String>(number: blockId),
+    );
     assert(blockHash != null);
     if (blockHash == null) {
       throw SubstrateLookupBlockExceptionConst.blockNotFound;
     }
-    final block = await provider.provider
-        .request(SubstrateRequestChainGetBlock(atBlockHash: blockHash));
+    final block = await provider.provider.request(
+      SubstrateRequestChainGetBlock(atBlockHash: blockHash),
+    );
     try {
-      final events = await provider.metadata.api
-          .getSystemEvents(provider.provider, atBlockHash: blockHash);
-      final result = onBlockEvents(blockHash, block.block.header.number,
-          block.block, SubstrateGroupEvents(events: events));
+      final events = await provider.metadata.api.getSystemEvents(
+        provider.provider,
+        atBlockHash: blockHash,
+      );
+      final result = onBlockEvents(
+        blockHash,
+        block.block.header.number,
+        block.block,
+        SubstrateGroupEvents(events: events),
+      );
       return _LookupBlock(finalizeBlock, result);
     } on RPCError catch (_) {
       rethrow;
@@ -441,15 +529,16 @@ final class SubstrateTransactionBuilder {
   }
 
   /// Streams events from a specific block, with retry and custom event handling support.
-  static Stream<T> loockupBlockStream<T extends Object>(
-      {Duration blockInterval = const Duration(seconds: 10),
-      Duration requestTimeout = const Duration(milliseconds: 200),
-      required int blockId,
-      required MetadataWithProvider provider,
-      required ONLOOKUPBLOCKEVENT<T> onBlockEvents,
-      int Function()? onLookupMoreBlock,
-      int maxRetryEachBlock = 20,
-      int blockCount = 50}) {
+  static Stream<T> loockupBlockStream<T extends Object>({
+    Duration blockInterval = const Duration(seconds: 10),
+    Duration requestTimeout = const Duration(milliseconds: 200),
+    required int blockId,
+    required MetadataWithProvider provider,
+    required ONLOOKUPBLOCKEVENT<T> onBlockEvents,
+    int Function()? onLookupMoreBlock,
+    int maxRetryEachBlock = 20,
+    int blockCount = 50,
+  }) {
     final controller = StreamController<T>();
     void closeController() {
       if (!controller.isClosed) {
@@ -466,10 +555,11 @@ final class SubstrateTransactionBuilder {
       while (!controller.isClosed) {
         try {
           blockInfo = await _lockupBlockEvents(
-              blockId: id,
-              onBlockEvents: onBlockEvents,
-              provider: provider,
-              blockData: blockInfo);
+            blockId: id,
+            onBlockEvents: onBlockEvents,
+            provider: provider,
+            blockData: blockInfo,
+          );
           id++;
           count--;
           retry = maxRetryEachBlock;
@@ -484,8 +574,9 @@ final class SubstrateTransactionBuilder {
                 count = onLookupMoreBlock();
               }
               if (count <= 0) {
-                controller
-                    .addError(SubstrateLookupBlockExceptionConst.notFound);
+                controller.addError(
+                  SubstrateLookupBlockExceptionConst.notFound,
+                );
                 closeController();
                 return;
               }
@@ -514,9 +605,11 @@ final class SubstrateTransactionBuilder {
     }
 
     controller.onListen = startFetching;
-    return controller.stream.asBroadcastStream(onCancel: (e) {
-      controller.close();
-    });
+    return controller.stream.asBroadcastStream(
+      onCancel: (e) {
+        controller.close();
+      },
+    );
   }
 }
 

@@ -18,8 +18,10 @@ class SubstrateMetadataLayouts {
   }
 
   static Layout si0Path({String? property}) {
-    return LayoutConst.compactVec(LayoutConst.compactString(),
-        property: property);
+    return LayoutConst.compactVec(
+      LayoutConst.compactString(),
+      property: property,
+    );
   }
 
   static Layout si1Path({String? property}) {
@@ -29,7 +31,7 @@ class SubstrateMetadataLayouts {
   static StructLayout si1TypeParameter({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "name"),
-      LayoutConst.optional(si1LookupTypeId(), property: "type")
+      LayoutConst.optional(si1LookupTypeId(), property: "type"),
     ]);
   }
 
@@ -38,14 +40,14 @@ class SubstrateMetadataLayouts {
       LayoutConst.optional(LayoutConst.compactString(), property: "name"),
       si1LookupTypeId(property: "type"),
       LayoutConst.optional(LayoutConst.compactString(), property: "typeName"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ]);
   }
 
   static StructLayout si1TypeDefComposite({String? property}) {
-    return LayoutConst.struct(
-        [LayoutConst.compactVec(si1Field(), property: "fields")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactVec(si1Field(), property: "fields"),
+    ], property: property);
   }
 
   static StructLayout si1Variant({String? property}) {
@@ -53,44 +55,51 @@ class SubstrateMetadataLayouts {
       LayoutConst.compactString(property: "name"),
       LayoutConst.compactVec(si1Field(), property: "fields"),
       LayoutConst.u8(property: "index"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ]);
   }
 
   static StructLayout si1TypeDefSequence({String? property}) {
-    return LayoutConst.struct([si1LookupTypeId(property: "type")],
-        property: property);
+    return LayoutConst.struct([
+      si1LookupTypeId(property: "type"),
+    ], property: property);
   }
 
   static StructLayout si1TypeDefArray({String? property}) {
-    return LayoutConst.struct(
-        [LayoutConst.u32(property: "len"), si1LookupTypeId(property: "type")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.u32(property: "len"),
+      si1LookupTypeId(property: "type"),
+    ], property: property);
   }
 
-  static CustomLayout<Map<String, dynamic>, List<int>> si1TypeDefTuple(
-      {String? property}) {
+  static CustomLayout<Map<String, dynamic>, List<int>> si1TypeDefTuple({
+    String? property,
+  }) {
     return LayoutConst.compactVec<int>(si1LookupTypeId(), property: property);
   }
 
   static Layout<Map<String, dynamic>> si0TypeDefPrimitive({String? property}) {
-    return LayoutConst.rustEnum([
-      LayoutConst.none(property: PrimitiveTypes.boolType.name),
-      LayoutConst.none(property: PrimitiveTypes.charType.name),
-      LayoutConst.none(property: PrimitiveTypes.strType.name),
-      LayoutConst.none(property: PrimitiveTypes.u8.name),
-      LayoutConst.none(property: PrimitiveTypes.u16.name),
-      LayoutConst.none(property: PrimitiveTypes.u32.name),
-      LayoutConst.none(property: PrimitiveTypes.u64.name),
-      LayoutConst.none(property: PrimitiveTypes.u128.name),
-      LayoutConst.none(property: PrimitiveTypes.u256.name),
-      LayoutConst.none(property: PrimitiveTypes.i8.name),
-      LayoutConst.none(property: PrimitiveTypes.i16.name),
-      LayoutConst.none(property: PrimitiveTypes.i32.name),
-      LayoutConst.none(property: PrimitiveTypes.i64.name),
-      LayoutConst.none(property: PrimitiveTypes.i128.name),
-      LayoutConst.none(property: PrimitiveTypes.i256.name),
-    ], property: property, useKeyAndValue: false);
+    return LayoutConst.rustEnum(
+      [
+        LayoutConst.none(property: PrimitiveTypes.boolType.name),
+        LayoutConst.none(property: PrimitiveTypes.charType.name),
+        LayoutConst.none(property: PrimitiveTypes.strType.name),
+        LayoutConst.none(property: PrimitiveTypes.u8.name),
+        LayoutConst.none(property: PrimitiveTypes.u16.name),
+        LayoutConst.none(property: PrimitiveTypes.u32.name),
+        LayoutConst.none(property: PrimitiveTypes.u64.name),
+        LayoutConst.none(property: PrimitiveTypes.u128.name),
+        LayoutConst.none(property: PrimitiveTypes.u256.name),
+        LayoutConst.none(property: PrimitiveTypes.i8.name),
+        LayoutConst.none(property: PrimitiveTypes.i16.name),
+        LayoutConst.none(property: PrimitiveTypes.i32.name),
+        LayoutConst.none(property: PrimitiveTypes.i64.name),
+        LayoutConst.none(property: PrimitiveTypes.i128.name),
+        LayoutConst.none(property: PrimitiveTypes.i256.name),
+      ],
+      property: property,
+      useKeyAndValue: false,
+    );
   }
 
   static Layout si1TypeDefPrimitive({String? property}) {
@@ -98,8 +107,9 @@ class SubstrateMetadataLayouts {
   }
 
   static StructLayout si1TypeDefCompact({String? property}) {
-    return LayoutConst.struct([si1LookupTypeId(property: "type")],
-        property: property);
+    return LayoutConst.struct([
+      si1LookupTypeId(property: "type"),
+    ], property: property);
   }
 
   static StructLayout si1TypeDefBitSequence({String? property}) {
@@ -114,23 +124,29 @@ class SubstrateMetadataLayouts {
   }
 
   static StructLayout si1TypeDefVariant({String? property}) {
-    return LayoutConst.struct(
-        [LayoutConst.compactVec(si1Variant(), property: "variants")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactVec(si1Variant(), property: "variants"),
+    ], property: property);
   }
 
   static Layout<Map<String, dynamic>> si1TypeDef({String? property}) {
-    return LayoutConst.rustEnum([
-      si1TypeDefComposite(property: Si1TypeDefsIndexesConst.composite.name),
-      si1TypeDefVariant(property: Si1TypeDefsIndexesConst.variant.name),
-      si1TypeDefSequence(property: Si1TypeDefsIndexesConst.sequence.name),
-      si1TypeDefArray(property: Si1TypeDefsIndexesConst.array.name),
-      si1TypeDefTuple(property: Si1TypeDefsIndexesConst.tuple.name),
-      si1TypeDefPrimitive(property: Si1TypeDefsIndexesConst.primitive.name),
-      si1TypeDefCompact(property: Si1TypeDefsIndexesConst.compact.name),
-      si1TypeDefBitSequence(property: Si1TypeDefsIndexesConst.bitSequence.name),
-      type(property: Si1TypeDefsIndexesConst.historicMetaCompat.name)
-    ], property: property, useKeyAndValue: false);
+    return LayoutConst.rustEnum(
+      [
+        si1TypeDefComposite(property: Si1TypeDefsIndexesConst.composite.name),
+        si1TypeDefVariant(property: Si1TypeDefsIndexesConst.variant.name),
+        si1TypeDefSequence(property: Si1TypeDefsIndexesConst.sequence.name),
+        si1TypeDefArray(property: Si1TypeDefsIndexesConst.array.name),
+        si1TypeDefTuple(property: Si1TypeDefsIndexesConst.tuple.name),
+        si1TypeDefPrimitive(property: Si1TypeDefsIndexesConst.primitive.name),
+        si1TypeDefCompact(property: Si1TypeDefsIndexesConst.compact.name),
+        si1TypeDefBitSequence(
+          property: Si1TypeDefsIndexesConst.bitSequence.name,
+        ),
+        type(property: Si1TypeDefsIndexesConst.historicMetaCompat.name),
+      ],
+      property: property,
+      useKeyAndValue: false,
+    );
   }
 
   static StructLayout si1Type({String? property}) {
@@ -171,8 +187,10 @@ class SubstrateMetadataLayouts {
     return LayoutConst.struct([
       siLookupTypeId(property: "type"),
       LayoutConst.u8(property: "version"),
-      LayoutConst.compactVec(signedExtensionMetadataV14(),
-          property: "signedExtensions"),
+      LayoutConst.compactVec(
+        signedExtensionMetadataV14(),
+        property: "signedExtensions",
+      ),
     ], property: property);
   }
 
@@ -183,8 +201,10 @@ class SubstrateMetadataLayouts {
       siLookupTypeId(property: "callType"),
       siLookupTypeId(property: "signatureType"),
       siLookupTypeId(property: "extraType"),
-      LayoutConst.compactVec(signedExtensionMetadataV14(),
-          property: "signedExtensions"),
+      LayoutConst.compactVec(
+        signedExtensionMetadataV14(),
+        property: "signedExtensions",
+      ),
     ], property: property);
   }
 
@@ -194,30 +214,42 @@ class SubstrateMetadataLayouts {
     ], property: property);
   }
 
-  static Layout<Map<String, dynamic>> storageEntryModifierV9(
-      {String? property}) {
-    return LayoutConst.rustEnum([
-      LayoutConst.none(property: StorageEntryModifierV9.optional.name),
-      LayoutConst.none(property: StorageEntryModifierV9.def.name),
-      LayoutConst.none(property: StorageEntryModifierV9.required.name),
-    ], property: property, useKeyAndValue: false);
+  static Layout<Map<String, dynamic>> storageEntryModifierV9({
+    String? property,
+  }) {
+    return LayoutConst.rustEnum(
+      [
+        LayoutConst.none(property: StorageEntryModifierV9.optional.name),
+        LayoutConst.none(property: StorageEntryModifierV9.def.name),
+        LayoutConst.none(property: StorageEntryModifierV9.required.name),
+      ],
+      property: property,
+      useKeyAndValue: false,
+    );
   }
 
-  static Layout<Map<String, dynamic>> storageEntryModifierV14(
-      {String? property}) {
+  static Layout<Map<String, dynamic>> storageEntryModifierV14({
+    String? property,
+  }) {
     return storageEntryModifierV9(property: property);
   }
 
   static Layout<Map<String, dynamic>> storageHasherV11({String? property}) {
-    return LayoutConst.rustEnum([
-      LayoutConst.none(property: StorageHasherV11Options.blake2128.name),
-      LayoutConst.none(property: StorageHasherV11Options.blake2256.name),
-      LayoutConst.none(property: StorageHasherV11Options.blake2128Concat.name),
-      LayoutConst.none(property: StorageHasherV11Options.twox128.name),
-      LayoutConst.none(property: StorageHasherV11Options.twox256.name),
-      LayoutConst.none(property: StorageHasherV11Options.twox64Concat.name),
-      LayoutConst.none(property: StorageHasherV11Options.identity.name),
-    ], property: property, useKeyAndValue: false);
+    return LayoutConst.rustEnum(
+      [
+        LayoutConst.none(property: StorageHasherV11Options.blake2128.name),
+        LayoutConst.none(property: StorageHasherV11Options.blake2256.name),
+        LayoutConst.none(
+          property: StorageHasherV11Options.blake2128Concat.name,
+        ),
+        LayoutConst.none(property: StorageHasherV11Options.twox128.name),
+        LayoutConst.none(property: StorageHasherV11Options.twox256.name),
+        LayoutConst.none(property: StorageHasherV11Options.twox64Concat.name),
+        LayoutConst.none(property: StorageHasherV11Options.identity.name),
+      ],
+      property: property,
+      useKeyAndValue: false,
+    );
   }
 
   static Layout<Map<String, dynamic>> storageHasherV14({String? property}) {
@@ -233,10 +265,14 @@ class SubstrateMetadataLayouts {
   }
 
   static Layout<Map<String, dynamic>> storageEntryTypeV14({String? property}) {
-    return LayoutConst.rustEnum([
-      siLookupTypeId(property: StorageEntryTypeV14IndexKeys.plain),
-      storageEnteryTypeMap(property: StorageEntryTypeV14IndexKeys.map),
-    ], property: property, useKeyAndValue: false);
+    return LayoutConst.rustEnum(
+      [
+        siLookupTypeId(property: StorageEntryTypeV14IndexKeys.plain),
+        storageEnteryTypeMap(property: StorageEntryTypeV14IndexKeys.map),
+      ],
+      property: property,
+      useKeyAndValue: false,
+    );
   }
 
   static StructLayout storageEntryMetadataV14({String? property}) {
@@ -245,25 +281,27 @@ class SubstrateMetadataLayouts {
       storageEntryModifierV14(property: "modifier"),
       storageEntryTypeV14(property: "type"),
       LayoutConst.bytes(property: "fallback"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ], property: property);
   }
 
   static StructLayout palletStorageMetadataV14({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "prefix"),
-      LayoutConst.compactVec(storageEntryMetadataV14(), property: "items")
+      LayoutConst.compactVec(storageEntryMetadataV14(), property: "items"),
     ], property: property);
   }
 
   static StructLayout palletCallMetadataV14({String? property}) {
-    return LayoutConst.struct([siLookupTypeId(property: "type")],
-        property: property);
+    return LayoutConst.struct([
+      siLookupTypeId(property: "type"),
+    ], property: property);
   }
 
   static StructLayout palletEventMetadataV14({String? property}) {
-    return LayoutConst.struct([siLookupTypeId(property: "type")],
-        property: property);
+    return LayoutConst.struct([
+      siLookupTypeId(property: "type"),
+    ], property: property);
   }
 
   static StructLayout palletConstantMetadataV14({String? property}) {
@@ -271,13 +309,14 @@ class SubstrateMetadataLayouts {
       LayoutConst.compactString(property: "name"),
       siLookupTypeId(property: "type"),
       LayoutConst.bytes(property: "value"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ], property: property);
   }
 
   static StructLayout palletErrorMetadataV14({String? property}) {
-    return LayoutConst.struct([siLookupTypeId(property: "type")],
-        property: property);
+    return LayoutConst.struct([
+      siLookupTypeId(property: "type"),
+    ], property: property);
   }
 
   static StructLayout palletMetadataV14({String? property}) {
@@ -286,10 +325,12 @@ class SubstrateMetadataLayouts {
       LayoutConst.optional(palletStorageMetadataV14(), property: "storage"),
       LayoutConst.optional(palletCallMetadataV14(), property: "calls"),
       LayoutConst.optional(palletEventMetadataV14(), property: "events"),
-      LayoutConst.compactVec(palletConstantMetadataV14(),
-          property: "constants"),
+      LayoutConst.compactVec(
+        palletConstantMetadataV14(),
+        property: "constants",
+      ),
       LayoutConst.optional(palletErrorMetadataV14(), property: "errors"),
-      LayoutConst.u8(property: "index")
+      LayoutConst.u8(property: "index"),
     ], property: property);
   }
 
@@ -299,11 +340,13 @@ class SubstrateMetadataLayouts {
       LayoutConst.optional(palletStorageMetadataV14(), property: "storage"),
       LayoutConst.optional(palletCallMetadataV14(), property: "calls"),
       LayoutConst.optional(palletEventMetadataV14(), property: "events"),
-      LayoutConst.compactVec(palletConstantMetadataV14(),
-          property: "constants"),
+      LayoutConst.compactVec(
+        palletConstantMetadataV14(),
+        property: "constants",
+      ),
       LayoutConst.optional(palletErrorMetadataV14(), property: "errors"),
       LayoutConst.u8(property: "index"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ], property: property);
   }
 
@@ -312,24 +355,26 @@ class SubstrateMetadataLayouts {
       portableRegistry(property: "lookup"),
       LayoutConst.compactVec(palletMetadataV14(), property: "pallets"),
       extrinsicMetadataV14(property: "extrinsic"),
-      siLookupTypeId(property: "type")
+      siLookupTypeId(property: "type"),
     ], property: property);
   }
 
   static StructLayout runtimeApiMethodParamMetadataV15({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "name"),
-      si1LookupTypeId(property: "type")
+      si1LookupTypeId(property: "type"),
     ], property: property);
   }
 
   static StructLayout runtimeApiMethodMetadataV15({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "name"),
-      LayoutConst.compactVec(runtimeApiMethodParamMetadataV15(),
-          property: "inputs"),
+      LayoutConst.compactVec(
+        runtimeApiMethodParamMetadataV15(),
+        property: "inputs",
+      ),
       si1LookupTypeId(property: "output"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ], property: property);
   }
 
@@ -344,17 +389,21 @@ class SubstrateMetadataLayouts {
   static StructLayout runtimeApiMetadataV15({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "name"),
-      LayoutConst.compactVec(runtimeApiMethodMetadataV15(),
-          property: "methods"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(
+        runtimeApiMethodMetadataV15(),
+        property: "methods",
+      ),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ], property: property);
   }
 
   static StructLayout customMetadata15({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactMap<String, dynamic>(
-          LayoutConst.compactString(), customValueMetadata15(),
-          property: "map"),
+        LayoutConst.compactString(),
+        customValueMetadata15(),
+        property: "map",
+      ),
     ], property: property);
   }
 
@@ -366,7 +415,7 @@ class SubstrateMetadataLayouts {
       siLookupTypeId(property: "type"),
       LayoutConst.compactVec(runtimeApiMetadataV15(), property: "apis"),
       outerEnums15(property: "outerEnums"),
-      customMetadata15(property: "custom")
+      customMetadata15(property: "custom"),
     ], property: property);
   }
 
@@ -384,14 +433,11 @@ class SubstrateMetadataLayouts {
     ], property: property);
   }
 
-  static StructLayout versionedMetadata(
-    Layout metadata, {
-    String? property,
-  }) {
+  static StructLayout versionedMetadata(Layout metadata, {String? property}) {
     return LayoutConst.struct([
       LayoutConst.u32(property: "magicNumber"),
       LayoutConst.u8(property: "version"),
-      metadata
+      metadata,
     ], property: property);
   }
 
@@ -402,7 +448,7 @@ class SubstrateMetadataLayouts {
       LayoutConst.compactString(property: "note"),
 
       /// Optional value for denoting version when the deprecation occurred.
-      LayoutConst.optional(LayoutConst.compactString(), property: "since")
+      LayoutConst.optional(LayoutConst.compactString(), property: "since"),
     ], property: property);
   }
 
@@ -413,10 +459,11 @@ class SubstrateMetadataLayouts {
 
       /// Deprecated without a note.
       LayoutConst.noArgs(
-          property: DeprecationStatusTypes.deprecatedWithoutNote.name),
+        property: DeprecationStatusTypes.deprecatedWithoutNote.name,
+      ),
 
       /// Entry is deprecated with an note and an optional `since` field.
-      depecratedV16(property: DeprecationStatusTypes.deprecated.name)
+      depecratedV16(property: DeprecationStatusTypes.deprecated.name),
     ], property: property);
   }
 
@@ -427,14 +474,14 @@ class SubstrateMetadataLayouts {
       storageEntryTypeV14(property: "type"),
       LayoutConst.bytes(property: "fallback"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info')
+      depecratedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
   static StructLayout palletStorageMetadataV16({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "prefix"),
-      LayoutConst.compactVec(storageEntryMetadataV16(), property: "items")
+      LayoutConst.compactVec(storageEntryMetadataV16(), property: "items"),
     ], property: property);
   }
 
@@ -444,27 +491,34 @@ class SubstrateMetadataLayouts {
       LayoutConst.optional(palletStorageMetadataV16(), property: "storage"),
       LayoutConst.optional(palletCallMetadataV16(), property: "calls"),
       LayoutConst.optional(palletEventMetadataV16(), property: "events"),
-      LayoutConst.compactVec(palletConstantMetadataV16(),
-          property: "constants"),
+      LayoutConst.compactVec(
+        palletConstantMetadataV16(),
+        property: "constants",
+      ),
       LayoutConst.optional(palletErrorMetadataV16(), property: "errors"),
-      LayoutConst.compactVec(palletAssociatedTypeMetadata(),
-          property: "associated_types"),
+      LayoutConst.compactVec(
+        palletAssociatedTypeMetadata(),
+        property: "associated_types",
+      ),
       LayoutConst.u8(property: "index"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info')
+      depecratedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
   static Layout<Map<String, dynamic>> itemDeprecated({String? property}) {
-    return LayoutConst.struct([depecratedStatusV16(property: "status")],
-        property: property);
+    return LayoutConst.struct([
+      depecratedStatusV16(property: "status"),
+    ], property: property);
   }
 
   static StructLayout variantsDeprecated({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactMap<dynamic, dynamic>(
-          LayoutConst.u8(), depecratedStatusV16(),
-          property: "depecreatedVariants"),
+        LayoutConst.u8(),
+        depecratedStatusV16(),
+        property: "depecreatedVariants",
+      ),
     ], property: property);
   }
 
@@ -477,21 +531,23 @@ class SubstrateMetadataLayouts {
       itemDeprecated(property: DeprecationInfoTypes.itemDeprecated.name),
 
       /// Entry is partially deprecated.
-      variantsDeprecated(property: DeprecationInfoTypes.variantsDeprecated.name)
+      variantsDeprecated(
+        property: DeprecationInfoTypes.variantsDeprecated.name,
+      ),
     ], property: property);
   }
 
   static StructLayout palletCallMetadataV16({String? property}) {
     return LayoutConst.struct([
       siLookupTypeId(property: "type"),
-      depecratedInfo(property: 'deprecation_info')
+      depecratedInfo(property: 'deprecation_info'),
     ], property: property);
   }
 
   static StructLayout palletEventMetadataV16({String? property}) {
     return LayoutConst.struct([
       siLookupTypeId(property: "type"),
-      depecratedInfo(property: 'deprecation_info')
+      depecratedInfo(property: 'deprecation_info'),
     ], property: property);
   }
 
@@ -501,14 +557,14 @@ class SubstrateMetadataLayouts {
       siLookupTypeId(property: "type"),
       LayoutConst.bytes(property: "value"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info')
+      depecratedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
   static StructLayout palletErrorMetadataV16({String? property}) {
     return LayoutConst.struct([
       siLookupTypeId(property: "type"),
-      depecratedInfo(property: 'deprecation_info')
+      depecratedInfo(property: 'deprecation_info'),
     ], property: property);
   }
 
@@ -516,7 +572,7 @@ class SubstrateMetadataLayouts {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "name"),
       siLookupTypeId(property: "type"),
-      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs")
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
     ], property: property);
   }
 
@@ -534,31 +590,39 @@ class SubstrateMetadataLayouts {
       siLookupTypeId(property: "addressType"),
       siLookupTypeId(property: "signatureType"),
       LayoutConst.compactMap<dynamic, dynamic>(
-          LayoutConst.u8(), LayoutConst.compactVec(LayoutConst.u32()),
-          property: "transaction_extensions_by_version"),
-      LayoutConst.compactVec(transactionExtensionMetadata(),
-          property: "transaction_extensions"),
+        LayoutConst.u8(),
+        LayoutConst.compactVec(LayoutConst.u32()),
+        property: "transaction_extensions_by_version",
+      ),
+      LayoutConst.compactVec(
+        transactionExtensionMetadata(),
+        property: "transaction_extensions",
+      ),
     ], property: property);
   }
 
   static StructLayout runtimeApiMethodMetadataV16({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "name"),
-      LayoutConst.compactVec(runtimeApiMethodParamMetadataV15(),
-          property: "inputs"),
+      LayoutConst.compactVec(
+        runtimeApiMethodParamMetadataV15(),
+        property: "inputs",
+      ),
       si1LookupTypeId(property: "output"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info')
+      depecratedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
   static StructLayout runtimeApiMetadataV16({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactString(property: "name"),
-      LayoutConst.compactVec(runtimeApiMethodMetadataV16(),
-          property: "methods"),
+      LayoutConst.compactVec(
+        runtimeApiMethodMetadataV16(),
+        property: "methods",
+      ),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedInfo(property: 'deprecation_info')
+      depecratedInfo(property: 'deprecation_info'),
     ], property: property);
   }
 
@@ -569,7 +633,7 @@ class SubstrateMetadataLayouts {
       extrinsicMetadataV16(property: "extrinsic"),
       LayoutConst.compactVec(runtimeApiMetadataV16(), property: "apis"),
       outerEnums15(property: "outerEnums"),
-      customMetadata15(property: "custom")
+      customMetadata15(property: "custom"),
     ], property: property);
   }
 }

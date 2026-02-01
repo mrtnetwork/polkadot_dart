@@ -21,6 +21,7 @@ class SubstrateRequestRuntimeMetadataGetVersions
   List<int> onResonse(String result) {
     final layput = LayoutConst.compactArray(LayoutConst.u32());
     return List<int>.from(
-        layput.deserialize(BytesUtils.fromHexString(result)).value);
+      layput.deserialize(BytesUtils.fromHexString(result)).value,
+    );
   }
 }

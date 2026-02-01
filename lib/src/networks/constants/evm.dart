@@ -8,8 +8,9 @@ class SubstratemEVMNetworkUtils {
   static void _ensureResponseLength(List<Object> response, int length) {
     if (response.length != length) {
       throw DartSubstratePluginException(
-          "ABI function returned unexpected number of items.",
-          details: {"response": response});
+        "ABI function returned unexpected number of items.",
+        details: {"response": response},
+      );
     }
   }
 
@@ -20,18 +21,19 @@ class SubstratemEVMNetworkUtils {
       "inputs": [],
       "name": "name",
       "outputs": [
-        {"name": "", "type": "string"}
+        {"name": "", "type": "string"},
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
     },
     parser: (response) {
       _ensureResponseLength(response, 1);
       final result = response.first;
       if (result is! String) {
         throw DartSubstratePluginException(
-            "ABI function returned invalid type.");
+          "ABI function returned invalid type.",
+        );
       }
       return result;
     },
@@ -44,18 +46,19 @@ class SubstratemEVMNetworkUtils {
       "inputs": [],
       "name": "symbol",
       "outputs": [
-        {"name": "", "type": "string"}
+        {"name": "", "type": "string"},
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
     },
     parser: (response) {
       _ensureResponseLength(response, 1);
       final result = response.first;
       if (result is! String) {
         throw DartSubstratePluginException(
-            "ABI function returned invalid type.");
+          "ABI function returned invalid type.",
+        );
       }
       return result;
     },
@@ -68,18 +71,19 @@ class SubstratemEVMNetworkUtils {
       "inputs": [],
       "name": "decimals",
       "outputs": [
-        {"name": "", "type": "uint8"}
+        {"name": "", "type": "uint8"},
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
     },
     parser: (response) {
       _ensureResponseLength(response, 1);
       final result = BigintUtils.tryParse(response.first, allowHex: true);
       if (result == null) {
         throw DartSubstratePluginException(
-            "ABI function returned invalid type.");
+          "ABI function returned invalid type.",
+        );
       }
       return result.toInt();
     },
@@ -90,22 +94,23 @@ class SubstratemEVMNetworkUtils {
     abi: {
       "constant": true,
       "inputs": [
-        {"name": "account", "type": "address"}
+        {"name": "account", "type": "address"},
       ],
       "name": "balanceOf",
       "outputs": [
-        {"name": "", "type": "uint256"}
+        {"name": "", "type": "uint256"},
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
     },
     parser: (response) {
       _ensureResponseLength(response, 1);
       final result = BigintUtils.tryParse(response.first, allowHex: true);
       if (result == null) {
         throw DartSubstratePluginException(
-            "ABI function returned invalid type.");
+          "ABI function returned invalid type.",
+        );
       }
       return result;
     },

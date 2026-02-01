@@ -3,8 +3,8 @@ import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/utils/json/extension/json.dart';
 import 'package:polkadot_dart/src/models/generic/models/module_error.dart';
 
-typedef ONEVENTDISPATCHERROR = Map<String, dynamic>? Function(
-    ModuleError error);
+typedef ONEVENTDISPATCHERROR =
+    Map<String, dynamic>? Function(ModuleError error);
 
 class SubstrateEventConst {
   static const String extrinsicFailed = "ExtrinsicFailed";
@@ -23,8 +23,10 @@ enum SubstrateEventPhase {
   const SubstrateEventPhase(this.type);
   static SubstrateEventPhase fromJson(Map<String, dynamic>? json) {
     final type = json?.keys.firstOrNull;
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => SubstrateEventPhase.unknown);
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => SubstrateEventPhase.unknown,
+    );
   }
 }
 
@@ -63,12 +65,14 @@ class SubstrateEvent {
     required Map<String, dynamic> rawEvent,
     required this.phase,
     Map<String, dynamic>? description,
-  })  : rawEvent = rawEvent.immutable,
-        description = description?.immutable;
+  }) : rawEvent = rawEvent.immutable,
+       description = description?.immutable;
 
   /// Creates a `SubstrateEvent` from JSON and optionally handles dispatch errors.
-  factory SubstrateEvent.fromJson(Map<String, dynamic> json,
-      {ONEVENTDISPATCHERROR? onDispatchError}) {
+  factory SubstrateEvent.fromJson(
+    Map<String, dynamic> json, {
+    ONEVENTDISPATCHERROR? onDispatchError,
+  }) {
     Map<String, dynamic> event = json;
     if (json.containsKey("event")) {
       event = json.valueEnsureAsMap<String, dynamic>("event");
@@ -86,7 +90,8 @@ class SubstrateEvent {
             dispatchError is Map &&
             dispatchError.containsKey(SubstrateEventConst.module)) {
           final mError = ModuleError.tryFromJson(
-              dispatchError[SubstrateEventConst.module]);
+            dispatchError[SubstrateEventConst.module],
+          );
           if (mError != null) {
             description = onDispatchError(mError);
           }
@@ -96,14 +101,15 @@ class SubstrateEvent {
     final Map<String, dynamic> phase =
         json.valueAsMap<Map<String, dynamic>?>("phase") ?? {};
     return SubstrateEvent(
-        pallet: pallet,
-        topic: json.valueAsList<List<String>?>("topics") ?? [],
-        method: method,
-        input: input,
-        applyExtrinsic: phase.valueAs(SubstrateEventPhase.applyExtrinsic.type),
-        rawEvent: json,
-        phase: SubstrateEventPhase.fromJson(phase),
-        description: description);
+      pallet: pallet,
+      topic: json.valueAsList<List<String>?>("topics") ?? [],
+      method: method,
+      input: input,
+      applyExtrinsic: phase.valueAs(SubstrateEventPhase.applyExtrinsic.type),
+      rawEvent: json,
+      phase: SubstrateEventPhase.fromJson(phase),
+      description: description,
+    );
   }
 
   /// Converts the event to JSON including optional description.
@@ -125,9 +131,10 @@ class SubstrateEvent {
       return JsonParser.valueAs<T>(input);
     } catch (_) {
       throw CastFailedException(
-          message: "Failed to cast event input.",
-          value: input,
-          details: {"expected": "$T", "input": input.runtimeType});
+        message: "Failed to cast event input.",
+        value: input,
+        details: {"expected": "$T", "input": input.runtimeType},
+      );
     }
   }
 
@@ -143,31 +150,36 @@ class SubstrateGroupEvents {
   final List<SubstrateEvent> events;
 
   SubstrateGroupEvents({required List<SubstrateEvent> events})
-      : events = events.immutable;
+    : events = events.immutable;
 
   /// Converts all events to JSON.
   Map<String, dynamic> toJson() {
-    return {
-      "events": events.map((e) => e.toJson()).toList(),
-    };
+    return {"events": events.map((e) => e.toJson()).toList()};
   }
 
   /// Returns the first matching event input for a given pallet/method and optional phase.
-  T? getMethodEvnet<T extends Object>(String pallet, String method,
-      {SubstrateEventPhase? phase}) {
+  T? getMethodEvnet<T extends Object>(
+    String pallet,
+    String method, {
+    SubstrateEventPhase? phase,
+  }) {
     List<SubstrateEvent> events = this.events;
     if (phase != null) {
       events = events.where((e) => e.phase == phase).toList();
     }
-    final event = events
-        .firstWhereNullable((e) => e.pallet == pallet && e.method == method);
+    final event = events.firstWhereNullable(
+      (e) => e.pallet == pallet && e.method == method,
+    );
     if (event != null) return event.input as T?;
     return null;
   }
 
   /// Returns a list of all matching event inputs for a given pallet/method and optional phase.
-  List<T> getMethodEvnets<T extends Object>(String pallet, String method,
-      {SubstrateEventPhase? phase}) {
+  List<T> getMethodEvnets<T extends Object>(
+    String pallet,
+    String method, {
+    SubstrateEventPhase? phase,
+  }) {
     List<SubstrateEvent> events = this.events;
     if (phase != null) {
       events = events.where((e) => e.phase == phase).toList();
@@ -177,11 +189,13 @@ class SubstrateGroupEvents {
   }
 
   /// Returns the first event satisfying [test], optionally filtering by pallets, methods, and phase.
-  T? firstWhereOrNull<T extends Object>(T? Function(SubstrateEvent) test,
-      {List<String> pallets = const [],
-      List<String> methods = const [],
-      SubstrateEventPhase? phase,
-      bool catchError = false}) {
+  T? firstWhereOrNull<T extends Object>(
+    T? Function(SubstrateEvent) test, {
+    List<String> pallets = const [],
+    List<String> methods = const [],
+    SubstrateEventPhase? phase,
+    bool catchError = false,
+  }) {
     Iterable<SubstrateEvent> events = this.events;
     if (phase != null) {
       events = getPhaseEvents(phase);
@@ -209,11 +223,13 @@ class SubstrateGroupEvents {
   }
 
   /// Returns all event inputs that satisfy [test], optionally filtering by pallets, methods, and phase.
-  List<T> where<T extends Object>(T? Function(SubstrateEvent) test,
-      {List<String> pallets = const [],
-      List<String> methods = const [],
-      SubstrateEventPhase? phase,
-      bool catchError = false}) {
+  List<T> where<T extends Object>(
+    T? Function(SubstrateEvent) test, {
+    List<String> pallets = const [],
+    List<String> methods = const [],
+    SubstrateEventPhase? phase,
+    bool catchError = false,
+  }) {
     Iterable<SubstrateEvent> events = this.events;
     if (phase != null) {
       events = getPhaseEvents(phase);

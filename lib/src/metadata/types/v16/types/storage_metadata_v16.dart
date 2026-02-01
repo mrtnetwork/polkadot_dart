@@ -10,26 +10,30 @@ class PalletStorageMetadataV16
   final String prefix;
   @override
   final List<StorageEntryMetadataV16> items;
-  PalletStorageMetadataV16(
-      {required this.prefix, required List<StorageEntryMetadataV14> items})
-      : items = List<StorageEntryMetadataV16>.unmodifiable(items);
+  PalletStorageMetadataV16({
+    required this.prefix,
+    required List<StorageEntryMetadataV14> items,
+  }) : items = List<StorageEntryMetadataV16>.unmodifiable(items);
   PalletStorageMetadataV16.deserializeJson(Map<String, dynamic> json)
-      : prefix = json["prefix"],
-        items = List<StorageEntryMetadataV16>.unmodifiable(
-            (json["items"] as List)
-                .map((e) => StorageEntryMetadataV16.deserializeJson(e)));
+    : prefix = json["prefix"],
+      items = List<StorageEntryMetadataV16>.unmodifiable(
+        (json["items"] as List).map(
+          (e) => StorageEntryMetadataV16.deserializeJson(e),
+        ),
+      );
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.palletStorageMetadataV16(
-        property: property);
+      property: property,
+    );
   }
 
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "prefix": prefix,
-      "items": items.map((e) => e.serializeJson()).toList()
+      "items": items.map((e) => e.serializeJson()).toList(),
     };
   }
 }

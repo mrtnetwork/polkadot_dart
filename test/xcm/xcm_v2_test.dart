@@ -9,9 +9,11 @@ import '../metadata/metadata_basilisk_v15.dart';
 void main() {
   final List<String> metadatas = [metadataBasiliskV15, metadataAcalaV15];
   for (final i in metadatas) {
-    final bytes = LayoutConst.optional(LayoutConst.bytes())
-        .deserialize(BytesUtils.fromHexString(i));
-    final metadata = VersionedMetadata.fromBytes(bytes.value);
+    final bytes = LayoutConst.optional(
+      LayoutConst.bytes(),
+    ).deserialize(BytesUtils.fromHexString(i));
+    assert(bytes.value != null);
+    final metadata = VersionedMetadata.fromBytes(bytes.value!);
     _xcmPalletSend(metadata.toApi());
   }
 }
@@ -21,36 +23,43 @@ void _xcmPalletSend(MetadataApi metadata) {
   final xcmGenerator = _XCMTestGenerate(FortunaPRNG.fromEntropy(rand));
 
   test(
-      '${metadata.runtimeVersion().specName} XCM V2. Entropy ${BytesUtils.toHexString(rand)}',
-      () {
-    final pallet =
-        metadata.palletExists("XcmPallet") ? "XcmPallet" : "PolkadotXcm";
-    for (int i = 0; i < 50; i++) {
-      final send = XCMCallPalletSend(
-        dest: xcmGenerator.createXCMVersionedLocationV3(),
-        message: xcmGenerator.createVersionedXcm(
-          List.generate(
-              28, (index) => XCMInstructionType.values.elementAt(index)),
-        ),
-      );
-      final bytes = send.serializeVariant();
-      final decode = XCMCallPallet.deserialize(bytes);
-      expect(bytes, decode.serializeVariant());
-      final encode = metadata.encodeCall(
-          palletNameOrIndex: pallet, value: LookupRawParam(bytes: bytes));
-      final decodeCall = metadata.decodeCall(encode,
-          params: LookupDecodeParams(bytesAsHex: false));
-      final fromJson = XCMCallPalletSend.fromJson(decodeCall.data);
-      expect(fromJson.serializeVariant(), encode.sublist(1));
-      expect(fromJson.toJson(), decodeCall.data);
-      expect(decode.toJson(), decodeCall.data);
-      for (int i = 0; i < fromJson.message.xcm.instructions.length; i++) {
-        final a = send.message.xcm.instructions[i].cast();
-        final b = fromJson.message.xcm.instructions[i];
-        expect(a, b);
+    '${metadata.runtimeVersion().specName} XCM V2. Entropy ${BytesUtils.toHexString(rand)}',
+    () {
+      final pallet =
+          metadata.palletExists("XcmPallet") ? "XcmPallet" : "PolkadotXcm";
+      for (int i = 0; i < 50; i++) {
+        final send = XCMCallPalletSend(
+          dest: xcmGenerator.createXCMVersionedLocationV3(),
+          message: xcmGenerator.createVersionedXcm(
+            List.generate(
+              28,
+              (index) => XCMInstructionType.values.elementAt(index),
+            ),
+          ),
+        );
+        final bytes = send.serializeVariant();
+        final decode = XCMCallPallet.deserialize(bytes);
+        expect(bytes, decode.serializeVariant());
+        final encode = metadata.encodeCall(
+          palletNameOrIndex: pallet,
+          value: LookupRawParam(bytes: bytes),
+        );
+        final decodeCall = metadata.decodeCall(
+          encode,
+          params: LookupDecodeParams(bytesAsHex: false),
+        );
+        final fromJson = XCMCallPalletSend.fromJson(decodeCall.data);
+        expect(fromJson.serializeVariant(), encode.sublist(1));
+        expect(fromJson.toJson(), decodeCall.data);
+        expect(decode.toJson(), decodeCall.data);
+        for (int i = 0; i < fromJson.message.xcm.instructions.length; i++) {
+          final a = send.message.xcm.instructions[i].cast();
+          final b = fromJson.message.xcm.instructions[i];
+          expect(a, b);
+        }
       }
-    }
-  });
+    },
+  );
 }
 
 class _XCMTestGenerate {
@@ -73,7 +82,7 @@ class _XCMTestGenerate {
         XCMNetworkIdType.any,
         XCMNetworkIdType.named,
         XCMNetworkIdType.kusama,
-        XCMNetworkIdType.polkadot
+        XCMNetworkIdType.polkadot,
       ];
       final rand = _generateRandInt(types.length);
       final type = types.elementAt(rand);
@@ -99,8 +108,9 @@ class _XCMTestGenerate {
 
   XCMV2BodyId createBody() {
     XCMV2BodyId? create() {
-      final type = XCMBodyIdType.values
-          .elementAt(_generateRandInt(XCMBodyIdType.values.length));
+      final type = XCMBodyIdType.values.elementAt(
+        _generateRandInt(XCMBodyIdType.values.length),
+      );
       switch (type) {
         case XCMBodyIdType.administration:
           return XCMV2BodyIdAdministration();
@@ -134,8 +144,9 @@ class _XCMTestGenerate {
   }
 
   XCMV2BodyPart createBodyPart() {
-    final type = XCMBodyPartType.values
-        .elementAt(_generateRandInt(XCMBodyPartType.values.length));
+    final type = XCMBodyPartType.values.elementAt(
+      _generateRandInt(XCMBodyPartType.values.length),
+    );
     switch (type) {
       case XCMBodyPartType.voice:
         return XCMV2BodyPartVoice();
@@ -152,25 +163,32 @@ class _XCMTestGenerate {
 
   XCMV2Junction createJunction() {
     XCMV2Junction? create() {
-      final r = XCMJunctionType.values
-          .elementAt(_generateRandInt(XCMJunctionType.values.length));
+      final r = XCMJunctionType.values.elementAt(
+        _generateRandInt(XCMJunctionType.values.length),
+      );
       switch (r) {
         case XCMJunctionType.accountId32:
           return XCMV2JunctionAccountId32(
-              id: generateRandom(), network: createNetwork(allowNull: false)!);
+            id: generateRandom(),
+            network: createNetwork(allowNull: false)!,
+          );
         case XCMJunctionType.parachain:
           return XCMV2JunctionParaChain(id: 1000);
         case XCMJunctionType.accountIndex64:
           return XCMV2JunctionAccountIndex64(
-              index: BigInt.from(100),
-              network: createNetwork(allowNull: false)!);
+            index: BigInt.from(100),
+            network: createNetwork(allowNull: false)!,
+          );
         case XCMJunctionType.accountKey20:
           return XCMV2JunctionAccountKey20(
-              key: generateRandom(20),
-              network: createNetwork(allowNull: false)!);
+            key: generateRandom(20),
+            network: createNetwork(allowNull: false)!,
+          );
         case XCMJunctionType.plurality:
           return XCMV2JunctionPlurality(
-              id: createBody(), part: createBodyPart());
+            id: createBody(),
+            part: createBodyPart(),
+          );
         case XCMJunctionType.generalIndex:
           return XCMV2JunctionGeneralIndex(index: BigInt.from(100));
         case XCMJunctionType.onlyChild:
@@ -193,7 +211,8 @@ class _XCMTestGenerate {
   XCMV2Junctions createJunctions({int? length}) {
     length ??= _generateRandInt(8);
     return XCMV2Junctions.fromJunctions(
-        List.generate(length, (index) => createJunction()));
+      List.generate(length, (index) => createJunction()),
+    );
   }
 
   XCMV2MultiLocation createLocation() {
@@ -212,32 +231,40 @@ class _XCMTestGenerate {
         final n = _generateRandInt(XCMAssetInstanceType.values.length);
         final type = XCMAssetInstanceType.values.elementAt(n);
         return XCMV2FungibilityNonFungible(
-            instance: switch (type) {
-          XCMAssetInstanceType.array8 =>
-            XCMV2AssetInstanceArray8(datum: generateRandom(8)),
-          XCMAssetInstanceType.array4 =>
-            XCMV2AssetInstanceArray4(datum: generateRandom(4)),
-          XCMAssetInstanceType.array16 =>
-            XCMV2AssetInstanceArray16(datum: generateRandom(16)),
-          XCMAssetInstanceType.array32 =>
-            XCMV2AssetInstanceArray32(datum: generateRandom(32)),
-          XCMAssetInstanceType.indexId =>
-            XCMV2AssetInstanceIndex(index: BigInt.from(100)),
-          XCMAssetInstanceType.undefined => XCMV2AssetInstanceUndefined(),
-        });
+          instance: switch (type) {
+            XCMAssetInstanceType.array8 => XCMV2AssetInstanceArray8(
+              datum: generateRandom(8),
+            ),
+            XCMAssetInstanceType.array4 => XCMV2AssetInstanceArray4(
+              datum: generateRandom(4),
+            ),
+            XCMAssetInstanceType.array16 => XCMV2AssetInstanceArray16(
+              datum: generateRandom(16),
+            ),
+            XCMAssetInstanceType.array32 => XCMV2AssetInstanceArray32(
+              datum: generateRandom(32),
+            ),
+            XCMAssetInstanceType.indexId => XCMV2AssetInstanceIndex(
+              index: BigInt.from(100),
+            ),
+            XCMAssetInstanceType.undefined => XCMV2AssetInstanceUndefined(),
+          },
+        );
     }
   }
 
   XCMV2MultiAsset createAsset() {
     return XCMV2MultiAsset(
-        id: XCMV2AssetIdConcrete(location: createLocation()),
-        fun: createFung());
+      id: XCMV2AssetIdConcrete(location: createLocation()),
+      fun: createFung(),
+    );
   }
 
   XCMV2MultiAssets createAssets() {
     final int length = _generateRandInt(5);
     return XCMV2MultiAssets(
-        assets: List.generate(length, (index) => createAsset()));
+      assets: List.generate(length, (index) => createAsset()),
+    );
   }
 
   BigInt createWeight() {
@@ -246,8 +273,11 @@ class _XCMTestGenerate {
 
   XCMV2MultiAssetFilter createFilterAsset() {
     return XCMV2MultiAssetFilterWild(
-        asset: XCMV2WildMultiAssetAllOf(
-            id: createAsset().id, fun: XCMV2WildFungibilityFungible()));
+      asset: XCMV2WildMultiAssetAllOf(
+        id: createAsset().id,
+        fun: XCMV2WildFungibilityFungible(),
+      ),
+    );
   }
 
   XCMV2Response createResponse() {
@@ -259,7 +289,9 @@ class _XCMTestGenerate {
       case XCMV2ResponseType.executionResult:
         final error = createError();
         return XCMV2ResponseExecutionResult(
-            error: error, index: error == null ? null : 1);
+          error: error,
+          index: error == null ? null : 1,
+        );
       case XCMV2ResponseType.nullResponse:
         return XCMV2ResponseNull();
       case XCMV2ResponseType.version:
@@ -277,7 +309,8 @@ class _XCMTestGenerate {
 
   XCMV2Error? createError() {
     final r = _generateRandInt(
-        XCMV2ErrorType.values.length + (XCMV2ErrorType.values.length ~/ 10));
+      XCMV2ErrorType.values.length + (XCMV2ErrorType.values.length ~/ 10),
+    );
     final type = XCMV2ErrorType.values.elementAtOrNull(r);
     switch (type) {
       case null:
@@ -302,90 +335,123 @@ class _XCMTestGenerate {
 
   XCMInstructionV2 createInstruction(XCMInstructionType type) {
     return switch (type) {
-      XCMInstructionType.withdrawAsset =>
-        XCMV2WithdrawAsset(assets: createAssets()),
-      XCMInstructionType.reserveAssetDeposited =>
-        XCMV2ReserveAssetDeposited(assets: createAssets()),
-      XCMInstructionType.receiveTeleportedAsset =>
-        XCMV2ReceiveTeleportedAsset(assets: createAssets()),
+      XCMInstructionType.withdrawAsset => XCMV2WithdrawAsset(
+        assets: createAssets(),
+      ),
+      XCMInstructionType.reserveAssetDeposited => XCMV2ReserveAssetDeposited(
+        assets: createAssets(),
+      ),
+      XCMInstructionType.receiveTeleportedAsset => XCMV2ReceiveTeleportedAsset(
+        assets: createAssets(),
+      ),
       XCMInstructionType.queryResponse => createQueryResponse(),
       XCMInstructionType.transferAsset => XCMV2TransferAsset(
-          assets: createAssets(), beneficiary: createLocation()),
+        assets: createAssets(),
+        beneficiary: createLocation(),
+      ),
       XCMInstructionType.transferReserveAsset => XCMV2TransferReserveAsset(
-          assets: createAssets(),
-          dest: createLocation(),
-          xcm: createXCM(notIn: [type])),
+        assets: createAssets(),
+        dest: createLocation(),
+        xcm: createXCM(notIn: [type]),
+      ),
       XCMInstructionType.transact => XCMV2Transact(
-          originKind: XCMV2OriginKindSovereignAccount(),
-          requireWeightAtMost: createWeight(),
-          call: generateRandom()),
+        originKind: XCMV2OriginKindSovereignAccount(),
+        requireWeightAtMost: createWeight(),
+        call: generateRandom(),
+      ),
       XCMInstructionType.hrmpNewChannelOpenRequest =>
         XCMV2HrmpNewChannelOpenRequest(
-            sender: 0, maxMessageSize: 1, maxCapacity: 2),
-      XCMInstructionType.hrmpChannelAccepted =>
-        XCMV2HrmpChannelAccepted(recipient: 2),
-      XCMInstructionType.hrmpChannelClosing =>
-        XCMV2HrmpChannelClosing(sender: 1, initiator: 2, recipient: 3),
-      XCMInstructionType.clearOrigin => XCMV2ClearOrigin(),
-      XCMInstructionType.descendOrigin =>
-        XCMV2DescendOrigin(interior: createJunctions()),
-      XCMInstructionType.reportError => XCMV2ReportError(
-          dest: createLocation(),
-          queryId: BigInt.from(1000),
-          maxResponseWeight: createWeight(),
+          sender: 0,
+          maxMessageSize: 1,
+          maxCapacity: 2,
         ),
+      XCMInstructionType.hrmpChannelAccepted => XCMV2HrmpChannelAccepted(
+        recipient: 2,
+      ),
+      XCMInstructionType.hrmpChannelClosing => XCMV2HrmpChannelClosing(
+        sender: 1,
+        initiator: 2,
+        recipient: 3,
+      ),
+      XCMInstructionType.clearOrigin => XCMV2ClearOrigin(),
+      XCMInstructionType.descendOrigin => XCMV2DescendOrigin(
+        interior: createJunctions(),
+      ),
+      XCMInstructionType.reportError => XCMV2ReportError(
+        dest: createLocation(),
+        queryId: BigInt.from(1000),
+        maxResponseWeight: createWeight(),
+      ),
       XCMInstructionType.depositAsset => XCMV2DepositAsset(
-          assets: createFilterAsset(),
-          beneficiary: createLocation(),
-          maxAssets: 1),
+        assets: createFilterAsset(),
+        beneficiary: createLocation(),
+        maxAssets: 1,
+      ),
       XCMInstructionType.depositReserveAsset => XCMV2DepositReserveAsset(
-          assets: createFilterAsset(),
-          dest: createLocation(),
-          xcm: createXCM(notIn: [type]),
-          maxAssets: 1),
-      XCMInstructionType.exchangeAsset =>
-        XCMV2ExchangeAsset(give: createFilterAsset(), receive: createAssets()),
+        assets: createFilterAsset(),
+        dest: createLocation(),
+        xcm: createXCM(notIn: [type]),
+        maxAssets: 1,
+      ),
+      XCMInstructionType.exchangeAsset => XCMV2ExchangeAsset(
+        give: createFilterAsset(),
+        receive: createAssets(),
+      ),
       XCMInstructionType.initiateReserveWithdraw =>
         XCMV2InitiateReserveWithdraw(
-            assets: createFilterAsset(),
-            reserve: createLocation(),
-            xcm: createXCM(notIn: [type])),
+          assets: createFilterAsset(),
+          reserve: createLocation(),
+          xcm: createXCM(notIn: [type]),
+        ),
       XCMInstructionType.initiateTeleport => XCMV2InitiateTeleport(
-          assets: createFilterAsset(),
-          dest: createLocation(),
-          xcm: createXCM(notIn: [type])),
+        assets: createFilterAsset(),
+        dest: createLocation(),
+        xcm: createXCM(notIn: [type]),
+      ),
       XCMInstructionType.queryHolding => XCMV2QueryHolding(
-          assets: createFilterAsset(),
-          dest: createLocation(),
-          queryId: BigInt.from(12),
-          maxResponseWeight: createWeight()),
+        assets: createFilterAsset(),
+        dest: createLocation(),
+        queryId: BigInt.from(12),
+        maxResponseWeight: createWeight(),
+      ),
       XCMInstructionType.buyExecution => XCMV2BuyExecution(
-          fees: createAsset(), weightLimit: createWeightLimit()),
+        fees: createAsset(),
+        weightLimit: createWeightLimit(),
+      ),
       XCMInstructionType.refundSurplus => XCMV2RefundSurplus(),
-      XCMInstructionType.setErrorHandler =>
-        XCMV2SetErrorHandler(xcm: createXCM(notIn: [type])),
-      XCMInstructionType.setAppendix =>
-        XCMV2SetAppendix(xcm: createXCM(notIn: [type])),
+      XCMInstructionType.setErrorHandler => XCMV2SetErrorHandler(
+        xcm: createXCM(notIn: [type]),
+      ),
+      XCMInstructionType.setAppendix => XCMV2SetAppendix(
+        xcm: createXCM(notIn: [type]),
+      ),
       XCMInstructionType.clearError => XCMV2ClearError(),
-      XCMInstructionType.claimAsset =>
-        XCMV2ClaimAsset(assets: createAssets(), ticket: createLocation()),
+      XCMInstructionType.claimAsset => XCMV2ClaimAsset(
+        assets: createAssets(),
+        ticket: createLocation(),
+      ),
       XCMInstructionType.trap => XCMV2Trap(trap: BigInt.from(1)),
       XCMInstructionType.subscribeVersion => XCMV2SubscribeVersion(
-          queryId: BigInt.from(1), maxResponseWeight: createWeight()),
+        queryId: BigInt.from(1),
+        maxResponseWeight: createWeight(),
+      ),
       XCMInstructionType.unsubscribeVersion => XCMV2UnsubscribeVersion(),
-      _ => throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 2 ${type.type}")
+      _ =>
+        throw DartSubstratePluginException(
+          "Unsuported xcm instruction by version 2 ${type.type}",
+        ),
     };
   }
 
-  XCMV2 createXCM(
-      {required List<XCMInstructionType> notIn,
-      List<XCMInstructionType>? instructionIn}) {
+  XCMV2 createXCM({
+    required List<XCMInstructionType> notIn,
+    List<XCMInstructionType>? instructionIn,
+  }) {
     if (instructionIn != null) {
       instructionIn.remove(XCMInstructionType.reportHolding);
       return XCMV2(
-          instructions:
-              instructionIn.map((e) => createInstruction(e)).toList());
+        instructions: instructionIn.map((e) => createInstruction(e)).toList(),
+      );
     }
     List<XCMInstructionType> types = [];
     while (types.length < 2) {

@@ -1,3 +1,7 @@
+## 5.2.0
+  - Update dependencies.
+  - Minimum required Dart SDK version updated to 3.7.
+
 ## 5.1.0
   - Fix block stream tracker.
 

@@ -19,10 +19,11 @@ class VersionedMetadata<T extends SubstrateMetadata>
   final T metadata;
   final int version;
   final int magicNumber;
-  const VersionedMetadata(
-      {required this.metadata,
-      required this.version,
-      required this.magicNumber});
+  const VersionedMetadata({
+    required this.metadata,
+    required this.version,
+    required this.magicNumber,
+  });
   factory VersionedMetadata.fromHex(String metadataHex) {
     return VersionedMetadata.fromBytes(BytesUtils.fromHexString(metadataHex));
   }
@@ -30,14 +31,20 @@ class VersionedMetadata<T extends SubstrateMetadata>
     if (bytes.length < MetadataConstant.metadataMagicNumberAndVersionLength) {
       throw const MetadataException("Invalid metadata bytes");
     }
-    final getNumber = SubstrateMetadataLayouts.metadataMagicAndVersion()
-        .deserialize(bytes.sublist(
-            0, MetadataConstant.metadataMagicNumberAndVersionLength))
-        .value;
+    final getNumber =
+        SubstrateMetadataLayouts.metadataMagicAndVersion()
+            .deserialize(
+              bytes.sublist(
+                0,
+                MetadataConstant.metadataMagicNumberAndVersionLength,
+              ),
+            )
+            .value;
     final int version = getNumber["version"];
     final int magicNumber = getNumber["magicNumber"];
-    final List<int> metadataBytes =
-        bytes.sublist(MetadataConstant.metadataMagicNumberAndVersionLength);
+    final List<int> metadataBytes = bytes.sublist(
+      MetadataConstant.metadataMagicNumberAndVersionLength,
+    );
     final SubstrateMetadata metadata;
     if (!MetadataConstant.supportedMetadataVersion.contains(version)) {
       metadata = UnsupportedMetadata(version: version, bytes: metadataBytes);
@@ -53,24 +60,32 @@ class VersionedMetadata<T extends SubstrateMetadata>
           metadata = MetadataV16.fromBytes(metadataBytes);
           break;
         default:
-          throw MetadataException("Unsuported metadata version.",
-              details: {"version": "$version"});
+          throw MetadataException(
+            "Unsuported metadata version.",
+            details: {"version": "$version"},
+          );
       }
     }
     if (metadata is! T) {
-      throw MetadataException("Incorrect metadata version.",
-          details: {"expected": "$T", "version": "$version"});
+      throw MetadataException(
+        "Incorrect metadata version.",
+        details: {"expected": "$T", "version": "$version"},
+      );
     }
 
     return VersionedMetadata(
-        metadata: metadata, version: version, magicNumber: magicNumber);
+      metadata: metadata,
+      version: version,
+      magicNumber: magicNumber,
+    );
   }
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.versionedMetadata(
-        metadata.layout(property: "metadata"),
-        property: property);
+      metadata.layout(property: "metadata"),
+      property: property,
+    );
   }
 
   @override
@@ -78,7 +93,7 @@ class VersionedMetadata<T extends SubstrateMetadata>
     return {
       "version": version,
       "metadata": metadata.serializeJson(),
-      "magicNumber": magicNumber
+      "magicNumber": magicNumber,
     };
   }
 
@@ -87,11 +102,14 @@ class VersionedMetadata<T extends SubstrateMetadata>
 
   MetadataApi toApi() {
     if (!supportedByApi) {
-      throw MetadataException("metadata does not supported by API", details: {
-        "version": version,
-        "api_support_versions":
-            MetadataConstant.supportedMetadataVersion.join(", ")
-      });
+      throw MetadataException(
+        "metadata does not supported by API",
+        details: {
+          "version": version,
+          "api_support_versions": MetadataConstant.supportedMetadataVersion
+              .join(", "),
+        },
+      );
     }
     return MetadataApi(metadata as LatestMetadataInterface);
   }

@@ -15,9 +15,9 @@ class CallMethodInfo {
     required this.variant,
     required String name,
     required List<String> docs,
-  })  : docs =
-            docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
-        name = MetadataTypeInfoUtils.toCamelCase(name)!;
+  }) : docs =
+           docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
+       name = MetadataTypeInfoUtils.toCamelCase(name)!;
   Map<String, dynamic> toJson() {
     return {"name": name, "variant": variant.name};
   }
@@ -27,13 +27,16 @@ class CallInfo {
   final int id;
   final String palletName;
   final List<CallMethodInfo> methods;
-  const CallInfo(
-      {required this.id, required this.palletName, required this.methods});
+  const CallInfo({
+    required this.id,
+    required this.palletName,
+    required this.methods,
+  });
   Map<String, dynamic> toJson() {
     return {
       "id": id,
       "pallet": palletName,
-      "methods": methods.map((e) => e.toJson()).toList()
+      "methods": methods.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -45,15 +48,15 @@ class PalletInfo {
   final List<StorageInfo>? storage;
   final List<String>? docs;
 
-  PalletInfo(
-      {required this.name,
-      this.calls,
-      List<String>? docs,
-      List<ConstantInfo>? contants,
-      List<StorageInfo>? storage})
-      : docs = docs?.emptyAsNull?.immutable,
-        contants = contants?.emptyAsNull?.immutable,
-        storage = storage?.emptyAsNull?.immutable;
+  PalletInfo({
+    required this.name,
+    this.calls,
+    List<String>? docs,
+    List<ConstantInfo>? contants,
+    List<StorageInfo>? storage,
+  }) : docs = docs?.emptyAsNull?.immutable,
+       contants = contants?.emptyAsNull?.immutable,
+       storage = storage?.emptyAsNull?.immutable;
 
   Map<String, dynamic> toJson() {
     return {
@@ -72,8 +75,8 @@ class MetadataInfo {
     required this.extrinsic,
     required List<PalletInfo> pallets,
     List<RuntimeApiInfo>? apis,
-  })  : pallets = pallets.immutable,
-        apis = apis?.emptyAsNull?.immutable;
+  }) : pallets = pallets.immutable,
+       apis = apis?.emptyAsNull?.immutable;
 
   Map<String, dynamic> toJson() {
     return {
@@ -92,9 +95,9 @@ class ConstantInfo {
     required String name,
     required this.value,
     required List<String> docs,
-  })  : name = MetadataTypeInfoUtils.toCamelCase(name)!,
-        docs =
-            docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList;
+  }) : name = MetadataTypeInfoUtils.toCamelCase(name)!,
+       docs =
+           docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList;
 
   Map<String, dynamic> toJson() {
     return {"name": name, "value": value};
@@ -110,14 +113,11 @@ class StorageInfo {
     required this.inputLookupId,
     required this.name,
     required List<String> docs,
-  })  : docs =
-            docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
-        viewName = MetadataTypeInfoUtils.toCamelCase(name)!;
+  }) : docs =
+           docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
+       viewName = MetadataTypeInfoUtils.toCamelCase(name)!;
   Map<String, dynamic> toJson() {
-    return {
-      "name": name,
-      "input_id": inputLookupId,
-    };
+    return {"name": name, "input_id": inputLookupId};
   }
 }
 
@@ -135,19 +135,16 @@ class RuntimeApiMethodInfo {
   final String viewName;
   final List<RuntimeApiInputInfo>? inputs;
   final List<String> docs;
-  RuntimeApiMethodInfo(
-      {required this.name,
-      required List<RuntimeApiInputInfo>? inputs,
-      required List<String> docs})
-      : inputs = inputs?.emptyAsNull?.immutable,
-        docs =
-            docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
-        viewName = MetadataTypeInfoUtils.toCamelCase(name)!;
+  RuntimeApiMethodInfo({
+    required this.name,
+    required List<RuntimeApiInputInfo>? inputs,
+    required List<String> docs,
+  }) : inputs = inputs?.emptyAsNull?.immutable,
+       docs =
+           docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList,
+       viewName = MetadataTypeInfoUtils.toCamelCase(name)!;
   Map<String, dynamic> toJson() {
-    return {
-      "name": name,
-      "inputs": inputs?.map((e) => e.toJson()).toList(),
-    };
+    return {"name": name, "inputs": inputs?.map((e) => e.toJson()).toList()};
   }
 }
 
@@ -156,19 +153,16 @@ class RuntimeApiInfo {
   final List<RuntimeApiMethodInfo>? methods;
   final List<String> docs;
   Map<String, dynamic> toJson() {
-    return {
-      "name": name,
-      "methods": methods?.map((e) => e.toJson()).toList(),
-    };
+    return {"name": name, "methods": methods?.map((e) => e.toJson()).toList()};
   }
 
   RuntimeApiInfo({
     required this.name,
     required List<RuntimeApiMethodInfo> methods,
     required List<String> docs,
-  })  : methods = methods.emptyAsNull?.immutable,
-        docs =
-            docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList;
+  }) : methods = methods.emptyAsNull?.immutable,
+       docs =
+           docs.map((e) => e.trim()).where((e) => e.isNotEmpty).toImutableList;
 }
 
 class ExtrinsicTypeInfo {
@@ -185,13 +179,14 @@ class TransactionExtrinsicInfo {
   final int? signatureType;
   final List<ExtrinsicTypeInfo> extrinsic;
   final List<ExtrinsicTypeInfo> payloadExtrinsic;
-  const TransactionExtrinsicInfo(
-      {required this.extrinsic,
-      required this.payloadExtrinsic,
-      required this.addressType,
-      required this.signatureType,
-      this.callType,
-      required this.version});
+  const TransactionExtrinsicInfo({
+    required this.extrinsic,
+    required this.payloadExtrinsic,
+    required this.addressType,
+    required this.signatureType,
+    this.callType,
+    required this.version,
+  });
 }
 
 class DecodeCallResult {

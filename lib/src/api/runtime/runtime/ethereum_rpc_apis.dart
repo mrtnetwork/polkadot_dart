@@ -38,29 +38,36 @@ class SubstrateRuntimeApiEthereumRuntimeRPCApis extends SubstrateRuntimeApi {
     gasLmit ??= BigInt.zero;
     const method = SubstrateRuntimeApiEthereumRuntimeRPCApisMethods.call;
     final result = await callRuntimeApiInternal<Map<String, dynamic>>(
-        api: api,
-        method: method,
-        provider: rpc,
-        params: [
-          from.toBytes(),
-          to.toBytes(),
-          inputs,
-          BigintUtils.splitU256ToU64Parts(value),
-          BigintUtils.splitU256ToU64Parts(gasLmit),
-          MetadataUtils.toOptionalJson(maxFeePerGas == null
+      api: api,
+      method: method,
+      provider: rpc,
+      params: [
+        from.toBytes(),
+        to.toBytes(),
+        inputs,
+        BigintUtils.splitU256ToU64Parts(value),
+        BigintUtils.splitU256ToU64Parts(gasLmit),
+        MetadataUtils.toOptionalJson(
+          maxFeePerGas == null
               ? null
-              : BigintUtils.splitU256ToU64Parts(maxFeePerGas)),
-          MetadataUtils.toOptionalJson(maxPriorityFeePerGas == null
+              : BigintUtils.splitU256ToU64Parts(maxFeePerGas),
+        ),
+        MetadataUtils.toOptionalJson(
+          maxPriorityFeePerGas == null
               ? null
-              : BigintUtils.splitU256ToU64Parts(maxPriorityFeePerGas)),
-          MetadataUtils.toOptionalJson(
-              nonce == null ? null : BigintUtils.splitU256ToU64Parts(nonce)),
-          estimate,
-          MetadataUtils.toOptionalJson(null),
-          MetadataUtils.toOptionalJson(null),
-        ]);
-    return SubstrateDispatchResult.fromJson<EthereumRuntimeRpcsApiCall,
-            Map<String, dynamic>>(
-        result, (result) => EthereumRuntimeRpcsApiCall.fromJson(result));
+              : BigintUtils.splitU256ToU64Parts(maxPriorityFeePerGas),
+        ),
+        MetadataUtils.toOptionalJson(
+          nonce == null ? null : BigintUtils.splitU256ToU64Parts(nonce),
+        ),
+        estimate,
+        MetadataUtils.toOptionalJson(null),
+        MetadataUtils.toOptionalJson(null),
+      ],
+    );
+    return SubstrateDispatchResult.fromJson<
+      EthereumRuntimeRpcsApiCall,
+      Map<String, dynamic>
+    >(result, (result) => EthereumRuntimeRpcsApiCall.fromJson(result));
   }
 }

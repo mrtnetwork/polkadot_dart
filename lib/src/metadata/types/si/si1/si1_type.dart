@@ -24,16 +24,17 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>> {
     required List<Si1TypeParameter> params,
     required this.def,
     required List<String> docs,
-  })  : params = List<Si1TypeParameter>.unmodifiable(params),
-        docs = List<String>.unmodifiable(docs),
-        path = List<String>.unmodifiable(path);
+  }) : params = List<Si1TypeParameter>.unmodifiable(params),
+       docs = List<String>.unmodifiable(docs),
+       path = List<String>.unmodifiable(path);
   Si1Type.deserializeJson(Map<String, dynamic> json)
-      : path = json["path"],
-        params = (json["params"] as List)
-            .map((e) => Si1TypeParameter.deserializeJson(e))
-            .toList(),
-        docs = json["docs"],
-        def = Si1TypeDef.deserializeJson(json["def"]);
+    : path = json["path"],
+      params =
+          (json["params"] as List)
+              .map((e) => Si1TypeParameter.deserializeJson(e))
+              .toList(),
+      docs = json["docs"],
+      def = Si1TypeDef.deserializeJson(json["def"]);
 
   @override
   StructLayout layout({String? property}) =>
@@ -45,14 +46,20 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>> {
       "path": path,
       "params": params.map((e) => e.serializeJson()).toList(),
       "def": {typeName.name: (def as SubstrateSerialization).serializeJson()},
-      "docs": docs
+      "docs": docs,
     };
   }
 
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
-    return def.serializationLayout(registry,
-        property: property, params: params);
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
+    return def.serializationLayout(
+      registry,
+      property: property,
+      params: params,
+    );
   }
 
   Si1TypeDefsIndexesConst get typeName => def.typeName;
@@ -60,22 +67,28 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>> {
   TypeTemlate typeTemplate(PortableRegistry registry, int id) {
     if (!MetadataUtils.supportedTemplate(path)) {
       return TypeTemlate(
-          lookupId: id, type: typeName, typeName: path.last, path: path);
+        lookupId: id,
+        type: typeName,
+        typeName: path.last,
+        path: path,
+      );
     }
     return def.typeTemplate(registry, id).copyWith(path: path);
   }
 
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self,
-      String? property}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+    String? property,
+  }) {
     return def.getValue(
-        registry: registry,
-        value: value,
-        fromTemplate: fromTemplate,
-        self: self);
+      registry: registry,
+      value: value,
+      fromTemplate: fromTemplate,
+      self: self,
+    );
   }
 
   PrimitiveTypes? toPrimitive() {

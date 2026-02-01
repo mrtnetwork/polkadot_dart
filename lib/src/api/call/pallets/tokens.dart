@@ -11,8 +11,10 @@ enum TokensCallPalletMethod implements SubstrateCallPalletTransferMethod {
   @override
   bool get isTransferAll => this == transferAll;
   factory TokensCallPalletMethod.fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
   @override
   bool get keepAlive => this != transfer;
@@ -38,26 +40,29 @@ class TokensCallPalletTransfer extends TokensCallPallet {
   final BigInt amount;
   final Object currencyId;
 
-  const TokensCallPalletTransfer(
-      {required this.dest,
-      required this.currencyId,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.tokens})
-      : super(type: TokensCallPalletMethod.transfer);
+  const TokensCallPalletTransfer({
+    required this.dest,
+    required this.currencyId,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.tokens,
+  }) : super(type: TokensCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "currency_id": currencyId,
-        "amount": amount,
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "currency_id": currencyId,
+          "amount": amount,
+        },
+      },
+    );
   }
 
   @override
@@ -66,8 +71,8 @@ class TokensCallPalletTransfer extends TokensCallPallet {
       method ?? type.method: {
         "dest": dest.address,
         "amount": amount,
-        "currency_id": currencyId
-      }
+        "currency_id": currencyId,
+      },
     };
   }
 }
@@ -77,26 +82,29 @@ class TokensCallPalletTransferKeepAlive extends TokensCallPallet {
   final BigInt amount;
   final Object currencyId;
 
-  TokensCallPalletTransferKeepAlive(
-      {required this.dest,
-      required this.currencyId,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.tokens})
-      : super(type: TokensCallPalletMethod.transferKeepAlive);
+  TokensCallPalletTransferKeepAlive({
+    required this.dest,
+    required this.currencyId,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.tokens,
+  }) : super(type: TokensCallPalletMethod.transferKeepAlive);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "currency_id": currencyId,
-        "amount": amount,
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "currency_id": currencyId,
+          "amount": amount,
+        },
+      },
+    );
   }
 
   @override
@@ -105,8 +113,8 @@ class TokensCallPalletTransferKeepAlive extends TokensCallPallet {
       method ?? type.method: {
         "dest": dest.address,
         "amount": amount,
-        "currency_id": currencyId
-      }
+        "currency_id": currencyId,
+      },
     };
   }
 }
@@ -116,26 +124,29 @@ class TokensCallPalletTransferAll extends TokensCallPallet {
   final bool keepAlive;
   final Object currencyId;
 
-  const TokensCallPalletTransferAll(
-      {required this.dest,
-      required this.currencyId,
-      required this.keepAlive,
-      super.pallet = SubtrateMetadataPallet.tokens})
-      : super(type: TokensCallPalletMethod.transferAll);
+  const TokensCallPalletTransferAll({
+    required this.dest,
+    required this.currencyId,
+    required this.keepAlive,
+    super.pallet = SubtrateMetadataPallet.tokens,
+  }) : super(type: TokensCallPalletMethod.transferAll);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "currency_id": currencyId,
-        "keep_alive": keepAlive,
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "currency_id": currencyId,
+          "keep_alive": keepAlive,
+        },
+      },
+    );
   }
 
   @override
@@ -144,8 +155,8 @@ class TokensCallPalletTransferAll extends TokensCallPallet {
       method ?? type.method: {
         "dest": dest.address,
         "keep_alive": keepAlive,
-        "currency_id": currencyId
-      }
+        "currency_id": currencyId,
+      },
     };
   }
 }

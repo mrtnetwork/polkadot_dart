@@ -11,10 +11,11 @@ import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
   final List<Si1Variant> variants;
   Si1TypeDefVariant(List<Si1Variant> variants)
-      : variants = List<Si1Variant>.unmodifiable(variants);
+    : variants = List<Si1Variant>.unmodifiable(variants);
   Si1TypeDefVariant.deserializeJson(Map<String, dynamic> json)
-      : variants = List<Si1Variant>.unmodifiable((json["variants"] as List)
-            .map((e) => Si1Variant.deserializeJson(e)));
+    : variants = List<Si1Variant>.unmodifiable(
+        (json["variants"] as List).map((e) => Si1Variant.deserializeJson(e)),
+      );
   @override
   StructLayout layout({String? property}) =>
       SubstrateMetadataLayouts.si1TypeDefVariant(property: property);
@@ -38,34 +39,41 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
 
   /// Returns the type template using the provided [registry].
   @override
-  TypeTemlate typeTemplate(PortableRegistry registry, int id,
-      {String? method}) {
+  TypeTemlate typeTemplate(
+    PortableRegistry registry,
+    int id, {
+    String? method,
+  }) {
     List<Si1Variant> variants = this.variants;
     if (method != null) {
-      variants = variants
-          .where((e) => e.name.toLowerCase() == method.toLowerCase())
-          .toList();
+      variants =
+          variants
+              .where((e) => e.name.toLowerCase() == method.toLowerCase())
+              .toList();
     }
     return TypeTemlate(
-        lookupId: id,
-        type: typeName,
-        children: variants.map((e) => e.typeTemplate(registry, id)).toList());
+      lookupId: id,
+      type: typeName,
+      children: variants.map((e) => e.typeTemplate(registry, id)).toList(),
+    );
   }
 
   /// Checks the provided [value] and returns the correct data compared to the template or simple design,
   /// using the provided [registry], [fromTemplate] flag.
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     Object? data = MetadataCastingUtils.getValue(
-        value: value,
-        type: typeName,
-        fromTemplate: fromTemplate,
-        id: self,
-        registry: registry);
+      value: value,
+      type: typeName,
+      fromTemplate: fromTemplate,
+      id: self,
+      registry: registry,
+    );
 
     String key;
     if (fromTemplate) {
@@ -79,12 +87,13 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
 
         if (mapValue.length != 1) {
           throw MetadataException(
-              "The provided map for enum must contain exactly one key",
-              details: {
-                "value": value,
-                "lookup_id": self,
-                "from_template": fromTemplate,
-              });
+            "The provided map for enum must contain exactly one key",
+            details: {
+              "value": value,
+              "lookup_id": self,
+              "from_template": fromTemplate,
+            },
+          );
         }
         key = mapValue.keys.first;
         data = mapValue[key];
@@ -92,26 +101,34 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
     }
     final variant = variants.firstWhere(
       (element) => element.name == key,
-      orElse: () => throw MetadataException(
-          "Unable to find the current enum variant $key.",
-          details: {
-            "key": key,
-            "variants": variants.map((e) => e.name).join(", ")
-          }),
+      orElse:
+          () =>
+              throw MetadataException(
+                "Unable to find the current enum variant $key.",
+                details: {
+                  "key": key,
+                  "variants": variants.map((e) => e.name).join(", "),
+                },
+              ),
     );
     if (data is LookupRawParam) {
       data = MetadataCastingUtils.getValue(
-          value: LookupRawParam(bytes: [variant.index, ...data.bytes]),
-          type: typeName,
-          fromTemplate: fromTemplate,
-          id: self,
-          registry: registry);
+        value: LookupRawParam(bytes: [variant.index, ...data.bytes]),
+        type: typeName,
+        fromTemplate: fromTemplate,
+        id: self,
+        registry: registry,
+      );
       final mapValue = MetadataCastingUtils.isMap<String, dynamic>(data);
       data = mapValue[variant.name];
     }
     return {
-      key: variant.getValue(registry,
-          value: data, fromTemplate: fromTemplate, self: self)
+      key: variant.getValue(
+        registry,
+        value: data,
+        fromTemplate: fromTemplate,
+        self: self,
+      ),
     };
   }
 
@@ -151,16 +168,30 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
-    final layouts = variants
-        .map((e) => LazyVariantModel(
-            layout: ({property}) => e.serializationLayout(registry,
-                property: property, params: params),
-            property: e.name,
-            index: e.index))
-        .toList();
-    return LayoutConst.lazyEnum(layouts,
-        useKeyAndValue: false, property: property);
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
+    final layouts =
+        variants
+            .map(
+              (e) => LazyVariantModel(
+                layout:
+                    ({property}) => e.serializationLayout(
+                      registry,
+                      property: property,
+                      params: params,
+                    ),
+                property: e.name,
+                index: e.index,
+              ),
+            )
+            .toList();
+    return LayoutConst.lazyEnum(
+      layouts,
+      useKeyAndValue: false,
+      property: property,
+    );
   }
 }

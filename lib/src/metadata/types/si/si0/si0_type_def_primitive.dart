@@ -16,7 +16,7 @@ class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
   Si0TypeDefPrimitive(String name) : type = PrimitiveTypes.fromValue(name);
 
   Si0TypeDefPrimitive.deserializeJson(Map<String, dynamic> json)
-      : type = PrimitiveTypes.fromValue(json.keys.firstOrNull);
+    : type = PrimitiveTypes.fromValue(json.keys.firstOrNull);
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>
@@ -34,23 +34,29 @@ class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
   @override
   TypeTemlate typeTemplate(PortableRegistry registry, int id) {
     return TypeTemlate(
-        lookupId: id, type: typeName, children: [], primitive: this);
+      lookupId: id,
+      type: typeName,
+      children: [],
+      primitive: this,
+    );
   }
 
   @override
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     return MetadataCastingUtils.getValue(
-        value: value,
-        type: typeName,
-        fromTemplate: fromTemplate,
-        primitive: type,
-        id: self,
-        registry: registry);
+      value: value,
+      type: typeName,
+      fromTemplate: fromTemplate,
+      primitive: type,
+      id: self,
+      registry: registry,
+    );
   }
 
   @override
@@ -72,8 +78,11 @@ class Si0TypeDefPrimitive extends ScaleTypeDef<Map<String, dynamic>>
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     return type.toLayout(property: property);
   }
 }

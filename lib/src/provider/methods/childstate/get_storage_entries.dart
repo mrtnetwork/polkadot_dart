@@ -5,8 +5,11 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#childstate
 class SubstrateRequestChildStateGetStorageEntries
     extends SubstrateRequest<List<dynamic>, List<String?>> {
-  const SubstrateRequestChildStateGetStorageEntries(
-      {required this.childKey, required this.keys, this.atBlockHash});
+  const SubstrateRequestChildStateGetStorageEntries({
+    required this.childKey,
+    required this.keys,
+    this.atBlockHash,
+  });
 
   final String childKey;
   final List<String> keys;

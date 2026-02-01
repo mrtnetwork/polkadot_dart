@@ -11,20 +11,21 @@ class MoonbeamForeignAsset {
   final String symbol;
   final int decimals;
   final XCMVersionedLocation location;
-  const MoonbeamForeignAsset(
-      {required this.assetId,
-      required this.name,
-      required this.symbol,
-      required this.decimals,
-      required this.location});
+  const MoonbeamForeignAsset({
+    required this.assetId,
+    required this.name,
+    required this.symbol,
+    required this.decimals,
+    required this.location,
+  });
   factory MoonbeamForeignAsset.fromJson(Map<String, dynamic> json) {
     return MoonbeamForeignAsset(
-        name: json.valueAs("name"),
-        symbol: json.valueAs("symbol"),
-        decimals: json.valueAs("decimals"),
-        assetId: json.valueAs("asset_id"),
-        location:
-            XCMVersionedLocation.deserialize(json.valueAsBytes("location")));
+      name: json.valueAs("name"),
+      symbol: json.valueAs("symbol"),
+      decimals: json.valueAs("decimals"),
+      assetId: json.valueAs("asset_id"),
+      location: XCMVersionedLocation.deserialize(json.valueAsBytes("location")),
+    );
   }
   Map<String, dynamic> toJson() {
     return {
@@ -40,19 +41,21 @@ class MoonbeamForeignAsset {
 
   SubstrateEthereumAddress evmAddress() {
     return MoonbeamNetworkControllerUtils.formatAssetIdToERC20(
-        assetId.toString());
+      assetId.toString(),
+    );
   }
 }
 
 abstract class BaseMoonbeamNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseMoonbeamNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseMoonbeamNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseMoonbeamNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -62,20 +65,21 @@ class MoonbeamNetworkAsset extends BaseMoonbeamNetworkAsset {
   late final XCMVersionedLocation location = asset.location;
   final BigInt? unitsPerSecond;
   MoonbeamNetworkAsset.fromJson(super.json)
-      : asset = MoonbeamForeignAsset.fromJson(json.valueAs("asset")),
-        unitsPerSecond = json.valueAs("units_per_second"),
-        super.fromJson();
+    : asset = MoonbeamForeignAsset.fromJson(json.valueAs("asset")),
+      unitsPerSecond = json.valueAs("units_per_second"),
+      super.fromJson();
   MoonbeamNetworkAsset({
     required this.asset,
     required super.isFeeToken,
     this.unitsPerSecond,
   }) : super(
-            decimals: asset.decimals,
-            isSpendable: true,
-            excutionPallet: SubtrateMetadataPallet.erc20XcmBridge,
-            minBalance: BigInt.zero,
-            name: asset.name,
-            symbol: asset.symbol);
+         decimals: asset.decimals,
+         isSpendable: true,
+         excutionPallet: SubtrateMetadataPallet.erc20XcmBridge,
+         minBalance: BigInt.zero,
+         name: asset.name,
+         symbol: asset.symbol,
+       );
   @override
   String get identifier => asset.assetId;
 
@@ -84,7 +88,7 @@ class MoonbeamNetworkAsset extends BaseMoonbeamNetworkAsset {
     return {
       "asset": asset.toJson(),
       "units_per_second": unitsPerSecond?.toString(),
-      ...super.toJson()
+      ...super.toJson(),
     };
   }
 
@@ -99,19 +103,19 @@ class MoonbeamNetworkNativeAsset extends BaseMoonbeamNetworkAsset {
   final XCMVersionedLocation location;
   @override
   final Object? identifier = null;
-  MoonbeamNetworkNativeAsset(
-      {required this.location,
-      super.isFeeToken = true,
-      super.isSpendable = true,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      super.minBalance})
-      : super(excutionPallet: SubtrateMetadataPallet.balances);
+  MoonbeamNetworkNativeAsset({
+    required this.location,
+    super.isFeeToken = true,
+    super.isSpendable = true,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    super.minBalance,
+  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
 
   MoonbeamNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
 
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;

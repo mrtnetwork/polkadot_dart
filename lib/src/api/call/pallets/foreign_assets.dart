@@ -21,8 +21,10 @@ enum ForeignAssetsCallPalletMethod
   final int variantIndex;
   const ForeignAssetsCallPalletMethod(this.method, this.variantIndex);
   factory ForeignAssetsCallPalletMethod.fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 }
 
@@ -41,27 +43,30 @@ class ForeignAssetsCallPalletTransfer extends ForeignAssetsCallPallet {
   final BaseSubstrateAddress target;
   final BigInt amount;
 
-  const ForeignAssetsCallPalletTransfer(
-      {required this.id,
-      required this.target,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.foreignAssets})
-      : super(type: ForeignAssetsCallPalletMethod.transfer);
+  const ForeignAssetsCallPalletTransfer({
+    required this.id,
+    required this.target,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.foreignAssets,
+  }) : super(type: ForeignAssetsCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     final json = {
       method ?? type.method: {
         "id": id.toJson(),
         "target": extrinsic.extrinsic.encodeAddress(target),
-        "amount": amount
-      }
+        "amount": amount,
+      },
     };
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: json);
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: json,
+    );
   }
 
   @override
@@ -70,8 +75,8 @@ class ForeignAssetsCallPalletTransfer extends ForeignAssetsCallPallet {
       method ?? type.method: {
         "target": target.address,
         "amount": amount,
-        "id": id.toJson()
-      }
+        "id": id.toJson(),
+      },
     };
   }
 }
@@ -80,31 +85,34 @@ class ForeignAssetsCallPalletTransferKeepAlive extends ForeignAssetsCallPallet {
   final XCMMultiLocation id;
   final BaseSubstrateAddress target;
   final BigInt amount;
-  const ForeignAssetsCallPalletTransferKeepAlive(
-      {required this.id,
-      required this.target,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.foreignAssets})
-      : super(type: ForeignAssetsCallPalletMethod.transferKeepAlive);
+  const ForeignAssetsCallPalletTransferKeepAlive({
+    required this.id,
+    required this.target,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.foreignAssets,
+  }) : super(type: ForeignAssetsCallPalletMethod.transferKeepAlive);
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "id": {
-          "parents": id.parents,
-          "interior": {
-            id.interior.type.type:
-                id.interior.junctions.map((e) => e.toJson()).toList()
-          }
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "id": {
+            "parents": id.parents,
+            "interior": {
+              id.interior.type.type:
+                  id.interior.junctions.map((e) => e.toJson()).toList(),
+            },
+          },
+          "target": extrinsic.extrinsic.encodeAddress(target),
+          "amount": amount,
         },
-        "target": extrinsic.extrinsic.encodeAddress(target),
-        "amount": amount
-      }
-    });
+      },
+    );
   }
 
   @override
@@ -113,8 +121,8 @@ class ForeignAssetsCallPalletTransferKeepAlive extends ForeignAssetsCallPallet {
       method ?? type.method: {
         "target": target.address,
         "amount": amount,
-        "id": id.toJson()
-      }
+        "id": id.toJson(),
+      },
     };
   }
 }
@@ -124,36 +132,39 @@ class ForeignAssetsCallPalletTransferAll extends ForeignAssetsCallPallet {
   final BaseSubstrateAddress dest;
   final bool keepAlive;
 
-  const ForeignAssetsCallPalletTransferAll(
-      {required this.id,
-      required this.dest,
-      required this.keepAlive,
-      super.pallet = SubtrateMetadataPallet.foreignAssets})
-      : super(type: ForeignAssetsCallPalletMethod.transferAll);
+  const ForeignAssetsCallPalletTransferAll({
+    required this.id,
+    required this.dest,
+    required this.keepAlive,
+    super.pallet = SubtrateMetadataPallet.foreignAssets,
+  }) : super(type: ForeignAssetsCallPalletMethod.transferAll);
 
   @override
   ForeignAssetsCallPalletMethod get type =>
       ForeignAssetsCallPalletMethod.transferAll;
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "id": {
-          "parents": id.parents,
-          "interior": {
-            id.interior.type.type:
-                id.interior.junctions.map((e) => e.toJson()).toList()
-          }
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "id": {
+            "parents": id.parents,
+            "interior": {
+              id.interior.type.type:
+                  id.interior.junctions.map((e) => e.toJson()).toList(),
+            },
+          },
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "keep_alive": keepAlive,
         },
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "keep_alive": keepAlive
-      }
-    });
+      },
+    );
   }
 
   @override
@@ -162,8 +173,8 @@ class ForeignAssetsCallPalletTransferAll extends ForeignAssetsCallPallet {
       method ?? type.method: {
         "dest": dest.address,
         "keep_alive": keepAlive,
-        "id": id.toJson()
-      }
+        "id": id.toJson(),
+      },
     };
   }
 }

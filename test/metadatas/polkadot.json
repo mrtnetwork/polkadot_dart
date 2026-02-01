@@ -72194,7 +72194,7 @@
                             "",
                             " It is recommended to generate the set of thresholds in a geometric series, such that",
                             " there exists some constant ratio such that `threshold[k + 1] == (threshold[k] *",
-                            " constant_ratio).max(threshold[k] + 1)` for all `k`.",
+                            " constant_ratio).max(length:threshold[k] + 1)` for all `k`.",
                             "",
                             " The helpers in the `/utils/frame/generate-bags` module can simplify this calculation.",
                             "",

@@ -8,12 +8,15 @@ import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_event_metadata
 import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_storage_metadata_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/pallet/metadata.dart';
 
-class PalletMetadataV15 extends PalletMetadata<
-    PalletStorageMetadataV14,
-    PalletCallMetadataV14,
-    PalletEventMetadataV14,
-    PalletConstantMetadataV14,
-    PalletErrorMetadataV14> {
+class PalletMetadataV15
+    extends
+        PalletMetadata<
+          PalletStorageMetadataV14,
+          PalletCallMetadataV14,
+          PalletEventMetadataV14,
+          PalletConstantMetadataV14,
+          PalletErrorMetadataV14
+        > {
   @override
   final PalletStorageMetadataV14? storage;
   @override
@@ -25,31 +28,38 @@ class PalletMetadataV15 extends PalletMetadata<
   @override
   final PalletErrorMetadataV14? errors;
   PalletMetadataV15.deserializeJson(super.json)
-      : storage = json["storage"] == null
-            ? null
-            : PalletStorageMetadataV14.deserializeJson(json["storage"]),
-        constants = List.unmodifiable((json["constants"] as List)
-            .map((e) => PalletConstantMetadataV14.deserializeJson(e))),
-        calls = json["calls"] == null
-            ? null
-            : PalletCallMetadataV14.deserializeJson(json["calls"]),
-        events = json["events"] == null
-            ? null
-            : PalletEventMetadataV14.deserializeJson(json["events"]),
-        errors = json["errors"] == null
-            ? null
-            : PalletErrorMetadataV14.deserializeJson(json["errors"]),
-        super.deserializeJson();
-  PalletMetadataV15(
-      {required super.name,
-      required List<PalletConstantMetadataV14> constants,
-      required super.index,
-      this.calls,
-      this.errors,
-      this.events,
-      required this.storage,
-      required List<String> super.docs})
-      : constants = constants.immutable;
+    : storage =
+          json["storage"] == null
+              ? null
+              : PalletStorageMetadataV14.deserializeJson(json["storage"]),
+      constants = List.unmodifiable(
+        (json["constants"] as List).map(
+          (e) => PalletConstantMetadataV14.deserializeJson(e),
+        ),
+      ),
+      calls =
+          json["calls"] == null
+              ? null
+              : PalletCallMetadataV14.deserializeJson(json["calls"]),
+      events =
+          json["events"] == null
+              ? null
+              : PalletEventMetadataV14.deserializeJson(json["events"]),
+      errors =
+          json["errors"] == null
+              ? null
+              : PalletErrorMetadataV14.deserializeJson(json["errors"]),
+      super.deserializeJson();
+  PalletMetadataV15({
+    required super.name,
+    required List<PalletConstantMetadataV14> constants,
+    required super.index,
+    this.calls,
+    this.errors,
+    this.events,
+    required this.storage,
+    required List<String> super.docs,
+  }) : constants = constants.immutable;
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -60,7 +70,7 @@ class PalletMetadataV15 extends PalletMetadata<
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       ...super.serializeJson(property: property),
-      "docs": docs ?? <String>[]
+      "docs": docs ?? <String>[],
     };
   }
 }

@@ -13,8 +13,8 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
   final int type;
   Si1TypeDefArray({required this.len, required this.type});
   Si1TypeDefArray.deserializeJson(Map<String, dynamic> json)
-      : len = json["len"],
-        type = json["type"];
+    : len = json["len"],
+      type = json["type"];
 
   @override
   StructLayout layout({String? property}) =>
@@ -33,39 +33,55 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
   TypeTemlate typeTemplate(PortableRegistry registry, int id) {
     final parent = registry.typeTemplate(type);
     return TypeTemlate(
-        lookupId: id, length: len, type: typeName, children: [parent]);
+      lookupId: id,
+      length: len,
+      type: typeName,
+      children: [parent],
+    );
   }
 
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     final parent = registry.scaleType(type);
     final isPrimitive = parent.toPrimitive();
     final Object? data = MetadataCastingUtils.getValue(
-        value: value,
-        type: typeName,
-        fromTemplate: fromTemplate,
-        id: self,
-        primitive: isPrimitive,
-        registry: registry);
+      value: value,
+      type: typeName,
+      fromTemplate: fromTemplate,
+      id: self,
+      primitive: isPrimitive,
+      registry: registry,
+    );
     final listValue = MetadataCastingUtils.asList(
-        value: data, length: len, lookupId: self, type: typeName);
+      value: data,
+      length: len,
+      lookupId: self,
+      type: typeName,
+    );
     if (isPrimitive != null) {
       return listValue;
     }
     return listValue
-        .map((e) =>
-            registry.getValue(id: type, value: e, fromTemplate: fromTemplate))
+        .map(
+          (e) =>
+              registry.getValue(id: type, value: e, fromTemplate: fromTemplate),
+        )
         .toList();
   }
 
   @override
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
     return MetadataTypeInfoArray(
-        type: registry.typeInfo(type), length: len, name: null, typeId: id);
+      type: registry.typeInfo(type),
+      length: len,
+      name: null,
+      typeId: id,
+    );
   }
 
   @override
@@ -79,14 +95,20 @@ class Si1TypeDefArray extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     final layout = registry.serializationLayout(type, params: params);
     final parent = registry.scaleType(type);
     final tryAsPrimitive = parent.toPrimitive();
     if (tryAsPrimitive == PrimitiveTypes.u8) {
-      return LayoutConst.byteArray(len,
-          property: property, resultAsHex: params?.bytesAsHex ?? true);
+      return LayoutConst.byteArray(
+        len,
+        property: property,
+        resultAsHex: params?.bytesAsHex ?? true,
+      );
     }
     return LayoutConst.array(layout, len, property: property);
   }

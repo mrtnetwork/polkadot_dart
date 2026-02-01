@@ -15,10 +15,11 @@ enum XTokenCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   final String method;
   final int variantIndex;
   const XTokenCallPalletMethod(this.method, this.variantIndex);
-  static XTokenCallPalletMethod findMethod(
-      {required int assetsLength,
-      required bool hasIdentifier,
-      required bool hasFee}) {
+  static XTokenCallPalletMethod findMethod({
+    required int assetsLength,
+    required bool hasIdentifier,
+    required bool hasFee,
+  }) {
     bool multiAssetsTransfer = assetsLength > 1;
     if (!hasIdentifier) {
       if (multiAssetsTransfer) {
@@ -35,13 +36,17 @@ enum XTokenCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   }
 
   static XTokenCallPalletMethod fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XTokenCallPalletMethod fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 }
 
@@ -63,22 +68,24 @@ class XTokenCallPalletTransfer extends XTokenCallPallet {
   @override
   XCMMultiLocation get destination => dest.location;
 
-  const XTokenCallPalletTransfer(
-      {required this.currencyId,
-      required this.amount,
-      required this.dest,
-      required this.destWeightLimit,
-      super.pallet = SubtrateMetadataPallet.xTokens})
-      : super(type: XTokenCallPalletMethod.transfer);
+  const XTokenCallPalletTransfer({
+    required this.currencyId,
+    required this.amount,
+    required this.dest,
+    required this.destWeightLimit,
+    super.pallet = SubtrateMetadataPallet.xTokens,
+  }) : super(type: XTokenCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -88,8 +95,8 @@ class XTokenCallPalletTransfer extends XTokenCallPallet {
         "currency_id": currencyId,
         "amount": amount,
         "dest": dest.toJson(),
-        "dest_weight_limit": destWeightLimit.toJson()
-      }
+        "dest_weight_limit": destWeightLimit.toJson(),
+      },
     };
   }
 }
@@ -101,21 +108,23 @@ class XTokenCallPalletTransferMultiAsset extends XTokenCallPallet {
   @override
   XCMMultiLocation get destination => dest.location;
 
-  const XTokenCallPalletTransferMultiAsset(
-      {required this.asset,
-      required this.dest,
-      required this.destWeightLimit,
-      super.pallet = SubtrateMetadataPallet.xTokens})
-      : super(type: XTokenCallPalletMethod.transferMultiasset);
+  const XTokenCallPalletTransferMultiAsset({
+    required this.asset,
+    required this.dest,
+    required this.destWeightLimit,
+    super.pallet = SubtrateMetadataPallet.xTokens,
+  }) : super(type: XTokenCallPalletMethod.transferMultiasset);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -124,8 +133,8 @@ class XTokenCallPalletTransferMultiAsset extends XTokenCallPallet {
       method ?? type.method: {
         "asset": asset.toJson(),
         "dest": dest.toJson(),
-        "dest_weight_limit": destWeightLimit.toJson()
-      }
+        "dest_weight_limit": destWeightLimit.toJson(),
+      },
     };
   }
 }
@@ -139,23 +148,25 @@ class XTokenCallPalletTransferWithFee extends XTokenCallPallet {
   @override
   XCMMultiLocation get destination => dest.location;
 
-  const XTokenCallPalletTransferWithFee(
-      {required this.currencyId,
-      required this.amount,
-      required this.dest,
-      required this.destWeightLimit,
-      required this.fee,
-      super.pallet = SubtrateMetadataPallet.xTokens})
-      : super(type: XTokenCallPalletMethod.transferWithFee);
+  const XTokenCallPalletTransferWithFee({
+    required this.currencyId,
+    required this.amount,
+    required this.dest,
+    required this.destWeightLimit,
+    required this.fee,
+    super.pallet = SubtrateMetadataPallet.xTokens,
+  }) : super(type: XTokenCallPalletMethod.transferWithFee);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -166,8 +177,8 @@ class XTokenCallPalletTransferWithFee extends XTokenCallPallet {
         "amount": amount,
         "dest": dest.toJson(),
         "dest_weight_limit": destWeightLimit.toJson(),
-        "fee": fee
-      }
+        "fee": fee,
+      },
     };
   }
 }
@@ -179,22 +190,24 @@ class XTokenCallPalletTransferMultiAssetWithFee extends XTokenCallPallet {
   final XCMV3WeightLimit destWeightLimit;
   @override
   XCMMultiLocation get destination => dest.location;
-  const XTokenCallPalletTransferMultiAssetWithFee(
-      {required this.asset,
-      required this.dest,
-      required this.destWeightLimit,
-      required this.fee,
-      super.pallet = SubtrateMetadataPallet.xTokens})
-      : super(type: XTokenCallPalletMethod.transferMultiassetWithFee);
+  const XTokenCallPalletTransferMultiAssetWithFee({
+    required this.asset,
+    required this.dest,
+    required this.destWeightLimit,
+    required this.fee,
+    super.pallet = SubtrateMetadataPallet.xTokens,
+  }) : super(type: XTokenCallPalletMethod.transferMultiassetWithFee);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -204,8 +217,8 @@ class XTokenCallPalletTransferMultiAssetWithFee extends XTokenCallPallet {
         "asset": asset.toJson(),
         "dest": dest.toJson(),
         "dest_weight_limit": destWeightLimit.toJson(),
-        "fee": fee.toJson()
-      }
+        "fee": fee.toJson(),
+      },
     };
   }
 }
@@ -213,8 +226,10 @@ class XTokenCallPalletTransferMultiAssetWithFee extends XTokenCallPallet {
 class XTokenTransferTokenWithAmount {
   final BigInt amount;
   final Object currencyId;
-  const XTokenTransferTokenWithAmount(
-      {required this.amount, required this.currencyId});
+  const XTokenTransferTokenWithAmount({
+    required this.amount,
+    required this.currencyId,
+  });
 }
 
 class XTokenCallPalletTransferMulticurrencies extends XTokenCallPallet {
@@ -224,22 +239,24 @@ class XTokenCallPalletTransferMulticurrencies extends XTokenCallPallet {
   final XCMV3WeightLimit destWeightLimit;
   @override
   XCMMultiLocation get destination => dest.location;
-  const XTokenCallPalletTransferMulticurrencies(
-      {required this.tokens,
-      required this.dest,
-      required this.destWeightLimit,
-      required this.feeItem,
-      super.pallet = SubtrateMetadataPallet.xTokens})
-      : super(type: XTokenCallPalletMethod.transferMulticurrencies);
+  const XTokenCallPalletTransferMulticurrencies({
+    required this.tokens,
+    required this.dest,
+    required this.destWeightLimit,
+    required this.feeItem,
+    super.pallet = SubtrateMetadataPallet.xTokens,
+  }) : super(type: XTokenCallPalletMethod.transferMulticurrencies);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -249,8 +266,8 @@ class XTokenCallPalletTransferMulticurrencies extends XTokenCallPallet {
         "currencies": tokens.map((e) => [e.currencyId, e.amount]).toList(),
         "dest": dest.toJson(),
         "dest_weight_limit": destWeightLimit.toJson(),
-        "fee_item": feeItem
-      }
+        "fee_item": feeItem,
+      },
     };
   }
 }
@@ -262,22 +279,24 @@ class XTokenCallPalletTransferMultiAssets extends XTokenCallPallet {
   final XCMV3WeightLimit destWeightLimit;
   @override
   XCMMultiLocation get destination => dest.location;
-  const XTokenCallPalletTransferMultiAssets(
-      {required this.assets,
-      required this.dest,
-      required this.destWeightLimit,
-      required this.feeItem,
-      super.pallet = SubtrateMetadataPallet.xTokens})
-      : super(type: XTokenCallPalletMethod.transferMultiassets);
+  const XTokenCallPalletTransferMultiAssets({
+    required this.assets,
+    required this.dest,
+    required this.destWeightLimit,
+    required this.feeItem,
+    super.pallet = SubtrateMetadataPallet.xTokens,
+  }) : super(type: XTokenCallPalletMethod.transferMultiassets);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -287,8 +306,8 @@ class XTokenCallPalletTransferMultiAssets extends XTokenCallPallet {
         "assets": assets.toJson(),
         "dest": dest.toJson(),
         "fee_item": feeItem,
-        "dest_weight_limit": destWeightLimit.toJson()
-      }
+        "dest_weight_limit": destWeightLimit.toJson(),
+      },
     };
   }
 }

@@ -10,12 +10,15 @@ class PalletErrorMetadataV16 extends PalletErrorMetadata {
 
   /// Deprecation info
   final MetadataDeprecationInfo deprecationInfo;
-  const PalletErrorMetadataV16(
-      {required this.type, required this.deprecationInfo});
+  const PalletErrorMetadataV16({
+    required this.type,
+    required this.deprecationInfo,
+  });
   PalletErrorMetadataV16.deserializeJson(Map<String, dynamic> json)
-      : type = json["type"],
-        deprecationInfo =
-            MetadataDeprecationInfo.deserializeJson(json["deprecation_info"]);
+    : type = json["type"],
+      deprecationInfo = MetadataDeprecationInfo.deserializeJson(
+        json["deprecation_info"],
+      );
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -26,7 +29,7 @@ class PalletErrorMetadataV16 extends PalletErrorMetadata {
   Map<String, dynamic> serializeJson({String? property}) {
     return {
       "type": type,
-      "deprecation_info": deprecationInfo.serializeJsonVariant()
+      "deprecation_info": deprecationInfo.serializeJsonVariant(),
     };
   }
 }

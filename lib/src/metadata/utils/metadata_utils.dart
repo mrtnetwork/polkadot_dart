@@ -5,8 +5,10 @@ import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 typedef ONPARSEOPTIONAL<T extends Object, V extends Object> = T Function(V v);
 
 class MetadataUtils {
-  static T? parseOptional<T extends Object, V extends Object>(Object? json,
-      {ONPARSEOPTIONAL<T, V>? parse}) {
+  static T? parseOptional<T extends Object, V extends Object>(
+    Object? json, {
+    ONPARSEOPTIONAL<T, V>? parse,
+  }) {
     if (json == null) return null;
     try {
       if (json is! Map) return json as T;
@@ -20,8 +22,10 @@ class MetadataUtils {
       if (parse == null) return val as T;
       return parse(val);
     } catch (_) {
-      throw MetadataException("Unexpected optionial type.",
-          details: {"expected": "$T", "value": json.runtimeType});
+      throw MetadataException(
+        "Unexpected optionial type.",
+        details: {"expected": "$T", "value": json.runtimeType},
+      );
     }
   }
 
@@ -31,29 +35,38 @@ class MetadataUtils {
   }
 
   static Layout optionalLayout<T>(LayoutFunc onSome, {String? property}) {
-    return LayoutConst.lazyEnum([
-      LazyVariantModel(
+    return LayoutConst.lazyEnum(
+      [
+        LazyVariantModel(
           layout: ({property}) => LayoutConst.none(property: property),
           property: "None",
-          index: 0),
-      LazyVariantModel(layout: onSome, property: "Some", index: 1),
-    ], property: property, useKeyAndValue: false);
+          index: 0,
+        ),
+        LazyVariantModel(layout: onSome, property: "Some", index: 1),
+      ],
+      property: property,
+      useKeyAndValue: false,
+    );
   }
 
   static const List<String> optionPath = ["Option"];
 
   static List isList(dynamic value, {String? info}) {
     if (value is! List) {
-      throw MetadataException("Invalid provided list.",
-          details: {"info": info, "value": value.runtimeType.toString()});
+      throw MetadataException(
+        "Invalid provided list.",
+        details: {"info": info, "value": value.runtimeType.toString()},
+      );
     }
     return value;
   }
 
   static List<Object> asList(Object? value, {String? info}) {
     if (value == null) {
-      throw MetadataException("Invalid provided list.",
-          details: {"info": info, "value": value.runtimeType.toString()});
+      throw MetadataException(
+        "Invalid provided list.",
+        details: {"info": info, "value": value.runtimeType.toString()},
+      );
     }
     if (value is List) return value.cast<Object>();
     return [value];
@@ -61,8 +74,10 @@ class MetadataUtils {
 
   static void hasLen(List list, int len, {String? info}) {
     if (list.length != len) {
-      throw MetadataException("Invalid list len.",
-          details: {"expected": len, "length": list.length, "info": info});
+      throw MetadataException(
+        "Invalid list len.",
+        details: {"expected": len, "length": list.length, "info": info},
+      );
     }
   }
 
@@ -75,7 +90,7 @@ class MetadataUtils {
         details: {
           "info": info,
           "valueType": value.runtimeType.toString(),
-          "expectedType": T.toString()
+          "expectedType": T.toString(),
         },
       );
     }
@@ -86,16 +101,21 @@ class MetadataUtils {
     try {
       return value! as T;
     } catch (e) {
-      throw MetadataException("Invalid $T provided for casting.", details: {
-        "info": info,
-        "valueType": value?.runtimeType.toString(),
-        "expectedType": T.toString()
-      });
+      throw MetadataException(
+        "Invalid $T provided for casting.",
+        details: {
+          "info": info,
+          "valueType": value?.runtimeType.toString(),
+          "expectedType": T.toString(),
+        },
+      );
     }
   }
 
-  static bool validateOptionBytes(List<int> bytes,
-      {Map<String, dynamic> infos = const {}}) {
+  static bool validateOptionBytes(
+    List<int> bytes, {
+    Map<String, dynamic> infos = const {},
+  }) {
     try {
       final decode = LayoutConst.u8().deserialize(bytes.sublist(0, 1)).value;
       if (decode == 0 || decode == 1) {
@@ -103,12 +123,16 @@ class MetadataUtils {
       }
       // ignore: empty_catches
     } catch (e) {}
-    throw MetadataException("Invalid Metadata option bytes.",
-        details: {"expected": "0, 1", ...infos});
+    throw MetadataException(
+      "Invalid Metadata option bytes.",
+      details: {"expected": "0, 1", ...infos},
+    );
   }
 
-  static List<int> createQueryPrefixHash(
-      {required String prefix, required String method}) {
+  static List<int> createQueryPrefixHash({
+    required String prefix,
+    required String method,
+  }) {
     final prefixHash = QuickCrypto.twoX128(prefix.codeUnits);
     final methodHasn = QuickCrypto.twoX128(method.codeUnits);
     return [...prefixHash, ...methodHasn];
@@ -125,19 +149,23 @@ class MetadataUtils {
   static const int _prefixBytesLength = QuickCrypto.twoX128DigestSize;
   static const int _queryMethodPrefixLength =
       _prefixBytesLength + _prefixBytesLength;
-  static List<int> getQueryBytesFromStorageKey(
-      {required List<int> queryBytes, required List<int> prefixHash}) {
+  static List<int> getQueryBytesFromStorageKey({
+    required List<int> queryBytes,
+    required List<int> prefixHash,
+  }) {
     if (queryBytes.length < _queryMethodPrefixLength) {
       throw MetadataException(
-          "Invalid query bytes. Query bytes must be at least $_queryMethodPrefixLength bytes",
-          details: {"length": queryBytes.length});
+        "Invalid query bytes. Query bytes must be at least $_queryMethodPrefixLength bytes",
+        details: {"length": queryBytes.length},
+      );
     }
 
     final queryPrefix = queryBytes.sublist(0, _queryMethodPrefixLength);
     if (!BytesUtils.bytesEqual(queryBytes, prefixHash)) {
       throw MetadataException(
-          "Invalid query bytes. Query bytes does not related to this storage",
-          details: {"exceptedPrefix": prefixHash, "prefix": queryPrefix});
+        "Invalid query bytes. Query bytes does not related to this storage",
+        details: {"exceptedPrefix": prefixHash, "prefix": queryPrefix},
+      );
     }
     return queryBytes.sublist(_queryMethodPrefixLength);
   }

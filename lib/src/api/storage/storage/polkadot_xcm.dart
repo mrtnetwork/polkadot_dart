@@ -15,32 +15,40 @@ enum SubstrateStoragePolkadotXCMMethods {
 /// safexcmversion
 class SubstrateStoragePolkadotXCM extends SubstrateStorageApi {
   const SubstrateStoragePolkadotXCM();
-  Future<XCMVersion?> safeXCMVersion(
-      {required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<XCMVersion?> safeXCMVersion({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     return api.getStorageRequest(
-        rpc: rpc,
-        request: GetStorageRequest<XCMVersion?, int>(
-            onJsonResponse: (response, bytes, storageKey) =>
-                XCMVersion.fromVersion(response),
-            palletNameOrIndex: this.api.name,
-            methodName:
-                SubstrateStoragePolkadotXCMMethods.safeXcmVersion.method));
+      rpc: rpc,
+      request: GetStorageRequest<XCMVersion?, int>(
+        onJsonResponse:
+            (response, bytes, storageKey) => XCMVersion.fromVersion(response),
+        palletNameOrIndex: this.api.name,
+        methodName: SubstrateStoragePolkadotXCMMethods.safeXcmVersion.method,
+      ),
+    );
   }
 
-  Future<List<QueryStorageFullResponse<int?>>> versions(
-      {required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<List<QueryStorageFullResponse<int?>>> versions({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request:
-            GetStreamStorageEntriesRequest<QueryStorageFullResponse<int?>, int>(
-                palletNameOrIndex: this.api.name,
-                methodName: "SupportedVersion",
-                onJsonResponse: (response, responseBytes, storageKey) {
-                  return QueryStorageFullResponse(
-                      storageKey: storageKey,
-                      responseBytes: responseBytes,
-                      response: response);
-                }),
-        rpc: rpc);
+      request:
+          GetStreamStorageEntriesRequest<QueryStorageFullResponse<int?>, int>(
+            palletNameOrIndex: this.api.name,
+            methodName: "SupportedVersion",
+            onJsonResponse: (response, responseBytes, storageKey) {
+              return QueryStorageFullResponse(
+                storageKey: storageKey,
+                responseBytes: responseBytes,
+                response: response,
+              );
+            },
+          ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }

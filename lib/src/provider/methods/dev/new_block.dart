@@ -14,7 +14,7 @@ class SubstrateRequestDevNewBlock extends SubstrateRequest<String, String> {
   @override
   List<dynamic> toJson() {
     return [
-      if (count != null) {"count": count}
+      if (count != null) {"count": count},
     ];
   }
 }

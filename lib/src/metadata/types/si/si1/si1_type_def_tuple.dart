@@ -29,31 +29,41 @@ class Si1TypeDefTuple extends Si1TypeDef<List<int>> implements TypeDefTuple {
   @override
   TypeTemlate typeTemplate(PortableRegistry registry, int id) {
     return TypeTemlate(
-        lookupId: id,
-        type: typeName,
-        children: values.map((e) => registry.typeTemplate(e)).toList());
+      lookupId: id,
+      type: typeName,
+      children: values.map((e) => registry.typeTemplate(e)).toList(),
+    );
   }
 
   /// Checks the provided [value] and returns the correct data compared to the template or simple design,
   /// using the provided [registry], [fromTemplate] flag, and optional [property].
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     final Object? data = MetadataCastingUtils.getValue(
-        value: value,
-        type: typeName,
-        fromTemplate: fromTemplate,
-        id: self,
-        registry: registry);
+      value: value,
+      type: typeName,
+      fromTemplate: fromTemplate,
+      id: self,
+      registry: registry,
+    );
     final listValue = MetadataCastingUtils.asList(
-        value: data, length: values.length, type: typeName, lookupId: self);
+      value: data,
+      length: values.length,
+      type: typeName,
+      lookupId: self,
+    );
     final List<Object?> correctValues = [];
     for (int i = 0; i < values.length; i++) {
       final value = registry.getValue(
-          id: values[i], value: listValue[i], fromTemplate: fromTemplate);
+        id: values[i],
+        value: listValue[i],
+        fromTemplate: fromTemplate,
+      );
       correctValues.add(value);
     }
     return correctValues;
@@ -62,9 +72,10 @@ class Si1TypeDefTuple extends Si1TypeDef<List<int>> implements TypeDefTuple {
   @override
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
     return MetadataTypeInfoTuple(
-        name: null,
-        typeId: id,
-        types: values.map((e) => registry.typeInfo(e)).toList());
+      name: null,
+      typeId: id,
+      types: values.map((e) => registry.typeInfo(e)).toList(),
+    );
   }
 
   @override
@@ -78,12 +89,16 @@ class Si1TypeDefTuple extends Si1TypeDef<List<int>> implements TypeDefTuple {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     return LayoutConst.tuple(
-        values
-            .map((e) => registry.serializationLayout(e, params: params))
-            .toList(),
-        property: property);
+      values
+          .map((e) => registry.serializationLayout(e, params: params))
+          .toList(),
+      property: property,
+    );
   }
 }

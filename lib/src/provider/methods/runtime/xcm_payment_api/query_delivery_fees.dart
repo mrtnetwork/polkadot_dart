@@ -4,8 +4,10 @@ import 'package:polkadot_dart/src/provider/core/core.dart';
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
 class SubstrateRequestRuntimeXCMPaymentApiQueryDeliveryFees
     extends SubstrateRequest<String, String> {
-  const SubstrateRequestRuntimeXCMPaymentApiQueryDeliveryFees(
-      {required this.data, this.atBlockHash});
+  const SubstrateRequestRuntimeXCMPaymentApiQueryDeliveryFees({
+    required this.data,
+    this.atBlockHash,
+  });
 
   final String? atBlockHash;
   final String? data;

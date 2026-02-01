@@ -15,12 +15,14 @@ class QueryFeeDetails extends SubstrateSerialization<Map<String, dynamic>> {
     final data = RPCRuntimeLayouts.queryFeeInfo().deserialize(bytes);
 
     final value = data.value;
-    final fee = value["inclusionFee"] == null
-        ? null
-        : InclusionFee(
-            baseFee: value["inclusionFee"]["baseFee"],
-            lenFee: value["inclusionFee"]["lenFee"],
-            adjustedWeightFee: value["inclusionFee"]["adjustedWeightFee"]);
+    final fee =
+        value["inclusionFee"] == null
+            ? null
+            : InclusionFee(
+              baseFee: value["inclusionFee"]["baseFee"],
+              lenFee: value["inclusionFee"]["lenFee"],
+              adjustedWeightFee: value["inclusionFee"]["adjustedWeightFee"],
+            );
     if (bytes.length > data.consumed) {
       final tip = LayoutConst.u128().deserialize(bytes.sublist(data.consumed));
       return QueryFeeDetails(inclusionFee: fee, tip: tip.value);
@@ -30,10 +32,12 @@ class QueryFeeDetails extends SubstrateSerialization<Map<String, dynamic>> {
 
   factory QueryFeeDetails.fromJson(Map<String, dynamic> json) {
     return QueryFeeDetails(
-        inclusionFee: json["inclusionFee"] == null
-            ? null
-            : InclusionFee.fromJson(json["inclusionFee"]),
-        tip: BigintUtils.tryParse(json["tip"]) ?? BigInt.zero);
+      inclusionFee:
+          json["inclusionFee"] == null
+              ? null
+              : InclusionFee.fromJson(json["inclusionFee"]),
+      tip: BigintUtils.tryParse(json["tip"]) ?? BigInt.zero,
+    );
   }
 
   @override

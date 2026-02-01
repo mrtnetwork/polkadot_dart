@@ -30,13 +30,17 @@ enum XCMWeightLimitType {
 
   const XCMWeightLimitType(this.type);
   static XCMWeightLimitType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMWeightLimitType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -113,18 +117,24 @@ enum XCMInstructionType {
   final int variantIndex;
 
   static XCMInstructionType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 
   static XCMInstructionType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMInstructionType fromIndex(int index) {
-    return values.firstWhere((e) => e.variantIndex == index,
-        orElse: () => throw ItemNotFoundException(value: index));
+    return values.firstWhere(
+      (e) => e.variantIndex == index,
+      orElse: () => throw ItemNotFoundException(value: index),
+    );
   }
 }
 
@@ -146,22 +156,26 @@ abstract mixin class XCM<CALL extends XCMInstruction>
     implements SubstrateSerialization<Map<String, dynamic>>, XCMComponent {
   List<CALL> get instructions;
   @override
-  List get variabels => [version, instructions];
+  List get variables => [version, instructions];
 
-  factory XCM.fromInstructions(
-      {required List<XCMInstruction> instructions,
-      required XCMVersion version}) {
+  factory XCM.fromInstructions({
+    required List<XCMInstruction> instructions,
+    required XCMVersion version,
+  }) {
     return switch (version) {
-      XCMVersion.v2 =>
-        XCMV2(instructions: instructions.cast<XCMInstructionV2>()),
-      XCMVersion.v3 =>
-        XCMV3(instructions: instructions.cast<XCMInstructionV3>()),
-      XCMVersion.v4 =>
-        XCMV4(instructions: instructions.cast<XCMInstructionV4>()),
-      XCMVersion.v5 =>
-        XCMV5(instructions: instructions.cast<XCMInstructionV5>()),
-    }
-        .cast();
+      XCMVersion.v2 => XCMV2(
+        instructions: instructions.cast<XCMInstructionV2>(),
+      ),
+      XCMVersion.v3 => XCMV3(
+        instructions: instructions.cast<XCMInstructionV3>(),
+      ),
+      XCMVersion.v4 => XCMV4(
+        instructions: instructions.cast<XCMInstructionV4>(),
+      ),
+      XCMVersion.v5 => XCMV5(
+        instructions: instructions.cast<XCMInstructionV5>(),
+      ),
+    }.cast();
   }
 
   @override
@@ -183,36 +197,54 @@ class XCMPalletInfo extends SubstrateSerialization<Map<String, dynamic>>
   final int minor;
   final int patch;
 
-  XCMPalletInfo(
-      {required int index,
-      required List<int> name,
-      required List<int> moduleName,
-      required int major,
-      required int minor,
-      required int patch})
-      : name = name.max(maxPalletNameLen).asImmutableBytes,
-        moduleName = moduleName.max(maxPalletNameLen).asImmutableBytes,
-        index = index.asUint32,
-        major = major.asUint32,
-        minor = minor.asUint32,
-        patch = patch.asUint32;
+  XCMPalletInfo({
+    required int index,
+    required List<int> name,
+    required List<int> moduleName,
+    required int major,
+    required int minor,
+    required int patch,
+  }) : name =
+           name
+               .max(
+                 length: maxPalletNameLen,
+                 operation: "XCMPalletInfo",
+                 name: "name",
+                 reason: "Invalid name bytes length.",
+               )
+               .asImmutableBytes,
+       moduleName =
+           moduleName
+               .max(
+                 length: maxPalletNameLen,
+                 operation: "XCMPalletInfo",
+                 name: "moduleName",
+                 reason: "Invalid moduleName bytes length.",
+               )
+               .asImmutableBytes,
+       index = index.asU32,
+       major = major.asU32,
+       minor = minor.asU32,
+       patch = patch.asU32;
   factory XCMPalletInfo.deserializeJson(Map<String, dynamic> json) {
     return XCMPalletInfo(
-        index: IntUtils.parse(json["index"]),
-        name: (json["name"] as List).cast(),
-        moduleName: (json["module_name"] as List).cast(),
-        major: IntUtils.parse(json["major"]),
-        minor: IntUtils.parse(json["minor"]),
-        patch: IntUtils.parse(json["patch"]));
+      index: IntUtils.parse(json["index"]),
+      name: (json["name"] as List).cast(),
+      moduleName: (json["module_name"] as List).cast(),
+      major: IntUtils.parse(json["major"]),
+      minor: IntUtils.parse(json["minor"]),
+      patch: IntUtils.parse(json["patch"]),
+    );
   }
   factory XCMPalletInfo.fromJson(Map<String, dynamic> json) {
     return XCMPalletInfo(
-        index: json.valueAs("index"),
-        name: json.valueAsBytes("name"),
-        moduleName: json.valueAsBytes("module_name"),
-        major: json.valueAs("major"),
-        minor: json.valueAs("minor"),
-        patch: json.valueAs("patch"));
+      index: json.valueAs("index"),
+      name: json.valueAsBytes("name"),
+      moduleName: json.valueAsBytes("module_name"),
+      major: json.valueAs("major"),
+      minor: json.valueAs("minor"),
+      patch: json.valueAs("patch"),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -239,7 +271,7 @@ class XCMPalletInfo extends SubstrateSerialization<Map<String, dynamic>>
       "module_name": moduleName,
       "major": major,
       "minor": minor,
-      "patch": patch
+      "patch": patch,
     };
   }
 
@@ -250,12 +282,12 @@ class XCMPalletInfo extends SubstrateSerialization<Map<String, dynamic>>
       "module_name": moduleName,
       "major": major,
       "minor": minor,
-      "patch": patch
+      "patch": patch,
     };
   }
 
   @override
-  List get variabels => [index, name, moduleName, major, minor, patch];
+  List get variables => [index, name, moduleName, major, minor, patch];
 }
 
 abstract mixin class XCMWithdrawAsset implements XCMInstruction {
@@ -278,7 +310,7 @@ abstract mixin class XCMWithdrawAsset implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 abstract mixin class XCMReserveAssetDeposited implements XCMInstruction {
@@ -292,7 +324,7 @@ abstract mixin class XCMReserveAssetDeposited implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 abstract mixin class XCMReceiveTeleportedAsset implements XCMInstruction {
@@ -305,7 +337,7 @@ abstract mixin class XCMReceiveTeleportedAsset implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 abstract mixin class XCMQueryResponse implements XCMInstruction {
@@ -325,13 +357,13 @@ abstract mixin class XCMTransferAsset implements XCMInstruction {
     return {
       type.type: {
         "assets": assets.assets.map((e) => e.toJson()).toList(),
-        "beneficiary": beneficiary.toJson()
-      }
+        "beneficiary": beneficiary.toJson(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, beneficiary];
+  List get variables => [type, assets, beneficiary];
 }
 
 abstract mixin class XCMTransferReserveAsset implements XCMInstruction {
@@ -340,19 +372,32 @@ abstract mixin class XCMTransferReserveAsset implements XCMInstruction {
   XCM get xcm;
   @override
   XCMInstructionType get type => XCMInstructionType.transferReserveAsset;
-  factory XCMTransferReserveAsset.fromAssets(
-      {required XCMAssets assets,
-      required XCMMultiLocation dest,
-      required XCM xcm}) {
+  factory XCMTransferReserveAsset.fromAssets({
+    required XCMAssets assets,
+    required XCMMultiLocation dest,
+    required XCM xcm,
+  }) {
     return switch (assets.version) {
       XCMVersion.v2 => XCMV2TransferReserveAsset(
-          assets: assets.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v3 => XCMV3TransferReserveAsset(
-          assets: assets.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v4 => XCMV4TransferReserveAsset(
-          assets: assets.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v5 => XCMV5TransferReserveAsset(
-          assets: assets.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
     };
   }
   @override
@@ -361,13 +406,13 @@ abstract mixin class XCMTransferReserveAsset implements XCMInstruction {
       type.type: {
         "assets": assets.assets.map((e) => e.toJson()).toList(),
         "dest": dest.toJson(),
-        "xcm": xcm.instructions.map((e) => e.toJson()).toList()
-      }
+        "xcm": xcm.instructions.map((e) => e.toJson()).toList(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, dest, xcm];
+  List get variables => [type, assets, dest, xcm];
 }
 
 abstract mixin class XCMTransact implements XCMInstruction {
@@ -391,13 +436,13 @@ abstract mixin class XCMHrmpNewChannelOpenRequest implements XCMInstruction {
       type.type: {
         "sender": sender,
         "max_message_size": maxMessageSize,
-        "max_capacity": maxCapacity
-      }
+        "max_capacity": maxCapacity,
+      },
     };
   }
 
   @override
-  List get variabels => [type, sender, maxMessageSize, maxCapacity];
+  List get variables => [type, sender, maxMessageSize, maxCapacity];
 }
 
 abstract mixin class XCMHrmpChannelAccepted implements XCMInstruction {
@@ -410,7 +455,7 @@ abstract mixin class XCMHrmpChannelAccepted implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, recipient];
+  List get variables => [type, recipient];
 }
 
 abstract mixin class XCMHrmpChannelClosing implements XCMInstruction {
@@ -425,13 +470,13 @@ abstract mixin class XCMHrmpChannelClosing implements XCMInstruction {
       type.type: {
         "sender": sender,
         "initiator": initiator,
-        "recipient": recipient
-      }
+        "recipient": recipient,
+      },
     };
   }
 
   @override
-  List get variabels => [type, initiator, sender, recipient];
+  List get variables => [type, initiator, sender, recipient];
 }
 
 abstract mixin class XCMClearOrigin implements XCMInstruction {
@@ -443,7 +488,7 @@ abstract mixin class XCMClearOrigin implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMDescendOrigin implements XCMInstruction {
@@ -458,7 +503,7 @@ abstract mixin class XCMDescendOrigin implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, interior];
+  List get variables => [type, interior];
 }
 
 abstract mixin class XCMReportError implements XCMInstruction {
@@ -472,18 +517,28 @@ abstract mixin class XCMDepositAsset implements XCMInstruction {
   @override
   XCMInstructionType get type => XCMInstructionType.depositAsset;
 
-  factory XCMDepositAsset.fromAssets(
-      {required XCMMultiAssetFilter assets,
-      required XCMMultiLocation beneficiary}) {
+  factory XCMDepositAsset.fromAssets({
+    required XCMMultiAssetFilter assets,
+    required XCMMultiLocation beneficiary,
+  }) {
     return switch (assets.version) {
       XCMVersion.v2 => XCMV2DepositAsset(
-          assets: assets.cast(), beneficiary: beneficiary.cast(), maxAssets: 1),
+        assets: assets.cast(),
+        beneficiary: beneficiary.cast(),
+        maxAssets: 1,
+      ),
       XCMVersion.v3 => XCMV3DepositAsset(
-          assets: assets.cast(), beneficiary: beneficiary.cast()),
+        assets: assets.cast(),
+        beneficiary: beneficiary.cast(),
+      ),
       XCMVersion.v4 => XCMV4DepositAsset(
-          assets: assets.cast(), beneficiary: beneficiary.cast()),
+        assets: assets.cast(),
+        beneficiary: beneficiary.cast(),
+      ),
       XCMVersion.v5 => XCMV5DepositAsset(
-          assets: assets.cast(), beneficiary: beneficiary.cast()),
+        assets: assets.cast(),
+        beneficiary: beneficiary.cast(),
+      ),
     };
   }
 }
@@ -494,22 +549,33 @@ abstract mixin class XCMDepositReserveAsset implements XCMInstruction {
   XCM get xcm;
   @override
   XCMInstructionType get type => XCMInstructionType.depositReserveAsset;
-  factory XCMDepositReserveAsset.fromAssets(
-      {required XCMMultiAssetFilter assets,
-      required XCMMultiLocation dest,
-      required XCM xcm}) {
+  factory XCMDepositReserveAsset.fromAssets({
+    required XCMMultiAssetFilter assets,
+    required XCMMultiLocation dest,
+    required XCM xcm,
+  }) {
     return switch (assets.version) {
       XCMVersion.v2 => XCMV2DepositReserveAsset(
-          assets: assets.cast(),
-          dest: dest.cast(),
-          maxAssets: 1,
-          xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        maxAssets: 1,
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v3 => XCMV3DepositReserveAsset(
-          assets: assets.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v4 => XCMV4DepositReserveAsset(
-          assets: assets.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v5 => XCMV5DepositReserveAsset(
-          assets: assets.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
     };
   }
 }
@@ -525,19 +591,32 @@ abstract mixin class XCMInitiateReserveWithdraw implements XCMInstruction {
   XCMMultiLocation get reserve;
   XCM get xcm;
 
-  factory XCMInitiateReserveWithdraw.build(
-      {required XCMMultiAssetFilter assets,
-      required XCMMultiLocation reserve,
-      required XCM xcm}) {
+  factory XCMInitiateReserveWithdraw.build({
+    required XCMMultiAssetFilter assets,
+    required XCMMultiLocation reserve,
+    required XCM xcm,
+  }) {
     return switch (assets.version) {
       XCMVersion.v2 => XCMV2InitiateReserveWithdraw(
-          assets: assets.cast(), reserve: reserve.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        reserve: reserve.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v3 => XCMV3InitiateReserveWithdraw(
-          assets: assets.cast(), reserve: reserve.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        reserve: reserve.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v4 => XCMV4InitiateReserveWithdraw(
-          assets: assets.cast(), reserve: reserve.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        reserve: reserve.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v5 => XCMV5InitiateReserveWithdraw(
-          assets: assets.cast(), reserve: reserve.cast(), xcm: xcm.cast()),
+        assets: assets.cast(),
+        reserve: reserve.cast(),
+        xcm: xcm.cast(),
+      ),
     };
   }
 
@@ -551,19 +630,32 @@ abstract mixin class XCMInitiateTeleport implements XCMInstruction {
   @override
   XCMInstructionType get type => XCMInstructionType.initiateTeleport;
 
-  factory XCMInitiateTeleport.fromAsset(
-      {required XCMMultiLocation dest,
-      required XCM xcm,
-      required XCMMultiAssetFilter asset}) {
+  factory XCMInitiateTeleport.fromAsset({
+    required XCMMultiLocation dest,
+    required XCM xcm,
+    required XCMMultiAssetFilter asset,
+  }) {
     return switch (dest.version) {
       XCMVersion.v2 => XCMV2InitiateTeleport(
-          assets: asset.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: asset.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v3 => XCMV3InitiateTeleport(
-          assets: asset.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: asset.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v4 => XCMV4InitiateTeleport(
-          assets: asset.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: asset.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
       XCMVersion.v5 => XCMV5InitiateTeleport(
-          assets: asset.cast(), dest: dest.cast(), xcm: xcm.cast()),
+        assets: asset.cast(),
+        dest: dest.cast(),
+        xcm: xcm.cast(),
+      ),
     };
   }
 }
@@ -581,21 +673,27 @@ abstract mixin class XCMQueryHolding implements XCMInstruction {
 abstract mixin class XCMBuyExecution implements XCMInstruction {
   XCMAsset get fees;
   WeightLimit get weightLimit;
-  factory XCMBuyExecution.fromFees(
-      {required XCMAsset fees, WeightLimit? weightLimit}) {
+  factory XCMBuyExecution.fromFees({
+    required XCMAsset fees,
+    WeightLimit? weightLimit,
+  }) {
     return switch (fees.version) {
       XCMVersion.v2 => XCMV2BuyExecution(
-          fees: fees.cast(),
-          weightLimit: weightLimit?.cast() ?? XCMV2WeightLimitUnlimited()),
+        fees: fees.cast(),
+        weightLimit: weightLimit?.cast() ?? XCMV2WeightLimitUnlimited(),
+      ),
       XCMVersion.v3 => XCMV3BuyExecution(
-          fees: fees.cast(),
-          weightLimit: weightLimit?.cast() ?? XCMV3WeightLimitUnlimited()),
+        fees: fees.cast(),
+        weightLimit: weightLimit?.cast() ?? XCMV3WeightLimitUnlimited(),
+      ),
       XCMVersion.v4 => XCMV4BuyExecution(
-          fees: fees.cast(),
-          weightLimit: weightLimit?.cast() ?? XCMV3WeightLimitUnlimited()),
+        fees: fees.cast(),
+        weightLimit: weightLimit?.cast() ?? XCMV3WeightLimitUnlimited(),
+      ),
       XCMVersion.v5 => XCMV5BuyExecution(
-          fees: fees.cast(),
-          weightLimit: weightLimit?.cast() ?? XCMV3WeightLimitUnlimited()),
+        fees: fees.cast(),
+        weightLimit: weightLimit?.cast() ?? XCMV3WeightLimitUnlimited(),
+      ),
     };
   }
   @override
@@ -611,7 +709,7 @@ abstract mixin class XCMRefundSurplus implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMSetErrorHandler implements XCMInstruction {
@@ -624,7 +722,7 @@ abstract mixin class XCMSetErrorHandler implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, xcm];
+  List get variables => [type, xcm];
 }
 
 abstract mixin class XCMSetAppendix implements XCMInstruction {
@@ -648,7 +746,7 @@ abstract mixin class XCMSetAppendix implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, xcm];
+  List get variables => [type, xcm];
 }
 
 abstract mixin class XCMClearError implements XCMInstruction {
@@ -660,7 +758,7 @@ abstract mixin class XCMClearError implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMClaimAsset implements XCMInstruction {
@@ -674,13 +772,13 @@ abstract mixin class XCMClaimAsset implements XCMInstruction {
     return {
       type.type: {
         "assets": assets.assets.map((e) => e.toJson()).toList(),
-        "ticket": ticket.toJson()
-      }
+        "ticket": ticket.toJson(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, assets, ticket];
+  List get variables => [type, assets, ticket];
 }
 
 abstract mixin class XCMTrap implements XCMInstruction {
@@ -693,7 +791,7 @@ abstract mixin class XCMTrap implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, trap];
+  List get variables => [type, trap];
 }
 
 abstract mixin class XCMSubscribeVersion implements XCMInstruction {
@@ -711,7 +809,7 @@ abstract mixin class XCMUnsubscribeVersion implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMBurnAsset implements XCMInstruction {
@@ -724,7 +822,7 @@ abstract mixin class XCMBurnAsset implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 abstract mixin class XCMExpectAsset implements XCMInstruction {
@@ -737,7 +835,7 @@ abstract mixin class XCMExpectAsset implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 abstract mixin class XCMExpectOrigin implements XCMInstruction {
@@ -745,7 +843,7 @@ abstract mixin class XCMExpectOrigin implements XCMInstruction {
   @override
   XCMInstructionType get type => XCMInstructionType.expectOrigin;
   @override
-  List get variabels => [type, location];
+  List get variables => [type, location];
 }
 
 abstract mixin class XCMExpectError implements XCMInstruction {
@@ -764,7 +862,7 @@ abstract mixin class XCMExpectTransactStatus implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, code];
+  List get variables => [type, code];
 }
 
 abstract mixin class XCMQueryPallet implements XCMInstruction {
@@ -787,7 +885,7 @@ abstract mixin class XCMClearTransactStatus implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMUniversalOrigin implements XCMInstruction {
@@ -800,7 +898,7 @@ abstract mixin class XCMUniversalOrigin implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, origin];
+  List get variables => [type, origin];
 }
 
 abstract mixin class XCMExportMessage implements XCMInstruction {
@@ -816,13 +914,13 @@ abstract mixin class XCMExportMessage implements XCMInstruction {
       type.type: {
         "network": network.toJson(),
         "destination": destination.toJson(),
-        "xcm": xcm.instructions.map((e) => e.toJson()).toList()
-      }
+        "xcm": xcm.instructions.map((e) => e.toJson()).toList(),
+      },
     };
   }
 
   @override
-  List get variabels => [type, network, destination, xcm];
+  List get variables => [type, network, destination, xcm];
 }
 
 abstract mixin class XCMLockAsset implements XCMInstruction {
@@ -833,12 +931,12 @@ abstract mixin class XCMLockAsset implements XCMInstruction {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"asset": asset.toJson(), "unlocker": unlocker.toJson()}
+      type.type: {"asset": asset.toJson(), "unlocker": unlocker.toJson()},
     };
   }
 
   @override
-  List get variabels => [type, asset, unlocker];
+  List get variables => [type, asset, unlocker];
 }
 
 abstract mixin class XCMUnlockAsset implements XCMInstruction {
@@ -849,12 +947,12 @@ abstract mixin class XCMUnlockAsset implements XCMInstruction {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"asset": asset.toJson(), "target": target.toJson()}
+      type.type: {"asset": asset.toJson(), "target": target.toJson()},
     };
   }
 
   @override
-  List get variabels => [type, asset, target];
+  List get variables => [type, asset, target];
 }
 
 abstract mixin class XCMNoteUnlockable implements XCMInstruction {
@@ -866,12 +964,12 @@ abstract mixin class XCMNoteUnlockable implements XCMInstruction {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"asset": asset.toJson(), "owner": owner.toJson()}
+      type.type: {"asset": asset.toJson(), "owner": owner.toJson()},
     };
   }
 
   @override
-  List get variabels => [type, asset, owner];
+  List get variables => [type, asset, owner];
 }
 
 abstract mixin class XCMRequestUnlock implements XCMInstruction {
@@ -884,22 +982,26 @@ abstract mixin class XCMRequestUnlock implements XCMInstruction {
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"asset": asset.toJson(), "locker": locker.toJson()}
+      type.type: {"asset": asset.toJson(), "locker": locker.toJson()},
     };
   }
 
   @override
-  List get variabels => [type, asset, locker];
+  List get variables => [type, asset, locker];
 }
 
 abstract mixin class XCMSetFeesMode implements XCMInstruction {
   bool get jitWithdraw;
-  factory XCMSetFeesMode.fromVersion(
-      {required XCMVersion version, bool jitWithdraw = true}) {
+  factory XCMSetFeesMode.fromVersion({
+    required XCMVersion version,
+    bool jitWithdraw = true,
+  }) {
     return switch (version) {
-      XCMVersion.v2 => throw DartSubstratePluginException(
+      XCMVersion.v2 =>
+        throw DartSubstratePluginException(
           "Unsupported xcm instraction by version 2.",
-          details: {"type": XCMInstructionType.setFeesMode.type}),
+          details: {"type": XCMInstructionType.setFeesMode.type},
+        ),
       XCMVersion.v3 => XCMV3SetFeesMode(jitWithdraw: jitWithdraw),
       XCMVersion.v4 => XCMV4SetFeesMode(jitWithdraw: jitWithdraw),
       XCMVersion.v5 => XCMV5SetFeesMode(jitWithdraw: jitWithdraw),
@@ -913,7 +1015,7 @@ abstract mixin class XCMSetFeesMode implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, jitWithdraw];
+  List get variables => [type, jitWithdraw];
 }
 
 abstract mixin class XCMSetTopic implements XCMInstruction {
@@ -927,7 +1029,7 @@ abstract mixin class XCMSetTopic implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, topic];
+  List get variables => [type, topic];
 }
 
 abstract mixin class XCMClearTopic implements XCMInstruction {
@@ -939,7 +1041,7 @@ abstract mixin class XCMClearTopic implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMAliasOrigin implements XCMInstruction {
@@ -953,7 +1055,7 @@ abstract mixin class XCMAliasOrigin implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, origin];
+  List get variables => [type, origin];
 }
 
 abstract mixin class XCMUnpaidExecution implements XCMInstruction {
@@ -966,13 +1068,13 @@ abstract mixin class XCMUnpaidExecution implements XCMInstruction {
     return {
       type.type: {
         "weight_limit": weightLimit.toJson(),
-        "check_origin": MetadataUtils.toOptionalJson(checkOrigin?.toJson())
-      }
+        "check_origin": MetadataUtils.toOptionalJson(checkOrigin?.toJson()),
+      },
     };
   }
 
   @override
-  List get variabels => [type, weightLimit, checkOrigin];
+  List get variables => [type, weightLimit, checkOrigin];
 }
 
 abstract mixin class XCMPayFees implements XCMInstruction {
@@ -985,7 +1087,7 @@ abstract mixin class XCMPayFees implements XCMInstruction {
   }
 
   @override
-  List get variabels => [type, asset];
+  List get variables => [type, asset];
 }
 
 abstract mixin class XCMInitiateTransfer implements XCMInstruction {

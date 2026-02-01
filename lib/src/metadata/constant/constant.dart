@@ -25,18 +25,18 @@ class MetadataConstant {
   /// unsuported template
   static const List<String> unsuportedTemplatePath = [
     "RuntimeCall",
-    "Instruction"
+    "Instruction",
   ];
 
   static const List<String> accountIndexPaths = [
     "sp_runtime",
     "multiaddress",
-    "MultiAddress"
+    "MultiAddress",
   ];
   static const List<String> account32IndexPaths = [
     "sp_core",
     "crypto",
-    "AccountId32"
+    "AccountId32",
   ];
   // sp_core, crypto, AccountId32
   static const List<String> signaturePath = ["sp_runtime", "MultiSignature"];
@@ -50,6 +50,6 @@ class MetadataConstant {
   static const List<String> knownNonceExtrinsicFieldNames = [
     "T::Nonce",
     "CheckNonce",
-    "nonce"
+    "nonce",
   ];
 }

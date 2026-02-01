@@ -9,8 +9,10 @@ enum DeprecationStatusTypes {
   deprecated;
 
   static DeprecationStatusTypes fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 }
 
@@ -20,7 +22,9 @@ abstract class DeprecationStatus extends SubstrateVariantSerialization {
 
   factory DeprecationStatus.deserialize(List<int> bytes, {String? property}) {
     final decode = SubstrateVariantSerialization.deserialize(
-        bytes: bytes, layout: layout_(property: property));
+      bytes: bytes,
+      layout: layout_(property: property),
+    );
     return DeprecationStatus.deserializeJson(decode);
   }
   factory DeprecationStatus.deserializeJson(Map<String, dynamic> json) {
@@ -55,7 +59,7 @@ class MetadataStatusDeprecated extends DeprecationStatus {
   /// Optional value for denoting version when the deprecation occurred.
   final String? since;
   const MetadataStatusDeprecated({required this.note, required this.since})
-      : super._(DeprecationStatusTypes.deprecated);
+    : super._(DeprecationStatusTypes.deprecated);
 
   factory MetadataStatusDeprecated.deserializeJson(Map<String, dynamic> json) {
     return MetadataStatusDeprecated(note: json["note"], since: json["since"]);
@@ -74,7 +78,7 @@ class MetadataStatusDeprecated extends DeprecationStatus {
 
 class MetadataStatusNotDeprecated extends DeprecationStatus {
   const MetadataStatusNotDeprecated()
-      : super._(DeprecationStatusTypes.notDeprecated);
+    : super._(DeprecationStatusTypes.notDeprecated);
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -89,7 +93,7 @@ class MetadataStatusNotDeprecated extends DeprecationStatus {
 
 class MetadataStatusDeprecatedWithoutNote extends DeprecationStatus {
   const MetadataStatusDeprecatedWithoutNote()
-      : super._(DeprecationStatusTypes.deprecatedWithoutNote);
+    : super._(DeprecationStatusTypes.deprecatedWithoutNote);
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {

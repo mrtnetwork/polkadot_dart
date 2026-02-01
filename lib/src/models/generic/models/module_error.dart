@@ -7,8 +7,9 @@ class ModuleError {
   const ModuleError({required this.error, required this.index});
   factory ModuleError.fromJson(Map<String, dynamic> json) {
     return ModuleError(
-        error: BytesUtils.fromHexString(json["error"]),
-        index: IntUtils.parse(json["index"]));
+      error: BytesUtils.fromHexString(json["error"]),
+      index: IntUtils.parse(json["index"]),
+    );
   }
   static ModuleError? tryFromJson(Object? json) {
     try {

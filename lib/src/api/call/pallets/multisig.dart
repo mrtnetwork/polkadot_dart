@@ -22,13 +22,17 @@ enum MultisigCallPalletMethod implements SubstrateCallPalletMethod {
   final int variantIndex;
   const MultisigCallPalletMethod(this.method, this.variantIndex);
   static MultisigCallPalletMethod fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static MultisigCallPalletMethod fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 }
 
@@ -46,26 +50,28 @@ class MultisigCallPalletAsMulti extends MultisigCallPallet {
   final List<int> call;
   final SubstrateWeightV2 maxWeight;
 
-  MultisigCallPalletAsMulti(
-      {required int threshold,
-      required List<BaseSubstrateAddress> otherSignatories,
-      this.maybeTimepoint,
-      required List<int> call,
-      required this.maxWeight,
-      super.pallet = SubtrateMetadataPallet.multisig})
-      : otherSignatories = otherSignatories.immutable,
-        call = call.asImmutableBytes,
-        threshold = threshold.asUint16,
-        super(type: MultisigCallPalletMethod.asMulti);
+  MultisigCallPalletAsMulti({
+    required int threshold,
+    required List<BaseSubstrateAddress> otherSignatories,
+    this.maybeTimepoint,
+    required List<int> call,
+    required this.maxWeight,
+    super.pallet = SubtrateMetadataPallet.multisig,
+  }) : otherSignatories = otherSignatories.immutable,
+       call = call.asImmutableBytes,
+       threshold = threshold.asU16,
+       super(type: MultisigCallPalletMethod.asMulti);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -74,11 +80,12 @@ class MultisigCallPalletAsMulti extends MultisigCallPallet {
       method ?? type.method: {
         "threshold": threshold,
         "other_signatories": otherSignatories.map((e) => e.toBytes()).toList(),
-        "maybe_timepoint":
-            MetadataUtils.toOptionalJson(maybeTimepoint?.toJson()),
+        "maybe_timepoint": MetadataUtils.toOptionalJson(
+          maybeTimepoint?.toJson(),
+        ),
         "call": LookupRawParam(bytes: call),
-        "max_weight": maxWeight.toJson()
-      }
+        "max_weight": maxWeight.toJson(),
+      },
     };
   }
 }
@@ -89,44 +96,53 @@ class MultisigCallPalletApproveAsMulti extends MultisigCallPallet {
   final MultisigExtrinsicInfo? maybeTimepoint;
   final List<int> callHash;
   final SubstrateWeightV2 maxWeight;
-  factory MultisigCallPalletApproveAsMulti.fromCall(
-      {required int threshold,
-      required List<BaseSubstrateAddress> otherSignatories,
-      MultisigExtrinsicInfo? maybeTimepoint,
-      SubtrateMetadataPallet pallet = SubtrateMetadataPallet.multisig,
-      required List<int> call,
-      required SubstrateWeightV2 maxWeight}) {
+  factory MultisigCallPalletApproveAsMulti.fromCall({
+    required int threshold,
+    required List<BaseSubstrateAddress> otherSignatories,
+    MultisigExtrinsicInfo? maybeTimepoint,
+    SubtrateMetadataPallet pallet = SubtrateMetadataPallet.multisig,
+    required List<int> call,
+    required SubstrateWeightV2 maxWeight,
+  }) {
     return MultisigCallPalletApproveAsMulti(
-        threshold: threshold,
-        otherSignatories: otherSignatories,
-        callHash: QuickCrypto.blake2b256Hash(call),
-        maxWeight: maxWeight,
-        maybeTimepoint: maybeTimepoint,
-        pallet: pallet);
+      threshold: threshold,
+      otherSignatories: otherSignatories,
+      callHash: QuickCrypto.blake2b256Hash(call),
+      maxWeight: maxWeight,
+      maybeTimepoint: maybeTimepoint,
+      pallet: pallet,
+    );
   }
 
-  MultisigCallPalletApproveAsMulti(
-      {required int threshold,
-      required List<BaseSubstrateAddress> otherSignatories,
-      this.maybeTimepoint,
-      required List<int> callHash,
-      required this.maxWeight,
-      super.pallet = SubtrateMetadataPallet.multisig})
-      : otherSignatories = otherSignatories.immutable,
-        callHash = callHash
-            .exc(SubstrateConstant.blockHashBytesLength)
-            .asImmutableBytes,
-        threshold = threshold.asUint16,
-        super(type: MultisigCallPalletMethod.approveAsMulti);
+  MultisigCallPalletApproveAsMulti({
+    required int threshold,
+    required List<BaseSubstrateAddress> otherSignatories,
+    this.maybeTimepoint,
+    required List<int> callHash,
+    required this.maxWeight,
+    super.pallet = SubtrateMetadataPallet.multisig,
+  }) : otherSignatories = otherSignatories.immutable,
+       callHash =
+           callHash
+               .exc(
+                 length: SubstrateConstant.blockHashBytesLength,
+                 operation: "MultisigCallPalletApproveAsMulti",
+                 reason: "Invalid callHash bytes length.",
+               )
+               .asImmutableBytes,
+       threshold = threshold.asU16,
+       super(type: MultisigCallPalletMethod.approveAsMulti);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -135,11 +151,12 @@ class MultisigCallPalletApproveAsMulti extends MultisigCallPallet {
       method ?? type.method: {
         "threshold": threshold,
         "other_signatories": otherSignatories.map((e) => e.toBytes()).toList(),
-        "maybe_timepoint":
-            MetadataUtils.toOptionalJson(maybeTimepoint?.toJson()),
+        "maybe_timepoint": MetadataUtils.toOptionalJson(
+          maybeTimepoint?.toJson(),
+        ),
         "call_hash": callHash,
-        "max_weight": maxWeight.toJson()
-      }
+        "max_weight": maxWeight.toJson(),
+      },
     };
   }
 }
@@ -156,21 +173,28 @@ class MultisigCallPalletCancelAsMulti extends MultisigCallPallet {
     required this.timepoint,
     required List<int> callHash,
     super.pallet = SubtrateMetadataPallet.multisig,
-  })  : otherSignatories = otherSignatories.immutable,
-        callHash = callHash
-            .exc(SubstrateConstant.blockHashBytesLength)
-            .asImmutableBytes,
-        threshold = threshold.asUint16,
-        super(type: MultisigCallPalletMethod.cancelAsMulti);
+  }) : otherSignatories = otherSignatories.immutable,
+       callHash =
+           callHash
+               .exc(
+                 length: SubstrateConstant.blockHashBytesLength,
+                 operation: "MultisigCallPalletCancelAsMulti",
+                 reason: "Invalid callHash bytes length.",
+               )
+               .asImmutableBytes,
+       threshold = threshold.asU16,
+       super(type: MultisigCallPalletMethod.cancelAsMulti);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -181,7 +205,7 @@ class MultisigCallPalletCancelAsMulti extends MultisigCallPallet {
         "other_signatories": otherSignatories.map((e) => e.toBytes()).toList(),
         "timepoint": timepoint.toJson(),
         "call_hash": callHash,
-      }
+      },
     };
   }
 }
@@ -194,18 +218,20 @@ class MultisigCallPalletAsMultiThreshold1 extends MultisigCallPallet {
     required List<BaseSubstrateAddress> otherSignatories,
     required List<int> call,
     super.pallet = SubtrateMetadataPallet.multisig,
-  })  : otherSignatories = otherSignatories.immutable,
-        call = call.asImmutableBytes,
-        super(type: MultisigCallPalletMethod.asMultiThreshold1);
+  }) : otherSignatories = otherSignatories.immutable,
+       call = call.asImmutableBytes,
+       super(type: MultisigCallPalletMethod.asMultiThreshold1);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -214,7 +240,7 @@ class MultisigCallPalletAsMultiThreshold1 extends MultisigCallPallet {
       method ?? type.method: {
         "other_signatories": otherSignatories.map((e) => e.toBytes()).toList(),
         "call": LookupRawParam(bytes: call),
-      }
+      },
     };
   }
 }
@@ -229,21 +255,29 @@ class MultisigCallPalletPokeDeposit extends MultisigCallPallet {
     required List<BaseSubstrateAddress> otherSignatories,
     required List<int> callHash,
     super.pallet = SubtrateMetadataPallet.multisig,
-  })  : otherSignatories = otherSignatories.immutable,
-        callHash = callHash
-            .exc(SubstrateConstant.blockHashBytesLength)
-            .asImmutableBytes,
-        threshold = threshold.asUint16,
-        super(type: MultisigCallPalletMethod.pokeDeposit);
+  }) : otherSignatories = otherSignatories.immutable,
+       callHash =
+           callHash
+               .exc(
+                 length: SubstrateConstant.blockHashBytesLength,
+                 name: "callHash",
+                 operation: "MultisigCallPalletPokeDeposit",
+                 reason: "Invalid callHash bytes length.",
+               )
+               .asImmutableBytes,
+       threshold = threshold.asU16,
+       super(type: MultisigCallPalletMethod.pokeDeposit);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override
@@ -253,7 +287,7 @@ class MultisigCallPalletPokeDeposit extends MultisigCallPallet {
         "threshold": threshold,
         "other_signatories": otherSignatories.map((e) => e.toBytes()).toList(),
         "call_hash": callHash,
-      }
+      },
     };
   }
 }

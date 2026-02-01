@@ -28,4 +28,5 @@ class SubstrateRequestStateGetChildReadProof
     return result.cast();
   }
 }
+
 // getChildReadProof(childStorageKey: PrefixedStorageKey, keys: Vec<StorageKey>, at?: BlockHash): ReadProof

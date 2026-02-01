@@ -5,8 +5,11 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#engine
 class SubstrateRequestEngineCreateBlock
     extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRequestEngineCreateBlock(
-      {required this.createEmpty, required this.finalize, this.parentHash});
+  const SubstrateRequestEngineCreateBlock({
+    required this.createEmpty,
+    required this.finalize,
+    this.parentHash,
+  });
   final bool createEmpty;
   final bool finalize;
   final String? parentHash;
@@ -20,4 +23,5 @@ class SubstrateRequestEngineCreateBlock
     return [createEmpty, finalize, parentHash];
   }
 }
+
 // createBlock(createEmpty: bool, finalize: bool, parentHash?: BlockHash): CreatedBlock

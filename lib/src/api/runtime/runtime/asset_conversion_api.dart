@@ -15,46 +15,54 @@ enum SubstrateRuntimeApiAssetConversionMethods
 /// safexcmversion
 class SubstrateRuntimeApiAssetConversion extends SubstrateRuntimeApi {
   const SubstrateRuntimeApiAssetConversion();
-  Future<BigInt?> _quotePriceExactTokensForTokens(
-      {required QuotePriceParams params,
-      required MetadataApi api,
-      required SubstrateProvider rpc,
-      required SubstrateRuntimeApiAssetConversionMethods method}) async {
+  Future<BigInt?> _quotePriceExactTokensForTokens({
+    required QuotePriceParams params,
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+    required SubstrateRuntimeApiAssetConversionMethods method,
+  }) async {
     final result = await callRuntimeApiInternal<Map<String, dynamic>>(
-        method: method,
-        api: api,
-        provider: rpc,
-        params: [
-          params.assetA.toJson(),
-          params.assetB.toJson(),
-          params.amount,
-          params.includeFee
-        ]);
+      method: method,
+      api: api,
+      provider: rpc,
+      params: [
+        params.assetA.toJson(),
+        params.assetB.toJson(),
+        params.amount,
+        params.includeFee,
+      ],
+    );
     return MetadataUtils.parseOptional(result);
   }
 
-  Future<BigInt?> quotePriceExactTokensForTokens(
-      {required QuotePriceParams params,
-      required MetadataApi api,
-      required SubstrateProvider rpc}) async {
+  Future<BigInt?> quotePriceExactTokensForTokens({
+    required QuotePriceParams params,
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     return _quotePriceExactTokensForTokens(
-        params: params,
-        api: api,
-        rpc: rpc,
-        method: SubstrateRuntimeApiAssetConversionMethods
-            .quotePriceExactTokensForTokens);
+      params: params,
+      api: api,
+      rpc: rpc,
+      method:
+          SubstrateRuntimeApiAssetConversionMethods
+              .quotePriceExactTokensForTokens,
+    );
   }
 
-  Future<BigInt?> quotePriceTokensForExactTokens(
-      {required QuotePriceParams params,
-      required MetadataApi api,
-      required SubstrateProvider rpc}) async {
+  Future<BigInt?> quotePriceTokensForExactTokens({
+    required QuotePriceParams params,
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     return _quotePriceExactTokensForTokens(
-        params: params,
-        api: api,
-        rpc: rpc,
-        method: SubstrateRuntimeApiAssetConversionMethods
-            .quotePriceTokensForExactTokens);
+      params: params,
+      api: api,
+      rpc: rpc,
+      method:
+          SubstrateRuntimeApiAssetConversionMethods
+              .quotePriceTokensForExactTokens,
+    );
   }
 
   @override

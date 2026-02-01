@@ -5,8 +5,10 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// This method is only active with appropriate flags
 /// https://polkadot.js.org/docs/substrate/rpc/#author
 class SubstrateRequestAuthorHasKey extends SubstrateRequest<bool, bool> {
-  const SubstrateRequestAuthorHasKey(
-      {required this.publicKey, required this.keyType});
+  const SubstrateRequestAuthorHasKey({
+    required this.publicKey,
+    required this.keyType,
+  });
   final String publicKey;
   final String keyType;
 

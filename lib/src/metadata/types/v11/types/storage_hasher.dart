@@ -14,25 +14,33 @@ class StorageHasherV11Options implements StorageHasher {
   final int hashLength;
   const StorageHasherV11Options._(this.name, {this.hashLength = 0});
   static const StorageHasherV11Options blake2128 = StorageHasherV11Options._(
-      "Blake2128",
-      hashLength: QuickCrypto.blake2b128DigestSize);
+    "Blake2128",
+    hashLength: QuickCrypto.blake2b128DigestSize,
+  );
   static const StorageHasherV11Options blake2256 = StorageHasherV11Options._(
-      "Blake2256",
-      hashLength: QuickCrypto.blake2b256DigestSize);
+    "Blake2256",
+    hashLength: QuickCrypto.blake2b256DigestSize,
+  );
   static const StorageHasherV11Options blake2128Concat =
-      StorageHasherV11Options._("Blake2128Concat",
-          hashLength: QuickCrypto.blake2b128DigestSize);
+      StorageHasherV11Options._(
+        "Blake2128Concat",
+        hashLength: QuickCrypto.blake2b128DigestSize,
+      );
   static const StorageHasherV11Options twox128 = StorageHasherV11Options._(
-      "Twox128",
-      hashLength: QuickCrypto.twoX128DigestSize);
+    "Twox128",
+    hashLength: QuickCrypto.twoX128DigestSize,
+  );
   static const StorageHasherV11Options twox256 = StorageHasherV11Options._(
-      "Twox256",
-      hashLength: QuickCrypto.twoX256DigestSize);
+    "Twox256",
+    hashLength: QuickCrypto.twoX256DigestSize,
+  );
   static const StorageHasherV11Options twox64Concat = StorageHasherV11Options._(
-      "Twox64Concat",
-      hashLength: QuickCrypto.twoX64DigestSize);
-  static const StorageHasherV11Options identity =
-      StorageHasherV11Options._("Identity");
+    "Twox64Concat",
+    hashLength: QuickCrypto.twoX64DigestSize,
+  );
+  static const StorageHasherV11Options identity = StorageHasherV11Options._(
+    "Identity",
+  );
   static const List<StorageHasherV11Options> values = [
     StorageHasherV11Options.blake2128,
     StorageHasherV11Options.blake2256,
@@ -40,12 +48,14 @@ class StorageHasherV11Options implements StorageHasher {
     StorageHasherV11Options.twox128,
     StorageHasherV11Options.twox256,
     StorageHasherV11Options.twox64Concat,
-    StorageHasherV11Options.identity
+    StorageHasherV11Options.identity,
   ];
 
   static StorageHasherV11Options fromValue(String? value) {
-    return values.firstWhere((element) => element.name == value,
-        orElse: () => throw ItemNotFoundException(value: value));
+    return values.firstWhere(
+      (element) => element.name == value,
+      orElse: () => throw ItemNotFoundException(value: value),
+    );
   }
 
   @override
@@ -67,8 +77,10 @@ class StorageHasherV11Options implements StorageHasher {
       case StorageHasherV11Options.twox64Concat:
         return [...QuickCrypto.twoX64(toBytes), ...toBytes];
       default:
-        throw MetadataException("Invalid Hasher option v11",
-            details: {"hasher": name});
+        throw MetadataException(
+          "Invalid Hasher option v11",
+          details: {"hasher": name},
+        );
     }
   }
 
@@ -89,7 +101,7 @@ class StorageHasherV11 extends SubstrateSerialization<Map<String, dynamic>> {
   final StorageHasherV11Options option;
   const StorageHasherV11(this.option);
   StorageHasherV11.deserializeJson(Map<String, dynamic> json)
-      : option = StorageHasherV11Options.fromValue(json.keys.firstOrNull);
+    : option = StorageHasherV11Options.fromValue(json.keys.firstOrNull);
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>
       SubstrateMetadataLayouts.storageHasherV11(property: property);

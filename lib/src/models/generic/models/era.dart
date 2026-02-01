@@ -22,22 +22,26 @@ class _EraUtils {
     return count;
   }
 
-  static List<int> blockNumberToEra(int blockNumber,
-      {int period = SubstrateConstant.defaultMortalLength}) {
+  static List<int> blockNumberToEra(
+    int blockNumber, {
+    int period = SubstrateConstant.defaultMortalLength,
+  }) {
     int calPeriod =
         math.pow(2, (math.log(period) / math.log(2)).ceil()).toInt();
     calPeriod = math.min(math.max(calPeriod, 4), 1 << 16);
     final phase = blockNumber % calPeriod;
-    final encoded = math.min(15, math.max(1, getTrailingZeros(calPeriod) - 1)) +
+    final encoded =
+        math.min(15, math.max(1, getTrailingZeros(calPeriod) - 1)) +
         ((phase ~/ (math.max(calPeriod >> 12, 1)) << 4));
-    final toBytes = [encoded & mask8, encoded >> 8];
+    final toBytes = [encoded & BinaryOps.mask8, encoded >> 8];
     return toBytes;
   }
 
   static List<int> encodeEraPhase({required int phase, required int period}) {
-    final encoded = math.min(15, math.max(1, getTrailingZeros(period) - 1)) +
+    final encoded =
+        math.min(15, math.max(1, getTrailingZeros(period) - 1)) +
         ((phase ~/ (math.max(period >> 12, 1)) << 4));
-    final toBytes = [encoded & mask8, encoded >> 8];
+    final toBytes = [encoded & BinaryOps.mask8, encoded >> 8];
     return toBytes;
   }
 }
@@ -48,11 +52,14 @@ abstract class SubstrateBaseEra
   factory SubstrateBaseEra.deserializeJson(Map<String, dynamic> json) {
     final key = json.keys.firstOrNull;
     if (key == _SubstrateEraConst.immortal) return ImmortalEra();
-    final eraIndex =
-        int.tryParse(key?.replaceFirst(_SubstrateEraConst.mortal, '') ?? '');
+    final eraIndex = int.tryParse(
+      key?.replaceFirst(_SubstrateEraConst.mortal, '') ?? '',
+    );
     if (eraIndex == null || eraIndex > 255 || eraIndex < 0) {
-      throw DartSubstratePluginException("Invalid provided era json.",
-          details: {"value": key});
+      throw DartSubstratePluginException(
+        "Invalid provided era json.",
+        details: {"value": key},
+      );
     }
     return MortalEra(index: eraIndex, era: json.valueAs(key!));
   }
@@ -60,7 +67,9 @@ abstract class SubstrateBaseEra
     return LayoutConst.rustEnum([
       LayoutConst.none(property: "Immortal"),
       ...List.generate(
-          255, (index) => LayoutConst.u8(property: "Mortal${index + 1}"))
+        255,
+        (index) => LayoutConst.u8(property: "Mortal${index + 1}"),
+      ),
     ], property: property);
   }
 
@@ -81,16 +90,19 @@ class MortalEra extends SubstrateBaseEra {
   final int index;
   final int era;
   MortalEra({required int index, required int era})
-      : index = MetadataCastingUtils.validateU8(index,
-            max: _SubstrateEraConst.maximumEraIndex),
-        era = MetadataCastingUtils.validateU8(era);
+    : index = MetadataCastingUtils.validateU8(
+        index,
+        max: _SubstrateEraConst.maximumEraIndex,
+      ),
+      era = MetadataCastingUtils.validateU8(era);
   factory MortalEra.fromPhase({required int period, required int phase}) {
     final encode = _EraUtils.encodeEraPhase(phase: phase, period: period);
     return MortalEra(index: encode[0], era: encode[1]);
   }
-  factory MortalEra.fromBlockNumber(
-      {required int blockNumber,
-      int period = SubstrateConstant.defaultMortalLength}) {
+  factory MortalEra.fromBlockNumber({
+    required int blockNumber,
+    int period = SubstrateConstant.defaultMortalLength,
+  }) {
     final encode = _EraUtils.blockNumberToEra(blockNumber, period: period);
     return MortalEra(index: encode[0], era: encode[1]);
   }

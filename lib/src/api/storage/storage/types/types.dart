@@ -21,8 +21,7 @@ enum SubstrateStorageApis {
   xcmInfo("XcmInfo"),
   multisig("Multisig"),
   xcmTransactor("XcmTransactor"),
-  xcmWeightTrader("XcmWeightTrader"),
-  ;
+  xcmWeightTrader("XcmWeightTrader");
 
   final String name;
   const SubstrateStorageApis(this.name);
@@ -42,16 +41,17 @@ abstract class BaseSubstrateAccount<DATA extends Object> {
   final int providers;
   final int sufficients;
   abstract final DATA data;
-  const BaseSubstrateAccount(
-      {required this.nonce,
-      required this.consumers,
-      required this.providers,
-      required this.sufficients});
+  const BaseSubstrateAccount({
+    required this.nonce,
+    required this.consumers,
+    required this.providers,
+    required this.sufficients,
+  });
   BaseSubstrateAccount.deserializeJson(Map<String, dynamic> json)
-      : nonce = BigintUtils.parse(json["nonce"]),
-        consumers = json["consumers"],
-        providers = json["providers"],
-        sufficients = json["sufficients"];
+    : nonce = BigintUtils.parse(json["nonce"]),
+      consumers = json["consumers"],
+      providers = json["providers"],
+      sufficients = json["sufficients"];
 
   Map<String, dynamic> toJson({String? property}) {
     return {
@@ -66,15 +66,16 @@ abstract class BaseSubstrateAccount<DATA extends Object> {
 class SubstrateAccount extends BaseSubstrateAccount<Object> {
   @override
   final Object data;
-  const SubstrateAccount(
-      {required super.nonce,
-      required super.consumers,
-      required super.providers,
-      required super.sufficients,
-      required this.data});
+  const SubstrateAccount({
+    required super.nonce,
+    required super.consumers,
+    required super.providers,
+    required super.sufficients,
+    required this.data,
+  });
   SubstrateAccount.deserializeJson(super.json)
-      : data = json["data"],
-        super.deserializeJson();
+    : data = json["data"],
+      super.deserializeJson();
 
   @override
   Map<String, dynamic> toJson({String? property}) {
@@ -86,15 +87,16 @@ class SubstrateDefaultAccount
     extends BaseSubstrateAccount<SubstrateAccountData> {
   @override
   final SubstrateAccountData data;
-  const SubstrateDefaultAccount(
-      {required super.nonce,
-      required super.consumers,
-      required super.providers,
-      required super.sufficients,
-      required this.data});
+  const SubstrateDefaultAccount({
+    required super.nonce,
+    required super.consumers,
+    required super.providers,
+    required super.sufficients,
+    required this.data,
+  });
   SubstrateDefaultAccount.deserializeJson(super.json)
-      : data = SubstrateAccountData.deserializeJson(json["data"]),
-        super.deserializeJson();
+    : data = SubstrateAccountData.deserializeJson(json["data"]),
+      super.deserializeJson();
 
   @override
   Map<String, dynamic> toJson({String? property}) {
@@ -108,23 +110,24 @@ class SubstrateAccountData {
   final BigInt? reserved;
   final BigInt? frozen;
   final BigInt? flags;
-  const SubstrateAccountData(
-      {required this.flags,
-      required this.reserved,
-      required this.frozen,
-      required this.free});
+  const SubstrateAccountData({
+    required this.flags,
+    required this.reserved,
+    required this.frozen,
+    required this.free,
+  });
   SubstrateAccountData.deserializeJson(Map<String, dynamic> json)
-      : free = json["free"],
-        reserved = json["reserved"],
-        flags = json["flags"],
-        frozen = json["frozen"];
+    : free = json["free"],
+      reserved = json["reserved"],
+      flags = json["flags"],
+      frozen = json["frozen"];
 
   Map<String, dynamic> toJson({String? property}) {
     return {
       "free": free,
       "reserved": reserved,
       "frozen": frozen,
-      "flags": flags
+      "flags": flags,
     };
   }
 }
@@ -133,11 +136,13 @@ class MultisigExtrinsicInfo {
   final int height;
   final int index;
   MultisigExtrinsicInfo({required int height, required int index})
-      : height = height.asUint32,
-        index = index.asUint32;
+    : height = height.asU32,
+      index = index.asU32;
   factory MultisigExtrinsicInfo.fromJson(Map<String, dynamic> json) {
     return MultisigExtrinsicInfo(
-        height: json.valueAs("height"), index: json.valueAs("index"));
+      height: json.valueAs("height"),
+      index: json.valueAs("index"),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -150,23 +155,26 @@ class SubstrateMultisig {
   final BigInt deposit;
   final BaseSubstrateAddress depositor;
   final List<BaseSubstrateAddress> approvals;
-  SubstrateMultisig(
-      {required this.when,
-      required this.deposit,
-      required this.depositor,
-      required List<BaseSubstrateAddress> approvals})
-      : approvals = approvals.immutable;
+  SubstrateMultisig({
+    required this.when,
+    required this.deposit,
+    required this.depositor,
+    required List<BaseSubstrateAddress> approvals,
+  }) : approvals = approvals.immutable;
   factory SubstrateMultisig.fromJson(Map<String, dynamic> json) {
     return SubstrateMultisig(
-        when: MultisigExtrinsicInfo.fromJson(json.valueAs("when")),
-        deposit: json.valueAsBigInt("deposit"),
-        depositor:
-            BaseSubstrateAddress.fromBytes(json.valueAsBytes("depositor")),
-        approvals: json
-            .valueEnsureAsList<String>("approvals")
-            .map((e) =>
-                BaseSubstrateAddress.fromBytes(BytesUtils.fromHexString(e)))
-            .toList());
+      when: MultisigExtrinsicInfo.fromJson(json.valueAs("when")),
+      deposit: json.valueAsBigInt("deposit"),
+      depositor: BaseSubstrateAddress.fromBytes(json.valueAsBytes("depositor")),
+      approvals:
+          json
+              .valueEnsureAsList<String>("approvals")
+              .map(
+                (e) =>
+                    BaseSubstrateAddress.fromBytes(BytesUtils.fromHexString(e)),
+              )
+              .toList(),
+    );
   }
 }
 
@@ -174,9 +182,17 @@ class SubstrateMultisigWithCallhash {
   final SubstrateMultisig multisig;
   final List<int> callHash;
   final String callHashHex;
-  SubstrateMultisigWithCallhash(
-      {required this.multisig, required List<int> callHash})
-      : callHash =
-            callHash.exc(QuickCrypto.blake2b256DigestSize).asImmutableBytes,
-        callHashHex = BytesUtils.toHexString(callHash);
+  SubstrateMultisigWithCallhash({
+    required this.multisig,
+    required List<int> callHash,
+  }) : callHash =
+           callHash
+               .exc(
+                 length: QuickCrypto.blake2b256DigestSize,
+                 name: "callHash",
+                 operation: "SubstrateMultisigWithCallhash",
+                 reason: "Invalid callHash length.",
+               )
+               .asImmutableBytes,
+       callHashHex = BytesUtils.toHexString(callHash);
 }

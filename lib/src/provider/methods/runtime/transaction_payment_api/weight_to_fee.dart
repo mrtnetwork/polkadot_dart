@@ -9,8 +9,10 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 class SubstrateRequestRuntimeTransactionPaymentApiQueryWeightToFee
     extends SubstrateRequest<String, BigInt> {
   final SubstrateWeightV2 weigth;
-  const SubstrateRequestRuntimeTransactionPaymentApiQueryWeightToFee(
-      {required this.weigth, this.atBlockHash});
+  const SubstrateRequestRuntimeTransactionPaymentApiQueryWeightToFee({
+    required this.weigth,
+    this.atBlockHash,
+  });
 
   final String? atBlockHash;
 
@@ -22,7 +24,7 @@ class SubstrateRequestRuntimeTransactionPaymentApiQueryWeightToFee
     return [
       "TransactionPaymentApi_query_weight_to_fee",
       weigth.toHex(prefix: "0x"),
-      atBlockHash
+      atBlockHash,
     ];
   }
 

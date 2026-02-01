@@ -7,19 +7,20 @@ import 'package:polkadot_dart/src/provider/provider.dart';
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
 class SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee
     extends SubstrateRequest<String, String> {
-  const SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee(
-      {required this.data, this.atBlockHash});
-  factory SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee.encode(
-      {required SubstrateWeightV2 weight,
-      required XCMVersionedAssetId asset,
-      String? atBlockHash}) {
-    final data = [
-      ...weight.serialize(),
-      ...asset.serializeVariant(),
-    ];
+  const SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee({
+    required this.data,
+    this.atBlockHash,
+  });
+  factory SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee.encode({
+    required SubstrateWeightV2 weight,
+    required XCMVersionedAssetId asset,
+    String? atBlockHash,
+  }) {
+    final data = [...weight.serialize(), ...asset.serializeVariant()];
     return SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee(
-        data: BytesUtils.toHexString(data, prefix: "0x"),
-        atBlockHash: atBlockHash);
+      data: BytesUtils.toHexString(data, prefix: "0x"),
+      atBlockHash: atBlockHash,
+    );
   }
 
   final String? atBlockHash;

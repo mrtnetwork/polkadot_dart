@@ -21,22 +21,19 @@ class PalletAssociatedTypeMetadata
     required List<String> docs,
   }) : docs = docs.immutable;
   PalletAssociatedTypeMetadata.deserializeJson(Map<String, dynamic> json)
-      : name = json["name"],
-        type = json["type"],
-        docs = (json["docs"] as List).cast<String>().immutable;
+    : name = json["name"],
+      type = json["type"],
+      docs = (json["docs"] as List).cast<String>().immutable;
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.palletAssociatedTypeMetadata(
-        property: property);
+      property: property,
+    );
   }
 
   @override
   Map<String, dynamic> serializeJson({String? property}) {
-    return {
-      "type": type,
-      "name": name,
-      "docs": docs,
-    };
+    return {"type": type, "name": name, "docs": docs};
   }
 }

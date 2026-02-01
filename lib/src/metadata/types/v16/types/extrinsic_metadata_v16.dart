@@ -28,24 +28,32 @@ class ExtrinsicMetadataV16 extends ExtrinsicMetadata {
     required this.signatureType,
     required List<TransactionExtensionMetadata> transactionExtensions,
     required Map<int, List<int>> transactionExtensionsByVersion,
-  })  : transactionExtensions = List<TransactionExtensionMetadata>.unmodifiable(
-            transactionExtensions),
-        transactionExtensionsByVersion = transactionExtensionsByVersion
-            .map((k, v) => MapEntry(k, v.immutable))
-            .immutable,
-        versions = versions.immutable;
+  }) : transactionExtensions = List<TransactionExtensionMetadata>.unmodifiable(
+         transactionExtensions,
+       ),
+       transactionExtensionsByVersion =
+           transactionExtensionsByVersion
+               .map((k, v) => MapEntry(k, v.immutable))
+               .immutable,
+       versions = versions.immutable;
   ExtrinsicMetadataV16.deserializeJson(Map<String, dynamic> json)
-      : transactionExtensions = List<TransactionExtensionMetadata>.unmodifiable(
-            (json["transaction_extensions"] as List)
-                .map((e) => TransactionExtensionMetadata.deserializeJson(e))),
-        addressType = json["addressType"],
-        signatureType = json["signatureType"],
-        transactionExtensionsByVersion =
-            (json["transaction_extensions_by_version"] as Map)
-                .map((k, v) => MapEntry<int, List<int>>(
-                    k, (v as List).cast<int>().immutable))
-                .immutable,
-        versions = (json["versions"] as List).cast<int>().immutable;
+    : transactionExtensions = List<TransactionExtensionMetadata>.unmodifiable(
+        (json["transaction_extensions"] as List).map(
+          (e) => TransactionExtensionMetadata.deserializeJson(e),
+        ),
+      ),
+      addressType = json["addressType"],
+      signatureType = json["signatureType"],
+      transactionExtensionsByVersion =
+          (json["transaction_extensions_by_version"] as Map)
+              .map(
+                (k, v) => MapEntry<int, List<int>>(
+                  k,
+                  (v as List).cast<int>().immutable,
+                ),
+              )
+              .immutable,
+      versions = (json["versions"] as List).cast<int>().immutable;
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -60,7 +68,7 @@ class ExtrinsicMetadataV16 extends ExtrinsicMetadata {
       "signatureType": signatureType,
       "transaction_extensions":
           transactionExtensions.map((e) => e.serializeJson()).toList(),
-      "transaction_extensions_by_version": transactionExtensionsByVersion
+      "transaction_extensions_by_version": transactionExtensionsByVersion,
     };
   }
 }

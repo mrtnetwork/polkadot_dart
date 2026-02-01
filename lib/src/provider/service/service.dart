@@ -19,6 +19,7 @@ mixin SubstrateServiceProvider
   /// }
   @override
   Future<SubstrateServiceResponse<T>> doRequest<T>(
-      SubstrateRequestDetails params,
-      {Duration? timeout});
+    SubstrateRequestDetails params, {
+    Duration? timeout,
+  });
 }

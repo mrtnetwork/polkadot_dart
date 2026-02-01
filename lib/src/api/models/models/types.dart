@@ -9,8 +9,9 @@ class MetadataWithExtrinsic {
   const MetadataWithExtrinsic({required this.api, required this.extrinsic});
   factory MetadataWithExtrinsic.fromMetadata(MetadataApi api) {
     return MetadataWithExtrinsic(
-        api: api,
-        extrinsic: ExtrinsicBuilderUtils.buildExtrinsicFieldsAtVersion(api));
+      api: api,
+      extrinsic: ExtrinsicBuilderUtils.buildExtrinsicFieldsAtVersion(api),
+    );
   }
 }
 

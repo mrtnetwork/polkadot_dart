@@ -4,14 +4,15 @@ import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
 
 abstract class BaseUniqueNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseUniqueNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseUniqueNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseUniqueNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -32,9 +33,9 @@ class UniqueNetworkAsset extends BaseUniqueNetworkAsset {
     super.minBalance,
   }) : super(excutionPallet: SubtrateMetadataPallet.erc20XcmBridge);
   UniqueNetworkAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        assetId = json.valueAs("asset_id"),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      assetId = json.valueAs("asset_id"),
+      super.fromJson();
   @override
   SubstrateAssetType get type => SubstrateAssetType.token;
 
@@ -48,7 +49,7 @@ class UniqueNetworkAsset extends BaseUniqueNetworkAsset {
     return {
       "location": location.toJson(),
       ...super.toJson(),
-      "asset_id": assetId.toString()
+      "asset_id": assetId.toString(),
     };
   }
 }
@@ -68,8 +69,8 @@ class UniqueNetworkNativeAsset extends BaseUniqueNetworkAsset {
     super.minBalance,
   }) : super(excutionPallet: SubtrateMetadataPallet.balances);
   UniqueNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
 

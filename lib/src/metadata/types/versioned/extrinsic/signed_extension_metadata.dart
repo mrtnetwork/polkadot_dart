@@ -11,20 +11,18 @@ abstract class SignedExtensionMetadata
   final int type;
   const SignedExtensionMetadata({required this.identifier, required this.type});
   SignedExtensionMetadata.deserializeJson(Map<String, dynamic> json)
-      : identifier = json["identifier"],
-        type = json["type"];
+    : identifier = json["identifier"],
+      type = json["type"];
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.signedExtensionMetadataV14(
-        property: property);
+      property: property,
+    );
   }
 
   @override
   Map<String, dynamic> serializeJson({String? property}) {
-    return {
-      "identifier": identifier,
-      "type": type,
-    };
+    return {"identifier": identifier, "type": type};
   }
 }

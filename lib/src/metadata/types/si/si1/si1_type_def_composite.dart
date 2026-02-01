@@ -13,11 +13,12 @@ import 'si1_field.dart';
 class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
   final List<Si1Field> fields;
   Si1TypeDefComposite(List<Si1Field> fields)
-      : fields = List<Si1Field>.unmodifiable(fields);
+    : fields = List<Si1Field>.unmodifiable(fields);
   Si1TypeDefComposite.deserializeJson(Map<String, dynamic> json)
-      : fields = (json["fields"] as List)
-            .map((e) => Si1Field.deserializeJson(e))
-            .toList();
+    : fields =
+          (json["fields"] as List)
+              .map((e) => Si1Field.deserializeJson(e))
+              .toList();
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -47,52 +48,71 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
     List<Si1Field> fields = this.fields;
     if (lookup != null) fields = fields.where((e) => e.type == lookup).toList();
     return TypeTemlate(
-        lookupId: id,
-        type: typeName,
-        children: fields
-            .map((e) => registry
-                .typeTemplate(e.type)
-                .copyWith(name: e.name, typeName: e.typeName))
-            .toList());
+      lookupId: id,
+      type: typeName,
+      children:
+          fields
+              .map(
+                (e) => registry
+                    .typeTemplate(e.type)
+                    .copyWith(name: e.name, typeName: e.typeName),
+              )
+              .toList(),
+    );
   }
 
   /// Checks the provided [value] and returns the correct data compared to the template or simple design,
   /// using the provided [registry], [fromTemplate] flag, and optional [property].
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     if (fields.isEmpty) return null;
     if (fields.length == 1 && !fields[0].hasName) {
       return registry.getValue(
-          id: fields[0].type, value: value, fromTemplate: fromTemplate);
+        id: fields[0].type,
+        value: value,
+        fromTemplate: fromTemplate,
+      );
     }
     final Object? data = MetadataCastingUtils.getValue(
-        value: value,
-        type: typeName,
-        fromTemplate: fromTemplate,
-        id: self,
-        registry: registry);
+      value: value,
+      type: typeName,
+      fromTemplate: fromTemplate,
+      id: self,
+      registry: registry,
+    );
     if (fields[0].hasName) {
       final mapValue = MetadataCastingUtils.isMap<String, dynamic>(data);
 
       final Map<String, dynamic> values = {};
       for (final i in fields) {
         final value = registry.getValue(
-            id: i.type, value: mapValue[i.name], fromTemplate: fromTemplate);
+          id: i.type,
+          value: mapValue[i.name],
+          fromTemplate: fromTemplate,
+        );
         values[i.name!] = value;
       }
       return values;
     }
     final listValue = MetadataCastingUtils.asList(
-        value: data, length: fields.length, lookupId: self, type: typeName);
+      value: data,
+      length: fields.length,
+      lookupId: self,
+      type: typeName,
+    );
     final List<Object?> values = [];
     for (int i = 0; i < fields.length; i++) {
       final field = fields[i];
       final value = registry.getValue(
-          id: field.type, value: listValue[i], fromTemplate: fromTemplate);
+        id: field.type,
+        value: listValue[i],
+        fromTemplate: fromTemplate,
+      );
       values.add(value);
     }
     return values;
@@ -124,29 +144,44 @@ class Si1TypeDefComposite extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     if (fields.isEmpty) {
       return LayoutConst.none(property: property);
     }
     if (fields.length == 1 && !fields[0].hasName) {
-      return registry.serializationLayout(fields[0].type,
-          property: property, params: params);
+      return registry.serializationLayout(
+        fields[0].type,
+        property: property,
+        params: params,
+      );
     }
     if (fields[0].hasName) {
       return LayoutConst.lazyStruct(
-          fields
-              .map((e) => LazyLayout(
-                  layout: ({property}) => registry.serializationLayout(e.type,
-                      property: property, params: params),
-                  property: e.name))
-              .toList(),
-          property: property);
+        fields
+            .map(
+              (e) => LazyStructLayoutBuilder(
+                layout:
+                    (property, _) => registry.serializationLayout(
+                      e.type,
+                      property: property,
+                      params: params,
+                    ),
+                property: e.name,
+              ),
+            )
+            .toList(),
+        property: property,
+      );
     }
     return LayoutConst.tuple(
-        fields
-            .map((e) => registry.serializationLayout(e.type, params: params))
-            .toList(),
-        property: property);
+      fields
+          .map((e) => registry.serializationLayout(e.type, params: params))
+          .toList(),
+      property: property,
+    );
   }
 }

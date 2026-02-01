@@ -16,89 +16,106 @@ extension QueryHelper on MetadataApi {
   // /// Function to generate storage key based on pallet name/index, method name, value, and template
 
   @Deprecated("Use `getStorageRequest` instead.")
-  Future<QueryStorageResponse<T>> getStorage<T>(
-      {required QueryStorageRequest<T> request,
-      required SubstrateProvider rpc,
-      required bool fromTemplate,
-      String? atBlockHash}) async {
+  Future<QueryStorageResponse<T>> getStorage<T>({
+    required QueryStorageRequest<T> request,
+    required SubstrateProvider rpc,
+    required bool fromTemplate,
+    String? atBlockHash,
+  }) async {
     final storageKey = generateStorageKey(
-        methodName: request.methodName,
-        palletNameOrIndex: request.palletNameOrIndex,
-        value: request.input,
-        fromTemplate: fromTemplate);
-    final rpcMethod =
-        SubstrateRequestGetStorage(storageKey.key, atBlockHash: atBlockHash);
+      methodName: request.methodName,
+      palletNameOrIndex: request.palletNameOrIndex,
+      value: request.input,
+      fromTemplate: fromTemplate,
+    );
+    final rpcMethod = SubstrateRequestGetStorage(
+      storageKey.key,
+      atBlockHash: atBlockHash,
+    );
     final response = await rpc.request(rpcMethod);
     final List<int>? queryResponse = BytesUtils.tryFromHexString(response);
     final T storageData = decodeStorageOutput(
-        palletNameOrIndex: request.palletNameOrIndex,
-        methodName: request.methodName,
-        queryResponse: queryResponse);
+      palletNameOrIndex: request.palletNameOrIndex,
+      methodName: request.methodName,
+      queryResponse: queryResponse,
+    );
     return request.toResponse(storageData);
   }
 
   @Deprecated("Use `queryStorageAtBlock` instead.")
-  Future<QueryStorageRequestBlock> queryStorageAt(
-      {required List<QueryStorageRequest> requestes,
-      required SubstrateProvider rpc,
-      required bool fromTemplate,
-      String? atBlockHash}) async {
+  Future<QueryStorageRequestBlock> queryStorageAt({
+    required List<QueryStorageRequest> requestes,
+    required SubstrateProvider rpc,
+    required bool fromTemplate,
+    String? atBlockHash,
+  }) async {
     final result = await _queryStorage(
-        requestes: requestes,
-        rpc: rpc,
-        fromTemplate: fromTemplate,
-        atBlockHash: atBlockHash);
+      requestes: requestes,
+      rpc: rpc,
+      fromTemplate: fromTemplate,
+      atBlockHash: atBlockHash,
+    );
     return result[0];
   }
 
   @Deprecated("Use `queryStorageFromBlock` instead.")
-  Future<List<QueryStorageRequestBlock>> queryStorage<T>(
-      {required List<QueryStorageRequest> requestes,
-      required SubstrateProvider rpc,
-      required String fromBlock,
-      required bool fromTemplate,
-      String? toBlock}) {
+  Future<List<QueryStorageRequestBlock>> queryStorage<T>({
+    required List<QueryStorageRequest> requestes,
+    required SubstrateProvider rpc,
+    required String fromBlock,
+    required bool fromTemplate,
+    String? toBlock,
+  }) {
     return _queryStorage(
-        requestes: requestes,
-        rpc: rpc,
-        fromBlock: fromBlock,
-        atBlockHash: toBlock,
-        fromTemplate: fromTemplate);
+      requestes: requestes,
+      rpc: rpc,
+      fromBlock: fromBlock,
+      atBlockHash: toBlock,
+      fromTemplate: fromTemplate,
+    );
   }
 
   @Deprecated("")
-  Future<List<QueryStorageRequestBlock>> _queryStorage<T>(
-      {required List<QueryStorageRequest> requestes,
-      required SubstrateProvider rpc,
-      required bool fromTemplate,
-      String? fromBlock,
-      String? atBlockHash}) async {
+  Future<List<QueryStorageRequestBlock>> _queryStorage<T>({
+    required List<QueryStorageRequest> requestes,
+    required SubstrateProvider rpc,
+    required bool fromTemplate,
+    String? fromBlock,
+    String? atBlockHash,
+  }) async {
     final List<String> storageKeys = [];
     for (int i = 0; i < requestes.length; i++) {
       final QueryStorageRequest request = requestes[i];
 
       final storageKey = generateStorageKey(
-          methodName: request.methodName,
-          palletNameOrIndex: request.palletNameOrIndex,
-          value: request.input,
-          fromTemplate: fromTemplate);
+        methodName: request.methodName,
+        palletNameOrIndex: request.palletNameOrIndex,
+        value: request.input,
+        fromTemplate: fromTemplate,
+      );
       storageKeys.add(storageKey.key);
     }
-    final rpcMethod = fromBlock == null
-        ? SubstrateRequestQuerStateStorageAt([...storageKeys],
-            atBlockHash: atBlockHash)
-        : SubstrateRequestStateQueryStorage(
-            keys: [...storageKeys], fromBlock: fromBlock, toBlock: atBlockHash);
+    final rpcMethod =
+        fromBlock == null
+            ? SubstrateRequestQuerStateStorageAt([
+              ...storageKeys,
+            ], atBlockHash: atBlockHash)
+            : SubstrateRequestStateQueryStorage(
+              keys: [...storageKeys],
+              fromBlock: fromBlock,
+              toBlock: atBlockHash,
+            );
     final List<QueryStorageRequestBlock> blockResult = [];
     final response = await rpc.request(rpcMethod);
     for (int i = 0; i < response.length; i++) {
       final Map<String, dynamic> result = (response[i] as Map).cast();
       final block = result[_rpcJsonBlockKey];
       final changes = StorageChangeStateResponse(
-          (result[_rpcJsonStorageChangesKey] as List)
-              .map((e) => List<String?>.from(e))
-              .toList()
-              .cast());
+        (result[_rpcJsonStorageChangesKey] as List)
+            .map((e) => List<String?>.from(e))
+            .toList()
+            .cast(),
+      );
       final List<QueryStorageResponse> results = [];
 
       for (int i = 0; i < requestes.length; i++) {
@@ -106,9 +123,10 @@ extension QueryHelper on MetadataApi {
         final String storageKey = storageKeys[i];
         final List<int>? queryResponse = changes.getValue(storageKey);
         final T storageData = decodeStorageOutput(
-            palletNameOrIndex: request.palletNameOrIndex,
-            methodName: request.methodName,
-            queryResponse: queryResponse);
+          palletNameOrIndex: request.palletNameOrIndex,
+          methodName: request.methodName,
+          queryResponse: queryResponse,
+        );
         results.add(request.toResponse(storageData));
       }
       blockResult.add(QueryStorageRequestBlock(request: results, block: block));
@@ -116,62 +134,73 @@ extension QueryHelper on MetadataApi {
     return blockResult;
   }
 
-  Future<RESPONSE> getStorageRequest<RESPONSE extends Object?,
-          DECODEDRESPONSE extends Object>(
-      {required GetStorageRequest<RESPONSE, DECODEDRESPONSE> request,
-      required SubstrateProvider rpc,
-      bool fromTemplate = false,
-      String? atBlockHash}) async {
+  Future<RESPONSE>
+  getStorageRequest<RESPONSE extends Object?, DECODEDRESPONSE extends Object>({
+    required GetStorageRequest<RESPONSE, DECODEDRESPONSE> request,
+    required SubstrateProvider rpc,
+    bool fromTemplate = false,
+    String? atBlockHash,
+  }) async {
     final storageKey = generateStorageKey(
-        methodName: request.methodName,
-        palletNameOrIndex: request.palletNameOrIndex,
-        value: request.inputs,
-        fromTemplate: fromTemplate,
-        onEncodeInputs: request.onEncodeInputs);
-    final rpcMethod =
-        SubstrateRequestGetStorage(storageKey.key, atBlockHash: atBlockHash);
+      methodName: request.methodName,
+      palletNameOrIndex: request.palletNameOrIndex,
+      value: request.inputs,
+      fromTemplate: fromTemplate,
+      onEncodeInputs: request.onEncodeInputs,
+    );
+    final rpcMethod = SubstrateRequestGetStorage(
+      storageKey.key,
+      atBlockHash: atBlockHash,
+    );
     final response = await rpc.request(rpcMethod);
     final List<int>? queryResponse = BytesUtils.tryFromHexString(response);
     return request.toResponse(
-        bytes: queryResponse,
-        storageKey: storageKey,
-        decode: () => decodeStorageOutput(
+      bytes: queryResponse,
+      storageKey: storageKey,
+      decode:
+          () => decodeStorageOutput(
             palletNameOrIndex: request.palletNameOrIndex,
             methodName: request.methodName,
-            queryResponse: queryResponse));
+            queryResponse: queryResponse,
+          ),
+    );
   }
 
   Future<QueryStorageResponses<RESPONSE>>
-      queryStorageAtBlock<RESPONSE extends Object?, JSON extends Object>(
-          {required List<GetStorageRequest<RESPONSE, JSON>> requestes,
-          required SubstrateProvider rpc,
-          bool fromTemplate = false,
-          String? atBlockHash}) async {
+  queryStorageAtBlock<RESPONSE extends Object?, JSON extends Object>({
+    required List<GetStorageRequest<RESPONSE, JSON>> requestes,
+    required SubstrateProvider rpc,
+    bool fromTemplate = false,
+    String? atBlockHash,
+  }) async {
     final result = await _query<RESPONSE, JSON>(
-        requestes: requestes,
-        rpc: rpc,
-        fromTemplate: fromTemplate,
-        atBlockHash: atBlockHash);
+      requestes: requestes,
+      rpc: rpc,
+      fromTemplate: fromTemplate,
+      atBlockHash: atBlockHash,
+    );
     if (result.isEmpty) return QueryStorageResponses<RESPONSE>();
     return result[0];
   }
 
-  Future<List<QueryStorageResponses>> queryStorageFromBlock<T>(
-      {required List<GetStorageRequest> requestes,
-      required SubstrateProvider rpc,
-      required String fromBlock,
-      required bool fromTemplate,
-      String? toBlock}) {
+  Future<List<QueryStorageResponses>> queryStorageFromBlock<T>({
+    required List<GetStorageRequest> requestes,
+    required SubstrateProvider rpc,
+    required String fromBlock,
+    required bool fromTemplate,
+    String? toBlock,
+  }) {
     return _query(
-        requestes: requestes,
-        rpc: rpc,
-        fromBlock: fromBlock,
-        atBlockHash: toBlock,
-        fromTemplate: fromTemplate);
+      requestes: requestes,
+      rpc: rpc,
+      fromBlock: fromBlock,
+      atBlockHash: toBlock,
+      fromTemplate: fromTemplate,
+    );
   }
 
   QueryStorageResult<RESPONSE>
-      _parseQuery<RESPONSE extends Object?, DECODEDRESPONSE extends Object>({
+  _parseQuery<RESPONSE extends Object?, DECODEDRESPONSE extends Object>({
     required List<int>? bytes,
     required String palletName,
     required String methodName,
@@ -189,21 +218,26 @@ extension QueryHelper on MetadataApi {
           return null as RESPONSE;
         }
 
-        throw DartSubstratePluginException('Unexpected response type.',
-            details: {"excpected": "$RESPONSE", "value": 'Null'});
+        throw DartSubstratePluginException(
+          'Unexpected response type.',
+          details: {"excpected": "$RESPONSE", "value": 'Null'},
+        );
       }
       if (onBytesResponse != null) {
         return onBytesResponse(bytes, storageKey);
       }
       final json = decodeStorageOutput(
-          palletNameOrIndex: palletName,
-          methodName: methodName,
-          queryResponse: bytes);
+        palletNameOrIndex: palletName,
+        methodName: methodName,
+        queryResponse: bytes,
+      );
 
       if (json == null) {
         if (null is RESPONSE) return null as RESPONSE;
-        throw DartSubstratePluginException('Unexpected response type.',
-            details: {"excpected": "$RESPONSE", "value": 'Null'});
+        throw DartSubstratePluginException(
+          'Unexpected response type.',
+          details: {"excpected": "$RESPONSE", "value": 'Null'},
+        );
       }
       // final onJsonResponse = this.onJsonResponse;
       if (onJsonResponse != null) {
@@ -211,11 +245,13 @@ extension QueryHelper on MetadataApi {
         try {
           data = json as DECODEDRESPONSE;
         } catch (_) {
-          throw DartSubstratePluginException('Unexpected response type.',
-              details: {
-                "excpected": "$DECODEDRESPONSE",
-                "value": json.runtimeType
-              });
+          throw DartSubstratePluginException(
+            'Unexpected response type.',
+            details: {
+              "excpected": "$DECODEDRESPONSE",
+              "value": json.runtimeType,
+            },
+          );
         }
 
         return onJsonResponse(data, bytes, storageKey);
@@ -224,64 +260,77 @@ extension QueryHelper on MetadataApi {
       try {
         data = json as RESPONSE;
       } catch (_) {
-        throw DartSubstratePluginException('Unexpected response type.',
-            details: {"excpected": "$RESPONSE", "value": json.runtimeType});
+        throw DartSubstratePluginException(
+          'Unexpected response type.',
+          details: {"excpected": "$RESPONSE", "value": json.runtimeType},
+        );
       }
       return data;
     }();
     return QueryStorageResult<RESPONSE>(
-        storageKey: storageKey, result: response);
+      storageKey: storageKey,
+      result: response,
+    );
   }
 
   Future<List<QueryStorageResponses<RESPONSE>>>
-      _query<RESPONSE extends Object?, JSON extends Object>(
-          {required List<GetStorageRequest<RESPONSE, JSON>> requestes,
-          required SubstrateProvider rpc,
-          required bool fromTemplate,
-          String? fromBlock,
-          String? atBlockHash}) async {
+  _query<RESPONSE extends Object?, JSON extends Object>({
+    required List<GetStorageRequest<RESPONSE, JSON>> requestes,
+    required SubstrateProvider rpc,
+    required bool fromTemplate,
+    String? fromBlock,
+    String? atBlockHash,
+  }) async {
     final List<StorageKey> storageKeys = [];
     for (int i = 0; i < requestes.length; i++) {
       final GetStorageRequest request = requestes[i];
 
       final storageKey = generateStorageKey(
-          methodName: request.methodName,
-          palletNameOrIndex: request.palletNameOrIndex,
-          value: request.inputs,
-          fromTemplate: fromTemplate,
-          onEncodeInputs: request.onEncodeInputs);
+        methodName: request.methodName,
+        palletNameOrIndex: request.palletNameOrIndex,
+        value: request.inputs,
+        fromTemplate: fromTemplate,
+        onEncodeInputs: request.onEncodeInputs,
+      );
       storageKeys.add(storageKey);
     }
-    final rpcMethod = fromBlock == null
-        ? SubstrateRequestQuerStateStorageAt([...storageKeys.map((e) => e.key)],
-            atBlockHash: atBlockHash)
-        : SubstrateRequestStateQueryStorage(
-            keys: [...storageKeys.map((e) => e.key)],
-            fromBlock: fromBlock,
-            toBlock: atBlockHash);
+    final rpcMethod =
+        fromBlock == null
+            ? SubstrateRequestQuerStateStorageAt([
+              ...storageKeys.map((e) => e.key),
+            ], atBlockHash: atBlockHash)
+            : SubstrateRequestStateQueryStorage(
+              keys: [...storageKeys.map((e) => e.key)],
+              fromBlock: fromBlock,
+              toBlock: atBlockHash,
+            );
     final List<QueryStorageResponses<RESPONSE>> blockResult = [];
     final response = await rpc.request(rpcMethod);
     for (int i = 0; i < response.length; i++) {
       final Map<String, dynamic> result = (response[i] as Map).cast();
       final block = result[_rpcJsonBlockKey];
       final changes = StorageChangeStateResponse(
-          (result[_rpcJsonStorageChangesKey] as List)
-              .map((e) => List<String?>.from(e))
-              .toList()
-              .cast());
+        (result[_rpcJsonStorageChangesKey] as List)
+            .map((e) => List<String?>.from(e))
+            .toList()
+            .cast(),
+      );
       final List<QueryStorageResult<RESPONSE>> results = [];
       for (int i = 0; i < requestes.length; i++) {
         final GetStorageRequest<RESPONSE, JSON> request = requestes[i];
         final StorageKey storageKey = storageKeys[i];
         final List<int>? queryResponse = changes.getValue(storageKey.key);
-        results.add(_parseQuery<RESPONSE, JSON>(
+        results.add(
+          _parseQuery<RESPONSE, JSON>(
             bytes: queryResponse,
             storageKey: storageKey,
             palletName: request.palletNameOrIndex,
             methodName: request.methodName,
             onBytesResponse: request.onBytesResponse,
             onJsonResponse: request.onJsonResponse,
-            onNullResponse: request.onNullResponse));
+            onNullResponse: request.onNullResponse,
+          ),
+        );
       }
       blockResult.add(QueryStorageResponses(results: results, block: block));
     }
@@ -293,18 +342,22 @@ extension QueryHelper on MetadataApi {
     String? atBlockHash,
   }) async {
     final storageKey = generateStorageKey(
-        methodName: MetadataConstant.queryBlockWeightMethodName,
-        palletNameOrIndex: MetadataConstant.genericSystemPalletName,
-        value: [],
-        fromTemplate: false);
-    final rpcMethod =
-        SubstrateRequestGetStorage(storageKey.key, atBlockHash: atBlockHash);
+      methodName: MetadataConstant.queryBlockWeightMethodName,
+      palletNameOrIndex: MetadataConstant.genericSystemPalletName,
+      value: [],
+      fromTemplate: false,
+    );
+    final rpcMethod = SubstrateRequestGetStorage(
+      storageKey.key,
+      atBlockHash: atBlockHash,
+    );
     final response = await rpc.request(rpcMethod);
     final List<int>? queryResponse = BytesUtils.tryFromHexString(response);
     final decodeResponse = decodeStorageOutput<Map<String, dynamic>>(
-        methodName: MetadataConstant.queryBlockWeightMethodName,
-        palletNameOrIndex: MetadataConstant.genericSystemPalletName,
-        queryResponse: queryResponse);
+      methodName: MetadataConstant.queryBlockWeightMethodName,
+      palletNameOrIndex: MetadataConstant.genericSystemPalletName,
+      queryResponse: queryResponse,
+    );
     return FrameSupportDispatchPerDispatchClass.deserializeJson(decodeResponse);
   }
 
@@ -318,27 +371,30 @@ extension QueryHelper on MetadataApi {
     String? atBlockHash,
     String? startKey,
   }) async {
-    storageKey ??= generateStorageKey(
-            palletNameOrIndex: palletNameOrIndex,
-            methodName: methodName,
-            value: inputs,
-            partial: true)
-        .key;
+    storageKey ??=
+        generateStorageKey(
+          palletNameOrIndex: palletNameOrIndex,
+          methodName: methodName,
+          value: inputs,
+          partial: true,
+        ).key;
     // ??
     //     metadata.getStoragePrefixHash(palletNameOrIndex, methodName).keyHex;
     final rpcMethod = SubstrateRequestStateGetKeysPaged(
-        key: storageKey,
-        atBlockHash: atBlockHash,
-        count: count,
-        startKey: startKey);
+      key: storageKey,
+      atBlockHash: atBlockHash,
+      count: count,
+      startKey: startKey,
+    );
     final keys = await rpc.request(rpcMethod);
     List<StorageKey> storageKeys = [];
     for (final i in keys) {
       try {
         final key = decodeStorageKey(
-            palletNameOrIndex: palletNameOrIndex,
-            methodName: methodName,
-            storageKey: i);
+          palletNameOrIndex: palletNameOrIndex,
+          methodName: methodName,
+          storageKey: i,
+        );
         storageKeys.add(key);
       } catch (_) {
         continue;
@@ -348,30 +404,35 @@ extension QueryHelper on MetadataApi {
     return storageKeys;
   }
 
-  Stream<List<StorageKey>> getStreamPagesStorageKeys(
-      {required String palletNameOrIndex,
-      required String methodName,
-      required SubstrateProvider rpc,
-      int count = 1000,
-      String? atBlockHash,
-      String? startKey}) async* {
+  Stream<List<StorageKey>> getStreamPagesStorageKeys({
+    required String palletNameOrIndex,
+    required String methodName,
+    required SubstrateProvider rpc,
+    int count = 1000,
+    String? atBlockHash,
+    String? startKey,
+  }) async* {
     if (count <= 0) return;
     while (true) {
-      final prefixHash =
-          metadata.getStoragePrefixHash(palletNameOrIndex, methodName);
+      final prefixHash = metadata.getStoragePrefixHash(
+        palletNameOrIndex,
+        methodName,
+      );
       final rpcMethod = SubstrateRequestStateGetKeysPaged(
-          key: prefixHash.keyHex,
-          atBlockHash: atBlockHash,
-          count: count,
-          startKey: startKey);
+        key: prefixHash.keyHex,
+        atBlockHash: atBlockHash,
+        count: count,
+        startKey: startKey,
+      );
       final keys = await rpc.request(rpcMethod);
       List<StorageKey> storageKeys = [];
       for (final i in keys) {
         try {
           final key = decodeStorageKey(
-              palletNameOrIndex: palletNameOrIndex,
-              methodName: methodName,
-              storageKey: i);
+            palletNameOrIndex: palletNameOrIndex,
+            methodName: methodName,
+            storageKey: i,
+          );
           storageKeys.add(key);
         } catch (_) {
           continue;
@@ -383,33 +444,36 @@ extension QueryHelper on MetadataApi {
     }
   }
 
-  Future<QueryStorageResponses<RESPONSE>> getStorageEntries<
-          RESPONSE extends Object?, DECODEDRESPONSE extends Object>(
-      {required GetStorageEntriesRequest<RESPONSE, DECODEDRESPONSE> request,
-      required SubstrateProvider rpc,
-      String? atBlockHash}) async {
+  Future<QueryStorageResponses<RESPONSE>>
+  getStorageEntries<RESPONSE extends Object?, DECODEDRESPONSE extends Object>({
+    required GetStorageEntriesRequest<RESPONSE, DECODEDRESPONSE> request,
+    required SubstrateProvider rpc,
+    String? atBlockHash,
+  }) async {
     final storageKeys = await getPagesStorageKeys(
-        palletNameOrIndex: request.palletNameOrIndex,
-        methodName: request.methodName,
-        atBlockHash: atBlockHash,
-        count: request.count ?? 10000,
-        startKey: request.startKey,
-        rpc: rpc,
-        storageKey: request.storageKey,
-        inputs: request.inputs);
-    final rpcMethod = SubstrateRequestQuerStateStorageAt(
-        [...storageKeys.map((e) => e.key)],
-        atBlockHash: atBlockHash);
+      palletNameOrIndex: request.palletNameOrIndex,
+      methodName: request.methodName,
+      atBlockHash: atBlockHash,
+      count: request.count ?? 10000,
+      startKey: request.startKey,
+      rpc: rpc,
+      storageKey: request.storageKey,
+      inputs: request.inputs,
+    );
+    final rpcMethod = SubstrateRequestQuerStateStorageAt([
+      ...storageKeys.map((e) => e.key),
+    ], atBlockHash: atBlockHash);
     final List<QueryStorageResponses<RESPONSE>> blockResult = [];
     final response = await rpc.request(rpcMethod);
     for (int i = 0; i < response.length; i++) {
       final Map<String, dynamic> result = (response[i] as Map).cast();
       final block = result[_rpcJsonBlockKey];
       final changes = StorageChangeStateResponse(
-          (result[_rpcJsonStorageChangesKey] as List)
-              .map((e) => List<String?>.from(e))
-              .toList()
-              .cast());
+        (result[_rpcJsonStorageChangesKey] as List)
+            .map((e) => List<String?>.from(e))
+            .toList()
+            .cast(),
+      );
 
       final List<QueryStorageResult<RESPONSE>> results = [];
       for (int i = 0; i < storageKeys.length; i++) {
@@ -418,20 +482,24 @@ extension QueryHelper on MetadataApi {
         StorageKey storage;
         try {
           storage = decodeStorageKey(
-              palletNameOrIndex: request.palletNameOrIndex,
-              methodName: request.methodName,
-              storageKey: storageKey);
+            palletNameOrIndex: request.palletNameOrIndex,
+            methodName: request.methodName,
+            storageKey: storageKey,
+          );
         } catch (e) {
           continue;
         }
-        results.add(_parseQuery<RESPONSE, DECODEDRESPONSE>(
+        results.add(
+          _parseQuery<RESPONSE, DECODEDRESPONSE>(
             bytes: queryResponse,
             storageKey: storage,
             palletName: request.palletNameOrIndex,
             methodName: request.methodName,
             onBytesResponse: request.onBytesResponse,
             onJsonResponse: request.onJsonResponse,
-            onNullResponse: request.onNullResponse));
+            onNullResponse: request.onNullResponse,
+          ),
+        );
       }
       blockResult.add(QueryStorageResponses(results: results, block: block));
     }
@@ -442,7 +510,9 @@ extension QueryHelper on MetadataApi {
   }
 
   Stream<QueryStorageResponses<RESPONSE>> getStreamStorageEntries<
-      RESPONSE extends Object?, DECODEDRESPONSE extends Object>({
+    RESPONSE extends Object?,
+    DECODEDRESPONSE extends Object
+  >({
     required GetStreamStorageEntriesRequest<RESPONSE, DECODEDRESPONSE> request,
     required SubstrateProvider rpc,
     String? atBlockHash,
@@ -458,7 +528,8 @@ extension QueryHelper on MetadataApi {
       return request.count;
     }
 
-    final String storageKey = request.storageKey ??
+    final String storageKey =
+        request.storageKey ??
         generateStorageKey(
           palletNameOrIndex: request.palletNameOrIndex,
           methodName: request.methodName,
@@ -468,16 +539,18 @@ extension QueryHelper on MetadataApi {
         ).key;
     while (true) {
       final result = await getStorageEntries(
-          request: GetStorageEntriesRequest<RESPONSE, DECODEDRESPONSE>.paged(
-              palletNameOrIndex: request.palletNameOrIndex,
-              methodName: request.methodName,
-              count: count(),
-              startKey: startKey,
-              onBytesResponse: request.onBytesResponse,
-              onJsonResponse: request.onJsonResponse,
-              storageKey: storageKey),
-          atBlockHash: atBlockHash,
-          rpc: rpc);
+        request: GetStorageEntriesRequest<RESPONSE, DECODEDRESPONSE>.paged(
+          palletNameOrIndex: request.palletNameOrIndex,
+          methodName: request.methodName,
+          count: count(),
+          startKey: startKey,
+          onBytesResponse: request.onBytesResponse,
+          onJsonResponse: request.onJsonResponse,
+          storageKey: storageKey,
+        ),
+        atBlockHash: atBlockHash,
+        rpc: rpc,
+      );
       yield result;
       total += result.results.length;
       if (result.results.length < request.count) break;
@@ -488,14 +561,18 @@ extension QueryHelper on MetadataApi {
   }
 
   Stream<QueryStorageResponses<RESPONSE>>
-      queryStreamStorageAtBlock<RESPONSE extends Object?, JSON extends Object>(
-          {required Stream<List<GetStorageRequest<RESPONSE, JSON>>> requestes,
-          required SubstrateProvider rpc,
-          bool fromTemplate = false,
-          String? atBlockHash}) async* {
+  queryStreamStorageAtBlock<RESPONSE extends Object?, JSON extends Object>({
+    required Stream<List<GetStorageRequest<RESPONSE, JSON>>> requestes,
+    required SubstrateProvider rpc,
+    bool fromTemplate = false,
+    String? atBlockHash,
+  }) async* {
     await for (final i in requestes) {
-      final result =
-          await _query(requestes: i, rpc: rpc, fromTemplate: fromTemplate);
+      final result = await _query(
+        requestes: i,
+        rpc: rpc,
+        fromTemplate: fromTemplate,
+      );
       if (result.isEmpty) {
         yield QueryStorageResponses<RESPONSE>();
       } else {

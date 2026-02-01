@@ -17,30 +17,40 @@ class SubstratePrivateKey
   const SubstratePrivateKey._(this._substrate, this.algorithm);
 
   /// Generates a [SubstratePrivateKey] from a seed.
-  factory SubstratePrivateKey.fromSeed(
-      {required List<int> seedBytes,
-      SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519}) {
-    final substrate =
-        Substrate.fromSeed(seedBytes, algorithm.substrateCoinInfo);
+  factory SubstratePrivateKey.fromSeed({
+    required List<int> seedBytes,
+    SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
+  }) {
+    final substrate = Substrate.fromSeed(
+      seedBytes,
+      algorithm.substrateCoinInfo,
+    );
     return SubstratePrivateKey._(substrate, algorithm);
   }
 
   /// Constructs a [SubstratePrivateKey] from a private key.
-  factory SubstratePrivateKey.fromPrivateKey(
-      {required List<int> keyBytes,
-      SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519}) {
-    final substrate =
-        Substrate.fromPrivateKey(keyBytes, algorithm.substrateCoinInfo);
+  factory SubstratePrivateKey.fromPrivateKey({
+    required List<int> keyBytes,
+    SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
+  }) {
+    final substrate = Substrate.fromPrivateKey(
+      keyBytes,
+      algorithm.substrateCoinInfo,
+    );
     return SubstratePrivateKey._(substrate, algorithm);
   }
 
   /// Constructs a [SubstratePrivateKey] from a seed and path.
-  factory SubstratePrivateKey.fromSeedAndPath(
-      {required List<int> seedBytes,
-      required String path,
-      SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519}) {
-    final substrate =
-        Substrate.fromSeedAndPath(seedBytes, path, algorithm.substrateCoinInfo);
+  factory SubstratePrivateKey.fromSeedAndPath({
+    required List<int> seedBytes,
+    required String path,
+    SubstrateKeyAlgorithm algorithm = SubstrateKeyAlgorithm.sr25519,
+  }) {
+    final substrate = Substrate.fromSeedAndPath(
+      seedBytes,
+      path,
+      algorithm.substrateCoinInfo,
+    );
     return SubstratePrivateKey._(substrate, algorithm);
   }
 
@@ -63,15 +73,20 @@ class SubstratePrivateKey
   /// Converts the private key to hexadecimal string.
   @override
   String toHex({bool upperCase = false}) {
-    return BytesUtils.toHexString(toBytes(),
-        lowerCase: !upperCase, prefix: "0x");
+    return BytesUtils.toHexString(
+      toBytes(),
+      lowerCase: !upperCase,
+      prefix: "0x",
+    );
   }
 
   /// Converts the private key to a public key.
   @override
   SubstratePublicKey toPublicKey() {
     return SubstratePublicKey.fromBytes(
-        pubkeyBytes: _substrate.publicKey.compressed, algorithm: algorithm);
+      pubkeyBytes: _substrate.publicKey.compressed,
+      algorithm: algorithm,
+    );
   }
 
   /// Converts the private key to a Substrate address.
@@ -88,11 +103,7 @@ class SubstratePrivateKey
   }
 
   /// Signs a given message using VRF (Verifiable Random Function) and the private key.
-  List<int> vrfSign(
-    List<int> message, {
-    List<int>? context,
-    List<int>? extra,
-  }) {
+  List<int> vrfSign(List<int> message, {List<int>? context, List<int>? extra}) {
     final signer = SubstrateSigner.fromSubstrate(_substrate);
     return signer.vrfSign(message, context: context, extra: extra);
   }
@@ -104,16 +115,28 @@ class SubstratePrivateKey
   }
 
   /// Verifies a given message and VRF (Verifiable Random Function) signature using the public key derived from the private key.
-  bool vrfVerify(List<int> message, List<int> vrfSign,
-      {List<int>? context, List<int>? extra}) {
+  bool vrfVerify(
+    List<int> message,
+    List<int> vrfSign, {
+    List<int>? context,
+    List<int>? extra,
+  }) {
     switch (algorithm) {
       case SubstrateKeyAlgorithm.sr25519:
         final signer = SubstrateSr25519Signer.fromKeyBytes(toBytes());
-        return signer.vrfVerify(message, vrfSign,
-            context: context, extra: extra);
+        return signer.vrfVerify(
+          message,
+          vrfSign,
+          context: context,
+          extra: extra,
+        );
       default:
-        return toPublicKey()
-            .vrfVerify(message, vrfSign, context: context, extra: extra);
+        return toPublicKey().vrfVerify(
+          message,
+          vrfSign,
+          context: context,
+          extra: extra,
+        );
     }
   }
 
@@ -132,8 +155,10 @@ class SubstratePrivateKey
         substrateSignature = SubstrateSr25519Signature(signature);
         break;
       default:
-        throw DartSubstratePluginException("Invalid algorithm.",
-            details: {"algorithm": algorithm.name});
+        throw DartSubstratePluginException(
+          "Invalid algorithm.",
+          details: {"algorithm": algorithm.name},
+        );
     }
     return SubstrateMultiSignature(substrateSignature);
   }

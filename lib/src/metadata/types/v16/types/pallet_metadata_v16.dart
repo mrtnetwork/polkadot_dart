@@ -11,12 +11,15 @@ import 'pallet_error_v16.dart';
 import 'pallet_event_v16.dart';
 import 'storage_metadata_v16.dart';
 
-class PalletMetadataV16 extends PalletMetadata<
-    PalletStorageMetadataV16,
-    PalletCallMetadataV16,
-    PalletEventMetadataV16,
-    PalletConstantMetadataV16,
-    PalletErrorMetadataV16> {
+class PalletMetadataV16
+    extends
+        PalletMetadata<
+          PalletStorageMetadataV16,
+          PalletCallMetadataV16,
+          PalletEventMetadataV16,
+          PalletConstantMetadataV16,
+          PalletErrorMetadataV16
+        > {
   @override
   final PalletStorageMetadataV16? storage;
   @override
@@ -35,40 +38,47 @@ class PalletMetadataV16 extends PalletMetadata<
   /// Deprecation info
   final DeprecationStatus deprecationInfo;
   PalletMetadataV16.deserializeJson(super.json)
-      : storage = json["storage"] == null
-            ? null
-            : PalletStorageMetadataV16.deserializeJson(json["storage"]),
-        calls = json["calls"] == null
-            ? null
-            : PalletCallMetadataV16.deserializeJson(json["calls"]),
-        constants = (json["constants"] as List)
-            .map((e) => PalletConstantMetadataV16.deserializeJson(e))
-            .toImutableList,
-        associatedTypes = (json["associated_types"] as List)
-            .map((e) => PalletAssociatedTypeMetadata.deserializeJson(e))
-            .toImutableList,
-        events = json["events"] == null
-            ? null
-            : PalletEventMetadataV16.deserializeJson(json["events"]),
-        errors = json["errors"] == null
-            ? null
-            : PalletErrorMetadataV16.deserializeJson(json["errors"]),
-        deprecationInfo =
-            DeprecationStatus.deserializeJson(json["deprecation_info"]),
-        super.deserializeJson();
-  PalletMetadataV16(
-      {required super.name,
-      required List<PalletConstantMetadataV16> constants,
-      required List<PalletAssociatedTypeMetadata> associatedTypes,
-      required super.index,
-      this.calls,
-      this.errors,
-      this.events,
-      this.storage,
-      required this.deprecationInfo,
-      required List<String> super.docs})
-      : constants = constants.immutable,
-        associatedTypes = associatedTypes.immutable;
+    : storage =
+          json["storage"] == null
+              ? null
+              : PalletStorageMetadataV16.deserializeJson(json["storage"]),
+      calls =
+          json["calls"] == null
+              ? null
+              : PalletCallMetadataV16.deserializeJson(json["calls"]),
+      constants =
+          (json["constants"] as List)
+              .map((e) => PalletConstantMetadataV16.deserializeJson(e))
+              .toImutableList,
+      associatedTypes =
+          (json["associated_types"] as List)
+              .map((e) => PalletAssociatedTypeMetadata.deserializeJson(e))
+              .toImutableList,
+      events =
+          json["events"] == null
+              ? null
+              : PalletEventMetadataV16.deserializeJson(json["events"]),
+      errors =
+          json["errors"] == null
+              ? null
+              : PalletErrorMetadataV16.deserializeJson(json["errors"]),
+      deprecationInfo = DeprecationStatus.deserializeJson(
+        json["deprecation_info"],
+      ),
+      super.deserializeJson();
+  PalletMetadataV16({
+    required super.name,
+    required List<PalletConstantMetadataV16> constants,
+    required List<PalletAssociatedTypeMetadata> associatedTypes,
+    required super.index,
+    this.calls,
+    this.errors,
+    this.events,
+    this.storage,
+    required this.deprecationInfo,
+    required List<String> super.docs,
+  }) : constants = constants.immutable,
+       associatedTypes = associatedTypes.immutable;
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -82,7 +92,7 @@ class PalletMetadataV16 extends PalletMetadata<
       "docs": docs ?? <String>[],
       "associated_types":
           associatedTypes.map((e) => e.serializeJson()).toList(),
-      "deprecation_info": deprecationInfo.serializeJsonVariant()
+      "deprecation_info": deprecationInfo.serializeJsonVariant(),
     };
   }
 }

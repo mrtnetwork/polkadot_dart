@@ -19,8 +19,9 @@ enum HydrationAssetType {
 
   const HydrationAssetType(this.type);
   static HydrationAssetType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? HydrationAssetType.unknown;
   }
 
@@ -33,10 +34,11 @@ class HydrationAssetMetadata {
   final String symbol;
 
   HydrationAssetMetadata.fromJson(Map<String, dynamic> json)
-      : decimals = json.valueAs("decimals"),
-        symbol =
-            SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("symbol")),
-        super();
+    : decimals = json.valueAs("decimals"),
+      symbol = SubstrateNetworkControllerUtils.tryToUtf8(
+        json.valueAs("symbol"),
+      ),
+      super();
 }
 
 abstract class BaseHydrationAssetType {
@@ -51,10 +53,12 @@ abstract class BaseHydrationAssetType {
     return switch (type) {
       HydrationAssetType.token => HydrationAssetTypeToken.fromJson(json),
       HydrationAssetType.xyk => HydrationAssetTypeXYK.fromJson(json),
-      HydrationAssetType.stableSwap =>
-        HydrationAssetTypeStableSwap.fromJson(json),
-      HydrationAssetType.poolShare =>
-        HydrationAssetTypePoolShare.fromJson(json),
+      HydrationAssetType.stableSwap => HydrationAssetTypeStableSwap.fromJson(
+        json,
+      ),
+      HydrationAssetType.poolShare => HydrationAssetTypePoolShare.fromJson(
+        json,
+      ),
       HydrationAssetType.bond => HydrationAssetTypeBond.fromJson(json),
       HydrationAssetType.external => HydrationAssetTypeExternal.fromJson(json),
       HydrationAssetType.erc20 => HydrationAssetTypeErc20.fromJson(json),
@@ -65,63 +69,68 @@ abstract class BaseHydrationAssetType {
 
 class HydrationAssetTypeToken extends BaseHydrationAssetType {
   const HydrationAssetTypeToken({required super.identifier})
-      : super(type: HydrationAssetType.token);
+    : super(type: HydrationAssetType.token);
   HydrationAssetTypeToken.fromJson(Map<String, dynamic> json)
-      : super(type: HydrationAssetType.token, identifier: json);
+    : super(type: HydrationAssetType.token, identifier: json);
 }
 
 class HydrationAssetTypeStableSwap extends BaseHydrationAssetType {
   const HydrationAssetTypeStableSwap({required super.identifier})
-      : super(type: HydrationAssetType.stableSwap);
+    : super(type: HydrationAssetType.stableSwap);
   HydrationAssetTypeStableSwap.fromJson(Map<String, dynamic> json)
-      : super(type: HydrationAssetType.stableSwap, identifier: json);
+    : super(type: HydrationAssetType.stableSwap, identifier: json);
 }
 
 class HydrationAssetTypeXYK extends BaseHydrationAssetType {
   const HydrationAssetTypeXYK({required super.identifier})
-      : super(type: HydrationAssetType.xyk);
+    : super(type: HydrationAssetType.xyk);
   HydrationAssetTypeXYK.fromJson(Map<String, dynamic> json)
-      : super(type: HydrationAssetType.xyk, identifier: json);
+    : super(type: HydrationAssetType.xyk, identifier: json);
 }
 
 class HydrationAssetTypeErc20 extends BaseHydrationAssetType {
   const HydrationAssetTypeErc20({required super.identifier})
-      : super(type: HydrationAssetType.erc20);
+    : super(type: HydrationAssetType.erc20);
   HydrationAssetTypeErc20.fromJson(Map<String, dynamic> json)
-      : super(type: HydrationAssetType.erc20, identifier: json);
+    : super(type: HydrationAssetType.erc20, identifier: json);
 }
 
 class HydrationAssetTypeBond extends BaseHydrationAssetType {
   const HydrationAssetTypeBond({required super.identifier})
-      : super(type: HydrationAssetType.bond);
+    : super(type: HydrationAssetType.bond);
   HydrationAssetTypeBond.fromJson(Map<String, dynamic> json)
-      : super(type: HydrationAssetType.bond, identifier: json);
+    : super(type: HydrationAssetType.bond, identifier: json);
 }
 
 class HydrationAssetTypeExternal extends BaseHydrationAssetType {
   const HydrationAssetTypeExternal({required super.identifier})
-      : super(type: HydrationAssetType.external);
+    : super(type: HydrationAssetType.external);
   HydrationAssetTypeExternal.fromJson(Map<String, dynamic> json)
-      : super(type: HydrationAssetType.external, identifier: json);
+    : super(type: HydrationAssetType.external, identifier: json);
 }
 
 class HydrationAssetTypeUnknown extends BaseHydrationAssetType {
   const HydrationAssetTypeUnknown({required super.identifier})
-      : super(type: HydrationAssetType.unknown);
+    : super(type: HydrationAssetType.unknown);
   HydrationAssetTypeUnknown.fromJson(Map<String, dynamic> json)
-      : super(type: HydrationAssetType.unknown, identifier: json);
+    : super(type: HydrationAssetType.unknown, identifier: json);
 }
 
 class HydrationAssetTypePoolShare extends BaseHydrationAssetType {
   final int assetA;
   final int assetB;
-  const HydrationAssetTypePoolShare(
-      {required this.assetA, required this.assetB, required super.identifier})
-      : super(type: HydrationAssetType.poolShare);
+  const HydrationAssetTypePoolShare({
+    required this.assetA,
+    required this.assetB,
+    required super.identifier,
+  }) : super(type: HydrationAssetType.poolShare);
   factory HydrationAssetTypePoolShare.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList<int>(HydrationAssetType.poolShare.type);
     return HydrationAssetTypePoolShare(
-        assetA: data[0], assetB: data[1], identifier: json);
+      assetA: data[0],
+      assetB: data[1],
+      identifier: json,
+    );
   }
 }
 
@@ -145,27 +154,31 @@ class HydrationAsset {
     bool? isSufficient,
   }) {
     return HydrationAsset(
-        name: name ?? this.name,
-        symbol: symbol ?? this.symbol,
-        decimals: decimals ?? this.decimals,
-        type: type ?? this.type,
-        existentialDeposit: existentialDeposit ?? this.existentialDeposit,
-        xcmRateLimit: xcmRateLimit ?? this.xcmRateLimit,
-        isSufficient: isSufficient ?? this.isSufficient);
+      name: name ?? this.name,
+      symbol: symbol ?? this.symbol,
+      decimals: decimals ?? this.decimals,
+      type: type ?? this.type,
+      existentialDeposit: existentialDeposit ?? this.existentialDeposit,
+      xcmRateLimit: xcmRateLimit ?? this.xcmRateLimit,
+      isSufficient: isSufficient ?? this.isSufficient,
+    );
   }
 
   HydrationAsset.fromJson(Map<String, dynamic> json)
-      : decimals = MetadataUtils.parseOptional(json.valueAs("decimals")),
-        xcmRateLimit =
-            MetadataUtils.parseOptional(json.valueAs("xcm_rate_limit")),
-        name = SubstrateNetworkControllerUtils.asUtf8(
-            MetadataUtils.parseOptional(json.valueAs("name"))),
-        symbol = SubstrateNetworkControllerUtils.asUtf8(
-            MetadataUtils.parseOptional(json.valueAs("symbol"))),
-        isSufficient = json.valueAs("is_sufficient"),
-        type = BaseHydrationAssetType.fromJson(json.valueAs("asset_type")),
-        existentialDeposit = json.valueAs("existential_deposit"),
-        super();
+    : decimals = MetadataUtils.parseOptional(json.valueAs("decimals")),
+      xcmRateLimit = MetadataUtils.parseOptional(
+        json.valueAs("xcm_rate_limit"),
+      ),
+      name = SubstrateNetworkControllerUtils.asUtf8(
+        MetadataUtils.parseOptional(json.valueAs("name")),
+      ),
+      symbol = SubstrateNetworkControllerUtils.asUtf8(
+        MetadataUtils.parseOptional(json.valueAs("symbol")),
+      ),
+      isSufficient = json.valueAs("is_sufficient"),
+      type = BaseHydrationAssetType.fromJson(json.valueAs("asset_type")),
+      existentialDeposit = json.valueAs("existential_deposit"),
+      super();
   const HydrationAsset({
     required this.name,
     required this.symbol,
@@ -183,20 +196,21 @@ class HydrationAsset {
       "decimals": decimals,
       "existential_deposit": existentialDeposit.toString(),
       "xcm_rate_limit": xcmRateLimit?.toString(),
-      "is_sufficient": isSufficient
+      "is_sufficient": isSufficient,
     };
   }
 }
 
 abstract class BaseHydrationNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseHydrationNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseHydrationNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseHydrationNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -204,29 +218,33 @@ class HydrationNetworkAsset extends BaseHydrationNetworkAsset {
   final HydrationAsset asset;
   @override
   final XCMVersionedLocation? location;
-  HydrationNetworkAsset(
-      {required this.asset,
-      required this.identifier,
-      this.location,
-      bool? isFeeToken})
-      : super(
-            minBalance: asset.existentialDeposit,
-            isFeeToken: isFeeToken ?? asset.xcmRateLimit != null,
-            decimals: asset.decimals,
-            isSpendable: asset.type.type.isSpendable,
-            name: asset.name,
-            symbol: asset.symbol,
-            excutionPallet: SubtrateMetadataPallet.tokens);
+  HydrationNetworkAsset({
+    required this.asset,
+    required this.identifier,
+    this.location,
+    bool? isFeeToken,
+  }) : super(
+         minBalance: asset.existentialDeposit,
+         isFeeToken: isFeeToken ?? asset.xcmRateLimit != null,
+         decimals: asset.decimals,
+         isSpendable: asset.type.type.isSpendable,
+         name: asset.name,
+         symbol: asset.symbol,
+         excutionPallet: SubtrateMetadataPallet.tokens,
+       );
 
   factory HydrationNetworkAsset.fromJson(Map<String, dynamic> json) {
     final asset = HydrationAsset.fromJson(json.valueAs("asset"));
     final bool isFeeToken = json.valueAs("is_fee_token");
     return HydrationNetworkAsset(
-        asset: asset,
-        location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
-            key: "location", parse: (v) => XCMVersionedLocation.fromJson(json)),
-        isFeeToken: isFeeToken,
-        identifier: json.valueAsBigInt("identifier"));
+      asset: asset,
+      location: json.valueTo<XCMVersionedLocation?, Map<String, dynamic>>(
+        key: "location",
+        parse: (v) => XCMVersionedLocation.fromJson(json),
+      ),
+      isFeeToken: isFeeToken,
+      identifier: json.valueAsBigInt("identifier"),
+    );
   }
 
   @override
@@ -237,7 +255,7 @@ class HydrationNetworkAsset extends BaseHydrationNetworkAsset {
       "asset": asset.toJson(),
       "location": location?.toJson(),
       "identifier": identifier.toString(),
-      "is_fee_token": isFeeToken
+      "is_fee_token": isFeeToken,
     };
   }
 
@@ -256,19 +274,20 @@ class HydrationNetworkAsset extends BaseHydrationNetworkAsset {
 class HydrationNetworkNativeAsset extends BaseHydrationNetworkAsset {
   @override
   final XCMVersionedLocation location;
-  HydrationNetworkNativeAsset(
-      {required super.decimals,
-      required this.location,
-      required super.name,
-      required super.symbol,
-      super.minBalance})
-      : super(
-            excutionPallet: SubtrateMetadataPallet.balances,
-            isFeeToken: true,
-            isSpendable: true);
+  HydrationNetworkNativeAsset({
+    required super.decimals,
+    required this.location,
+    required super.name,
+    required super.symbol,
+    super.minBalance,
+  }) : super(
+         excutionPallet: SubtrateMetadataPallet.balances,
+         isFeeToken: true,
+         isSpendable: true,
+       );
   HydrationNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
   @override
   Object? get identifier => null;
 

@@ -15,8 +15,10 @@ enum SubstrateConsensusRole {
   final int value;
   const SubstrateConsensusRole(this.value);
   static SubstrateConsensusRole fromValue(int? value) {
-    return values.firstWhere((e) => e.value == value,
-        orElse: () => throw ItemNotFoundException(value: value));
+    return values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => throw ItemNotFoundException(value: value),
+    );
   }
 }
 
@@ -30,8 +32,10 @@ enum SubstrateRelaySystem {
   const SubstrateRelaySystem(this.value);
 
   static SubstrateRelaySystem fromValue(int? value) {
-    return values.firstWhere((e) => e.value == value,
-        orElse: () => throw ItemNotFoundException(value: value));
+    return values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => throw ItemNotFoundException(value: value),
+    );
   }
 
   List<BaseSubstrateNetwork> get networks {
@@ -40,8 +44,7 @@ enum SubstrateRelaySystem {
       SubstrateRelaySystem.kusama => KusamaNetwork.values,
       SubstrateRelaySystem.westend => WestendNetwork.values,
       SubstrateRelaySystem.paseo => PaseoNetwork.values,
-    }
-        .cast();
+    }.cast();
   }
 }
 
@@ -62,24 +65,28 @@ abstract class BaseSubstrateNetwork {
   XCMMultiLocation location({XCMVersion? version});
   XCMVersion findXcmVersion(BaseSubstrateNetwork? network);
   static BaseSubstrateNetwork? fromGenesis(String genesis) {
-    return values
-        .firstWhereNullable((e) => StringUtils.hexEqual(genesis, e.genesis));
+    return values.firstWhereNullable(
+      (e) => StringUtils.hexEqual(genesis, e.genesis),
+    );
   }
 
-  static BaseSubstrateNetwork? fromPara(int paraId,
-      {SubstrateRelaySystem? relay}) {
+  static BaseSubstrateNetwork? fromPara(
+    int paraId, {
+    SubstrateRelaySystem? relay,
+  }) {
     if (relay == null) {
       return values.firstWhereNullable((e) => paraId == e.paraId);
     }
     return values.firstWhereNullable(
-        (e) => e.relaySystem == relay && e.paraId == paraId);
+      (e) => e.relaySystem == relay && e.paraId == paraId,
+    );
   }
 
   static const List<BaseSubstrateNetwork> values = [
     ...PolkadotNetwork.values,
     ...KusamaNetwork.values,
     ...WestendNetwork.values,
-    ...PaseoNetwork.values
+    ...PaseoNetwork.values,
   ];
   bool get isAssetHub => this == assetHub;
 }
@@ -116,13 +123,14 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
   ),
   xode(
-      networkName: "Xode",
-      paraId: 3417,
-      ss58: 280,
-      genesis:
-          "0xb2985e778bb748c70e450dcc084cc7da79fe742cc23d3b040abd7028187de69c",
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour),
+    networkName: "Xode",
+    paraId: 3417,
+    ss58: 280,
+    genesis:
+        "0xb2985e778bb748c70e450dcc084cc7da79fe742cc23d3b040abd7028187de69c",
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
+  ),
   polkadotBridgeHub(
     networkName: "Polkadot BridgeHub",
     ss58: 0,
@@ -144,14 +152,15 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
   ),
   polkadotPeople(
-      networkName: "Polkadot People",
-      paraId: 1004,
-      role: SubstrateConsensusRole.system,
-      genesis:
-          "0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008",
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      ss58: 0),
+    networkName: "Polkadot People",
+    paraId: 1004,
+    role: SubstrateConsensusRole.system,
+    genesis:
+        "0x67fa177a097bfa18f77ea95ab56e9bcdfeb0e5b8a40e46298bb93e16b6fc5008",
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    ss58: 0,
+  ),
   polkadotCoretime(
     networkName: "Polkadot Coretime",
     paraId: 1005,
@@ -172,13 +181,14 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
   ),
   hydration(
-      networkName: "Hydration",
-      paraId: 2034,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
-      ss58: 0,
-      genesis:
-          "0xafdc188f45c71dacbaa0b62e16a91f726c7b8699a9748cdf715459de6b7f366d"),
+    networkName: "Hydration",
+    paraId: 2034,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
+    ss58: 0,
+    genesis:
+        "0xafdc188f45c71dacbaa0b62e16a91f726c7b8699a9748cdf715459de6b7f366d",
+  ),
 
   interlay(
     networkName: "Interlay",
@@ -228,13 +238,14 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
   ),
   manta(
-      networkName: "Manta Parachain",
-      paraId: 2104,
-      ss58: 77,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
-      genesis:
-          "0xf3c7ad88f6a80f366c4be216691411ef0622e8b809b1046ea297ef106058d4eb"),
+    networkName: "Manta Parachain",
+    paraId: 2104,
+    ss58: 77,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
+    genesis:
+        "0xf3c7ad88f6a80f366c4be216691411ef0622e8b809b1046ea297ef106058d4eb",
+  ),
 
   pendulum(
     networkName: "Pendulum",
@@ -305,78 +316,85 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
   ),
   moonbeam(
-      networkName: "Moonbeam",
-      paraId: 2004,
-      ss58: 1284,
-      chainType: SubstrateChainType.ethereum,
-      allowLocalTransfer: false,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      genesis:
-          "0xfe58ea77779b7abda7da4ec526d14db9b1e9cd40a217c34892af80a9b332b76d"),
+    networkName: "Moonbeam",
+    paraId: 2004,
+    ss58: 1284,
+    chainType: SubstrateChainType.ethereum,
+    allowLocalTransfer: false,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    genesis:
+        "0xfe58ea77779b7abda7da4ec526d14db9b1e9cd40a217c34892af80a9b332b76d",
+  ),
 
   jamton(
-      networkName: "JAMTON",
-      paraId: 3397,
-      ss58: 5589,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
-      genesis:
-          "0xbb9233e202ec014707f82ddb90e84ee9efece8fefee287ad4ad646d869a6c24a"),
+    networkName: "JAMTON",
+    paraId: 3397,
+    ss58: 5589,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
+    genesis:
+        "0xbb9233e202ec014707f82ddb90e84ee9efece8fefee287ad4ad646d869a6c24a",
+  ),
 
   integritee(
-      networkName: "Integritee Network (Polkadot)",
-      paraId: 2039,
-      ss58: 13,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      genesis:
-          "0xe13e7af377c64e83f95e0d70d5e5c3c01d697a84538776c5b9bbe0e7d7b6034c"),
+    networkName: "Integritee Network (Polkadot)",
+    paraId: 2039,
+    ss58: 13,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    genesis:
+        "0xe13e7af377c64e83f95e0d70d5e5c3c01d697a84538776c5b9bbe0e7d7b6034c",
+  ),
 
   energyWebX(
-      networkName: "Energy Web X",
-      paraId: 3345,
-      ss58: 42,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
-      genesis:
-          "0x5a51e04b88a4784d205091aa7bada002f3e5da3045e5b05655ee4db2589c33b5"),
+    networkName: "Energy Web X",
+    paraId: 3345,
+    ss58: 42,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
+    genesis:
+        "0x5a51e04b88a4784d205091aa7bada002f3e5da3045e5b05655ee4db2589c33b5",
+  ),
   darwinia2(
-      networkName: "Darwinia2",
-      paraId: 2046,
-      ss58: 18,
-      chainType: SubstrateChainType.ethereum,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
-      genesis:
-          "0xf0b8924b12e8108550d28870bc03f7b45a947e1b2b9abf81bfb0b89ecb60570e"),
+    networkName: "Darwinia2",
+    paraId: 2046,
+    ss58: 18,
+    chainType: SubstrateChainType.ethereum,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
+    genesis:
+        "0xf0b8924b12e8108550d28870bc03f7b45a947e1b2b9abf81bfb0b89ecb60570e",
+  ),
   crust(
-      networkName: "Crust",
-      paraId: 2008,
-      ss58: 0,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
-      genesis:
-          "0x4319cc49ee79495b57a1fec4d2bd43f59052dcc690276de566c2691d6df4f7b8"),
+    networkName: "Crust",
+    paraId: 2008,
+    ss58: 0,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
+    genesis:
+        "0x4319cc49ee79495b57a1fec4d2bd43f59052dcc690276de566c2691d6df4f7b8",
+  ),
   ajuna(
-      networkName: "Ajuna",
-      paraId: 2051,
-      ss58: 1328,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      genesis:
-          "0xe358eb1d11b31255a286c12e44fe6780b7edb171d657905a97e39f71d9c6c3ee"),
-  ;
+    networkName: "Ajuna",
+    paraId: 2051,
+    ss58: 1328,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    genesis:
+        "0xe358eb1d11b31255a286c12e44fe6780b7edb171d657905a97e39f71d9c6c3ee",
+  );
 
-  const PolkadotNetwork(
-      {required this.networkName,
-      required this.genesis,
-      required this.paraId,
-      required this.ss58,
-      this.allowLocalTransfer = true,
-      this.chainType = SubstrateChainType.substrate,
-      this.role = SubstrateConsensusRole.parachain,
-      this.xcmVersions = const []});
+  const PolkadotNetwork({
+    required this.networkName,
+    required this.genesis,
+    required this.paraId,
+    required this.ss58,
+    this.allowLocalTransfer = true,
+    this.chainType = SubstrateChainType.substrate,
+    this.role = SubstrateConsensusRole.parachain,
+    this.xcmVersions = const [],
+  });
 
   @override
   final String networkName;
@@ -411,11 +429,15 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
       return XCMMultiLocation.fromVersion(parents: 0, version: version);
     }
     return XCMMultiLocation.fromVersion(
-        parents: 1,
-        interior: XCMJunctions.fromVersion(junctions: [
-          XCMJunctionParaChain.fromVersion(id: paraId, version: version)
-        ], version: version),
-        version: version);
+      parents: 1,
+      interior: XCMJunctions.fromVersion(
+        junctions: [
+          XCMJunctionParaChain.fromVersion(id: paraId, version: version),
+        ],
+        version: version,
+      ),
+      version: version,
+    );
   }
 
   @override
@@ -448,34 +470,37 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
   @override
   GenericBaseSubstrateNativeAsset get relayAsset =>
       GenericBaseSubstrateNativeAsset.withParaLocation(
-          name: "DOT",
-          decimals: 10,
-          symbol: "DOT",
-          parents: 1,
-          version: defaultXcmVersion,
-          excutionPallet: SubtrateMetadataPallet.balances);
+        name: "DOT",
+        decimals: 10,
+        symbol: "DOT",
+        parents: 1,
+        version: defaultXcmVersion,
+        excutionPallet: SubtrateMetadataPallet.balances,
+      );
 }
 
 enum KusamaNetwork implements BaseSubstrateNetwork {
   kusama(
-      networkName: "Kusama",
-      ss58: 2,
-      paraId: 0,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      role: SubstrateConsensusRole.relay,
-      chainType: SubstrateChainType.substrate,
-      genesis:
-          "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe"),
+    networkName: "Kusama",
+    ss58: 2,
+    paraId: 0,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    role: SubstrateConsensusRole.relay,
+    chainType: SubstrateChainType.substrate,
+    genesis:
+        "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
+  ),
   kusamaAssetHub(
-      networkName: "Kusama Asset Hub",
-      ss58: 2,
-      paraId: 1000,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      role: SubstrateConsensusRole.system,
-      genesis:
-          '0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a'),
+    networkName: "Kusama Asset Hub",
+    ss58: 2,
+    paraId: 1000,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    role: SubstrateConsensusRole.system,
+    genesis:
+        '0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a',
+  ),
   kusamaBridgeHub(
     networkName: "Kusama BridgeHub",
     ss58: 2,
@@ -521,13 +546,14 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
 
   /// hydration
   basilisk(
-      networkName: "Basilisk",
-      paraId: 2090,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
-      ss58: 10041,
-      genesis:
-          "0xa85cfb9b9fd4d622a5b28289a02347af987d8f73fa3108450e2b4a11c1ce5755"),
+    networkName: "Basilisk",
+    paraId: 2090,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
+    ss58: 10041,
+    genesis:
+        "0xa85cfb9b9fd4d622a5b28289a02347af987d8f73fa3108450e2b4a11c1ce5755",
+  ),
   bifrostKusama(
     networkName: "Bifrost Kusama",
     paraId: 2001,
@@ -570,15 +596,16 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
     genesis:
         "0xaa3876c1dc8a1afcc2e9a685a49ff7704cfd36ad8c90bf2702b9d1b00cc40011",
   ),
-//  interlay
+  //  interlay
   kintsugi(
-      networkName: "Kintsugi",
-      paraId: 2092,
-      ss58: 2092,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
-      genesis:
-          "0x9af9a64e6e4da8e3073901c3ff0cc4c3aad9563786d89daf6ad820b6e14a0b8b"),
+    networkName: "Kintsugi",
+    paraId: 2092,
+    ss58: 2092,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
+    genesis:
+        "0x9af9a64e6e4da8e3073901c3ff0cc4c3aad9563786d89daf6ad820b6e14a0b8b",
+  ),
   // pendulum
   amplitude(
     networkName: "Amplitude",
@@ -590,26 +617,27 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
         "0xcceae7f3b9947cdb67369c026ef78efa5f34a08fe5808d373c04421ecf4f1aaf",
   ),
   moonriver(
-      networkName: "Moonriver",
-      paraId: 2023,
-      ss58: 1285,
-      chainType: SubstrateChainType.ethereum,
-      allowLocalTransfer: false,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      genesis:
-          "0x401a1f9dca3da46f5c4091016c8a2f26dcea05865116b286f60f668207d1474b"),
-  ;
+    networkName: "Moonriver",
+    paraId: 2023,
+    ss58: 1285,
+    chainType: SubstrateChainType.ethereum,
+    allowLocalTransfer: false,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    genesis:
+        "0x401a1f9dca3da46f5c4091016c8a2f26dcea05865116b286f60f668207d1474b",
+  );
 
-  const KusamaNetwork(
-      {required this.networkName,
-      required this.genesis,
-      required this.paraId,
-      required this.ss58,
-      this.chainType = SubstrateChainType.substrate,
-      this.role = SubstrateConsensusRole.parachain,
-      this.allowLocalTransfer = true,
-      required this.xcmVersions});
+  const KusamaNetwork({
+    required this.networkName,
+    required this.genesis,
+    required this.paraId,
+    required this.ss58,
+    this.chainType = SubstrateChainType.substrate,
+    this.role = SubstrateConsensusRole.parachain,
+    this.allowLocalTransfer = true,
+    required this.xcmVersions,
+  });
 
   @override
   final String networkName;
@@ -645,11 +673,15 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
       return XCMMultiLocation.fromVersion(parents: 0, version: version);
     }
     return XCMMultiLocation.fromVersion(
-        parents: 1,
-        interior: XCMJunctions.fromVersion(junctions: [
-          XCMJunctionParaChain.fromVersion(id: paraId, version: version)
-        ], version: version),
-        version: version);
+      parents: 1,
+      interior: XCMJunctions.fromVersion(
+        junctions: [
+          XCMJunctionParaChain.fromVersion(id: paraId, version: version),
+        ],
+        version: version,
+      ),
+      version: version,
+    );
   }
 
   @override
@@ -679,36 +711,39 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
   @override
   GenericBaseSubstrateNativeAsset get relayAsset =>
       GenericBaseSubstrateNativeAsset.withParaLocation(
-          name: "Kusama",
-          decimals: 12,
-          symbol: "KSM",
-          minBalance: BigInt.parse("333333333"),
-          version: defaultXcmVersion,
-          parents: 1,
-          excutionPallet: SubtrateMetadataPallet.balances);
+        name: "Kusama",
+        decimals: 12,
+        symbol: "KSM",
+        minBalance: BigInt.parse("333333333"),
+        version: defaultXcmVersion,
+        parents: 1,
+        excutionPallet: SubtrateMetadataPallet.balances,
+      );
 }
 
 enum WestendNetwork implements BaseSubstrateNetwork {
   westend(
-      networkName: "Westend",
-      ss58: 42,
-      paraId: 0,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      role: SubstrateConsensusRole.relay,
-      chainType: SubstrateChainType.substrate,
-      allowLocalTransfer: true,
-      genesis:
-          "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"),
+    networkName: "Westend",
+    ss58: 42,
+    paraId: 0,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    role: SubstrateConsensusRole.relay,
+    chainType: SubstrateChainType.substrate,
+    allowLocalTransfer: true,
+    genesis:
+        "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e",
+  ),
   westendAssetHub(
-      networkName: "Westend Asset Hub",
-      ss58: 42,
-      paraId: 1000,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      role: SubstrateConsensusRole.system,
-      genesis:
-          '0x67f9723393ef76214df0118c34bbbd3dbebc8ed46a10973a8c969d48fe7598c9'),
+    networkName: "Westend Asset Hub",
+    ss58: 42,
+    paraId: 1000,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    role: SubstrateConsensusRole.system,
+    genesis:
+        '0x67f9723393ef76214df0118c34bbbd3dbebc8ed46a10973a8c969d48fe7598c9',
+  ),
   westendBridgeHub(
     networkName: "Westend BridgeHub",
     ss58: 42,
@@ -752,23 +787,25 @@ enum WestendNetwork implements BaseSubstrateNetwork {
   ),
 
   penpal(
-      networkName: "Penpal",
-      paraId: 2042,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      ss58: 42,
-      genesis:
-          "0xafb18a620de2f0a9bf9c56cf8c8b05cacc6c608754959f3020e4fc90f9ae0c9f");
+    networkName: "Penpal",
+    paraId: 2042,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    ss58: 42,
+    genesis:
+        "0xafb18a620de2f0a9bf9c56cf8c8b05cacc6c608754959f3020e4fc90f9ae0c9f",
+  );
 
-  const WestendNetwork(
-      {required this.networkName,
-      required this.genesis,
-      required this.paraId,
-      required this.ss58,
-      this.chainType = SubstrateChainType.substrate,
-      this.role = SubstrateConsensusRole.parachain,
-      this.allowLocalTransfer = true,
-      required this.xcmVersions});
+  const WestendNetwork({
+    required this.networkName,
+    required this.genesis,
+    required this.paraId,
+    required this.ss58,
+    this.chainType = SubstrateChainType.substrate,
+    this.role = SubstrateConsensusRole.parachain,
+    this.allowLocalTransfer = true,
+    required this.xcmVersions,
+  });
 
   @override
   final String networkName;
@@ -804,11 +841,15 @@ enum WestendNetwork implements BaseSubstrateNetwork {
       return XCMMultiLocation.fromVersion(parents: 0, version: version);
     }
     return XCMMultiLocation.fromVersion(
-        parents: 1,
-        interior: XCMJunctions.fromVersion(junctions: [
-          XCMJunctionParaChain.fromVersion(id: paraId, version: version)
-        ], version: version),
-        version: version);
+      parents: 1,
+      interior: XCMJunctions.fromVersion(
+        junctions: [
+          XCMJunctionParaChain.fromVersion(id: paraId, version: version),
+        ],
+        version: version,
+      ),
+      version: version,
+    );
   }
 
   @override
@@ -838,36 +879,39 @@ enum WestendNetwork implements BaseSubstrateNetwork {
   @override
   GenericBaseSubstrateNativeAsset get relayAsset =>
       GenericBaseSubstrateNativeAsset.withParaLocation(
-          name: "Westend",
-          decimals: 12,
-          symbol: "WND",
-          minBalance: BigInt.parse("10000000000"),
-          version: defaultXcmVersion,
-          parents: 1,
-          excutionPallet: SubtrateMetadataPallet.balances);
+        name: "Westend",
+        decimals: 12,
+        symbol: "WND",
+        minBalance: BigInt.parse("10000000000"),
+        version: defaultXcmVersion,
+        parents: 1,
+        excutionPallet: SubtrateMetadataPallet.balances,
+      );
 }
 
 enum PaseoNetwork implements BaseSubstrateNetwork {
   paseo(
-      networkName: "Paseo Testnet",
-      ss58: 0,
-      paraId: 0,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      role: SubstrateConsensusRole.relay,
-      chainType: SubstrateChainType.substrate,
-      allowLocalTransfer: true,
-      genesis:
-          "0x77afd6190f1554ad45fd0d31aee62aacc33c6db0ea801129acb813f913e0764f"),
+    networkName: "Paseo Testnet",
+    ss58: 0,
+    paraId: 0,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    role: SubstrateConsensusRole.relay,
+    chainType: SubstrateChainType.substrate,
+    allowLocalTransfer: true,
+    genesis:
+        "0x77afd6190f1554ad45fd0d31aee62aacc33c6db0ea801129acb813f913e0764f",
+  ),
   paseoAssetHub(
-      networkName: "Paseo Asset Hub",
-      ss58: 0,
-      paraId: 1000,
-      xcmVersions: SubstrateNetworkControllerConstants
-          .defaultNetworksXCMSupportedVersion,
-      role: SubstrateConsensusRole.system,
-      genesis:
-          '0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2'),
+    networkName: "Paseo Asset Hub",
+    ss58: 0,
+    paraId: 1000,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.defaultNetworksXCMSupportedVersion,
+    role: SubstrateConsensusRole.system,
+    genesis:
+        '0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2',
+  ),
   paseoBridgeHub(
     networkName: "Paseo Bridge Hub",
     ss58: 0,
@@ -911,23 +955,25 @@ enum PaseoNetwork implements BaseSubstrateNetwork {
   ),
 
   hydration(
-      networkName: "Hydration Paseo Testnet",
-      paraId: 2034,
-      xcmVersions:
-          SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
-      ss58: 0,
-      genesis:
-          "0x5f52a76d9a13fcc0c9094ba62c284f4f2f5e5f031f7e60eecaa7339f7f77c23f");
+    networkName: "Hydration Paseo Testnet",
+    paraId: 2034,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
+    ss58: 0,
+    genesis:
+        "0x5f52a76d9a13fcc0c9094ba62c284f4f2f5e5f031f7e60eecaa7339f7f77c23f",
+  );
 
-  const PaseoNetwork(
-      {required this.networkName,
-      required this.genesis,
-      required this.paraId,
-      required this.ss58,
-      this.chainType = SubstrateChainType.substrate,
-      this.role = SubstrateConsensusRole.parachain,
-      this.allowLocalTransfer = true,
-      required this.xcmVersions});
+  const PaseoNetwork({
+    required this.networkName,
+    required this.genesis,
+    required this.paraId,
+    required this.ss58,
+    this.chainType = SubstrateChainType.substrate,
+    this.role = SubstrateConsensusRole.parachain,
+    this.allowLocalTransfer = true,
+    required this.xcmVersions,
+  });
 
   @override
   final String networkName;
@@ -963,11 +1009,15 @@ enum PaseoNetwork implements BaseSubstrateNetwork {
       return XCMMultiLocation.fromVersion(parents: 0, version: version);
     }
     return XCMMultiLocation.fromVersion(
-        parents: 1,
-        interior: XCMJunctions.fromVersion(junctions: [
-          XCMJunctionParaChain.fromVersion(id: paraId, version: version)
-        ], version: version),
-        version: version);
+      parents: 1,
+      interior: XCMJunctions.fromVersion(
+        junctions: [
+          XCMJunctionParaChain.fromVersion(id: paraId, version: version),
+        ],
+        version: version,
+      ),
+      version: version,
+    );
   }
 
   @override
@@ -997,11 +1047,12 @@ enum PaseoNetwork implements BaseSubstrateNetwork {
   @override
   GenericBaseSubstrateNativeAsset get relayAsset =>
       GenericBaseSubstrateNativeAsset.withParaLocation(
-          name: "Paseo",
-          decimals: 10,
-          symbol: "PAS",
-          minBalance: BigInt.parse("10000000000"),
-          version: defaultXcmVersion,
-          parents: 1,
-          excutionPallet: SubtrateMetadataPallet.balances);
+        name: "Paseo",
+        decimals: 10,
+        symbol: "PAS",
+        minBalance: BigInt.parse("10000000000"),
+        version: defaultXcmVersion,
+        parents: 1,
+        excutionPallet: SubtrateMetadataPallet.balances,
+      );
 }

@@ -10,13 +10,17 @@ enum SystemCallPalletMethod implements SubstrateCallPalletMethod {
   final int variantIndex;
   const SystemCallPalletMethod(this.method, this.variantIndex);
   static SystemCallPalletMethod fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static SystemCallPalletMethod fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 }
 
@@ -30,19 +34,22 @@ abstract class SystemCallPallet with SubstrateCallPallet {
 class SystemCallPalletRemark extends SystemCallPallet {
   final List<int> value;
 
-  SystemCallPalletRemark(
-      {required List<int> value, super.pallet = SubtrateMetadataPallet.system})
-      : value = value.asImmutableBytes,
-        super(type: SystemCallPalletMethod.remark);
+  SystemCallPalletRemark({
+    required List<int> value,
+    super.pallet = SubtrateMetadataPallet.system,
+  }) : value = value.asImmutableBytes,
+       super(type: SystemCallPalletMethod.remark);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
     return extrinsic.api.encodeCall(
-        palletNameOrIndex: pallet ?? this.pallet.name,
-        value: toJson(method: method));
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: toJson(method: method),
+    );
   }
 
   @override

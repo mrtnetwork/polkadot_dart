@@ -43,26 +43,29 @@ class SubstrateTransferEncodedParams<CALLPALLET extends SubstrateCallPallet>
     extends SubstrateEncodedCallParams {
   final CALLPALLET transfer;
 
-  SubstrateTransferEncodedParams(
-      {required this.transfer,
-      required super.pallet,
-      required super.method,
-      required super.bytes});
+  SubstrateTransferEncodedParams({
+    required this.transfer,
+    required super.pallet,
+    required super.method,
+    required super.bytes,
+  });
   Map<String, dynamic> toJson() {
     return {"transfer": transfer.toJson()};
   }
 }
 
 class SubstrateXCMTransferEncodedParams<
-        CALLPALLET extends SubstrateXCMCallPallet>
+  CALLPALLET extends SubstrateXCMCallPallet
+>
     extends SubstrateTransferEncodedParams<CALLPALLET> {
   final SubstrateXCMTransferParams params;
-  SubstrateXCMTransferEncodedParams(
-      {required super.transfer,
-      required super.pallet,
-      required super.method,
-      required super.bytes,
-      required this.params});
+  SubstrateXCMTransferEncodedParams({
+    required super.transfer,
+    required super.pallet,
+    required super.method,
+    required super.bytes,
+    required this.params,
+  });
   @override
   Map<String, dynamic> toJson() {
     return {"transfer": transfer.toJson()};
@@ -124,7 +127,8 @@ class SubstrateTransactionXCMDryRunResult {
     return SubstrateTransactionXCMDryRunResult._(
       network: network,
       deleveriesFee: [],
-      status: status ??
+      status:
+          status ??
           (network == null
               ? SubstrateTransactionXCMDryRunStatus.unsuportedNetwork
               : SubstrateTransactionXCMDryRunStatus.unsuportedDryRun),
@@ -183,11 +187,12 @@ class SubstrateTransactionXCMSimulateResult {
   //         (e) => e.status == SubstrateTransactionXCMDryRunStatus.complete);
 
   /// Creates a new XCM simulation result.
-  const SubstrateTransactionXCMSimulateResult(
-      {required this.dryRun,
-      this.externalXcm = const [],
-      this.localDeliveryFees = const [],
-      required this.status});
+  const SubstrateTransactionXCMSimulateResult({
+    required this.dryRun,
+    this.externalXcm = const [],
+    this.localDeliveryFees = const [],
+    required this.status,
+  });
 
   /// Converts the XCM simulation result to JSON for logging, debugging, or serialization.
   Map<String, dynamic> toJson() {
@@ -259,11 +264,9 @@ class SubstrateXCMTransferAsset {
   final BaseSubstrateNetworkAsset asset;
 
   /// Creates a new XCM transfer asset.
-  SubstrateXCMTransferAsset({
-    required BigInt amount,
-    required this.asset,
-  })  : amount = amount.asUint256,
-        super();
+  SubstrateXCMTransferAsset({required BigInt amount, required this.asset})
+    : amount = amount.asU256,
+      super();
 
   /// Returns the XCMMultiLocation for a given XCM version.
   XCMMultiLocation getLocation(XCMVersion xcmVersion) {
@@ -282,9 +285,10 @@ class SubstrateXCMTransferAsset {
   }) {
     return asset
         .getlocalizedLocation(
-            reserveNetwork: reserveNetwork,
-            reserveLocation: reserveLocation,
-            version: version)
+          reserveNetwork: reserveNetwork,
+          reserveLocation: reserveLocation,
+          version: version,
+        )
         .location;
   }
 
@@ -305,11 +309,11 @@ class SubstrateXCMTransferAsset {
     BaseSubstrateNetwork? reserveNetwork,
     XCMMultiLocation? reserveLocation,
     required XCMVersion xcmVersion,
-  }) =>
-      asset.getAssetId(
-          reserveLocation: reserveLocation,
-          reserveNetwork: reserveNetwork,
-          version: xcmVersion);
+  }) => asset.getAssetId(
+    reserveLocation: reserveLocation,
+    reserveNetwork: reserveNetwork,
+    version: xcmVersion,
+  );
 
   /// Returns a localized fungible XCM asset.
   XCMAsset aslocalizedFungibleAsset({
@@ -317,13 +321,14 @@ class SubstrateXCMTransferAsset {
     XCMMultiLocation? reserveLocation,
     required XCMVersion xcmVersion,
     required BigInt amount,
-  }) =>
-      XCMAsset.fungibleAsset(
-          amount: amount,
-          id: asLocalizedAssetId(
-              reserveLocation: reserveLocation,
-              reserveNetwork: reserveNetwork,
-              xcmVersion: xcmVersion));
+  }) => XCMAsset.fungibleAsset(
+    amount: amount,
+    id: asLocalizedAssetId(
+      reserveLocation: reserveLocation,
+      reserveNetwork: reserveNetwork,
+      xcmVersion: xcmVersion,
+    ),
+  );
 
   /// Returns a versioned localized fungible XCM asset.
   XCMVersionedAsset aslocalizedFungibleVersionedAsset({
@@ -333,23 +338,23 @@ class SubstrateXCMTransferAsset {
     required BigInt amount,
   }) =>
       aslocalizedFungibleAsset(
-              reserveNetwork: reserveNetwork,
-              reserveLocation: reserveLocation,
-              xcmVersion: xcmVersion,
-              amount: amount)
-          .asVersioned();
+        reserveNetwork: reserveNetwork,
+        reserveLocation: reserveLocation,
+        xcmVersion: xcmVersion,
+        amount: amount,
+      ).asVersioned();
 
   /// Converts this asset to a localized fungible asset using its amount.
   XCMAsset tolocalizedFungibleAsset({
     BaseSubstrateNetwork? reserveNetwork,
     XCMMultiLocation? reserveLocation,
     required XCMVersion xcmVersion,
-  }) =>
-      aslocalizedFungibleAsset(
-          reserveLocation: reserveLocation,
-          reserveNetwork: reserveNetwork,
-          amount: amount,
-          xcmVersion: xcmVersion);
+  }) => aslocalizedFungibleAsset(
+    reserveLocation: reserveLocation,
+    reserveNetwork: reserveNetwork,
+    amount: amount,
+    xcmVersion: xcmVersion,
+  );
 
   /// Converts this asset to a versioned localized fungible asset.
   XCMVersionedAsset tolocalizedFungibleVersionedAsset({
@@ -358,10 +363,10 @@ class SubstrateXCMTransferAsset {
     required XCMVersion xcmVersion,
   }) =>
       tolocalizedFungibleAsset(
-              reserveLocation: reserveLocation,
-              reserveNetwork: reserveNetwork,
-              xcmVersion: xcmVersion)
-          .asVersioned();
+        reserveLocation: reserveLocation,
+        reserveNetwork: reserveNetwork,
+        xcmVersion: xcmVersion,
+      ).asVersioned();
 }
 
 /// Parameters for executing an XCM (Cross-Consensus Message) transfer on a Substrate-based network.
@@ -440,7 +445,8 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
   }) {
     if (assets.isEmpty) {
       throw DartSubstratePluginException(
-          "At least one asset required for transfer.");
+        "At least one asset required for transfer.",
+      );
     }
     if (feeIndex != null &&
         (feeIndex.isNegative || feeIndex >= assets.length)) {
@@ -451,26 +457,35 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
     List<XCMMultiLocation> locations = [];
     for (final i in assets) {
       if (!i.hasLocation()) {
-        throw DartSubstratePluginException("Asset location is missing.",
-            details: {"asset": i.asset.name ?? i.asset.symbol});
+        throw DartSubstratePluginException(
+          "Asset location is missing.",
+          details: {"asset": i.asset.name ?? i.asset.symbol},
+        );
       }
-      locations.add(i.getlocalizedLocation(
-          version: origin.defaultXcmVersion, reserveNetwork: origin));
+      locations.add(
+        i.getlocalizedLocation(
+          version: origin.defaultXcmVersion,
+          reserveNetwork: origin,
+        ),
+      );
     }
     if (locations.toSet().length != locations.length) {
       throw DartSubstratePluginException(
-          "Duplicate asset not allowed. multiple assets share the same location.");
+        "Duplicate asset not allowed. multiple assets share the same location.",
+      );
     }
     if (locations.any((e) => e.isExternalLocation())) {
       throw DartSubstratePluginException(
-          "External asset transfers are not supported in this version.");
+        "External asset transfers are not supported in this version.",
+      );
     }
 
     final parents = locations.map((e) => e.parents).toSet();
     final paras = locations.map((e) => e.getParachain()?.id).toSet();
     if (parents.length != 1 || paras.length != 1) {
       throw DartSubstratePluginException(
-          "All assets in a transfer must share the same reserve location.");
+        "All assets in a transfer must share the same reserve location.",
+      );
     }
     bool hasRelayAsset = false;
     if (origin.role.isRelay) {
@@ -481,15 +496,16 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
     bool isLocalAssets = locations.every((e) => e.isZeroParents());
 
     return SubstrateXCMTransferParams._(
-        destinationNetwork: destinationNetwork,
-        hasRelayAsset: hasRelayAsset,
-        isLocalAssets: isLocalAssets,
-        assets: assets,
-        destinationAddress: destinationAddress,
-        feeIndex: feeIndex,
-        locations: locations,
-        destinationWeightLimit: destinationWeightLimit,
-        origin: origin);
+      destinationNetwork: destinationNetwork,
+      hasRelayAsset: hasRelayAsset,
+      isLocalAssets: isLocalAssets,
+      assets: assets,
+      destinationAddress: destinationAddress,
+      feeIndex: feeIndex,
+      locations: locations,
+      destinationWeightLimit: destinationWeightLimit,
+      origin: origin,
+    );
   }
   SubstrateXCMTransferParams._({
     required this.destinationNetwork,
@@ -511,9 +527,10 @@ class QueryDeleveriesFeeWithAmount {
   factory QueryDeleveriesFeeWithAmount.unsuportedApi() {
     return QueryDeleveriesFeeWithAmount._();
   }
-  factory QueryDeleveriesFeeWithAmount(
-      {required SubstrateDispatchResult<XCMVersionedAssets> result,
-      List<QueryDeleveriesFeeAmount> amounts = const []}) {
+  factory QueryDeleveriesFeeWithAmount({
+    required SubstrateDispatchResult<XCMVersionedAssets> result,
+    List<QueryDeleveriesFeeAmount> amounts = const [],
+  }) {
     return QueryDeleveriesFeeWithAmount._(result: result, amounts: amounts);
   }
   Map<String, dynamic> toJson() {
@@ -544,7 +561,7 @@ enum SubstrateXCMTransctionTrackerStatus {
   notFound,
 
   /// error when extraction deposit message ids or etc.
-  error;
+  error,
 }
 
 class SubstrateXCMTransctionTrackerResult {
@@ -552,17 +569,18 @@ class SubstrateXCMTransctionTrackerResult {
   final List<SubstrateAssetDepositEvent> deposits;
   final SubstrateGroupEvents? blockEvent;
   final int? blockNumber;
-  const SubstrateXCMTransctionTrackerResult(
-      {this.deposits = const [],
-      required this.status,
-      this.blockNumber,
-      this.blockEvent});
+  const SubstrateXCMTransctionTrackerResult({
+    this.deposits = const [],
+    required this.status,
+    this.blockNumber,
+    this.blockEvent,
+  });
   Map<String, dynamic> toJson() {
     return {
       "status": status.name,
       "deposits": deposits.map((e) => e.toJson()).toList(),
       "block_events": blockEvent?.events.map((e) => e.toJson()).toList(),
-      "block_number": blockNumber
+      "block_number": blockNumber,
     }.notNullValue;
   }
 }
@@ -577,10 +595,13 @@ enum SubstrateAggregateMessageOriginType {
   final String type;
   const SubstrateAggregateMessageOriginType(this.type);
   static SubstrateAggregateMessageOriginType fromType(
-      Map<String, dynamic>? json) {
+    Map<String, dynamic>? json,
+  ) {
     final type = json?.keys.firstOrNull;
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => SubstrateAggregateMessageOriginType.unknown);
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => SubstrateAggregateMessageOriginType.unknown,
+    );
   }
 }
 
@@ -614,8 +635,10 @@ enum SustrateUmpQueueIdType {
   const SustrateUmpQueueIdType(this.type);
   static SustrateUmpQueueIdType fromType(Map<String, dynamic>? json) {
     final type = json?.keys.firstOrNull;
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => SustrateUmpQueueIdType.unknown);
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => SustrateUmpQueueIdType.unknown,
+    );
   }
 }
 
@@ -626,7 +649,9 @@ abstract class SustrateUmpQueueId {
     final type = SustrateUmpQueueIdType.fromType(json);
     return switch (type) {
       SustrateUmpQueueIdType.para => SustrateUmpQueueIdPara.fromJson(json),
-      SustrateUmpQueueIdType.unknown => SustrateUmpQueueIdUnknown.fromJson(json)
+      SustrateUmpQueueIdType.unknown => SustrateUmpQueueIdUnknown.fromJson(
+        json,
+      ),
     };
   }
   Map<String, dynamic> toJson();
@@ -636,10 +661,11 @@ abstract class SustrateUmpQueueId {
 class SustrateUmpQueueIdPara extends SustrateUmpQueueId {
   final int id;
   SustrateUmpQueueIdPara({required this.id})
-      : super(type: SustrateUmpQueueIdType.para);
+    : super(type: SustrateUmpQueueIdType.para);
   factory SustrateUmpQueueIdPara.fromJson(Map<String, dynamic> json) {
     return SustrateUmpQueueIdPara(
-        id: json.valueAs(SustrateUmpQueueIdType.para.type));
+      id: json.valueAs(SustrateUmpQueueIdType.para.type),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -648,22 +674,24 @@ class SustrateUmpQueueIdPara extends SustrateUmpQueueId {
 
   @override
   late final XCMMultiLocation originLocation = XCMMultiLocation.fromVersion(
-      parents: 1,
+    parents: 1,
+    version: SubstrateNetworkControllerConstants.latestXCMVersion,
+    interior: XCMJunctions.fromVersion(
       version: SubstrateNetworkControllerConstants.latestXCMVersion,
-      interior: XCMJunctions.fromVersion(
+      junctions: [
+        XCMJunctionParaChain.fromVersion(
+          id: id,
           version: SubstrateNetworkControllerConstants.latestXCMVersion,
-          junctions: [
-            XCMJunctionParaChain.fromVersion(
-              id: id,
-              version: SubstrateNetworkControllerConstants.latestXCMVersion,
-            )
-          ]));
+        ),
+      ],
+    ),
+  );
 }
 
 class SustrateUmpQueueIdUnknown extends SustrateUmpQueueId {
   final Map<String, dynamic> data;
   const SustrateUmpQueueIdUnknown({required this.data})
-      : super(type: SustrateUmpQueueIdType.para);
+    : super(type: SustrateUmpQueueIdType.para);
   factory SustrateUmpQueueIdUnknown.fromJson(Map<String, dynamic> json) {
     return SustrateUmpQueueIdUnknown(data: json);
   }
@@ -676,7 +704,7 @@ class SustrateUmpQueueIdUnknown extends SustrateUmpQueueId {
 class SubstrateAggregateMessageOriginHere
     extends SubstrateAggregateMessageOrigin {
   SubstrateAggregateMessageOriginHere()
-      : super(type: SubstrateAggregateMessageOriginType.here);
+    : super(type: SubstrateAggregateMessageOriginType.here);
 
   @override
   Map<String, dynamic> toJson() {
@@ -685,14 +713,15 @@ class SubstrateAggregateMessageOriginHere
 
   @override
   late final XCMMultiLocation originLocation = XCMMultiLocation.fromVersion(
-      parents: 0,
-      version: SubstrateNetworkControllerConstants.latestXCMVersion);
+    parents: 0,
+    version: SubstrateNetworkControllerConstants.latestXCMVersion,
+  );
 }
 
 class SubstrateAggregateMessageOriginParent
     extends SubstrateAggregateMessageOrigin {
   SubstrateAggregateMessageOriginParent()
-      : super(type: SubstrateAggregateMessageOriginType.parent);
+    : super(type: SubstrateAggregateMessageOriginType.parent);
 
   @override
   Map<String, dynamic> toJson() {
@@ -701,19 +730,22 @@ class SubstrateAggregateMessageOriginParent
 
   @override
   late final XCMMultiLocation originLocation = XCMMultiLocation.fromVersion(
-      parents: 1,
-      version: SubstrateNetworkControllerConstants.latestXCMVersion);
+    parents: 1,
+    version: SubstrateNetworkControllerConstants.latestXCMVersion,
+  );
 }
 
 class SubstrateAggregateMessageOriginSibling
     extends SubstrateAggregateMessageOrigin {
   final int paraId;
   SubstrateAggregateMessageOriginSibling({required this.paraId})
-      : super(type: SubstrateAggregateMessageOriginType.sibling);
+    : super(type: SubstrateAggregateMessageOriginType.sibling);
   factory SubstrateAggregateMessageOriginSibling.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return SubstrateAggregateMessageOriginSibling(
-        paraId: json.valueAs(SubstrateAggregateMessageOriginType.sibling.type));
+      paraId: json.valueAs(SubstrateAggregateMessageOriginType.sibling.type),
+    );
   }
 
   @override
@@ -723,27 +755,33 @@ class SubstrateAggregateMessageOriginSibling
 
   @override
   late final XCMMultiLocation originLocation = XCMMultiLocation.fromVersion(
-      parents: 1,
+    parents: 1,
+    version: SubstrateNetworkControllerConstants.latestXCMVersion,
+    interior: XCMJunctions.fromVersion(
       version: SubstrateNetworkControllerConstants.latestXCMVersion,
-      interior: XCMJunctions.fromVersion(
+      junctions: [
+        XCMJunctionParaChain.fromVersion(
+          id: paraId,
           version: SubstrateNetworkControllerConstants.latestXCMVersion,
-          junctions: [
-            XCMJunctionParaChain.fromVersion(
-                id: paraId,
-                version: SubstrateNetworkControllerConstants.latestXCMVersion)
-          ]));
+        ),
+      ],
+    ),
+  );
 }
 
 class SubstrateAggregateMessageOriginUmp
     extends SubstrateAggregateMessageOrigin {
   final SustrateUmpQueueId ump;
   SubstrateAggregateMessageOriginUmp({required this.ump})
-      : super(type: SubstrateAggregateMessageOriginType.ump);
+    : super(type: SubstrateAggregateMessageOriginType.ump);
   factory SubstrateAggregateMessageOriginUmp.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return SubstrateAggregateMessageOriginUmp(
-        ump: SustrateUmpQueueId.fromJson(
-            json.valueAs(SubstrateAggregateMessageOriginType.ump.type)));
+      ump: SustrateUmpQueueId.fromJson(
+        json.valueAs(SubstrateAggregateMessageOriginType.ump.type),
+      ),
+    );
   }
 
   @override
@@ -759,9 +797,10 @@ class SubstrateAggregateMessageOriginUnknown
     extends SubstrateAggregateMessageOrigin {
   final Map<String, dynamic> data;
   const SubstrateAggregateMessageOriginUnknown({required this.data})
-      : super(type: SubstrateAggregateMessageOriginType.unknown);
+    : super(type: SubstrateAggregateMessageOriginType.unknown);
   factory SubstrateAggregateMessageOriginUnknown.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return SubstrateAggregateMessageOriginUnknown(data: json);
   }
   @override
@@ -786,16 +825,20 @@ enum SubstrateProcessMessageErrorType {
   const SubstrateProcessMessageErrorType(this.type);
   static SubstrateProcessMessageErrorType fromType(Map<String, dynamic>? json) {
     final type = json?.keys.firstOrNull;
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => SubstrateProcessMessageErrorType.unknown);
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => SubstrateProcessMessageErrorType.unknown,
+    );
   }
 }
 
 class SubstrateProcessMessageError {
   final SubstrateProcessMessageErrorType type;
   final SubstrateWeightV2? weight;
-  const SubstrateProcessMessageError(
-      {required this.type, required this.weight});
+  const SubstrateProcessMessageError({
+    required this.type,
+    required this.weight,
+  });
   factory SubstrateProcessMessageError.fromJson(Map<String, dynamic> json) {
     final type = SubstrateProcessMessageErrorType.fromType(json);
     SubstrateWeightV2? weight;
@@ -803,7 +846,9 @@ class SubstrateProcessMessageError {
       weight = SubstrateWeightV2.fromJson(json.valueAs(type.type));
     }
     return SubstrateProcessMessageError(
-        type: SubstrateProcessMessageErrorType.fromType(json), weight: weight);
+      type: SubstrateProcessMessageErrorType.fromType(json),
+      weight: weight,
+    );
   }
   Map<String, dynamic> toJson() {
     return {type.type: weight?.toJson()};
@@ -871,7 +916,9 @@ class SubstrateXcmError {
   const SubstrateXcmError({required this.type, required this.data});
   factory SubstrateXcmError.fromJson(Map<String, dynamic> json) {
     return SubstrateXcmError(
-        type: SubstrateXcmErrorType.fromType(json), data: json);
+      type: SubstrateXcmErrorType.fromType(json),
+      data: json,
+    );
   }
   Map<String, dynamic> toJson() => data;
 }
@@ -890,36 +937,43 @@ class SubstrateMessageQueueEvent implements SubstrateXcmProcessEvent {
   @override
   final bool success;
   final SubstrateProcessMessageError? error;
-  const SubstrateMessageQueueEvent(
-      {required this.origin,
-      required this.weight,
-      required this.success,
-      required this.id,
-      this.error});
+  const SubstrateMessageQueueEvent({
+    required this.origin,
+    required this.weight,
+    required this.success,
+    required this.id,
+    this.error,
+  });
   factory SubstrateMessageQueueEvent.processingFailed(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return SubstrateMessageQueueEvent(
-        id: json.valueAs("id"),
-        origin: SubstrateAggregateMessageOrigin.fromJson(
-            json.valueEnsureAsMap<String, dynamic>("origin")),
-        weight: null,
-        success: false,
-        error: SubstrateProcessMessageError.fromJson(json.valueAs("error")));
+      id: json.valueAs("id"),
+      origin: SubstrateAggregateMessageOrigin.fromJson(
+        json.valueEnsureAsMap<String, dynamic>("origin"),
+      ),
+      weight: null,
+      success: false,
+      error: SubstrateProcessMessageError.fromJson(json.valueAs("error")),
+    );
   }
   factory SubstrateMessageQueueEvent.fromJson(Map<String, dynamic> json) {
     if (json.containsKey("ProcessingFailed")) {
       return SubstrateMessageQueueEvent.processingFailed(
-          json.valueAs("ProcessingFailed"));
+        json.valueAs("ProcessingFailed"),
+      );
     }
     return SubstrateMessageQueueEvent.processed(json.valueAs("Processed"));
   }
   factory SubstrateMessageQueueEvent.processed(Map<String, dynamic> json) {
     return SubstrateMessageQueueEvent(
-        id: json.valueAs("id"),
-        origin: SubstrateAggregateMessageOrigin.fromJson(
-            json.valueEnsureAsMap<String, dynamic>("origin")),
-        weight: SubstrateWeightV2.fromJson(json.valueAs("weight_used")),
-        success: json.valueAs("success"));
+      id: json.valueAs("id"),
+      origin: SubstrateAggregateMessageOrigin.fromJson(
+        json.valueEnsureAsMap<String, dynamic>("origin"),
+      ),
+      weight: SubstrateWeightV2.fromJson(json.valueAs("weight_used")),
+      success: json.valueAs("success"),
+    );
   }
 
   @override
@@ -935,7 +989,7 @@ class SubstrateMessageQueueEvent implements SubstrateXcmProcessEvent {
       "origin": origin.toJson(),
       "weight_used": weight?.toJson(),
       "success": success,
-      "error": error?.toJson()
+      "error": error?.toJson(),
     };
     if (error != null) {
       return {"ProcessingFailed": json};
@@ -952,19 +1006,21 @@ class SubstrateXcmpQueueEvent implements SubstrateXcmProcessEvent {
   @override
   final bool success;
   final SubstrateXcmError? error;
-  const SubstrateXcmpQueueEvent(
-      {required this.messageHash,
-      required this.weight,
-      required this.success,
-      required this.messageId,
-      this.error});
+  const SubstrateXcmpQueueEvent({
+    required this.messageHash,
+    required this.weight,
+    required this.success,
+    required this.messageId,
+    this.error,
+  });
   factory SubstrateXcmpQueueEvent.fail(Map<String, dynamic> json) {
     return SubstrateXcmpQueueEvent(
-        messageHash: json.valueAs("message_hash"),
-        messageId: json.valueAs("message_id"),
-        weight: SubstrateWeightV2.fromJson(json.valueAs("weight")),
-        success: false,
-        error: SubstrateXcmError.fromJson(json.valueAs("error")));
+      messageHash: json.valueAs("message_hash"),
+      messageId: json.valueAs("message_id"),
+      weight: SubstrateWeightV2.fromJson(json.valueAs("weight")),
+      success: false,
+      error: SubstrateXcmError.fromJson(json.valueAs("error")),
+    );
   }
   factory SubstrateXcmpQueueEvent.fromJson(Map<String, dynamic> json) {
     if (json.containsKey("Fail")) {
@@ -974,10 +1030,11 @@ class SubstrateXcmpQueueEvent implements SubstrateXcmProcessEvent {
   }
   factory SubstrateXcmpQueueEvent.success(Map<String, dynamic> json) {
     return SubstrateXcmpQueueEvent(
-        messageHash: json.valueAs("message_hash"),
-        messageId: json.valueAs("message_id"),
-        weight: SubstrateWeightV2.fromJson(json.valueAs("weight")),
-        success: true);
+      messageHash: json.valueAs("message_hash"),
+      messageId: json.valueAs("message_id"),
+      weight: SubstrateWeightV2.fromJson(json.valueAs("weight")),
+      success: true,
+    );
   }
 
   @override
@@ -993,7 +1050,7 @@ class SubstrateXcmpQueueEvent implements SubstrateXcmProcessEvent {
       "message_id": messageId,
       "weight": weight.toJson(),
       "success": success,
-      "error": error?.toJson()
+      "error": error?.toJson(),
     };
     if (error != null) {
       return {"Fail": json};
@@ -1012,13 +1069,17 @@ class SubstrateAssetsDepositedEvent implements SubstrateAssetDepositEvent {
   final Object assetId;
   final String owner;
   final BigInt amount;
-  const SubstrateAssetsDepositedEvent(
-      {required this.assetId, required this.amount, required this.owner});
+  const SubstrateAssetsDepositedEvent({
+    required this.assetId,
+    required this.amount,
+    required this.owner,
+  });
   factory SubstrateAssetsDepositedEvent.fromJson(Map<String, dynamic> json) {
     return SubstrateAssetsDepositedEvent(
-        assetId: json.valueAs("asset_id"),
-        owner: json.valueAs("owner"),
-        amount: json.valueAsBigInt("amount"));
+      assetId: json.valueAs("asset_id"),
+      owner: json.valueAs("owner"),
+      amount: json.valueAsBigInt("amount"),
+    );
   }
 
   @override
@@ -1035,16 +1096,22 @@ class SubstrateForeignAssetsDepositedEvent
   final XCMMultiLocation assetId;
   final String owner;
   final BigInt amount;
-  const SubstrateForeignAssetsDepositedEvent(
-      {required this.assetId, required this.amount, required this.owner});
+  const SubstrateForeignAssetsDepositedEvent({
+    required this.assetId,
+    required this.amount,
+    required this.owner,
+  });
   factory SubstrateForeignAssetsDepositedEvent.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return SubstrateForeignAssetsDepositedEvent(
-        assetId: XCMMultiLocation.fromJson(
-            json: json.valueAs("asset_id"),
-            version: SubstrateNetworkControllerConstants.latestXCMVersion),
-        owner: json.valueAs("owner"),
-        amount: json.valueAsBigInt("amount"));
+      assetId: XCMMultiLocation.fromJson(
+        json: json.valueAs("asset_id"),
+        version: SubstrateNetworkControllerConstants.latestXCMVersion,
+      ),
+      owner: json.valueAs("owner"),
+      amount: json.valueAsBigInt("amount"),
+    );
   }
 
   @override
@@ -1061,21 +1128,28 @@ class SubstrateCommonItemCreatedEvent implements SubstrateAssetDepositEvent {
   @override
   final String address;
   final BigInt amount;
-  const SubstrateCommonItemCreatedEvent(
-      {required this.address, required this.amount, required this.assetId});
+  const SubstrateCommonItemCreatedEvent({
+    required this.address,
+    required this.amount,
+    required this.assetId,
+  });
   factory SubstrateCommonItemCreatedEvent.itemCreated(List<dynamic> items) {
     try {
-      final addrJson =
-          JsonParser.valueEnsureAsMap<String, dynamic>(items.elementAt(2));
-      final address = addrJson.valueAs<String?>("Substrate") ??
+      final addrJson = JsonParser.valueEnsureAsMap<String, dynamic>(
+        items.elementAt(2),
+      );
+      final address =
+          addrJson.valueAs<String?>("Substrate") ??
           addrJson.valueAs<String>("Ethereum");
       return SubstrateCommonItemCreatedEvent(
-          amount: JsonParser.valueAsBigInt(items.elementAt(3)),
-          assetId: JsonParser.valueAsBigInt(items.elementAt(0)),
-          address: address);
+        amount: JsonParser.valueAsBigInt(items.elementAt(3)),
+        assetId: JsonParser.valueAsBigInt(items.elementAt(0)),
+        address: address,
+      );
     } catch (_) {
       throw DartSubstratePluginException(
-          "Invalid Substrate Common ItemCreated event object.");
+        "Invalid Substrate Common ItemCreated event object.",
+      );
     }
   }
 
@@ -1084,7 +1158,7 @@ class SubstrateCommonItemCreatedEvent implements SubstrateAssetDepositEvent {
     return {
       "address": address,
       "amount": amount,
-      "asset_id": assetId.toString()
+      "asset_id": assetId.toString(),
     };
   }
 }
@@ -1096,12 +1170,13 @@ class SubstrateEthereumEvmLogEvent implements SubstrateAssetDepositEvent {
   @override
   final String? address;
   final BigInt? amount;
-  const SubstrateEthereumEvmLogEvent(
-      {required this.contractAddress,
-      required this.topics,
-      required this.data,
-      required this.address,
-      this.amount});
+  const SubstrateEthereumEvmLogEvent({
+    required this.contractAddress,
+    required this.topics,
+    required this.data,
+    required this.address,
+    this.amount,
+  });
   factory SubstrateEthereumEvmLogEvent.fromJson(Map<String, dynamic> json) {
     final List<String> topics = json.valueEnsureAsList<String>("topics");
     final String? signature = topics.firstOrNull;
@@ -1110,21 +1185,26 @@ class SubstrateEthereumEvmLogEvent implements SubstrateAssetDepositEvent {
     if (topics.length >= 3 &&
         signature != null &&
         StringUtils.hexEqual(
-            signature, SubstratemEVMNetworkUtils.erc20TransferSignature)) {
-      address = SubstrateAddressUtils.tryDecodeFromSolidityAddress(
-              topics.elementAt(2))
-          ?.address;
-      amount =
-          BigintUtils.fromBytes(BytesUtils.fromHexString(json.valueAs("data")));
+          signature,
+          SubstratemEVMNetworkUtils.erc20TransferSignature,
+        )) {
+      address =
+          SubstrateAddressUtils.tryDecodeFromSolidityAddress(
+            topics.elementAt(2),
+          )?.address;
+      amount = BigintUtils.fromBytes(
+        BytesUtils.fromHexString(json.valueAs("data")),
+      );
     }
 
     /// ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
     return SubstrateEthereumEvmLogEvent(
-        contractAddress: json.valueAs("address"),
-        topics: topics,
-        data: json.valueAs("data"),
-        amount: amount,
-        address: address);
+      contractAddress: json.valueAs("address"),
+      topics: topics,
+      data: json.valueAs("data"),
+      amount: amount,
+      address: address,
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1135,12 +1215,15 @@ class SubstrateEthereumEvmLogEvent implements SubstrateAssetDepositEvent {
 class SubstrateExecutedFromXcmEvent {
   final String xcmMessageHash;
   final String ethTxHash;
-  const SubstrateExecutedFromXcmEvent(
-      {required this.xcmMessageHash, required this.ethTxHash});
+  const SubstrateExecutedFromXcmEvent({
+    required this.xcmMessageHash,
+    required this.ethTxHash,
+  });
   factory SubstrateExecutedFromXcmEvent.fromJson(Map<String, dynamic> json) {
     return SubstrateExecutedFromXcmEvent(
-        xcmMessageHash: json.valueAs("xcm_msg_hash"),
-        ethTxHash: json.valueAs("eth_tx_hash"));
+      xcmMessageHash: json.valueAs("xcm_msg_hash"),
+      ethTxHash: json.valueAs("eth_tx_hash"),
+    );
   }
 }
 
@@ -1149,18 +1232,21 @@ class SubstrateEthereumExecutedEvent {
   final String from;
   final String to;
   final String transactonHash;
-  const SubstrateEthereumExecutedEvent(
-      {required this.from,
-      required this.to,
-      required this.transactonHash,
-      required this.exitReason});
+  const SubstrateEthereumExecutedEvent({
+    required this.from,
+    required this.to,
+    required this.transactonHash,
+    required this.exitReason,
+  });
   factory SubstrateEthereumExecutedEvent.fromJson(Map<String, dynamic> json) {
     return SubstrateEthereumExecutedEvent(
-        from: json.valueAs("from"),
-        to: json.valueAs("to"),
-        exitReason: BaseEthereumRuntimeRpcsApiCallExitReason.fromJson(
-            json.valueAs("exit_reason")),
-        transactonHash: json.valueAs("extra_data"));
+      from: json.valueAs("from"),
+      to: json.valueAs("to"),
+      exitReason: BaseEthereumRuntimeRpcsApiCallExitReason.fromJson(
+        json.valueAs("exit_reason"),
+      ),
+      transactonHash: json.valueAs("extra_data"),
+    );
   }
 }
 
@@ -1169,13 +1255,17 @@ class SubstrateTokensDepositedEvent implements SubstrateAssetDepositEvent {
   final String who;
   final BigInt amount;
 
-  const SubstrateTokensDepositedEvent(
-      {required this.currencyId, required this.amount, required this.who});
+  const SubstrateTokensDepositedEvent({
+    required this.currencyId,
+    required this.amount,
+    required this.who,
+  });
   factory SubstrateTokensDepositedEvent.fromJson(Map<String, dynamic> json) {
     return SubstrateTokensDepositedEvent(
-        currencyId: json.valueAs("currency_id"),
-        who: json.valueAs("who"),
-        amount: json.valueAsBigInt("amount"));
+      currencyId: json.valueAs("currency_id"),
+      who: json.valueAs("who"),
+      amount: json.valueAsBigInt("amount"),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1192,18 +1282,23 @@ class SubstrateXTransferDepositedEvent implements SubstrateAssetDepositEvent {
   @override
   final String? address;
 
-  const SubstrateXTransferDepositedEvent(
-      {required this.what, required this.who, this.address});
+  const SubstrateXTransferDepositedEvent({
+    required this.what,
+    required this.who,
+    this.address,
+  });
   factory SubstrateXTransferDepositedEvent.fromJson(Map<String, dynamic> json) {
     final location = XCMV3MultiLocation.fromJson(json.valueAs("who"));
-    final account32 = location.interior.junctions
-        .whereType<XCMJunctionAccountId32>()
-        .firstOrNull
-        ?.id;
+    final account32 =
+        location.interior.junctions
+            .whereType<XCMJunctionAccountId32>()
+            .firstOrNull
+            ?.id;
     return SubstrateXTransferDepositedEvent(
-        what: XCMV3MultiAsset.fromJson(json.valueAs("what")),
-        who: XCMV3MultiLocation.fromJson(json.valueAs("who")),
-        address: BytesUtils.tryToHexString(account32));
+      what: XCMV3MultiAsset.fromJson(json.valueAs("what")),
+      who: XCMV3MultiLocation.fromJson(json.valueAs("who")),
+      address: BytesUtils.tryToHexString(account32),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1215,14 +1310,19 @@ class SubstrateCurrenciesDepositedEvent implements SubstrateAssetDepositEvent {
   final Object currencyId;
   final String who;
   final BigInt amount;
-  const SubstrateCurrenciesDepositedEvent(
-      {required this.currencyId, required this.amount, required this.who});
+  const SubstrateCurrenciesDepositedEvent({
+    required this.currencyId,
+    required this.amount,
+    required this.who,
+  });
   factory SubstrateCurrenciesDepositedEvent.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return SubstrateCurrenciesDepositedEvent(
-        currencyId: json.valueAs("currency_id"),
-        who: json.valueAs("who"),
-        amount: json.valueAsBigInt("amount"));
+      currencyId: json.valueAs("currency_id"),
+      who: json.valueAs("who"),
+      amount: json.valueAsBigInt("amount"),
+    );
   }
 
   @override
@@ -1230,11 +1330,7 @@ class SubstrateCurrenciesDepositedEvent implements SubstrateAssetDepositEvent {
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      "currency_id": currencyId,
-      "who": who,
-      "amount": amount.toString(),
-    };
+    return {"currency_id": currencyId, "who": who, "amount": amount.toString()};
   }
 }
 
@@ -1244,7 +1340,9 @@ class SubstrateBalancesMintedEvent implements SubstrateAssetDepositEvent {
   const SubstrateBalancesMintedEvent({required this.amount, required this.who});
   factory SubstrateBalancesMintedEvent.fromJson(Map<String, dynamic> json) {
     return SubstrateBalancesMintedEvent(
-        who: json.valueAs("who"), amount: json.valueAsBigInt("amount"));
+      who: json.valueAs("who"),
+      amount: json.valueAsBigInt("amount"),
+    );
   }
 
   @override

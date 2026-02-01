@@ -14,8 +14,10 @@ enum XCMFungibilityType implements Comparable<XCMFungibilityType> {
 
   const XCMFungibilityType(this.type);
   static XCMFungibilityType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMFungibilityType fromType(String? type) {
@@ -43,8 +45,10 @@ enum XCMAssetInstanceType implements Comparable<XCMAssetInstanceType> {
 
   const XCMAssetInstanceType(this.type);
   static XCMAssetInstanceType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMAssetInstanceType fromType(String? type) {
@@ -69,38 +73,39 @@ abstract mixin class XCMAssetInstance
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMAssetInstanceUndefined.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMAssetInstanceUndefined.layout_(property: property),
         property: XCMAssetInstanceType.undefined.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMAssetInstanceIndex.layout_(property: property),
+        layout:
+            ({property}) => XCMAssetInstanceIndex.layout_(property: property),
         property: XCMAssetInstanceType.indexId.name,
         index: 1,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMAssetInstanceArray4.layout_(property: property),
+        layout:
+            ({property}) => XCMAssetInstanceArray4.layout_(property: property),
         property: XCMAssetInstanceType.array4.name,
         index: 2,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMAssetInstanceArray8.layout_(property: property),
+        layout:
+            ({property}) => XCMAssetInstanceArray8.layout_(property: property),
         property: XCMAssetInstanceType.array8.name,
         index: 3,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMAssetInstanceArray16.layout_(property: property),
+        layout:
+            ({property}) => XCMAssetInstanceArray16.layout_(property: property),
         property: XCMAssetInstanceType.array16.name,
         index: 4,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMAssetInstanceArray32.layout_(property: property),
+        layout:
+            ({property}) => XCMAssetInstanceArray32.layout_(property: property),
         property: XCMAssetInstanceType.array32.name,
         index: 5,
       ),
@@ -155,15 +160,15 @@ abstract mixin class XCMAssetInstanceUndefined implements XCMAssetInstance {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMAssetInstanceIndex implements XCMAssetInstance {
   BigInt get index;
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [LayoutConst.compactBigintU128(property: "index")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactBigintU128(property: "index"),
+    ], property: property);
   }
 
   @override
@@ -193,15 +198,16 @@ abstract mixin class XCMAssetInstanceIndex implements XCMAssetInstance {
   }
 
   @override
-  List get variabels => [type, index];
+  List get variables => [type, index];
 }
 
 abstract mixin class XCMAssetInstanceArray4 implements XCMAssetInstance {
   List<int> get datum;
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.fixedBlobN(4, property: "datum")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.fixedBlobN(4, property: "datum"),
+    ], property: property);
   }
 
   @override
@@ -231,14 +237,15 @@ abstract mixin class XCMAssetInstanceArray4 implements XCMAssetInstance {
   }
 
   @override
-  List get variabels => [type, datum];
+  List get variables => [type, datum];
 }
 
 abstract mixin class XCMAssetInstanceArray8 implements XCMAssetInstance {
   List<int> get datum;
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.fixedBlobN(8, property: "datum")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.fixedBlobN(8, property: "datum"),
+    ], property: property);
   }
 
   @override
@@ -268,15 +275,16 @@ abstract mixin class XCMAssetInstanceArray8 implements XCMAssetInstance {
   }
 
   @override
-  List get variabels => [type, datum];
+  List get variables => [type, datum];
 }
 
 abstract mixin class XCMAssetInstanceArray16 implements XCMAssetInstance {
   List<int> get datum;
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.fixedBlobN(16, property: "datum")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.fixedBlobN(16, property: "datum"),
+    ], property: property);
   }
 
   @override
@@ -306,15 +314,16 @@ abstract mixin class XCMAssetInstanceArray16 implements XCMAssetInstance {
   }
 
   @override
-  List get variabels => [type, datum];
+  List get variables => [type, datum];
 }
 
 abstract mixin class XCMAssetInstanceArray32 implements XCMAssetInstance {
   List<int> get datum;
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.fixedBlobN(32, property: "datum")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.fixedBlobN(32, property: "datum"),
+    ], property: property);
   }
 
   @override
@@ -344,7 +353,7 @@ abstract mixin class XCMAssetInstanceArray32 implements XCMAssetInstance {
   }
 
   @override
-  List get variabels => [type, datum];
+  List get variables => [type, datum];
 }
 
 abstract mixin class XCMFungibility
@@ -372,9 +381,9 @@ abstract mixin class XCMFungibilityFungible implements XCMFungibility {
   BigInt get units;
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [LayoutConst.compactBigintU128(property: "units")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactBigintU128(property: "units"),
+    ], property: property);
   }
 
   @override
@@ -403,7 +412,7 @@ abstract mixin class XCMFungibilityFungible implements XCMFungibility {
   }
 
   @override
-  List get variabels => [type, units];
+  List get variables => [type, units];
 }
 
 abstract mixin class XCMFungibilityNonFungible implements XCMFungibility {
@@ -431,5 +440,5 @@ abstract mixin class XCMFungibilityNonFungible implements XCMFungibility {
   }
 
   @override
-  List get variabels => [type, instance];
+  List get variables => [type, instance];
 }

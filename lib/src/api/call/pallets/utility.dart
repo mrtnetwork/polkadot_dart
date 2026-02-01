@@ -10,13 +10,17 @@ enum UtilityCallPalletMethod implements SubstrateCallPalletMethod {
   final int variantIndex;
   const UtilityCallPalletMethod(this.method, this.variantIndex);
   static UtilityCallPalletMethod fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static UtilityCallPalletMethod fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 }
 
@@ -30,23 +34,30 @@ abstract class UtilityCallPallet with SubstrateCallPallet {
 class UtilityCallPalletBatch extends UtilityCallPallet {
   final List<SubstrateCallPallet> calls;
 
-  UtilityCallPalletBatch(
-      {required List<SubstrateCallPallet> calls,
-      super.pallet = SubtrateMetadataPallet.utility})
-      : calls = calls.immutable,
-        super(type: UtilityCallPalletMethod.batch);
+  UtilityCallPalletBatch({
+    required List<SubstrateCallPallet> calls,
+    super.pallet = SubtrateMetadataPallet.utility,
+  }) : calls = calls.immutable,
+       super(type: UtilityCallPalletMethod.batch);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: calls
-          .map((e) => LookupRawParam(bytes: e.encodeCall(extrinsic: extrinsic)))
-          .toList()
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method:
+            calls
+                .map(
+                  (e) =>
+                      LookupRawParam(bytes: e.encodeCall(extrinsic: extrinsic)),
+                )
+                .toList(),
+      },
+    );
   }
 
   @override
@@ -58,23 +69,30 @@ class UtilityCallPalletBatch extends UtilityCallPallet {
 class UtilityCallPalletBatchAll extends UtilityCallPallet {
   final List<SubstrateCallPallet> calls;
 
-  UtilityCallPalletBatchAll(
-      {required List<SubstrateCallPallet> calls,
-      super.pallet = SubtrateMetadataPallet.utility})
-      : calls = calls.immutable,
-        super(type: UtilityCallPalletMethod.batchAll);
+  UtilityCallPalletBatchAll({
+    required List<SubstrateCallPallet> calls,
+    super.pallet = SubtrateMetadataPallet.utility,
+  }) : calls = calls.immutable,
+       super(type: UtilityCallPalletMethod.batchAll);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: calls
-          .map((e) => LookupRawParam(bytes: e.encodeCall(extrinsic: extrinsic)))
-          .toList()
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method:
+            calls
+                .map(
+                  (e) =>
+                      LookupRawParam(bytes: e.encodeCall(extrinsic: extrinsic)),
+                )
+                .toList(),
+      },
+    );
   }
 
   @override

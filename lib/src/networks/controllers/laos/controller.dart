@@ -9,38 +9,44 @@ import 'package:polkadot_dart/src/networks/utils/xcm.dart';
 import 'asset.dart';
 
 abstract class BaseLaosNetworkController<NETWORK extends BaseSubstrateNetwork>
-    extends BaseSubstrateNetworkController<BigInt, BaseLaosNetworkAsset,
-        NETWORK> {
+    extends
+        BaseSubstrateNetworkController<BigInt, BaseLaosNetworkAsset, NETWORK> {
   @override
   final SubstrateNetworkControllerParams params;
   BaseLaosNetworkController({required this.params});
 
   @override
-  Future<List<BaseLaosNetworkAsset>> getAssetsInternal(
-      {List<BigInt>? knownAssetIds}) async {
+  Future<List<BaseLaosNetworkAsset>> getAssetsInternal({
+    List<BigInt>? knownAssetIds,
+  }) async {
     return [];
   }
 
   @override
   Future<List<SubstrateAccountAssetBalance<BaseLaosNetworkAsset>>>
-      getAccountAssetsInternal(
-          {required BaseSubstrateAddress address,
-          List<BigInt>? knownAssetIds,
-          List<BaseLaosNetworkAsset>? knownAssets}) async {
+  getAccountAssetsInternal({
+    required BaseSubstrateAddress address,
+    List<BigInt>? knownAssetIds,
+    List<BaseLaosNetworkAsset>? knownAssets,
+  }) async {
     return [];
   }
 
   @override
   Future<SubstrateAccountAssetBalance<BaseLaosNetworkAsset>?>
-      getNativeAssetFreeBalance(BaseSubstrateAddress address) async {
+  getNativeAssetFreeBalance(BaseSubstrateAddress address) async {
     final provider = await params.loadMetadata(network);
     final balance = await SubstrateQuickStorageApi.system.accountWithDataFrame(
-        api: provider.metadata.api, rpc: provider.provider, address: address);
+      api: provider.metadata.api,
+      rpc: provider.provider,
+      address: address,
+    );
     return SubstrateAccountAssetBalance<BaseLaosNetworkAsset>(
-        asset: defaultNativeAsset,
-        reserved: balance.data.reserved,
-        frozen: balance.data.flags,
-        free: balance.data.free);
+      asset: defaultNativeAsset,
+      reserved: balance.data.reserved,
+      frozen: balance.data.flags,
+      free: balance.data.free,
+    );
   }
 }
 
@@ -50,51 +56,58 @@ class LaosNetworkController extends BaseLaosNetworkController<PolkadotNetwork> {
   @override
   late final LaosnetNetworkNativeAsset defaultNativeAsset =
       LaosnetNetworkNativeAsset(
-    name: "Laos Network",
-    decimals: 18,
-    symbol: "LAOS",
-    minBalance: BigInt.zero,
-    location: SubstrateNetworkControllerUtils.locationWithParaId(
-        version: network.defaultXcmVersion, paraId: network.paraId),
-  );
+        name: "Laos Network",
+        decimals: 18,
+        symbol: "LAOS",
+        minBalance: BigInt.zero,
+        location: SubstrateNetworkControllerUtils.locationWithParaId(
+          version: network.defaultXcmVersion,
+          paraId: network.paraId,
+        ),
+      );
 
   @override
   PolkadotNetwork get network => PolkadotNetwork.laos;
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     if (params.hasRelayAsset) {
-      if (SubstrateNetworkControllerConstants.disabledDotReserve
-          .contains(params.destinationNetwork)) {
+      if (SubstrateNetworkControllerConstants.disabledDotReserve.contains(
+        params.destinationNetwork,
+      )) {
         throw SubstrateNetworkControllerConstants.transferDisabled;
       }
-      return SubstrateNetworkControllerXCMTransferBuilder
-          .transferAssetsThroughUsingTypeAndThen(
-              params: params,
-              provider: provider,
-              network: network,
-              onEstimateFee: onControllerRequest);
-    }
-    return SubstrateNetworkControllerXCMTransferBuilder.createXCMTransfer(
+      return SubstrateNetworkControllerXCMTransferBuilder.transferAssetsThroughUsingTypeAndThen(
         params: params,
         provider: provider,
         network: network,
-        pallet: SubtrateMetadataPallet.polkadotXcm);
+        onEstimateFee: onControllerRequest,
+      );
+    }
+    return SubstrateNetworkControllerXCMTransferBuilder.createXCMTransfer(
+      params: params,
+      provider: provider,
+      network: network,
+      pallet: SubtrateMetadataPallet.polkadotXcm,
+    );
   }
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     return SubstrateNetworkControllerXCMTransferBuilder.xcmTransferParaToSystem(
-        params: params,
-        provider: provider,
-        network: network,
-        defaultPallet: SubtrateMetadataPallet.polkadotXcm,
-        onControllerRequest: onControllerRequest);
+      params: params,
+      provider: provider,
+      network: network,
+      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      onControllerRequest: onControllerRequest,
+    );
   }
 }

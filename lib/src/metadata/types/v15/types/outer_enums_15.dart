@@ -25,14 +25,15 @@ class OuterEnums15 extends SubstrateSerialization<Map<String, dynamic>> {
   /// - Decoding the 5 error bytes into this type will not always lead to all of the bytes being consumed;
   ///   many error types do not require all of the bytes to represent them fully.
   final int errorType;
-  const OuterEnums15(
-      {required this.callType,
-      required this.errorType,
-      required this.eventType});
+  const OuterEnums15({
+    required this.callType,
+    required this.errorType,
+    required this.eventType,
+  });
   OuterEnums15.deserializeJson(Map<String, dynamic> json)
-      : callType = json["callType"],
-        eventType = json["eventType"],
-        errorType = json["errorType"];
+    : callType = json["callType"],
+      eventType = json["eventType"],
+      errorType = json["errorType"];
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.outerEnums15(property: property);
@@ -43,7 +44,7 @@ class OuterEnums15 extends SubstrateSerialization<Map<String, dynamic>> {
     return {
       "callType": callType,
       "eventType": eventType,
-      "errorType": errorType
+      "errorType": errorType,
     };
   }
 }

@@ -21,154 +21,179 @@ class SubstrateStorageFungibles extends SubstrateStorageApi {
   const SubstrateStorageFungibles();
   @override
   SubstrateStorageApis get api => SubstrateStorageApis.fungibles;
-  Future<List<QueryStorageFullResponse<Map<String, dynamic>>>> assetEnteries(
-      {required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<List<QueryStorageFullResponse<Map<String, dynamic>>>> assetEnteries({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request: GetStreamStorageEntriesRequest<
-                QueryStorageFullResponse<Map<String, dynamic>>,
-                Map<String, dynamic>>(
-            palletNameOrIndex: this.api.name,
-            methodName: SubstrateStorageFungiblesMethods.asset.name,
-            onJsonResponse: (response, responseBytes, storageKey) {
-              return QueryStorageFullResponse(
-                  storageKey: storageKey,
-                  responseBytes: responseBytes,
-                  response: response);
-            }),
-        rpc: rpc);
+      request: GetStreamStorageEntriesRequest<
+        QueryStorageFullResponse<Map<String, dynamic>>,
+        Map<String, dynamic>
+      >(
+        palletNameOrIndex: this.api.name,
+        methodName: SubstrateStorageFungiblesMethods.asset.name,
+        onJsonResponse: (response, responseBytes, storageKey) {
+          return QueryStorageFullResponse(
+            storageKey: storageKey,
+            responseBytes: responseBytes,
+            response: response,
+          );
+        },
+      ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }
 
-  Future<List<QueryStorageFullResponse<Map<String, dynamic>>>> metadataEnteries(
-      {required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
+  metadataEnteries({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request: GetStreamStorageEntriesRequest<
-                QueryStorageFullResponse<Map<String, dynamic>>,
-                Map<String, dynamic>>(
-            palletNameOrIndex: this.api.name,
-            methodName: SubstrateStorageFungiblesMethods.metadata.name,
-            onJsonResponse: (response, responseBytes, storageKey) {
-              return QueryStorageFullResponse(
-                  storageKey: storageKey,
-                  responseBytes: responseBytes,
-                  response: response);
-            }),
-        rpc: rpc);
+      request: GetStreamStorageEntriesRequest<
+        QueryStorageFullResponse<Map<String, dynamic>>,
+        Map<String, dynamic>
+      >(
+        palletNameOrIndex: this.api.name,
+        methodName: SubstrateStorageFungiblesMethods.metadata.name,
+        onJsonResponse: (response, responseBytes, storageKey) {
+          return QueryStorageFullResponse(
+            storageKey: storageKey,
+            responseBytes: responseBytes,
+            response: response,
+          );
+        },
+      ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }
 
-  Future<List<(XCMVersionedLocation, Map<String, dynamic>?)>> metadata(
-      {required MetadataApi api,
-      required SubstrateProvider rpc,
-      required List<XCMVersionedLocation> locations}) async {
+  Future<List<(XCMVersionedLocation, Map<String, dynamic>?)>> metadata({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+    required List<XCMVersionedLocation> locations,
+  }) async {
     final query = api
         .queryStreamStorageAtBlock(
-            requestes: () async* {
-              yield locations
-                  .map((e) => GetStorageRequest<
-                          (XCMVersionedLocation, Map<String, dynamic>?),
-                          Map<String, dynamic>>(
-                      palletNameOrIndex: this.api.name,
-                      methodName:
-                          SubstrateStorageFungiblesMethods.metadata.name,
-                      onNullResponse: (storageKey) => (e, null),
-                      onJsonResponse: (response, _, storageKey) {
-                        return (e, response);
-                      },
-                      inputs: e.location.toJson()
-                      // onEncodeInputs: (index, onEncode) => e.serialize(),
-                      ))
-                  .toList();
-            }(),
-            rpc: rpc,
-            fromTemplate: false)
+          requestes: () async* {
+            yield locations
+                .map(
+                  (e) => GetStorageRequest<
+                    (XCMVersionedLocation, Map<String, dynamic>?),
+                    Map<String, dynamic>
+                  >(
+                    palletNameOrIndex: this.api.name,
+                    methodName: SubstrateStorageFungiblesMethods.metadata.name,
+                    onNullResponse: (storageKey) => (e, null),
+                    onJsonResponse: (response, _, storageKey) {
+                      return (e, response);
+                    },
+                    inputs: e.location.toJson(),
+                    // onEncodeInputs: (index, onEncode) => e.serialize(),
+                  ),
+                )
+                .toList();
+          }(),
+          rpc: rpc,
+          fromTemplate: false,
+        )
         .expand((e) => e.results);
     final result = await query.toList();
     return result.map((e) => e.result).toList();
   }
 
-  Future<List<(XCMVersionedLocation, Map<String, dynamic>?)>> assets(
-      {required MetadataApi api,
-      required SubstrateProvider rpc,
-      required List<XCMVersionedLocation> locations}) async {
+  Future<List<(XCMVersionedLocation, Map<String, dynamic>?)>> assets({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+    required List<XCMVersionedLocation> locations,
+  }) async {
     final query = api
         .queryStreamStorageAtBlock(
-            requestes: () async* {
-              yield locations
-                  .map((e) => GetStorageRequest<
-                          (XCMVersionedLocation, Map<String, dynamic>?),
-                          Map<String, dynamic>>(
-                      palletNameOrIndex: this.api.name,
-                      methodName: SubstrateStorageFungiblesMethods.asset.name,
-                      onNullResponse: (storageKey) => (e, null),
-                      onJsonResponse: (response, _, storageKey) {
-                        return (e, response);
-                      },
-                      inputs: e.location.toJson()
-                      // onEncodeInputs: (index, onEncode) => e.serialize(),
-                      ))
-                  .toList();
-            }(),
-            rpc: rpc,
-            fromTemplate: false)
+          requestes: () async* {
+            yield locations
+                .map(
+                  (e) => GetStorageRequest<
+                    (XCMVersionedLocation, Map<String, dynamic>?),
+                    Map<String, dynamic>
+                  >(
+                    palletNameOrIndex: this.api.name,
+                    methodName: SubstrateStorageFungiblesMethods.asset.name,
+                    onNullResponse: (storageKey) => (e, null),
+                    onJsonResponse: (response, _, storageKey) {
+                      return (e, response);
+                    },
+                    inputs: e.location.toJson(),
+                    // onEncodeInputs: (index, onEncode) => e.serialize(),
+                  ),
+                )
+                .toList();
+          }(),
+          rpc: rpc,
+          fromTemplate: false,
+        )
         .expand((e) => e.results);
     final result = await query.toList();
     return result.map((e) => e.result).toList();
   }
 
   Future<
-      List<
-          (
-            XCMVersionedLocation,
-            QueryStorageFullResponse<Map<String, dynamic>>
-          )>> account(
-      {required MetadataApi api,
-      required SubstrateProvider rpc,
-      required BaseSubstrateAddress address,
-      required List<XCMVersionedLocation> locations}) async {
+    List<(XCMVersionedLocation, QueryStorageFullResponse<Map<String, dynamic>>)>
+  >
+  account({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+    required BaseSubstrateAddress address,
+    required List<XCMVersionedLocation> locations,
+  }) async {
     if (locations.isEmpty) return [];
     final List<int> addressBytes = address.toBytes().asImmutableBytes;
     final entries = api.queryStreamStorageAtBlock(
-        requestes: () async* {
-          yield locations
-              .map((e) => GetStorageRequest<
-                      (
-                        XCMVersionedLocation,
-                        QueryStorageFullResponse<Map<String, dynamic>>
-                      )?,
-                      Map<String, dynamic>>(
-                    palletNameOrIndex: this.api.name,
-                    methodName: SubstrateStorageFungiblesMethods.account.name,
-                    inputs: [e, addressBytes],
-                    onEncodeInputs: (index, onEncode) {
-                      return switch (index) {
-                        0 => e.serialize(),
-                        _ => addressBytes
-                      };
-                    },
-                    onJsonResponse: (response, bytes, storageKey) => (
+      requestes: () async* {
+        yield locations
+            .map(
+              (e) => GetStorageRequest<
+                (
+                  XCMVersionedLocation,
+                  QueryStorageFullResponse<Map<String, dynamic>>,
+                )?,
+                Map<String, dynamic>
+              >(
+                palletNameOrIndex: this.api.name,
+                methodName: SubstrateStorageFungiblesMethods.account.name,
+                inputs: [e, addressBytes],
+                onEncodeInputs: (index, onEncode) {
+                  return switch (index) {
+                    0 => e.serialize(),
+                    _ => addressBytes,
+                  };
+                },
+                onJsonResponse:
+                    (response, bytes, storageKey) => (
                       e,
                       QueryStorageFullResponse(
-                          storageKey: storageKey,
-                          responseBytes: bytes,
-                          response: response)
+                        storageKey: storageKey,
+                        responseBytes: bytes,
+                        response: response,
+                      ),
                     ),
-                  ))
-              .toList();
-        }(),
-        rpc: rpc);
+              ),
+            )
+            .toList();
+      }(),
+      rpc: rpc,
+    );
 
     final result = await entries.toList();
     return result
         .expand((e) => e.results)
         .map((e) => e.result)
         .whereType<
-            (
-              XCMVersionedLocation,
-              QueryStorageFullResponse<Map<String, dynamic>>
-            )>()
+          (XCMVersionedLocation, QueryStorageFullResponse<Map<String, dynamic>>)
+        >()
         .toList();
   }
 }

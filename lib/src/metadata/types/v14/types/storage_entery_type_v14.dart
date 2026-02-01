@@ -34,16 +34,19 @@ class StorageEntryTypeV14Map extends StorageEntryTypeV14<Map<String, dynamic>> {
   final List<StorageHasherV14> hashers;
   final int key;
   final int value;
-  StorageEntryTypeV14Map(
-      {required List<StorageHasherV14> hashers,
-      required this.key,
-      required this.value})
-      : hashers = List<StorageHasherV14>.unmodifiable(hashers);
+  StorageEntryTypeV14Map({
+    required List<StorageHasherV14> hashers,
+    required this.key,
+    required this.value,
+  }) : hashers = List<StorageHasherV14>.unmodifiable(hashers);
   StorageEntryTypeV14Map.deserializeJson(Map<String, dynamic> json)
-      : hashers = List.unmodifiable((json["hashers"] as List)
-            .map((e) => StorageHasherV14.deserializeJson(e))),
-        key = json["key"],
-        value = json["value"];
+    : hashers = List.unmodifiable(
+        (json["hashers"] as List).map(
+          (e) => StorageHasherV14.deserializeJson(e),
+        ),
+      ),
+      key = json["key"],
+      value = json["value"];
 
   @override
   String get typeName => StorageEntryTypeV14IndexKeys.map;
@@ -58,7 +61,7 @@ class StorageEntryTypeV14Map extends StorageEntryTypeV14<Map<String, dynamic>> {
     return {
       "hashers": hashers.map((e) => e.serializeJson()).toList(),
       "key": key,
-      "value": value
+      "value": value,
     };
   }
 

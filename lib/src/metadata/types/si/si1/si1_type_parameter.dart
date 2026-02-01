@@ -7,8 +7,8 @@ class Si1TypeParameter extends SubstrateSerialization<Map<String, dynamic>> {
   final int? type;
   const Si1TypeParameter({required this.name, required this.type});
   Si1TypeParameter.deserializeJson(Map<String, dynamic> json)
-      : name = json["name"],
-        type = json["type"];
+    : name = json["name"],
+      type = json["type"];
   @override
   StructLayout layout({String? property}) =>
       SubstrateMetadataLayouts.si1TypeParameter(property: property);

@@ -17,21 +17,27 @@ class SubstrateStorageXcmInfo extends SubstrateStorageApi {
   @override
   SubstrateStorageApis get api => SubstrateStorageApis.xcmInfo;
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
-      locationOfEntries(
-          {required MetadataApi api, required SubstrateProvider rpc}) async {
+  locationOfEntries({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request: GetStreamStorageEntriesRequest<
-                QueryStorageFullResponse<Map<String, dynamic>>,
-                Map<String, dynamic>>(
-            palletNameOrIndex: this.api.name,
-            methodName: SubstrateStorageXcmInfoMethods.locationOf.name,
-            onJsonResponse: (response, responseBytes, storageKey) {
-              return QueryStorageFullResponse(
-                  storageKey: storageKey,
-                  responseBytes: responseBytes,
-                  response: response);
-            }),
-        rpc: rpc);
+      request: GetStreamStorageEntriesRequest<
+        QueryStorageFullResponse<Map<String, dynamic>>,
+        Map<String, dynamic>
+      >(
+        palletNameOrIndex: this.api.name,
+        methodName: SubstrateStorageXcmInfoMethods.locationOf.name,
+        onJsonResponse: (response, responseBytes, storageKey) {
+          return QueryStorageFullResponse(
+            storageKey: storageKey,
+            responseBytes: responseBytes,
+            response: response,
+          );
+        },
+      ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }

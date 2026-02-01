@@ -14,13 +14,14 @@ class MetadataTypeInfoUtils {
     final List<String> words = input.split(' ');
 
     // Capitalize the first letter of each words
-    final List<String> capitalizedWords = words.map((word) {
-      if (word.isNotEmpty) {
-        return word[0].toUpperCase() + word.substring(1);
-      } else {
-        return '';
-      }
-    }).toList();
+    final List<String> capitalizedWords =
+        words.map((word) {
+          if (word.isNotEmpty) {
+            return word[0].toUpperCase() + word.substring(1);
+          } else {
+            return '';
+          }
+        }).toList();
 
     // Join the words to form CamelCase
     final String camelCaseString = capitalizedWords.join('');
@@ -39,7 +40,7 @@ enum MetadataTypes {
   sequence,
   tuple,
   composit,
-  variant
+  variant,
 }
 
 abstract class MetadataTypeInfo<T> {
@@ -49,15 +50,19 @@ abstract class MetadataTypeInfo<T> {
   final List<String>? paths;
   bool get isNone => typeName == MetadataTypes.none;
   late String? viewName = MetadataTypeInfoUtils.toCamelCase(name);
-  MetadataTypeInfo(
-      {required this.typeId,
-      this.name,
-      List<String>? docs,
-      List<String>? paths})
-      : docs = docs?.emptyAsNull?.immutable,
-        paths = paths?.emptyAsNull?.immutable;
-  MetadataTypeInfo<T> copyWith(
-      {String? name, List<String>? paths, List<String>? docs, int? typeId});
+  MetadataTypeInfo({
+    required this.typeId,
+    this.name,
+    List<String>? docs,
+    List<String>? paths,
+  }) : docs = docs?.emptyAsNull?.immutable,
+       paths = paths?.emptyAsNull?.immutable;
+  MetadataTypeInfo<T> copyWith({
+    String? name,
+    List<String>? paths,
+    List<String>? docs,
+    int? typeId,
+  });
   bool get isPromitive;
   MetadataTypes get typeName;
 
@@ -80,21 +85,25 @@ abstract class MetadataTypeInfo<T> {
 }
 
 abstract class MetadataTypeInfoPromitive<T> extends MetadataTypeInfo {
-  MetadataTypeInfoPromitive(
-      {required super.typeId,
-      required super.name,
-      super.docs,
-      super.paths,
-      required this.primitiveType});
+  MetadataTypeInfoPromitive({
+    required super.typeId,
+    required super.name,
+    super.docs,
+    super.paths,
+    required this.primitiveType,
+  });
   @override
   bool get isPromitive => true;
   final PrimitiveTypes primitiveType;
 }
 
 class MetadataTypeInfoBoolean extends MetadataTypeInfoPromitive<bool> {
-  MetadataTypeInfoBoolean(
-      {required super.typeId, super.name, super.docs, super.paths})
-      : super(primitiveType: PrimitiveTypes.boolType);
+  MetadataTypeInfoBoolean({
+    required super.typeId,
+    super.name,
+    super.docs,
+    super.paths,
+  }) : super(primitiveType: PrimitiveTypes.boolType);
   @override
   String toString() {
     return "bool";
@@ -108,10 +117,11 @@ class MetadataTypeInfoBoolean extends MetadataTypeInfoPromitive<bool> {
     int? typeId,
   }) {
     return MetadataTypeInfoBoolean(
-        typeId: typeId ?? this.typeId,
-        name: name ?? this.name,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
+      typeId: typeId ?? this.typeId,
+      name: name ?? this.name,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+    );
   }
 
   @override
@@ -122,9 +132,12 @@ class MetadataTypeInfoBoolean extends MetadataTypeInfoPromitive<bool> {
 }
 
 class MetadataTypeInfoString extends MetadataTypeInfoPromitive<String> {
-  MetadataTypeInfoString(
-      {required super.typeId, super.name, super.docs, super.paths})
-      : super(primitiveType: PrimitiveTypes.strType);
+  MetadataTypeInfoString({
+    required super.typeId,
+    super.name,
+    super.docs,
+    super.paths,
+  }) : super(primitiveType: PrimitiveTypes.strType);
   @override
   String toString() {
     return "String";
@@ -138,10 +151,11 @@ class MetadataTypeInfoString extends MetadataTypeInfoPromitive<String> {
     List<String>? docs,
   }) {
     return MetadataTypeInfoString(
-        name: name ?? super.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
+      name: name ?? super.name,
+      typeId: typeId ?? super.typeId,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+    );
   }
 
   @override
@@ -175,32 +189,35 @@ abstract class MetadataTypeInfoNumeric<T> extends MetadataTypeInfoPromitive<T> {
 }
 
 class MetadataTypeInfoBigInt extends MetadataTypeInfoNumeric<BigInt> {
-  MetadataTypeInfoBigInt(
-      {required super.typeId,
-      required super.name,
-      required super.primitiveType,
-      super.docs,
-      super.paths});
+  MetadataTypeInfoBigInt({
+    required super.typeId,
+    required super.name,
+    required super.primitiveType,
+    super.docs,
+    super.paths,
+  });
   @override
   String toString() {
     return "MetadataTypeInfoNumeric.${primitiveType.name}";
   }
 
   @override
-  MetadataTypeInfoPromitive<BigInt> copyWith(
-      {bool? sign,
-      int? bitLength,
-      String? name,
-      int? typeId,
-      List<String>? paths,
-      List<String>? docs,
-      PrimitiveTypes? primitiveType}) {
+  MetadataTypeInfoPromitive<BigInt> copyWith({
+    bool? sign,
+    int? bitLength,
+    String? name,
+    int? typeId,
+    List<String>? paths,
+    List<String>? docs,
+    PrimitiveTypes? primitiveType,
+  }) {
     return MetadataTypeInfoBigInt(
-        typeId: typeId ?? this.typeId,
-        name: name ?? this.name,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs,
-        primitiveType: primitiveType ?? this.primitiveType);
+      typeId: typeId ?? this.typeId,
+      name: name ?? this.name,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+      primitiveType: primitiveType ?? this.primitiveType,
+    );
   }
 
   @override
@@ -211,27 +228,30 @@ class MetadataTypeInfoBigInt extends MetadataTypeInfoNumeric<BigInt> {
 }
 
 class MetadataTypeInfoInt extends MetadataTypeInfoNumeric<int> {
-  MetadataTypeInfoInt(
-      {required super.name,
-      required super.typeId,
-      required super.primitiveType,
-      super.docs,
-      super.paths});
+  MetadataTypeInfoInt({
+    required super.name,
+    required super.typeId,
+    required super.primitiveType,
+    super.docs,
+    super.paths,
+  });
   @override
-  MetadataTypeInfoPromitive<int> copyWith(
-      {bool? sign,
-      int? bitLength,
-      String? name,
-      int? typeId,
-      List<String>? paths,
-      List<String>? docs,
-      PrimitiveTypes? primitiveType}) {
+  MetadataTypeInfoPromitive<int> copyWith({
+    bool? sign,
+    int? bitLength,
+    String? name,
+    int? typeId,
+    List<String>? paths,
+    List<String>? docs,
+    PrimitiveTypes? primitiveType,
+  }) {
     return MetadataTypeInfoInt(
-        typeId: typeId ?? this.typeId,
-        name: name ?? this.name,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs,
-        primitiveType: primitiveType ?? this.primitiveType);
+      typeId: typeId ?? this.typeId,
+      name: name ?? this.name,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+      primitiveType: primitiveType ?? this.primitiveType,
+    );
   }
 
   @override
@@ -242,13 +262,14 @@ class MetadataTypeInfoInt extends MetadataTypeInfoNumeric<int> {
 
 class MetadataTypeInfoArray<T extends MetadataTypeInfo>
     extends MetadataTypeInfoSequence<T> {
-  MetadataTypeInfoArray(
-      {required super.type,
-      required int super.length,
-      required super.typeId,
-      required super.name,
-      super.docs,
-      super.paths});
+  MetadataTypeInfoArray({
+    required super.type,
+    required int super.length,
+    required super.typeId,
+    required super.name,
+    super.docs,
+    super.paths,
+  });
   @override
   String toString() {
     return "List<$type>";
@@ -264,12 +285,13 @@ class MetadataTypeInfoArray<T extends MetadataTypeInfo>
     List<String>? docs,
   }) {
     return MetadataTypeInfoArray(
-        type: type ?? this.type,
-        length: length ?? this.length!,
-        name: name ?? this.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
+      type: type ?? this.type,
+      length: length ?? this.length!,
+      name: name ?? this.name,
+      typeId: typeId ?? super.typeId,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+    );
   }
 
   @override
@@ -280,8 +302,12 @@ class MetadataTypeInfoArray<T extends MetadataTypeInfo>
 }
 
 class MetadataTypeInfoNone extends MetadataTypeInfo {
-  MetadataTypeInfoNone(
-      {required super.typeId, required super.name, super.docs, super.paths});
+  MetadataTypeInfoNone({
+    required super.typeId,
+    required super.name,
+    super.docs,
+    super.paths,
+  });
   @override
   String toString() {
     return "None";
@@ -295,10 +321,11 @@ class MetadataTypeInfoNone extends MetadataTypeInfo {
     List<String>? docs,
   }) {
     return MetadataTypeInfoNone(
-        name: name ?? this.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
+      name: name ?? this.name,
+      typeId: typeId ?? super.typeId,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+    );
   }
 
   @override
@@ -315,12 +342,13 @@ class MetadataTypeInfoNone extends MetadataTypeInfo {
 class MetadataTypeInfoTuple<T extends MetadataTypeInfo>
     extends MetadataTypeInfo {
   final List<T> types;
-  MetadataTypeInfoTuple(
-      {required this.types,
-      required super.typeId,
-      required super.name,
-      super.docs,
-      super.paths});
+  MetadataTypeInfoTuple({
+    required this.types,
+    required super.typeId,
+    required super.name,
+    super.docs,
+    super.paths,
+  });
   @override
   String toString() {
     return "Tuple(${types.join(", ")})";
@@ -335,11 +363,12 @@ class MetadataTypeInfoTuple<T extends MetadataTypeInfo>
     List<String>? docs,
   }) {
     return MetadataTypeInfoTuple(
-        types: types ?? this.types,
-        name: name ?? this.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
+      types: types ?? this.types,
+      name: name ?? this.name,
+      typeId: typeId ?? super.typeId,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+    );
   }
 
   @override
@@ -367,12 +396,13 @@ class MetadataTypeInfoTuple<T extends MetadataTypeInfo>
 class MetadataTypeInfoComposit<T extends MetadataTypeInfo>
     extends MetadataTypeInfo {
   final List<T> types;
-  MetadataTypeInfoComposit(
-      {required this.types,
-      required super.name,
-      required super.typeId,
-      super.docs,
-      super.paths});
+  MetadataTypeInfoComposit({
+    required this.types,
+    required super.name,
+    required super.typeId,
+    super.docs,
+    super.paths,
+  });
   @override
   String toString() {
     return "MetadataTypeInfoComposit(${types.toString()})";
@@ -387,11 +417,12 @@ class MetadataTypeInfoComposit<T extends MetadataTypeInfo>
     List<String>? docs,
   }) {
     return MetadataTypeInfoComposit(
-        types: types ?? this.types,
-        name: name ?? this.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
+      types: types ?? this.types,
+      name: name ?? this.name,
+      typeId: typeId ?? super.typeId,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+    );
   }
 
   @override
@@ -419,13 +450,14 @@ class MetadataTypeInfoSequence<T extends MetadataTypeInfo>
     extends MetadataTypeInfo<List<T>> {
   final T type;
   final int? length;
-  MetadataTypeInfoSequence(
-      {required this.type,
-      required super.name,
-      required super.typeId,
-      this.length,
-      super.docs,
-      super.paths});
+  MetadataTypeInfoSequence({
+    required this.type,
+    required super.name,
+    required super.typeId,
+    this.length,
+    super.docs,
+    super.paths,
+  });
 
   @override
   String toString() {
@@ -433,20 +465,22 @@ class MetadataTypeInfoSequence<T extends MetadataTypeInfo>
   }
 
   @override
-  MetadataTypeInfo<List<T>> copyWith(
-      {T? type,
-      String? name,
-      int? typeId,
-      List<String>? paths,
-      List<String>? docs,
-      int? length}) {
+  MetadataTypeInfo<List<T>> copyWith({
+    T? type,
+    String? name,
+    int? typeId,
+    List<String>? paths,
+    List<String>? docs,
+    int? length,
+  }) {
     return MetadataTypeInfoSequence(
-        type: type ?? this.type,
-        name: name ?? this.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs,
-        length: length ?? this.length);
+      type: type ?? this.type,
+      name: name ?? this.name,
+      typeId: typeId ?? super.typeId,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+      length: length ?? this.length,
+    );
   }
 
   @override
@@ -493,11 +527,12 @@ class MetadataTypeInfoVariant extends MetadataTypeInfo {
     List<String>? docs,
   }) {
     return MetadataTypeInfoVariant(
-        variants: variants ?? this.variants,
-        name: name ?? this.name,
-        typeId: typeId ?? super.typeId,
-        paths: paths ?? this.paths,
-        docs: docs ?? this.docs);
+      variants: variants ?? this.variants,
+      name: name ?? this.name,
+      typeId: typeId ?? super.typeId,
+      paths: paths ?? this.paths,
+      docs: docs ?? this.docs,
+    );
   }
 
   @override

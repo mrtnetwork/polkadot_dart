@@ -60,23 +60,31 @@ class MetadataApi with MetadataApiInterface {
 
   /// Encodes a call for a pallet
   @override
-  List<int> encodeCall(
-      {required String palletNameOrIndex,
-      required Object? value,
-      bool fromTemplate = false}) {
+  List<int> encodeCall({
+    required String palletNameOrIndex,
+    required Object? value,
+    bool fromTemplate = false,
+  }) {
     final toBytes = encodeLookup(
-        id: metadata.getCallLookupId(palletNameOrIndex),
-        value: value,
-        fromTemplate: fromTemplate);
+      id: metadata.getCallLookupId(palletNameOrIndex),
+      value: value,
+      fromTemplate: fromTemplate,
+    );
     return [metadata.getPalletIndex(palletNameOrIndex), ...toBytes];
   }
 
   /// Encodes a value using a lookup ID
   @override
-  List<int> encodeLookup(
-      {required int id, required Object? value, required bool fromTemplate}) {
+  List<int> encodeLookup({
+    required int id,
+    required Object? value,
+    required bool fromTemplate,
+  }) {
     return metadata.encodeLookup(
-        id: id, value: value, fromTemplate: fromTemplate);
+      id: id,
+      value: value,
+      fromTemplate: fromTemplate,
+    );
   }
 
   /// Decodes bytes using a lookup ID
@@ -88,8 +96,10 @@ class MetadataApi with MetadataApiInterface {
 
   /// Decodes a pallet call from raw bytes
   @override
-  DecodeCallResult decodeCall<T>(List<int> bytes,
-      {LookupDecodeParams params = const LookupDecodeParams()}) {
+  DecodeCallResult decodeCall<T>(
+    List<int> bytes, {
+    LookupDecodeParams params = const LookupDecodeParams(),
+  }) {
     if (bytes.isEmpty) {
       throw const DartSubstratePluginException("Invalid encoded call bytes.");
     }
@@ -102,8 +112,9 @@ class MetadataApi with MetadataApiInterface {
         .deserialize(bytes, offset: 1);
     final value = decode.value;
     return DecodeCallResult(
-        palletName: palletName,
-        data: JsonParser.valueEnsureAsMap<String, dynamic>(value));
+      palletName: palletName,
+      data: JsonParser.valueEnsureAsMap<String, dynamic>(value),
+    );
   }
 
   /// Gets a constant from a pallet
@@ -136,7 +147,9 @@ class MetadataApi with MetadataApiInterface {
   /// Returns storage input template for a pallet method, or null
   @override
   TypeTemlate? getStorageInputTemplate(
-      String palletNameOrIndex, String methodName) {
+    String palletNameOrIndex,
+    String methodName,
+  ) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);
     if (lookupId == null) return null;
     return getLookupTemplate(lookupId);
@@ -145,18 +158,21 @@ class MetadataApi with MetadataApiInterface {
   /// Returns storage output template for a pallet method.
   @override
   TypeTemlate getStorageOutputTemplate(
-      String palletNameOrIndex, String methodName) {
+    String palletNameOrIndex,
+    String methodName,
+  ) {
     final lookupId = metadata.getStorageOutputId(palletNameOrIndex, methodName);
     return getLookupTemplate(lookupId);
   }
 
   /// Encodes storage input for a pallet method
   @override
-  List<int> encodeStorageInput(
-      {required String palletNameOrIndex,
-      required String methodName,
-      required Object? value,
-      required bool fromTemplate}) {
+  List<int> encodeStorageInput({
+    required String palletNameOrIndex,
+    required String methodName,
+    required Object? value,
+    required bool fromTemplate,
+  }) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);
     if (lookupId == null) return [];
     return encodeLookup(id: lookupId, value: value, fromTemplate: fromTemplate);
@@ -164,10 +180,11 @@ class MetadataApi with MetadataApiInterface {
 
   /// Decodes storage input from bytes
   @override
-  T decodeStorageInput<T>(
-      {required String palletNameOrIndex,
-      required String methodName,
-      required List<int> bytes}) {
+  T decodeStorageInput<T>({
+    required String palletNameOrIndex,
+    required String methodName,
+    required List<int> bytes,
+  }) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);
     if (lookupId == null) return null as T;
     return decodeLookup(lookupId, bytes);
@@ -175,34 +192,39 @@ class MetadataApi with MetadataApiInterface {
 
   /// Decodes storage output from query response
   @override
-  T decodeStorageOutput<T extends Object?>(
-      {required String palletNameOrIndex,
-      required String methodName,
-      List<int>? queryResponse}) {
+  T decodeStorageOutput<T extends Object?>({
+    required String palletNameOrIndex,
+    required String methodName,
+    List<int>? queryResponse,
+  }) {
     return metadata.decodeStorageOutput(
-        palletNameOrIndex: palletNameOrIndex,
-        methodName: methodName,
-        queryResponse: queryResponse);
+      palletNameOrIndex: palletNameOrIndex,
+      methodName: methodName,
+      queryResponse: queryResponse,
+    );
   }
 
   /// Generates a storage key for the given pallet and method.
   /// Can optionally encode input values or build a partial key.
   @override
-  StorageKey generateStorageKey(
-      {required String palletNameOrIndex,
-      required String methodName,
-      bool fromTemplate = false,
-      Object? value,
+  StorageKey generateStorageKey({
+    required String palletNameOrIndex,
+    required String methodName,
+    bool fromTemplate = false,
+    Object? value,
 
-      /// encode input from callback
-      ENCODEINPUTS? onEncodeInputs,
+    /// encode input from callback
+    ENCODEINPUTS? onEncodeInputs,
 
-      /// only encode part of keys
-      bool partial = false}) {
+    /// only encode part of keys
+    bool partial = false,
+  }) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);
 
-    final prefixHash =
-        metadata.getStoragePrefixHash(palletNameOrIndex, methodName);
+    final prefixHash = metadata.getStoragePrefixHash(
+      palletNameOrIndex,
+      methodName,
+    );
     if (lookupId == null || (partial && value == null)) {
       return StorageKey(prefix: prefixHash, key: prefixHash.keyHex, inputs: []);
     }
@@ -213,7 +235,8 @@ class MetadataApi with MetadataApiInterface {
       final lookup = metadata.getLookup(lookupId);
       if (lookup.typeName != Si1TypeDefsIndexesConst.tuple) {
         throw const DartSubstratePluginException(
-            "Invalid lookup type. method with mutliple argruments must be tuple");
+          "Invalid lookup type. method with mutliple argruments must be tuple",
+        );
       }
       final List<int> lookupIds = (lookup.def as TypeDefTuple).values;
       List<dynamic>? listValue;
@@ -223,10 +246,11 @@ class MetadataApi with MetadataApiInterface {
         if (onEncodeInputs != null) {
           final encode = onEncodeInputs(index, (input) {
             final normalizeInput = lookup.getValue(
-                registry: registry,
-                value: input,
-                fromTemplate: fromTemplate,
-                self: type);
+              registry: registry,
+              value: input,
+              fromTemplate: fromTemplate,
+              self: type,
+            );
             return lookup
                 .serializationLayout(registry)
                 .serialize(normalizeInput);
@@ -238,10 +262,11 @@ class MetadataApi with MetadataApiInterface {
         if (partial && index >= listValue!.length) return null;
         final input = listValue![index];
         final normalizeInput = lookup.getValue(
-            registry: registry,
-            value: input,
-            fromTemplate: fromTemplate,
-            self: type);
+          registry: registry,
+          value: input,
+          fromTemplate: fromTemplate,
+          self: type,
+        );
         return lookup.serializationLayout(registry).serialize(normalizeInput);
       }
 
@@ -253,18 +278,27 @@ class MetadataApi with MetadataApiInterface {
         final hashedInput = hasher.toHash(encodeBytes);
         methodBytes = [...methodBytes, ...hashedInput];
         inputs.add(
-            StorageKeyInput(encodedInput: encodeBytes, input: listValue?[i]));
+          StorageKeyInput(encodedInput: encodeBytes, input: listValue?[i]),
+        );
       }
     } else {
       if (onEncodeInputs != null) {
-        methodBytes = onEncodeInputs(
-                0,
-                (input) => encodeLookup(
-                    id: lookupId, value: input, fromTemplate: fromTemplate)) ??
+        methodBytes =
+            onEncodeInputs(
+              0,
+              (input) => encodeLookup(
+                id: lookupId,
+                value: input,
+                fromTemplate: fromTemplate,
+              ),
+            ) ??
             [];
       } else {
         methodBytes = encodeLookup(
-            id: lookupId, value: value, fromTemplate: fromTemplate);
+          id: lookupId,
+          value: value,
+          fromTemplate: fromTemplate,
+        );
       }
 
       inputs.add(StorageKeyInput(encodedInput: methodBytes, input: value));
@@ -275,26 +309,31 @@ class MetadataApi with MetadataApiInterface {
     }
     final keyBytes = [...prefixHash.keyBytes, ...methodBytes];
     return StorageKey(
-        prefix: prefixHash,
-        key: BytesUtils.toHexString(keyBytes, prefix: "0x"),
-        inputs: inputs);
+      prefix: prefixHash,
+      key: BytesUtils.toHexString(keyBytes, prefix: "0x"),
+      inputs: inputs,
+    );
   }
 
   /// Decodes a storage key for the given pallet and method.
   /// Works only if the storage hasher includes data.
-  StorageKey decodeStorageKey(
-      {required String palletNameOrIndex,
-      required String methodName,
-      required String storageKey,
-      LookupDecodeParams params = const LookupDecodeParams()}) {
+  StorageKey decodeStorageKey({
+    required String palletNameOrIndex,
+    required String methodName,
+    required String storageKey,
+    LookupDecodeParams params = const LookupDecodeParams(),
+  }) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);
-    final prefixHash =
-        metadata.getStoragePrefixHash(palletNameOrIndex, methodName);
+    final prefixHash = metadata.getStoragePrefixHash(
+      palletNameOrIndex,
+      methodName,
+    );
     if (lookupId == null) {
       return StorageKey(prefix: prefixHash, inputs: [], key: storageKey);
     }
-    List<int> keyBytes = BytesUtils.fromHexString(storageKey)
-        .sublist(prefixHash.keyBytes.length);
+    List<int> keyBytes = BytesUtils.fromHexString(
+      storageKey,
+    ).sublist(prefixHash.keyBytes.length);
     final hashers = metadata.getStorageHasher(palletNameOrIndex, methodName);
     List<StorageKeyInput> inputs = [];
 
@@ -302,7 +341,8 @@ class MetadataApi with MetadataApiInterface {
     if (hashers.length > 1) {
       if (lookup.typeName != Si1TypeDefsIndexesConst.tuple) {
         throw const DartSubstratePluginException(
-            "Invalid lookup type. method with mutliple argruments must be tuple");
+          "Invalid lookup type. method with mutliple argruments must be tuple",
+        );
       }
       final List<int> lookupIds = (lookup.def as TypeDefTuple).values;
       int offset = 0;
@@ -315,10 +355,12 @@ class MetadataApi with MetadataApiInterface {
               .getLookup(type)
               .serializationLayout(registry, params: params)
               .deserialize(keyBytes, offset: offset);
-          inputs.add(StorageKeyInput(
+          inputs.add(
+            StorageKeyInput(
               input: decode.value,
-              encodedInput:
-                  keyBytes.sublist(offset, offset + decode.consumed)));
+              encodedInput: keyBytes.sublist(offset, offset + decode.consumed),
+            ),
+          );
           offset += decode.consumed;
           continue;
         }
@@ -327,11 +369,16 @@ class MetadataApi with MetadataApiInterface {
     } else {
       final hasher = hashers.elementAtOrNull(0);
       if (hasher?.isConcat ?? true) {
-        final input =
-            decodeLookup(lookupId, keyBytes.sublist(hasher?.hashLength ?? 0));
-        inputs.add(StorageKeyInput(
+        final input = decodeLookup(
+          lookupId,
+          keyBytes.sublist(hasher?.hashLength ?? 0),
+        );
+        inputs.add(
+          StorageKeyInput(
             input: input,
-            encodedInput: keyBytes.sublist(hasher?.hashLength ?? 0)));
+            encodedInput: keyBytes.sublist(hasher?.hashLength ?? 0),
+          ),
+        );
       } else {
         inputs.add(StorageKeyInput());
       }
@@ -341,12 +388,13 @@ class MetadataApi with MetadataApiInterface {
 
   /// Decodes a event from raw bytes.
   @override
-  T decodeEvent<T>(
-      {String palletNameOrIndex = MetadataConstant.genericSystemPalletName,
-      required List<int> bytes,
-      int? knownLookupId,
-      int offset = 0,
-      LookupDecodeParams params = const LookupDecodeParams()}) {
+  T decodeEvent<T>({
+    String palletNameOrIndex = MetadataConstant.genericSystemPalletName,
+    required List<int> bytes,
+    int? knownLookupId,
+    int offset = 0,
+    LookupDecodeParams params = const LookupDecodeParams(),
+  }) {
     final event = registry.findEventRecordLookup(knownId: knownLookupId);
     final decode = event
         .serializationLayout(registry, params: params)
@@ -356,11 +404,13 @@ class MetadataApi with MetadataApiInterface {
 
   /// Generates an event storage key for the specified pallet.
   @override
-  MethodStorageKey generateEventStorageKey(
-      {String palletNameOrIndex = MetadataConstant.genericSystemPalletName}) {
+  MethodStorageKey generateEventStorageKey({
+    String palletNameOrIndex = MetadataConstant.genericSystemPalletName,
+  }) {
     final correctName = metadata.getPalletName(palletNameOrIndex);
     return MethodStorageKey(
-        keyBytes: MetadataUtils.createEventPrefixHash(prefix: correctName));
+      keyBytes: MetadataUtils.createEventPrefixHash(prefix: correctName),
+    );
   }
 
   /// get event template
@@ -426,7 +476,9 @@ class MetadataApi with MetadataApiInterface {
   /// get runtime api input methods
   @override
   List<TypeTemlate> getRuntimeApiInputsTemplates(
-      String apiName, String methodName) {
+    String apiName,
+    String methodName,
+  ) {
     final ids = getRuntimeApiInputLookupIds(apiName, methodName);
     return ids.map((e) => getLookupTemplate(e)).toList();
   }
@@ -439,24 +491,31 @@ class MetadataApi with MetadataApiInterface {
 
   /// encode runtime method inputs
   @override
-  List<int> encodeRuntimeApiInputs(
-      {required String apiName,
-      required String methodName,
-      required List<Object?> params,
-      bool fromTemplate = true}) {
+  List<int> encodeRuntimeApiInputs({
+    required String apiName,
+    required String methodName,
+    required List<Object?> params,
+    bool fromTemplate = true,
+  }) {
     final method = generateRuntimeApiMethod(apiName, methodName);
     final inputs = getRuntimeApiInputLookupIds(apiName, methodName);
     if (inputs.length != params.length) {
-      throw MetadataException("Invalid params length.", details: {
-        "method": method,
-        "expected": params.length,
-        "length": inputs.length
-      });
+      throw MetadataException(
+        "Invalid params length.",
+        details: {
+          "method": method,
+          "expected": params.length,
+          "length": inputs.length,
+        },
+      );
     }
     List<int> encodedParams = [];
     for (int i = 0; i < inputs.length; i++) {
       final encode = encodeLookup(
-          id: inputs[i], value: params[i], fromTemplate: fromTemplate);
+        id: inputs[i],
+        value: params[i],
+        fromTemplate: fromTemplate,
+      );
       encodedParams = [...encodedParams, ...encode];
     }
     return encodedParams;
@@ -464,10 +523,11 @@ class MetadataApi with MetadataApiInterface {
 
   /// decode runtime api method output
   @override
-  T decodeRuntimeApiOutput<T extends Object?>(
-      {required String apiName,
-      required String methodName,
-      required List<int> bytes}) {
+  T decodeRuntimeApiOutput<T extends Object?>({
+    required String apiName,
+    required String methodName,
+    required List<int> bytes,
+  }) {
     final lookupId = getRuntimeApiOutputLookupId(apiName, methodName);
     return decodeLookup(lookupId, bytes);
   }
@@ -483,15 +543,18 @@ class MetadataApi with MetadataApiInterface {
     required String nameOrIndex,
     required List<int> bytes,
     LookupDecodeParams params = const LookupDecodeParams(),
-  }) =>
-      metadata.decodeError(
-          nameOrIndex: nameOrIndex, bytes: bytes, params: params);
+  }) => metadata.decodeError(
+    nameOrIndex: nameOrIndex,
+    bytes: bytes,
+    params: params,
+  );
 
   /// Decodes a runtime error and returns a description, if available
   Map<String, dynamic>? decodeErrorWithDescription<T extends Object?>(
-          String nameOrIndex, List<int> erorr,
-          {LookupDecodeParams params = const LookupDecodeParams()}) =>
-      metadata.decodeErrorWithDescription(nameOrIndex, erorr, params: params);
+    String nameOrIndex,
+    List<int> erorr, {
+    LookupDecodeParams params = const LookupDecodeParams(),
+  }) => metadata.decodeErrorWithDescription(nameOrIndex, erorr, params: params);
 
   /// Checks if the runtime API is supported by this metadata
   bool get supportRuntimeApi => metadata.supportRuntimeApi;
@@ -524,38 +587,63 @@ class MetadataApi with MetadataApiInterface {
   int? typeByPathTail(String name) => metadata.typeByPathTail(name);
 
   /// Tries to get the layout of a type by name, or returns null if not found
-  Layout? tryTypeLayoutByName(String name,
-      {String? property, LookupDecodeParams? params}) {
+  Layout? tryTypeLayoutByName(
+    String name, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     return metadata.typeLayoutByName(name, params: params, property: property);
   }
 
   /// Tries to get the layout of a type by path tail, or returns null if not found
-  Layout? tryTypeLayoutByPathTail(String name,
-      {String? property, LookupDecodeParams? params}) {
-    return metadata.typeLayoutByPathTail(name,
-        params: params, property: property);
+  Layout? tryTypeLayoutByPathTail(
+    String name, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
+    return metadata.typeLayoutByPathTail(
+      name,
+      params: params,
+      property: property,
+    );
   }
 
   /// Returns the layout of a type by name or throws if not found
-  Layout typeLayoutByName(String name,
-      {String? property, LookupDecodeParams? params}) {
-    final layout =
-        tryTypeLayoutByName(name, params: params, property: property);
+  Layout typeLayoutByName(
+    String name, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
+    final layout = tryTypeLayoutByName(
+      name,
+      params: params,
+      property: property,
+    );
     if (layout == null) {
-      throw DartSubstratePluginException("Type layout not found.",
-          details: {"name": name});
+      throw DartSubstratePluginException(
+        "Type layout not found.",
+        details: {"name": name},
+      );
     }
     return layout;
   }
 
   /// Returns the layout of a type by path tail or throws if not found
-  Layout typeLayoutByPathTail(String name,
-      {String? property, LookupDecodeParams? params}) {
-    final layout =
-        tryTypeLayoutByPathTail(name, params: params, property: property);
+  Layout typeLayoutByPathTail(
+    String name, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
+    final layout = tryTypeLayoutByPathTail(
+      name,
+      params: params,
+      property: property,
+    );
     if (layout == null) {
-      throw DartSubstratePluginException("Path tail layout not found.",
-          details: {"name": name});
+      throw DartSubstratePluginException(
+        "Path tail layout not found.",
+        details: {"name": name},
+      );
     }
     return layout;
   }

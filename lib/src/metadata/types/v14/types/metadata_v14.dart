@@ -20,26 +20,31 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
   @override
   final ExtrinsicMetadataV14 extrinsic;
   final int type;
-  MetadataV14(
-      {required this.lookup,
-      required List<PalletMetadataV14> pallets,
-      required this.extrinsic,
-      required this.type})
-      : pallets = Map<int, PalletMetadataV14>.unmodifiable(
-            Map.fromEntries(pallets.map((e) => MapEntry(e.index, e))));
+  MetadataV14({
+    required this.lookup,
+    required List<PalletMetadataV14> pallets,
+    required this.extrinsic,
+    required this.type,
+  }) : pallets = Map<int, PalletMetadataV14>.unmodifiable(
+         Map.fromEntries(pallets.map((e) => MapEntry(e.index, e))),
+       );
   MetadataV14.deserializeJson(Map<String, dynamic> json)
-      : lookup = PortableRegistryV14.deserializeJson(json["lookup"]),
-        pallets = Map<int, PalletMetadataV14>.unmodifiable(
-            Map.fromEntries((json["pallets"] as List).map((e) {
-          final decode = PalletMetadataV14.deserializeJson(e);
-          return MapEntry(decode.index, decode);
-        }))),
-        extrinsic = ExtrinsicMetadataV14.deserializeJson(json["extrinsic"]),
-        type = json["type"];
+    : lookup = PortableRegistryV14.deserializeJson(json["lookup"]),
+      pallets = Map<int, PalletMetadataV14>.unmodifiable(
+        Map.fromEntries(
+          (json["pallets"] as List).map((e) {
+            final decode = PalletMetadataV14.deserializeJson(e);
+            return MapEntry(decode.index, decode);
+          }),
+        ),
+      ),
+      extrinsic = ExtrinsicMetadataV14.deserializeJson(json["extrinsic"]),
+      type = json["type"];
   factory MetadataV14.fromBytes(List<int> bytes, {String? property}) {
-    final decode = SubstrateMetadataLayouts.metadataV14(property: property)
-        .deserialize(bytes)
-        .value;
+    final decode =
+        SubstrateMetadataLayouts.metadataV14(
+          property: property,
+        ).deserialize(bytes).value;
     return MetadataV14.deserializeJson(decode);
   }
 
@@ -54,7 +59,7 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
       "lookup": lookup.serializeJson(),
       "pallets": pallets.values.map((e) => e.serializeJson()).toList(),
       "extrinsic": extrinsic.serializeJson(),
-      "type": type
+      "type": type,
     };
   }
 
@@ -69,23 +74,29 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
 
   @override
   List<TransactionExtrinsicInfo> extrinsicInfo() {
-    final addr = lookup.typeByPaths(MetadataConstant.accountIndexPaths) ??
+    final addr =
+        lookup.typeByPaths(MetadataConstant.accountIndexPaths) ??
         lookup.typeByPaths(MetadataConstant.account32IndexPaths);
     return [
       TransactionExtrinsicInfo(
-          addressType: addr?.id,
-          signatureType: lookup.typeByPaths(MetadataConstant.signaturePath)?.id,
-          version: extrinsic.version,
-          extrinsic: [
-            ...extrinsic.signedExtensions
-                .map((e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier)),
-          ],
-          payloadExtrinsic: [
-            ...extrinsic.signedExtensions
-                .map((e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier)),
-            ...extrinsic.signedExtensions.map((e) =>
-                ExtrinsicTypeInfo(id: e.additionalSigned, name: e.identifier)),
-          ])
+        addressType: addr?.id,
+        signatureType: lookup.typeByPaths(MetadataConstant.signaturePath)?.id,
+        version: extrinsic.version,
+        extrinsic: [
+          ...extrinsic.signedExtensions.map(
+            (e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier),
+          ),
+        ],
+        payloadExtrinsic: [
+          ...extrinsic.signedExtensions.map(
+            (e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier),
+          ),
+          ...extrinsic.signedExtensions.map(
+            (e) =>
+                ExtrinsicTypeInfo(id: e.additionalSigned, name: e.identifier),
+          ),
+        ],
+      ),
     ];
   }
 

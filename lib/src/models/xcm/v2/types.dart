@@ -24,8 +24,10 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       null => XCMV2Any(),
       XCMNetworkIdType.polkadot => XCMV2Polkadot(),
       XCMNetworkIdType.kusama => XCMV2Kusama(),
-      _ => throw DartSubstratePluginException(
-          "Unsuported network id by version 2.")
+      _ =>
+        throw DartSubstratePluginException(
+          "Unsuported network id by version 2.",
+        ),
     };
   }
 
@@ -37,8 +39,10 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.named => XCMV2Named.deserializeJson(decode.value),
       XCMNetworkIdType.polkadot => XCMV2Polkadot.deserializeJson(decode.value),
       XCMNetworkIdType.kusama => XCMV2Kusama.deserializeJson(decode.value),
-      _ => throw DartSubstratePluginException(
-          "Unsuported network id by version 2.")
+      _ =>
+        throw DartSubstratePluginException(
+          "Unsuported network id by version 2.",
+        ),
     };
   }
   factory XCMV2NetworkId.fromJson(Map<String, dynamic> json) {
@@ -48,8 +52,10 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.named => XCMV2Named.fromJson(json),
       XCMNetworkIdType.polkadot => XCMV2Polkadot.fromJson(json),
       XCMNetworkIdType.kusama => XCMV2Kusama.fromJson(json),
-      _ => throw DartSubstratePluginException(
-          "Unsuported network id by version 2.")
+      _ =>
+        throw DartSubstratePluginException(
+          "Unsuported network id by version 2.",
+        ),
     };
   }
 
@@ -66,8 +72,8 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
         index: 1,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMNetworkIdPolkadot.layout_(property: property),
+        layout:
+            ({property}) => XCMNetworkIdPolkadot.layout_(property: property),
         property: XCMNetworkIdType.polkadot.name,
         index: 2,
       ),
@@ -103,8 +109,15 @@ class XCMV2Named extends XCMV2NetworkId with XCMNetworkIdNamed {
   @override
   final List<int> name;
   XCMV2Named({required List<int> name})
-      : name =
-            name.max(SubstrateConstant.accountIdLengthInBytes).asImmutableBytes;
+    : name =
+          name
+              .max(
+                length: SubstrateConstant.accountIdLengthInBytes,
+                operation: "XCMV2Named",
+                name: "name",
+                reason: "Invalid name bytes length.",
+              )
+              .asImmutableBytes;
   factory XCMV2Named.fromJson(Map<String, dynamic> json) {
     return XCMV2Named(name: json.valueAsBytes(XCMNetworkIdType.named.type));
   }
@@ -141,20 +154,25 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.unit => XCMV2BodyIdUnit.deserializeJson(decode.value),
       XCMBodyIdType.named => XCMV2BodyIdNamed.deserializeJson(decode.value),
       XCMBodyIdType.indexId => XCMV2BodyIdIndex.deserializeJson(decode.value),
-      XCMBodyIdType.executive =>
-        XCMV2BodyIdExecutive.deserializeJson(decode.value),
-      XCMBodyIdType.technical =>
-        XCMV2BodyIdTechnical.deserializeJson(decode.value),
-      XCMBodyIdType.legislative =>
-        XCMV2BodyIdLegislative.deserializeJson(decode.value),
+      XCMBodyIdType.executive => XCMV2BodyIdExecutive.deserializeJson(
+        decode.value,
+      ),
+      XCMBodyIdType.technical => XCMV2BodyIdTechnical.deserializeJson(
+        decode.value,
+      ),
+      XCMBodyIdType.legislative => XCMV2BodyIdLegislative.deserializeJson(
+        decode.value,
+      ),
       XCMBodyIdType.judical => XCMV2BodyIdJudical.deserializeJson(decode.value),
       XCMBodyIdType.defense => XCMV2BodyIdDefense.deserializeJson(decode.value),
-      XCMBodyIdType.administration =>
-        XCMV2BodyIdAdministration.deserializeJson(decode.value),
-      XCMBodyIdType.treasury =>
-        XCMV2BodyIdTreasury.deserializeJson(decode.value),
+      XCMBodyIdType.administration => XCMV2BodyIdAdministration.deserializeJson(
+        decode.value,
+      ),
+      XCMBodyIdType.treasury => XCMV2BodyIdTreasury.deserializeJson(
+        decode.value,
+      ),
       _ =>
-        throw DartSubstratePluginException("Unsuported body id by version 2.")
+        throw DartSubstratePluginException("Unsuported body id by version 2."),
     };
   }
   factory XCMV2BodyId.fromJson(Map<String, dynamic> json) {
@@ -171,7 +189,7 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV2BodyIdAdministration.fromJson(json),
       XCMBodyIdType.treasury => XCMV2BodyIdTreasury.fromJson(json),
       _ =>
-        throw DartSubstratePluginException("Unsuported body id by version 2.")
+        throw DartSubstratePluginException("Unsuported body id by version 2."),
     };
   }
 
@@ -180,10 +198,12 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
     final type = body.type;
     return switch (type) {
       XCMBodyIdType.unit => XCMV2BodyIdUnit(),
-      XCMBodyIdType.named =>
-        XCMV2BodyIdNamed(name: (body as XCMBodyIdNamed).name),
-      XCMBodyIdType.indexId =>
-        XCMV2BodyIdIndex(index: (body as XCMBodyIdIndex).index),
+      XCMBodyIdType.named => XCMV2BodyIdNamed(
+        name: (body as XCMBodyIdNamed).name,
+      ),
+      XCMBodyIdType.indexId => XCMV2BodyIdIndex(
+        index: (body as XCMBodyIdIndex).index,
+      ),
       XCMBodyIdType.executive => XCMV2BodyIdExecutive(),
       XCMBodyIdType.technical => XCMV2BodyIdTechnical(),
       XCMBodyIdType.legislative => XCMV2BodyIdLegislative(),
@@ -192,7 +212,7 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV2BodyIdAdministration(),
       XCMBodyIdType.treasury => XCMV2BodyIdTreasury(),
       _ =>
-        throw DartSubstratePluginException("Unsuported body id by version 2.")
+        throw DartSubstratePluginException("Unsuported body id by version 2."),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -223,8 +243,8 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
         index: 4,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMBodyIdLegislative.layout_(property: property),
+        layout:
+            ({property}) => XCMBodyIdLegislative.layout_(property: property),
         property: XCMBodyIdType.legislative.name,
         index: 5,
       ),
@@ -239,8 +259,8 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
         index: 7,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMBodyIdAdministration.layout_(property: property),
+        layout:
+            ({property}) => XCMBodyIdAdministration.layout_(property: property),
         property: XCMBodyIdType.administration.name,
         index: 8,
       ),
@@ -299,12 +319,10 @@ class XCMV2BodyIdUnit extends XCMV2BodyId with XCMBodyIdUnit {
 class XCMV2BodyIdIndex extends XCMV2BodyId with XCMBodyIdIndex {
   @override
   final int index;
-  XCMV2BodyIdIndex({required int index}) : index = index.asUint32;
+  XCMV2BodyIdIndex({required int index}) : index = index.asU32;
 
   factory XCMV2BodyIdIndex.deserializeJson(Map<String, dynamic> json) {
-    return XCMV2BodyIdIndex(
-      index: IntUtils.parse(json["index"]),
-    );
+    return XCMV2BodyIdIndex(index: IntUtils.parse(json["index"]));
   }
   factory XCMV2BodyIdIndex.fromJson(Map<String, dynamic> json) {
     return XCMV2BodyIdIndex(index: json.valueAs(XCMBodyIdType.indexId.type));
@@ -416,14 +434,16 @@ abstract class XCMV2BodyPart extends SubstrateVariantSerialization
     final type = XCMBodyPartType.fromName(decode.variantName);
     return switch (type) {
       XCMBodyPartType.voice => XCMV2BodyPartVoice.deserializeJson(decode.value),
-      XCMBodyPartType.members =>
-        XCMV2BodyPartMembers.deserializeJson(decode.value),
-      XCMBodyPartType.fraction =>
-        XCMV2BodyPartFraction.deserializeJson(decode.value),
+      XCMBodyPartType.members => XCMV2BodyPartMembers.deserializeJson(
+        decode.value,
+      ),
+      XCMBodyPartType.fraction => XCMV2BodyPartFraction.deserializeJson(
+        decode.value,
+      ),
       XCMBodyPartType.atLeastProportion =>
         XCMV2BodyPartAtLeastProportion.deserializeJson(decode.value),
       XCMBodyPartType.moreThanProportion =>
-        XCMV2BodyPartMoreThanProportion.deserializeJson(decode.value)
+        XCMV2BodyPartMoreThanProportion.deserializeJson(decode.value),
     };
   }
   factory XCMV2BodyPart.fromJson(Map<String, dynamic> json) {
@@ -435,7 +455,7 @@ abstract class XCMV2BodyPart extends SubstrateVariantSerialization
       XCMBodyPartType.atLeastProportion =>
         XCMV2BodyPartAtLeastProportion.fromJson(json),
       XCMBodyPartType.moreThanProportion =>
-        XCMV2BodyPartMoreThanProportion.fromJson(json)
+        XCMV2BodyPartMoreThanProportion.fromJson(json),
     };
   }
 
@@ -444,23 +464,27 @@ abstract class XCMV2BodyPart extends SubstrateVariantSerialization
     final type = body.type;
     return switch (type) {
       XCMBodyPartType.voice => XCMV2BodyPartVoice(),
-      XCMBodyPartType.members =>
-        XCMV2BodyPartMembers(count: (body as XCMBodyPartMembers).count),
+      XCMBodyPartType.members => XCMV2BodyPartMembers(
+        count: (body as XCMBodyPartMembers).count,
+      ),
       XCMBodyPartType.fraction => () {
-          final fraction = body as XCMBodyPartFraction;
-          return XCMV2BodyPartFraction(
-              denom: fraction.denom, nom: fraction.nom);
-        }(),
+        final fraction = body as XCMBodyPartFraction;
+        return XCMV2BodyPartFraction(denom: fraction.denom, nom: fraction.nom);
+      }(),
       XCMBodyPartType.atLeastProportion => () {
-          final fraction = body as XCMBodyPartAtLeastProportion;
-          return XCMV2BodyPartAtLeastProportion(
-              denom: fraction.denom, nom: fraction.nom);
-        }(),
+        final fraction = body as XCMBodyPartAtLeastProportion;
+        return XCMV2BodyPartAtLeastProportion(
+          denom: fraction.denom,
+          nom: fraction.nom,
+        );
+      }(),
       XCMBodyPartType.moreThanProportion => () {
-          final fraction = body as XCMBodyPartMoreThanProportion;
-          return XCMV2BodyPartMoreThanProportion(
-              denom: fraction.denom, nom: fraction.nom);
-        }(),
+        final fraction = body as XCMBodyPartMoreThanProportion;
+        return XCMV2BodyPartMoreThanProportion(
+          denom: fraction.denom,
+          nom: fraction.nom,
+        );
+      }(),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -481,14 +505,16 @@ abstract class XCMV2BodyPart extends SubstrateVariantSerialization
         index: 2,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMBodyPartAtLeastProportion.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMBodyPartAtLeastProportion.layout_(property: property),
         property: XCMBodyPartType.atLeastProportion.name,
         index: 3,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMBodyPartMoreThanProportion.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMBodyPartMoreThanProportion.layout_(property: property),
         property: XCMBodyPartType.moreThanProportion.name,
         index: 4,
       ),
@@ -509,12 +535,10 @@ abstract class XCMV2BodyPart extends SubstrateVariantSerialization
 class XCMV2BodyPartMembers extends XCMV2BodyPart with XCMBodyPartMembers {
   @override
   final int count;
-  XCMV2BodyPartMembers({required int count}) : count = count.asUint32;
+  XCMV2BodyPartMembers({required int count}) : count = count.asU32;
 
   factory XCMV2BodyPartMembers.deserializeJson(Map<String, dynamic> json) {
-    return XCMV2BodyPartMembers(
-      count: IntUtils.parse(json["count"]),
-    );
+    return XCMV2BodyPartMembers(count: IntUtils.parse(json["count"]));
   }
   factory XCMV2BodyPartMembers.fromJson(Map<String, dynamic> json) {
     final int count = json.valueAs(XCMBodyPartType.members.type);
@@ -539,17 +563,20 @@ class XCMV2BodyPartFraction extends XCMV2BodyPart with XCMBodyPartFraction {
   @override
   bool get isMajority => nom * 2 > denom;
   XCMV2BodyPartFraction({required int nom, required int denom})
-      : nom = nom.asUint32,
-        denom = denom.asUint32;
+    : nom = nom.asU32,
+      denom = denom.asU32;
   factory XCMV2BodyPartFraction.fromJson(Map<String, dynamic> json) {
-    final fraction =
-        json.valueEnsureAsMap<String, dynamic>(XCMBodyPartType.fraction.type);
+    final fraction = json.valueEnsureAsMap<String, dynamic>(
+      XCMBodyPartType.fraction.type,
+    );
     return XCMV2BodyPartFraction(
-        denom: fraction.valueAs("denom"), nom: fraction.valueAs("nom"));
+      denom: fraction.valueAs("denom"),
+      nom: fraction.valueAs("nom"),
+    );
   }
   XCMV2BodyPartFraction.deserializeJson(Map<String, dynamic> json)
-      : nom = IntUtils.parse(json["nom"]),
-        denom = IntUtils.parse(json["denom"]);
+    : nom = IntUtils.parse(json["nom"]),
+      denom = IntUtils.parse(json["denom"]);
 }
 
 class XCMV2BodyPartAtLeastProportion extends XCMV2BodyPart
@@ -562,19 +589,21 @@ class XCMV2BodyPartAtLeastProportion extends XCMV2BodyPart
   final int denom;
 
   XCMV2BodyPartAtLeastProportion({required int nom, required int denom})
-      : nom = nom.asUint32,
-        denom = denom.asUint32;
+    : nom = nom.asU32,
+      denom = denom.asU32;
 
   XCMV2BodyPartAtLeastProportion.deserializeJson(Map<String, dynamic> json)
-      : nom = IntUtils.parse(json["nom"]),
-        denom = IntUtils.parse(json["denom"]);
+    : nom = IntUtils.parse(json["nom"]),
+      denom = IntUtils.parse(json["denom"]);
 
   factory XCMV2BodyPartAtLeastProportion.fromJson(Map<String, dynamic> json) {
     final atLeastProportion = json.valueEnsureAsMap<String, dynamic>(
-        XCMBodyPartType.atLeastProportion.type);
+      XCMBodyPartType.atLeastProportion.type,
+    );
     return XCMV2BodyPartAtLeastProportion(
-        denom: atLeastProportion.valueAs("denom"),
-        nom: atLeastProportion.valueAs("nom"));
+      denom: atLeastProportion.valueAs("denom"),
+      nom: atLeastProportion.valueAs("nom"),
+    );
   }
 }
 
@@ -588,19 +617,21 @@ class XCMV2BodyPartMoreThanProportion extends XCMV2BodyPart
   final int denom;
 
   XCMV2BodyPartMoreThanProportion({required int nom, required int denom})
-      : nom = nom.asUint32,
-        denom = denom.asUint32;
+    : nom = nom.asU32,
+      denom = denom.asU32;
 
   XCMV2BodyPartMoreThanProportion.deserializeJson(Map<String, dynamic> json)
-      : nom = IntUtils.parse(json["nom"]),
-        denom = IntUtils.parse(json["denom"]);
+    : nom = IntUtils.parse(json["nom"]),
+      denom = IntUtils.parse(json["denom"]);
 
   factory XCMV2BodyPartMoreThanProportion.fromJson(Map<String, dynamic> json) {
     final moreThanProportion = json.valueEnsureAsMap<String, dynamic>(
-        XCMBodyPartType.moreThanProportion.type);
+      XCMBodyPartType.moreThanProportion.type,
+    );
     return XCMV2BodyPartMoreThanProportion(
-        denom: moreThanProportion.valueAs("denom"),
-        nom: moreThanProportion.valueAs("nom"));
+      denom: moreThanProportion.valueAs("denom"),
+      nom: moreThanProportion.valueAs("nom"),
+    );
   }
 }
 
@@ -611,25 +642,32 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
     final decode = SubstrateVariantSerialization.toVariantDecodeResult(json);
     final type = XCMJunctionType.fromName(decode.variantName);
     return switch (type) {
-      XCMJunctionType.parachain =>
-        XCMV2JunctionParaChain.deserializeJson(decode.value),
-      XCMJunctionType.accountId32 =>
-        XCMV2JunctionAccountId32.deserializeJson(decode.value),
+      XCMJunctionType.parachain => XCMV2JunctionParaChain.deserializeJson(
+        decode.value,
+      ),
+      XCMJunctionType.accountId32 => XCMV2JunctionAccountId32.deserializeJson(
+        decode.value,
+      ),
       XCMJunctionType.accountIndex64 =>
         XCMV2JunctionAccountIndex64.deserializeJson(decode.value),
-      XCMJunctionType.accountKey20 =>
-        XCMV2JunctionAccountKey20.deserializeJson(decode.value),
+      XCMJunctionType.accountKey20 => XCMV2JunctionAccountKey20.deserializeJson(
+        decode.value,
+      ),
       XCMJunctionType.palletInstance =>
         XCMV2JunctionPalletInstance.deserializeJson(decode.value),
-      XCMJunctionType.generalIndex =>
-        XCMV2JunctionGeneralIndex.deserializeJson(decode.value),
-      XCMJunctionType.generalKey =>
-        XCMV2JunctionGeneralKey.deserializeJson(decode.value),
-      XCMJunctionType.onlyChild =>
-        XCMV2JunctionOnlyChild.deserializeJson(decode.value),
-      XCMJunctionType.plurality =>
-        XCMV2JunctionPlurality.deserializeJson(decode.value),
-      _ => throw DartSubstratePluginException("Unsuported V2 Junction type.")
+      XCMJunctionType.generalIndex => XCMV2JunctionGeneralIndex.deserializeJson(
+        decode.value,
+      ),
+      XCMJunctionType.generalKey => XCMV2JunctionGeneralKey.deserializeJson(
+        decode.value,
+      ),
+      XCMJunctionType.onlyChild => XCMV2JunctionOnlyChild.deserializeJson(
+        decode.value,
+      ),
+      XCMJunctionType.plurality => XCMV2JunctionPlurality.deserializeJson(
+        decode.value,
+      ),
+      _ => throw DartSubstratePluginException("Unsuported V2 Junction type."),
     };
   }
   factory XCMV2Junction.fromJson(Map<String, dynamic> json) {
@@ -637,71 +675,77 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
     return switch (type) {
       XCMJunctionType.parachain => XCMV2JunctionParaChain.fromJson(json),
       XCMJunctionType.accountId32 => XCMV2JunctionAccountId32.fromJson(json),
-      XCMJunctionType.accountIndex64 =>
-        XCMV2JunctionAccountIndex64.fromJson(json),
+      XCMJunctionType.accountIndex64 => XCMV2JunctionAccountIndex64.fromJson(
+        json,
+      ),
       XCMJunctionType.accountKey20 => XCMV2JunctionAccountKey20.fromJson(json),
-      XCMJunctionType.palletInstance =>
-        XCMV2JunctionPalletInstance.fromJson(json),
+      XCMJunctionType.palletInstance => XCMV2JunctionPalletInstance.fromJson(
+        json,
+      ),
       XCMJunctionType.generalIndex => XCMV2JunctionGeneralIndex.fromJson(json),
       XCMJunctionType.generalKey => XCMV2JunctionGeneralKey.fromJson(json),
       XCMJunctionType.onlyChild => XCMV2JunctionOnlyChild.fromJson(json),
       XCMJunctionType.plurality => XCMV2JunctionPlurality.fromJson(json),
-      _ => throw DartSubstratePluginException("Unsuported V2 Junction type.")
+      _ => throw DartSubstratePluginException("Unsuported V2 Junction type."),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2JunctionParaChain.layout_(property: property),
+        layout:
+            ({property}) => XCMV2JunctionParaChain.layout_(property: property),
         property: XCMJunctionType.parachain.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2JunctionAccountId32.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2JunctionAccountId32.layout_(property: property),
         property: XCMJunctionType.accountId32.name,
         index: 1,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2JunctionAccountIndex64.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2JunctionAccountIndex64.layout_(property: property),
         property: XCMJunctionType.accountIndex64.name,
         index: 2,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2JunctionAccountKey20.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2JunctionAccountKey20.layout_(property: property),
         property: XCMJunctionType.accountKey20.name,
         index: 3,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMJunctionPalletInstance.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMJunctionPalletInstance.layout_(property: property),
         property: XCMJunctionType.palletInstance.name,
         index: 4,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMJunctionGeneralIndex.layout_(property: property),
+        layout:
+            ({property}) => XCMJunctionGeneralIndex.layout_(property: property),
         property: XCMJunctionType.generalIndex.name,
         index: 5,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2JunctionGeneralKey.layout_(property: property),
+        layout:
+            ({property}) => XCMV2JunctionGeneralKey.layout_(property: property),
         property: XCMJunctionType.generalKey.name,
         index: 6,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMJunctionOnlyChild.layout_(property: property),
+        layout:
+            ({property}) => XCMJunctionOnlyChild.layout_(property: property),
         property: XCMJunctionType.onlyChild.name,
         index: 7,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2JunctionPlurality.layout_(property: property),
+        layout:
+            ({property}) => XCMV2JunctionPlurality.layout_(property: property),
         property: XCMJunctionType.plurality.name,
         index: 8,
       ),
@@ -712,45 +756,56 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
     if (junction is XCMV2Junction) return junction;
     final type = junction.type;
     return switch (type) {
-      XCMJunctionType.parachain =>
-        XCMV2JunctionParaChain(id: (junction as XCMJunctionParaChain).id),
+      XCMJunctionType.parachain => XCMV2JunctionParaChain(
+        id: (junction as XCMJunctionParaChain).id,
+      ),
       XCMJunctionType.accountId32 => () {
-          final account32 = junction as XCMJunctionAccountId32;
-          return XCMV2JunctionAccountId32(
-              id: account32.id,
-              network: XCMV2NetworkId.from(account32.network));
-        }(),
+        final account32 = junction as XCMJunctionAccountId32;
+        return XCMV2JunctionAccountId32(
+          id: account32.id,
+          network: XCMV2NetworkId.from(account32.network),
+        );
+      }(),
       XCMJunctionType.accountIndex64 => () {
-          final account = junction as XCMJunctionAccountIndex64;
-          return XCMV2JunctionAccountIndex64(
-              index: account.index,
-              network: XCMV2NetworkId.from(account.network));
-        }(),
+        final account = junction as XCMJunctionAccountIndex64;
+        return XCMV2JunctionAccountIndex64(
+          index: account.index,
+          network: XCMV2NetworkId.from(account.network),
+        );
+      }(),
       XCMJunctionType.accountKey20 => () {
-          final account = junction as XCMJunctionAccountKey20;
-          return XCMV2JunctionAccountKey20(
-              key: account.key, network: XCMV2NetworkId.from(account.network));
-        }(),
+        final account = junction as XCMJunctionAccountKey20;
+        return XCMV2JunctionAccountKey20(
+          key: account.key,
+          network: XCMV2NetworkId.from(account.network),
+        );
+      }(),
       XCMJunctionType.palletInstance => XCMV2JunctionPalletInstance(
-          index: (junction as XCMJunctionPalletInstance).index),
+        index: (junction as XCMJunctionPalletInstance).index,
+      ),
       XCMJunctionType.generalIndex => XCMV2JunctionGeneralIndex(
-          index: (junction as XCMJunctionGeneralIndex).index),
+        index: (junction as XCMJunctionGeneralIndex).index,
+      ),
       XCMJunctionType.generalKey => () {
-          final account = junction as XCMJunctionGeneralKey;
-          return XCMV2JunctionGeneralKey(
-              data: account.data.sublist(account.length),
-              length: account.length);
-        }(),
+        final account = junction as XCMJunctionGeneralKey;
+        return XCMV2JunctionGeneralKey(
+          data: account.data.sublist(account.length),
+          length: account.length,
+        );
+      }(),
       XCMJunctionType.onlyChild => XCMV2JunctionOnlyChild(),
       XCMJunctionType.plurality => () {
-          final plurality = junction as XCMJunctionPlurality;
-          return XCMV2JunctionPlurality(
-              id: XCMV2BodyId.from(plurality.id),
-              part: XCMV2BodyPart.from(plurality.part));
-        }(),
-      _ => throw DartSubstratePluginException(
+        final plurality = junction as XCMJunctionPlurality;
+        return XCMV2JunctionPlurality(
+          id: XCMV2BodyId.from(plurality.id),
+          part: XCMV2BodyPart.from(plurality.part),
+        );
+      }(),
+      _ =>
+        throw DartSubstratePluginException(
           "Unsuported junction by version 2.",
-          details: {"type": junction.type})
+          details: {"type": junction.type},
+        ),
     };
   }
 
@@ -768,18 +823,20 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
 class XCMV2JunctionParaChain extends XCMV2Junction with XCMJunctionParaChain {
   @override
   final int id;
-  XCMV2JunctionParaChain({required int id}) : id = id.asUint32;
+  XCMV2JunctionParaChain({required int id}) : id = id.asU32;
 
   factory XCMV2JunctionParaChain.deserializeJson(Map<String, dynamic> json) {
     return XCMV2JunctionParaChain(id: IntUtils.parse(json["id"]));
   }
   factory XCMV2JunctionParaChain.fromJson(Map<String, dynamic> json) {
     return XCMV2JunctionParaChain(
-        id: json.valueAs(XCMJunctionType.parachain.type));
+      id: json.valueAs(XCMJunctionType.parachain.type),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.compactIntU32(property: "id")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.compactIntU32(property: "id"),
+    ], property: property);
   }
 
   @override
@@ -800,27 +857,39 @@ class XCMV2JunctionAccountId32 extends XCMV2Junction
   @override
   final List<int> id;
   XCMV2JunctionAccountId32({required this.network, required List<int> id})
-      : id = id.exc(SubstrateConstant.accountIdLengthInBytes).asImmutableBytes;
+    : id =
+          id
+              .exc(
+                length: SubstrateConstant.accountIdLengthInBytes,
+                operation: "XCMV2JunctionAccountId32",
+                name: "id",
+                reason: "Invalid id bytes length.",
+              )
+              .asImmutableBytes;
 
   factory XCMV2JunctionAccountId32.deserializeJson(Map<String, dynamic> json) {
     return XCMV2JunctionAccountId32(
-        network: XCMV2NetworkId.deserializeJson(json["network"]),
-        id: (json["id"] as List).cast());
+      network: XCMV2NetworkId.deserializeJson(json["network"]),
+      id: (json["id"] as List).cast(),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV2NetworkId.layout_(property: "network"),
-      LayoutConst.fixedBlob32(property: "id")
+      LayoutConst.fixedBlob32(property: "id"),
     ], property: property);
   }
 
   factory XCMV2JunctionAccountId32.fromJson(Map<String, dynamic> json) {
-    final accountId = json
-        .valueEnsureAsMap<String, dynamic>(XCMJunctionType.accountId32.type);
+    final accountId = json.valueEnsureAsMap<String, dynamic>(
+      XCMJunctionType.accountId32.type,
+    );
     return XCMV2JunctionAccountId32(
-        network: XCMV2NetworkId.fromJson(
-            accountId.valueEnsureAsMap<String, dynamic>("network")),
-        id: accountId.valueAsBytes("id"));
+      network: XCMV2NetworkId.fromJson(
+        accountId.valueEnsureAsMap<String, dynamic>("network"),
+      ),
+      id: accountId.valueAsBytes("id"),
+    );
   }
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -830,7 +899,7 @@ class XCMV2JunctionAccountId32 extends XCMV2Junction
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"network": network.toJson(), "id": id}
+      type.type: {"network": network.toJson(), "id": id},
     };
   }
 }
@@ -842,34 +911,39 @@ class XCMV2JunctionAccountIndex64 extends XCMV2Junction
   @override
   final BigInt index;
   XCMV2JunctionAccountIndex64({required this.network, required BigInt index})
-      : index = index.asUint64;
+    : index = index.asU64;
 
   factory XCMV2JunctionAccountIndex64.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV2JunctionAccountIndex64(
-        network: XCMV2NetworkId.deserializeJson(json["network"]),
-        index: BigintUtils.parse(json["index"]));
+      network: XCMV2NetworkId.deserializeJson(json["network"]),
+      index: BigintUtils.parse(json["index"]),
+    );
   }
 
   factory XCMV2JunctionAccountIndex64.fromJson(Map<String, dynamic> json) {
-    final accountId = json
-        .valueEnsureAsMap<String, dynamic>(XCMJunctionType.accountIndex64.type);
+    final accountId = json.valueEnsureAsMap<String, dynamic>(
+      XCMJunctionType.accountIndex64.type,
+    );
     return XCMV2JunctionAccountIndex64(
-        network: XCMV2NetworkId.fromJson(
-            accountId.valueEnsureAsMap<String, dynamic>("network")),
-        index: accountId.valueAs("index"));
+      network: XCMV2NetworkId.fromJson(
+        accountId.valueEnsureAsMap<String, dynamic>("network"),
+      ),
+      index: accountId.valueAs("index"),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV2NetworkId.layout_(property: "network"),
-      LayoutConst.compactBigintU64(property: "index")
+      LayoutConst.compactBigintU64(property: "index"),
     ], property: property);
   }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"network": network.toJson(), "index": index}
+      type.type: {"network": network.toJson(), "index": index},
     };
   }
 
@@ -886,28 +960,40 @@ class XCMV2JunctionAccountKey20 extends XCMV2Junction
   @override
   final List<int> key;
   XCMV2JunctionAccountKey20({required this.network, required List<int> key})
-      : key = key
-            .exc(SubstrateConstant.accountId20LengthInBytes)
-            .asImmutableBytes;
+    : key =
+          key
+              .exc(
+                length: SubstrateConstant.accountId20LengthInBytes,
+                operation: "XCMV2JunctionAccountKey20",
+                name: "key",
+                reason: "Invalid key bytes length.",
+              )
+              .asImmutableBytes;
 
   factory XCMV2JunctionAccountKey20.deserializeJson(Map<String, dynamic> json) {
     return XCMV2JunctionAccountKey20(
-        network: XCMV2NetworkId.deserializeJson(json["network"]),
-        key: (json["key"] as List).cast());
+      network: XCMV2NetworkId.deserializeJson(json["network"]),
+      key: (json["key"] as List).cast(),
+    );
   }
   factory XCMV2JunctionAccountKey20.fromJson(Map<String, dynamic> json) {
-    final accountId = json
-        .valueEnsureAsMap<String, dynamic>(XCMJunctionType.accountKey20.type);
+    final accountId = json.valueEnsureAsMap<String, dynamic>(
+      XCMJunctionType.accountKey20.type,
+    );
     return XCMV2JunctionAccountKey20(
-        network: XCMV2NetworkId.fromJson(
-            accountId.valueEnsureAsMap<String, dynamic>("network")),
-        key: accountId.valueAsBytes("key"));
+      network: XCMV2NetworkId.fromJson(
+        accountId.valueEnsureAsMap<String, dynamic>("network"),
+      ),
+      key: accountId.valueAsBytes("key"),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV2NetworkId.layout_(property: "network"),
-      LayoutConst.fixedBlobN(SubstrateConstant.accountId20LengthInBytes,
-          property: "key")
+      LayoutConst.fixedBlobN(
+        SubstrateConstant.accountId20LengthInBytes,
+        property: "key",
+      ),
     ], property: property);
   }
 
@@ -919,7 +1005,7 @@ class XCMV2JunctionAccountKey20 extends XCMV2Junction
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"network": network.toJson(), "key": key}
+      type.type: {"network": network.toJson(), "key": key},
     };
   }
 }
@@ -928,15 +1014,17 @@ class XCMV2JunctionPalletInstance extends XCMV2Junction
     with XCMJunctionPalletInstance {
   @override
   final int index;
-  XCMV2JunctionPalletInstance({required int index}) : index = index.asUint8;
+  XCMV2JunctionPalletInstance({required int index}) : index = index.asU8;
 
   factory XCMV2JunctionPalletInstance.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV2JunctionPalletInstance(index: IntUtils.parse(json["index"]));
   }
   factory XCMV2JunctionPalletInstance.fromJson(Map<String, dynamic> json) {
     return XCMV2JunctionPalletInstance(
-        index: json.valueAs(XCMJunctionType.palletInstance.type));
+      index: json.valueAs(XCMJunctionType.palletInstance.type),
+    );
   }
 }
 
@@ -944,14 +1032,15 @@ class XCMV2JunctionGeneralIndex extends XCMV2Junction
     with XCMJunctionGeneralIndex {
   @override
   final BigInt index;
-  XCMV2JunctionGeneralIndex({required BigInt index}) : index = index.asUint128;
+  XCMV2JunctionGeneralIndex({required BigInt index}) : index = index.asU128;
 
   factory XCMV2JunctionGeneralIndex.deserializeJson(Map<String, dynamic> json) {
     return XCMV2JunctionGeneralIndex(index: BigintUtils.parse(json["index"]));
   }
   factory XCMV2JunctionGeneralIndex.fromJson(Map<String, dynamic> json) {
     return XCMV2JunctionGeneralIndex(
-        index: json.valueAs(XCMJunctionType.generalIndex.type));
+      index: json.valueAs(XCMJunctionType.generalIndex.type),
+    );
   }
 }
 
@@ -961,7 +1050,7 @@ class XCMV2JunctionGeneralKey extends XCMV2Junction with XCMJunctionGeneralKey {
   @override
   final int length;
   XCMV2JunctionGeneralKey({required List<int> data, required this.length})
-      : data = data.asImmutableBytes;
+    : data = data.asImmutableBytes;
 
   factory XCMV2JunctionGeneralKey.deserializeJson(Map<String, dynamic> json) {
     final data = (json["data"] as List).cast<int>();
@@ -972,8 +1061,9 @@ class XCMV2JunctionGeneralKey extends XCMV2Junction with XCMJunctionGeneralKey {
     return XCMV2JunctionGeneralKey(length: key.length, data: key);
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.bytes(property: "data")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.bytes(property: "data"),
+    ], property: property);
   }
 
   @override
@@ -1008,21 +1098,24 @@ class XCMV2JunctionPlurality extends XCMV2Junction with XCMJunctionPlurality {
 
   factory XCMV2JunctionPlurality.deserializeJson(Map<String, dynamic> json) {
     return XCMV2JunctionPlurality(
-        id: XCMV2BodyId.deserializeJson(json["id"]),
-        part: XCMV2BodyPart.deserializeJson(json["part"]));
+      id: XCMV2BodyId.deserializeJson(json["id"]),
+      part: XCMV2BodyPart.deserializeJson(json["part"]),
+    );
   }
   factory XCMV2JunctionPlurality.fromJson(Map<String, dynamic> json) {
-    final plurality =
-        json.valueEnsureAsMap<String, dynamic>(XCMJunctionType.plurality.type);
+    final plurality = json.valueEnsureAsMap<String, dynamic>(
+      XCMJunctionType.plurality.type,
+    );
     return XCMV2JunctionPlurality(
-        id: XCMV2BodyId.fromJson(plurality.valueAs("id")),
-        part: XCMV2BodyPart.fromJson(plurality.valueAs("part")));
+      id: XCMV2BodyId.fromJson(plurality.valueAs("id")),
+      part: XCMV2BodyPart.fromJson(plurality.valueAs("part")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV2BodyId.layout_(property: "id"),
-      XCMV2BodyPart.layout_(property: "part")
+      XCMV2BodyPart.layout_(property: "part"),
     ], property: property);
   }
 
@@ -1093,57 +1186,89 @@ abstract class XCMV2Junctions extends XCMJunctions<XCMV2Junction> {
       XCMJunctionsType.x5 => XCMV2JunctionsX5.fromJson(json),
       XCMJunctionsType.x6 => XCMV2JunctionsX6.fromJson(json),
       XCMJunctionsType.x7 => XCMV2JunctionsX7.fromJson(json),
-      XCMJunctionsType.x8 => XCMV2JunctionsX8.fromJson(json)
+      XCMJunctionsType.x8 => XCMV2JunctionsX8.fromJson(json),
     };
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsHere.layout_(property: property),
-          property: XCMJunctionsType.here.name,
-          index: 0),
+        layout: ({property}) => XCMV2JunctionsHere.layout_(property: property),
+        property: XCMJunctionsType.here.name,
+        index: 0,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x1, property: property),
-          property: XCMJunctionsType.x1.name,
-          index: 1),
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x1,
+              property: property,
+            ),
+        property: XCMJunctionsType.x1.name,
+        index: 1,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x2, property: property),
-          property: XCMJunctionsType.x2.name,
-          index: 2),
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x2,
+              property: property,
+            ),
+        property: XCMJunctionsType.x2.name,
+        index: 2,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x3, property: property),
-          property: XCMJunctionsType.x3.name,
-          index: 3),
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x3,
+              property: property,
+            ),
+        property: XCMJunctionsType.x3.name,
+        index: 3,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x4, property: property),
-          property: XCMJunctionsType.x4.name,
-          index: 4),
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x4,
+              property: property,
+            ),
+        property: XCMJunctionsType.x4.name,
+        index: 4,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x5, property: property),
-          property: XCMJunctionsType.x5.name,
-          index: 5),
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x5,
+              property: property,
+            ),
+        property: XCMJunctionsType.x5.name,
+        index: 5,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x6, property: property),
-          property: XCMJunctionsType.x6.name,
-          index: 6),
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x6,
+              property: property,
+            ),
+        property: XCMJunctionsType.x6.name,
+        index: 6,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x7, property: property),
-          property: XCMJunctionsType.x7.name,
-          index: 7),
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x7,
+              property: property,
+            ),
+        property: XCMJunctionsType.x7.name,
+        index: 7,
+      ),
       LazyVariantModel(
-          layout: ({property}) =>
-              XCMV2JunctionsX1.layout_(XCMJunctionsType.x8, property: property),
-          property: XCMJunctionsType.x8.name,
-          index: 8)
+        layout:
+            ({property}) => XCMV2JunctionsX1.layout_(
+              XCMJunctionsType.x8,
+              property: property,
+            ),
+        property: XCMJunctionsType.x8.name,
+        index: 8,
+      ),
     ], property: property);
   }
 
@@ -1190,30 +1315,40 @@ class XCMV2JunctionsHere extends XCMV2Junctions {
 class XCMV2JunctionsX1 extends XCMV2Junctions {
   XCMV2JunctionsX1._({required super.junctions, required super.type});
   XCMV2JunctionsX1({required super.junctions})
-      : super(type: XCMJunctionsType.x1);
-  XCMV2JunctionsX1._deserialize(Map<String, dynamic> json,
-      {required super.type})
-      : super(
-            junctions: (json["junctions"] as List)
-                .map((e) => XCMV2Junction.deserializeJson(e))
-                .toList());
+    : super(type: XCMJunctionsType.x1);
+  XCMV2JunctionsX1._deserialize(
+    Map<String, dynamic> json, {
+    required super.type,
+  }) : super(
+         junctions:
+             (json["junctions"] as List)
+                 .map((e) => XCMV2Junction.deserializeJson(e))
+                 .toList(),
+       );
   factory XCMV2JunctionsX1.deserializeJson(Map<String, dynamic> json) {
     return XCMV2JunctionsX1(
-        junctions: (json["junctions"] as List)
-            .map((e) => XCMV2Junction.deserializeJson(e))
-            .toList());
+      junctions:
+          (json["junctions"] as List)
+              .map((e) => XCMV2Junction.deserializeJson(e))
+              .toList(),
+    );
   }
   factory XCMV2JunctionsX1.fromJson(Map<String, dynamic> json) {
-    return XCMV2JunctionsX1(junctions: [
-      XCMV2Junction.fromJson(json.valueAs(XCMJunctionsType.x1.type))
-    ]);
+    return XCMV2JunctionsX1(
+      junctions: [
+        XCMV2Junction.fromJson(json.valueAs(XCMJunctionsType.x1.type)),
+      ],
+    );
   }
-  static Layout<Map<String, dynamic>> layout_(XCMJunctionsType type,
-      {String? property}) {
+  static Layout<Map<String, dynamic>> layout_(
+    XCMJunctionsType type, {
+    String? property,
+  }) {
     return LayoutConst.struct([
       LayoutConst.tuple(
-          List.filled(type.junctionsLength, XCMV2Junction.layout_()),
-          property: "junctions"),
+        List.filled(type.junctionsLength, XCMV2Junction.layout_()),
+        property: "junctions",
+      ),
     ], property: property ?? type.name);
   }
 
@@ -1225,7 +1360,7 @@ class XCMV2JunctionsX1 extends XCMV2Junctions {
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "junctions": junctions.map((e) => e.serializeJsonVariant()).toList()
+      "junctions": junctions.map((e) => e.serializeJsonVariant()).toList(),
     };
   }
 
@@ -1237,14 +1372,16 @@ class XCMV2JunctionsX1 extends XCMV2Junctions {
 
 class XCMV2JunctionsX2 extends XCMV2JunctionsX1 {
   XCMV2JunctionsX2.deserializeJson(super.json)
-      : super._deserialize(type: XCMJunctionsType.x2);
+    : super._deserialize(type: XCMJunctionsType.x2);
   XCMV2JunctionsX2({required super.junctions})
-      : super._(type: XCMJunctionsType.x2);
+    : super._(type: XCMJunctionsType.x2);
   factory XCMV2JunctionsX2.fromJson(Map<String, dynamic> json) {
-    final junctions =
-        json.valueEnsureAsList<Map<String, dynamic>>(XCMJunctionsType.x2.type);
+    final junctions = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMJunctionsType.x2.type,
+    );
     return XCMV2JunctionsX2(
-        junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList());
+      junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList(),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1254,14 +1391,16 @@ class XCMV2JunctionsX2 extends XCMV2JunctionsX1 {
 
 class XCMV2JunctionsX3 extends XCMV2JunctionsX1 {
   XCMV2JunctionsX3.deserializeJson(super.json)
-      : super._deserialize(type: XCMJunctionsType.x3);
+    : super._deserialize(type: XCMJunctionsType.x3);
   XCMV2JunctionsX3({required super.junctions})
-      : super._(type: XCMJunctionsType.x3);
+    : super._(type: XCMJunctionsType.x3);
   factory XCMV2JunctionsX3.fromJson(Map<String, dynamic> json) {
-    final junctions =
-        json.valueEnsureAsList<Map<String, dynamic>>(XCMJunctionsType.x3.type);
+    final junctions = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMJunctionsType.x3.type,
+    );
     return XCMV2JunctionsX3(
-        junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList());
+      junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList(),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1271,14 +1410,16 @@ class XCMV2JunctionsX3 extends XCMV2JunctionsX1 {
 
 class XCMV2JunctionsX4 extends XCMV2JunctionsX1 {
   XCMV2JunctionsX4.deserializeJson(super.json)
-      : super._deserialize(type: XCMJunctionsType.x4);
+    : super._deserialize(type: XCMJunctionsType.x4);
   XCMV2JunctionsX4({required super.junctions})
-      : super._(type: XCMJunctionsType.x4);
+    : super._(type: XCMJunctionsType.x4);
   factory XCMV2JunctionsX4.fromJson(Map<String, dynamic> json) {
-    final junctions =
-        json.valueEnsureAsList<Map<String, dynamic>>(XCMJunctionsType.x4.type);
+    final junctions = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMJunctionsType.x4.type,
+    );
     return XCMV2JunctionsX4(
-        junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList());
+      junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList(),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1288,14 +1429,16 @@ class XCMV2JunctionsX4 extends XCMV2JunctionsX1 {
 
 class XCMV2JunctionsX5 extends XCMV2JunctionsX1 {
   XCMV2JunctionsX5.deserializeJson(super.json)
-      : super._deserialize(type: XCMJunctionsType.x5);
+    : super._deserialize(type: XCMJunctionsType.x5);
   XCMV2JunctionsX5({required super.junctions})
-      : super._(type: XCMJunctionsType.x5);
+    : super._(type: XCMJunctionsType.x5);
   factory XCMV2JunctionsX5.fromJson(Map<String, dynamic> json) {
-    final junctions =
-        json.valueEnsureAsList<Map<String, dynamic>>(XCMJunctionsType.x5.type);
+    final junctions = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMJunctionsType.x5.type,
+    );
     return XCMV2JunctionsX5(
-        junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList());
+      junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList(),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1305,14 +1448,16 @@ class XCMV2JunctionsX5 extends XCMV2JunctionsX1 {
 
 class XCMV2JunctionsX6 extends XCMV2JunctionsX1 {
   XCMV2JunctionsX6.deserializeJson(super.json)
-      : super._deserialize(type: XCMJunctionsType.x6);
+    : super._deserialize(type: XCMJunctionsType.x6);
   XCMV2JunctionsX6({required super.junctions})
-      : super._(type: XCMJunctionsType.x6);
+    : super._(type: XCMJunctionsType.x6);
   factory XCMV2JunctionsX6.fromJson(Map<String, dynamic> json) {
-    final junctions =
-        json.valueEnsureAsList<Map<String, dynamic>>(XCMJunctionsType.x6.type);
+    final junctions = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMJunctionsType.x6.type,
+    );
     return XCMV2JunctionsX6(
-        junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList());
+      junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList(),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1322,14 +1467,16 @@ class XCMV2JunctionsX6 extends XCMV2JunctionsX1 {
 
 class XCMV2JunctionsX7 extends XCMV2JunctionsX1 {
   XCMV2JunctionsX7.deserializeJson(super.json)
-      : super._deserialize(type: XCMJunctionsType.x7);
+    : super._deserialize(type: XCMJunctionsType.x7);
   XCMV2JunctionsX7({required super.junctions})
-      : super._(type: XCMJunctionsType.x7);
+    : super._(type: XCMJunctionsType.x7);
   factory XCMV2JunctionsX7.fromJson(Map<String, dynamic> json) {
-    final junctions =
-        json.valueEnsureAsList<Map<String, dynamic>>(XCMJunctionsType.x7.type);
+    final junctions = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMJunctionsType.x7.type,
+    );
     return XCMV2JunctionsX7(
-        junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList());
+      junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList(),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1339,14 +1486,16 @@ class XCMV2JunctionsX7 extends XCMV2JunctionsX1 {
 
 class XCMV2JunctionsX8 extends XCMV2JunctionsX1 {
   XCMV2JunctionsX8.deserializeJson(super.json)
-      : super._deserialize(type: XCMJunctionsType.x8);
+    : super._deserialize(type: XCMJunctionsType.x8);
   XCMV2JunctionsX8({required super.junctions})
-      : super._(type: XCMJunctionsType.x8);
+    : super._(type: XCMJunctionsType.x8);
   factory XCMV2JunctionsX8.fromJson(Map<String, dynamic> json) {
-    final junctions =
-        json.valueEnsureAsList<Map<String, dynamic>>(XCMJunctionsType.x8.type);
+    final junctions = json.valueEnsureAsList<Map<String, dynamic>>(
+      XCMJunctionsType.x8.type,
+    );
     return XCMV2JunctionsX8(
-        junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList());
+      junctions: junctions.map((e) => XCMV2Junction.fromJson(e)).toList(),
+    );
   }
   @override
   Map<String, dynamic> toJson() {
@@ -1363,28 +1512,34 @@ abstract class XCMV2AssetInstance extends SubstrateVariantSerialization
     return switch (type) {
       XCMAssetInstanceType.undefined =>
         XCMV2AssetInstanceUndefined.deserializeJson(decode.value),
-      XCMAssetInstanceType.indexId =>
-        XCMV2AssetInstanceIndex.deserializeJson(decode.value),
-      XCMAssetInstanceType.array4 =>
-        XCMV2AssetInstanceArray4.deserializeJson(decode.value),
-      XCMAssetInstanceType.array8 =>
-        XCMV2AssetInstanceArray8.deserializeJson(decode.value),
-      XCMAssetInstanceType.array16 =>
-        XCMV2AssetInstanceArray16.deserializeJson(decode.value),
-      XCMAssetInstanceType.array32 =>
-        XCMV2AssetInstanceArray32.deserializeJson(decode.value)
+      XCMAssetInstanceType.indexId => XCMV2AssetInstanceIndex.deserializeJson(
+        decode.value,
+      ),
+      XCMAssetInstanceType.array4 => XCMV2AssetInstanceArray4.deserializeJson(
+        decode.value,
+      ),
+      XCMAssetInstanceType.array8 => XCMV2AssetInstanceArray8.deserializeJson(
+        decode.value,
+      ),
+      XCMAssetInstanceType.array16 => XCMV2AssetInstanceArray16.deserializeJson(
+        decode.value,
+      ),
+      XCMAssetInstanceType.array32 => XCMV2AssetInstanceArray32.deserializeJson(
+        decode.value,
+      ),
     };
   }
   factory XCMV2AssetInstance.fromJson(Map<String, dynamic> json) {
     final type = XCMAssetInstanceType.fromType(json.keys.firstOrNull);
     return switch (type) {
-      XCMAssetInstanceType.undefined =>
-        XCMV2AssetInstanceUndefined.fromJson(json),
+      XCMAssetInstanceType.undefined => XCMV2AssetInstanceUndefined.fromJson(
+        json,
+      ),
       XCMAssetInstanceType.indexId => XCMV2AssetInstanceIndex.fromJson(json),
       XCMAssetInstanceType.array4 => XCMV2AssetInstanceArray4.fromJson(json),
       XCMAssetInstanceType.array8 => XCMV2AssetInstanceArray8.fromJson(json),
       XCMAssetInstanceType.array16 => XCMV2AssetInstanceArray16.fromJson(json),
-      XCMAssetInstanceType.array32 => XCMV2AssetInstanceArray32.fromJson(json)
+      XCMAssetInstanceType.array32 => XCMV2AssetInstanceArray32.fromJson(json),
     };
   }
 
@@ -1409,7 +1564,8 @@ class XCMV2AssetInstanceUndefined extends XCMV2AssetInstance
   XCMV2AssetInstanceUndefined();
 
   factory XCMV2AssetInstanceUndefined.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV2AssetInstanceUndefined();
   }
   factory XCMV2AssetInstanceUndefined.fromJson(Map<String, dynamic> json) {
@@ -1422,7 +1578,7 @@ class XCMV2AssetInstanceIndex extends XCMV2AssetInstance
     with XCMAssetInstanceIndex {
   @override
   final BigInt index;
-  XCMV2AssetInstanceIndex({required BigInt index}) : index = index.asUint128;
+  XCMV2AssetInstanceIndex({required BigInt index}) : index = index.asU128;
 
   factory XCMV2AssetInstanceIndex.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceIndex(index: BigintUtils.parse(json["index"]));
@@ -1430,7 +1586,8 @@ class XCMV2AssetInstanceIndex extends XCMV2AssetInstance
 
   factory XCMV2AssetInstanceIndex.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceIndex(
-        index: json.valueAs(XCMAssetInstanceType.indexId.type));
+      index: json.valueAs(XCMAssetInstanceType.indexId.type),
+    );
   }
 }
 
@@ -1439,14 +1596,23 @@ class XCMV2AssetInstanceArray4 extends XCMV2AssetInstance
   @override
   final List<int> datum;
   XCMV2AssetInstanceArray4({required List<int> datum})
-      : datum = datum.exc(4).asImmutableBytes;
+    : datum =
+          datum
+              .exc(
+                length: 4,
+                operation: "XCMV2AssetInstanceArray4",
+                name: "datum",
+                reason: "Invalid datum bytes length.",
+              )
+              .asImmutableBytes;
 
   factory XCMV2AssetInstanceArray4.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray4(datum: (json["datum"] as List).cast());
   }
   factory XCMV2AssetInstanceArray4.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray4(
-        datum: json.valueAsBytes(XCMAssetInstanceType.array4.type));
+      datum: json.valueAsBytes(XCMAssetInstanceType.array4.type),
+    );
   }
 }
 
@@ -1455,14 +1621,23 @@ class XCMV2AssetInstanceArray8 extends XCMV2AssetInstance
   @override
   final List<int> datum;
   XCMV2AssetInstanceArray8({required List<int> datum})
-      : datum = datum.exc(8).asImmutableBytes;
+    : datum =
+          datum
+              .exc(
+                length: 8,
+                operation: "XCMV2AssetInstanceArray8",
+                name: "datum",
+                reason: "Invalid datum bytes length.",
+              )
+              .asImmutableBytes;
 
   factory XCMV2AssetInstanceArray8.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray8(datum: (json["datum"] as List).cast());
   }
   factory XCMV2AssetInstanceArray8.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray8(
-        datum: json.valueAsBytes(XCMAssetInstanceType.array8.type));
+      datum: json.valueAsBytes(XCMAssetInstanceType.array8.type),
+    );
   }
 }
 
@@ -1471,14 +1646,23 @@ class XCMV2AssetInstanceArray16 extends XCMV2AssetInstance
   @override
   final List<int> datum;
   XCMV2AssetInstanceArray16({required List<int> datum})
-      : datum = datum.exc(16).asImmutableBytes;
+    : datum =
+          datum
+              .exc(
+                length: 16,
+                operation: "XCMV2AssetInstanceArray16",
+                name: "datum",
+                reason: "Invalid datum bytes length.",
+              )
+              .asImmutableBytes;
 
   factory XCMV2AssetInstanceArray16.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray16(datum: (json["datum"] as List).cast());
   }
   factory XCMV2AssetInstanceArray16.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray16(
-        datum: json.valueAsBytes(XCMAssetInstanceType.array16.type));
+      datum: json.valueAsBytes(XCMAssetInstanceType.array16.type),
+    );
   }
 }
 
@@ -1487,14 +1671,23 @@ class XCMV2AssetInstanceArray32 extends XCMV2AssetInstance
   @override
   final List<int> datum;
   XCMV2AssetInstanceArray32({required List<int> datum})
-      : datum = datum.exc(32).asImmutableBytes;
+    : datum =
+          datum
+              .exc(
+                length: 32,
+                operation: "XCMV2AssetInstanceArray32",
+                name: "datum",
+                reason: "Invalid datum bytes length.",
+              )
+              .asImmutableBytes;
 
   factory XCMV2AssetInstanceArray32.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray32(datum: (json["datum"] as List).cast());
   }
   factory XCMV2AssetInstanceArray32.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetInstanceArray32(
-        datum: json.valueAsBytes(XCMAssetInstanceType.array32.type));
+      datum: json.valueAsBytes(XCMAssetInstanceType.array32.type),
+    );
   }
 }
 
@@ -1505,31 +1698,34 @@ abstract class XCMV2Fungibility extends SubstrateVariantSerialization
     final decode = SubstrateVariantSerialization.toVariantDecodeResult(json);
     final type = XCMFungibilityType.fromName(decode.variantName);
     return switch (type) {
-      XCMFungibilityType.fungible =>
-        XCMV2FungibilityFungible.deserializeJson(decode.value),
+      XCMFungibilityType.fungible => XCMV2FungibilityFungible.deserializeJson(
+        decode.value,
+      ),
       XCMFungibilityType.nonFungible =>
-        XCMV2FungibilityNonFungible.deserializeJson(decode.value)
+        XCMV2FungibilityNonFungible.deserializeJson(decode.value),
     };
   }
   factory XCMV2Fungibility.fromJson(Map<String, dynamic> json) {
     final type = XCMFungibilityType.fromType(json.keys.firstOrNull);
     return switch (type) {
       XCMFungibilityType.fungible => XCMV2FungibilityFungible.fromJson(json),
-      XCMFungibilityType.nonFungible =>
-        XCMV2FungibilityNonFungible.fromJson(json)
+      XCMFungibilityType.nonFungible => XCMV2FungibilityNonFungible.fromJson(
+        json,
+      ),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMFungibilityFungible.layout_(property: property),
+        layout:
+            ({property}) => XCMFungibilityFungible.layout_(property: property),
         property: XCMFungibilityType.fungible.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2FungibilityNonFungible.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2FungibilityNonFungible.layout_(property: property),
         property: XCMFungibilityType.nonFungible.name,
         index: 1,
       ),
@@ -1553,14 +1749,15 @@ class XCMV2FungibilityFungible extends XCMV2Fungibility
   @override
   final BigInt units;
 
-  XCMV2FungibilityFungible({required BigInt units}) : units = units.asUint128;
+  XCMV2FungibilityFungible({required BigInt units}) : units = units.asU128;
 
   factory XCMV2FungibilityFungible.deserializeJson(Map<String, dynamic> json) {
     return XCMV2FungibilityFungible(units: BigintUtils.parse(json["units"]));
   }
   factory XCMV2FungibilityFungible.fromJson(Map<String, dynamic> json) {
     return XCMV2FungibilityFungible(
-        units: json.valueAs(XCMFungibilityType.fungible.type));
+      units: json.valueAs(XCMFungibilityType.fungible.type),
+    );
   }
 }
 
@@ -1572,19 +1769,23 @@ class XCMV2FungibilityNonFungible extends XCMV2Fungibility
   XCMV2FungibilityNonFungible({required this.instance});
 
   factory XCMV2FungibilityNonFungible.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV2FungibilityNonFungible(
-        instance: XCMV2AssetInstance.deserializeJson(json["instance"]));
+      instance: XCMV2AssetInstance.deserializeJson(json["instance"]),
+    );
   }
   factory XCMV2FungibilityNonFungible.fromJson(Map<String, dynamic> json) {
     return XCMV2FungibilityNonFungible(
-        instance: XCMV2AssetInstance.fromJson(
-            json.valueAs(XCMFungibilityType.nonFungible.type)));
+      instance: XCMV2AssetInstance.fromJson(
+        json.valueAs(XCMFungibilityType.nonFungible.type),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [XCMV2AssetInstance.layout_(property: "instance")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV2AssetInstance.layout_(property: "instance"),
+    ], property: property);
   }
 
   @override
@@ -1603,30 +1804,33 @@ abstract class XCMV2WildFungibility extends SubstrateVariantSerialization
       XCMWildFungibilityType.fungible =>
         XCMV2WildFungibilityFungible.deserializeJson(decode.value),
       XCMWildFungibilityType.nonFungible =>
-        XCMV2WildFungibilityNonFungible.deserializeJson(decode.value)
+        XCMV2WildFungibilityNonFungible.deserializeJson(decode.value),
     };
   }
   factory XCMV2WildFungibility.fromJson(Map<String, dynamic> json) {
     final type = XCMWildFungibilityType.fromType(json.keys.firstOrNull);
     return switch (type) {
-      XCMWildFungibilityType.fungible =>
-        XCMV2WildFungibilityFungible.fromJson(json),
+      XCMWildFungibilityType.fungible => XCMV2WildFungibilityFungible.fromJson(
+        json,
+      ),
       XCMWildFungibilityType.nonFungible =>
-        XCMV2WildFungibilityNonFungible.deserializeJson(json)
+        XCMV2WildFungibilityNonFungible.deserializeJson(json),
     };
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2WildFungibilityFungible.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2WildFungibilityFungible.layout_(property: property),
         property: XCMWildFungibilityType.fungible.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2WildFungibilityNonFungible.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2WildFungibilityNonFungible.layout_(property: property),
         property: XCMWildFungibilityType.nonFungible.name,
         index: 1,
       ),
@@ -1650,7 +1854,8 @@ class XCMV2WildFungibilityFungible extends XCMV2WildFungibility
   XCMV2WildFungibilityFungible();
 
   factory XCMV2WildFungibilityFungible.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV2WildFungibilityFungible();
   }
   factory XCMV2WildFungibilityFungible.fromJson(Map<String, dynamic> json) {
@@ -1677,7 +1882,8 @@ class XCMV2WildFungibilityNonFungible extends XCMV2WildFungibility
   XCMV2WildFungibilityNonFungible();
 
   factory XCMV2WildFungibilityNonFungible.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV2WildFungibilityNonFungible();
   }
   factory XCMV2WildFungibilityNonFungible.fromJson(Map<String, dynamic> json) {
@@ -1706,33 +1912,38 @@ class XCMV2MultiLocation extends XCMMultiLocation with Equality {
   final XCMV2Junctions interior;
 
   XCMV2MultiLocation({required int parents, required this.interior})
-      : parents = parents.asUint8;
+    : parents = parents.asU8;
   factory XCMV2MultiLocation.deserialize(List<int> bytes) {
-    final json =
-        SubstrateSerialization.deserialize(bytes: bytes, layout: layout_());
+    final json = SubstrateSerialization.deserialize(
+      bytes: bytes,
+      layout: layout_(),
+    );
     return XCMV2MultiLocation.deserializeJson(json.value);
   }
   factory XCMV2MultiLocation.deserializeJson(Map<String, dynamic> json) {
     return XCMV2MultiLocation(
-        parents: IntUtils.parse(json["parents"]),
-        interior: XCMV2Junctions.deserializeJson(json["interior"]));
+      parents: IntUtils.parse(json["parents"]),
+      interior: XCMV2Junctions.deserializeJson(json["interior"]),
+    );
   }
   factory XCMV2MultiLocation.from(XCMMultiLocation location) {
     if (location is XCMV2MultiLocation) return location;
     return XCMV2MultiLocation(
-        parents: location.parents,
-        interior: XCMV2Junctions.from(location.interior));
+      parents: location.parents,
+      interior: XCMV2Junctions.from(location.interior),
+    );
   }
   factory XCMV2MultiLocation.fromJson(Map<String, dynamic> json) {
     return XCMV2MultiLocation(
-        parents: json.valueAs("parents"),
-        interior: XCMV2Junctions.fromJson(json.valueAs("interior")));
+      parents: json.valueAs("parents"),
+      interior: XCMV2Junctions.fromJson(json.valueAs("interior")),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       LayoutConst.u8(property: "parents"),
-      XCMV2Junctions.layout_(property: "interior")
+      XCMV2Junctions.layout_(property: "interior"),
     ], property: property);
   }
 
@@ -1762,13 +1973,17 @@ enum XCMV2AssetIdType {
   final String type;
   const XCMV2AssetIdType(this.type);
   static XCMV2AssetIdType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMV2AssetIdType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -1780,49 +1995,54 @@ abstract class XCMV2AssetId extends SubstrateVariantSerialization
     final decode = SubstrateVariantSerialization.toVariantDecodeResult(json);
     final type = XCMV2AssetIdType.fromName(decode.variantName);
     return switch (type) {
-      XCMV2AssetIdType.concrete =>
-        XCMV2AssetIdConcrete.deserializeJson(decode.value),
-      XCMV2AssetIdType.abtract =>
-        XCMV2AssetIdAbstract.deserializeJson(decode.value)
+      XCMV2AssetIdType.concrete => XCMV2AssetIdConcrete.deserializeJson(
+        decode.value,
+      ),
+      XCMV2AssetIdType.abtract => XCMV2AssetIdAbstract.deserializeJson(
+        decode.value,
+      ),
     };
   }
   factory XCMV2AssetId.fromJson(Map<String, dynamic> json) {
     final type = XCMV2AssetIdType.fromType(json.keys.firstOrNull);
     return switch (type) {
       XCMV2AssetIdType.concrete => XCMV2AssetIdConcrete.fromJson(json),
-      XCMV2AssetIdType.abtract => XCMV2AssetIdAbstract.fromJson(json)
+      XCMV2AssetIdType.abtract => XCMV2AssetIdAbstract.fromJson(json),
     };
   }
   factory XCMV2AssetId.from(XCMAssetId id) {
     return switch (id) {
       final XCMV2AssetId assetId => assetId,
       final XCMV3AssetId assetId => switch (assetId.type) {
-          XCMV3AssetIdType.abtract =>
-            XCMV2AssetIdAbstract(id: assetId.cast<XCMV3AssetIdAbstract>().id),
-          XCMV3AssetIdType.concrete => XCMV2AssetIdConcrete(
-              location: assetId
-                  .cast<XCMV3AssetIdConcrete>()
-                  .location
-                  .asVersion(XCMVersion.v2)),
-        },
+        XCMV3AssetIdType.abtract => XCMV2AssetIdAbstract(
+          id: assetId.cast<XCMV3AssetIdAbstract>().id,
+        ),
+        XCMV3AssetIdType.concrete => XCMV2AssetIdConcrete(
+          location: assetId.cast<XCMV3AssetIdConcrete>().location.asVersion(
+            XCMVersion.v2,
+          ),
+        ),
+      },
       final XCMV4AssetId assetId => XCMV2AssetIdConcrete(
-          location: assetId.location.asVersion(XCMVersion.v2)),
+        location: assetId.location.asVersion(XCMVersion.v2),
+      ),
       final XCMV5AssetId assetId => XCMV2AssetIdConcrete(
-          location: assetId.location.asVersion(XCMVersion.v2)),
-      _ => throw DartSubstratePluginException("Unknow asset id.")
+        location: assetId.location.asVersion(XCMVersion.v2),
+      ),
+      _ => throw DartSubstratePluginException("Unknow asset id."),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2AssetIdConcrete.layout_(property: property),
+        layout:
+            ({property}) => XCMV2AssetIdConcrete.layout_(property: property),
         property: XCMV2AssetIdType.concrete.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2AssetIdAbstract.layout_(property: property),
+        layout:
+            ({property}) => XCMV2AssetIdAbstract.layout_(property: property),
         property: XCMV2AssetIdType.abtract.name,
         index: 1,
       ),
@@ -1844,21 +2064,24 @@ class XCMV2AssetIdConcrete extends XCMV2AssetId {
   @override
   final XCMV2MultiLocation location;
   XCMV2AssetIdConcrete({required this.location})
-      : super(type: XCMV2AssetIdType.concrete);
+    : super(type: XCMV2AssetIdType.concrete);
 
   factory XCMV2AssetIdConcrete.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetIdConcrete(
-        location: XCMV2MultiLocation.deserializeJson(json["location"]));
+      location: XCMV2MultiLocation.deserializeJson(json["location"]),
+    );
   }
   factory XCMV2AssetIdConcrete.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetIdConcrete(
-        location: XCMV2MultiLocation.fromJson(
-            json.valueAs(XCMV2AssetIdType.concrete.type)));
+      location: XCMV2MultiLocation.fromJson(
+        json.valueAs(XCMV2AssetIdType.concrete.type),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct(
-        [XCMV2MultiLocation.layout_(property: "location")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV2MultiLocation.layout_(property: "location"),
+    ], property: property);
   }
 
   @override
@@ -1877,25 +2100,27 @@ class XCMV2AssetIdConcrete extends XCMV2AssetId {
   }
 
   @override
-  List get variabels => [type, location];
+  List get variables => [type, location];
 }
 
 class XCMV2AssetIdAbstract extends XCMV2AssetId {
   final List<int> id;
   XCMV2AssetIdAbstract({required List<int> id})
-      : id = id.asImmutableBytes,
-        super(type: XCMV2AssetIdType.abtract);
+    : id = id.asImmutableBytes,
+      super(type: XCMV2AssetIdType.abtract);
 
   factory XCMV2AssetIdAbstract.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetIdAbstract(id: (json["id"] as List).cast());
   }
   factory XCMV2AssetIdAbstract.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetIdAbstract(
-        id: json.valueAsBytes(XCMV2AssetIdType.abtract.type));
+      id: json.valueAsBytes(XCMV2AssetIdType.abtract.type),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([LayoutConst.bytes(property: "id")],
-        property: property);
+    return LayoutConst.struct([
+      LayoutConst.bytes(property: "id"),
+    ], property: property);
   }
 
   @override
@@ -1916,7 +2141,7 @@ class XCMV2AssetIdAbstract extends XCMV2AssetId {
   }
 
   @override
-  List get variabels => [type, id];
+  List get variables => [type, id];
 }
 
 class XCMV2MultiAsset extends SubstrateSerialization<Map<String, dynamic>>
@@ -1930,18 +2155,20 @@ class XCMV2MultiAsset extends SubstrateSerialization<Map<String, dynamic>>
 
   factory XCMV2MultiAsset.deserializeJson(Map<String, dynamic> json) {
     return XCMV2MultiAsset(
-        id: XCMV2AssetId.deserializeJson(json["id"]),
-        fun: XCMV2Fungibility.deserializeJson(json["fun"]));
+      id: XCMV2AssetId.deserializeJson(json["id"]),
+      fun: XCMV2Fungibility.deserializeJson(json["fun"]),
+    );
   }
   factory XCMV2MultiAsset.fromJson(Map<String, dynamic> json) {
     return XCMV2MultiAsset(
-        id: XCMV2AssetId.fromJson(json.valueAs("id")),
-        fun: XCMV2Fungibility.fromJson(json["fun"]));
+      id: XCMV2AssetId.fromJson(json.valueAs("id")),
+      fun: XCMV2Fungibility.fromJson(json["fun"]),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
       XCMV2AssetId.layout_(property: "id"),
-      XCMV2Fungibility.layout_(property: "fun")
+      XCMV2Fungibility.layout_(property: "fun"),
     ], property: property);
   }
 
@@ -1970,17 +2197,19 @@ class XCMV2MultiAssets extends SubstrateSerialization<Map<String, dynamic>>
   final List<XCMV2MultiAsset> assets;
 
   XCMV2MultiAssets({required List<XCMV2MultiAsset> assets})
-      : assets = assets.immutable;
+    : assets = assets.immutable;
 
   factory XCMV2MultiAssets.deserializeJson(Map<String, dynamic> json) {
     return XCMV2MultiAssets(
-        assets: (json["assets"] as List)
-            .map((e) => XCMV2MultiAsset.deserializeJson(e))
-            .toList());
+      assets:
+          (json["assets"] as List)
+              .map((e) => XCMV2MultiAsset.deserializeJson(e))
+              .toList(),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
-      LayoutConst.compactArray(XCMV2MultiAsset.layout_(), property: "assets")
+      LayoutConst.compactArray(XCMV2MultiAsset.layout_(), property: "assets"),
     ], property: property);
   }
 
@@ -2005,13 +2234,17 @@ abstract class XCMV2WildMultiAsset extends SubstrateVariantSerialization
     final decode = SubstrateVariantSerialization.toVariantDecodeResult(json);
     final type = XCMWildAssetType.fromName(decode.variantName);
     return switch (type) {
-      XCMWildAssetType.all =>
-        XCMV2WildMultiAssetAll.deserializeJson(decode.value),
-      XCMWildAssetType.allOf =>
-        XCMV2WildMultiAssetAllOf.deserializeJson(decode.value),
-      _ => throw DartSubstratePluginException(
+      XCMWildAssetType.all => XCMV2WildMultiAssetAll.deserializeJson(
+        decode.value,
+      ),
+      XCMWildAssetType.allOf => XCMV2WildMultiAssetAllOf.deserializeJson(
+        decode.value,
+      ),
+      _ =>
+        throw DartSubstratePluginException(
           "Unsupported XCMWildAssetType by version 2.",
-          details: {"type": type.name})
+          details: {"type": type.name},
+        ),
     };
   }
   factory XCMV2WildMultiAsset.fromJson(Map<String, dynamic> json) {
@@ -2019,23 +2252,26 @@ abstract class XCMV2WildMultiAsset extends SubstrateVariantSerialization
     return switch (type) {
       XCMWildAssetType.all => XCMV2WildMultiAssetAll.fromJson(json),
       XCMWildAssetType.allOf => XCMV2WildMultiAssetAllOf.fromJson(json),
-      _ => throw DartSubstratePluginException(
+      _ =>
+        throw DartSubstratePluginException(
           "Unsupported XCMWildAssetType by version 2.",
-          details: {"type": type.name})
+          details: {"type": type.name},
+        ),
     };
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2WildMultiAssetAll.layout_(property: property),
+        layout:
+            ({property}) => XCMV2WildMultiAssetAll.layout_(property: property),
         property: XCMWildAssetType.all.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2WildMultiAssetAllOf.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2WildMultiAssetAllOf.layout_(property: property),
         property: XCMWildAssetType.allOf.name,
         index: 1,
       ),
@@ -2089,15 +2325,18 @@ class XCMV2WildMultiAssetAllOf extends XCMV2WildMultiAsset
 
   factory XCMV2WildMultiAssetAllOf.deserializeJson(Map<String, dynamic> json) {
     return XCMV2WildMultiAssetAllOf(
-        id: XCMV2AssetId.deserializeJson(json["id"]),
-        fun: XCMV2WildFungibility.deserializeJson(json["fun"]));
+      id: XCMV2AssetId.deserializeJson(json["id"]),
+      fun: XCMV2WildFungibility.deserializeJson(json["fun"]),
+    );
   }
   factory XCMV2WildMultiAssetAllOf.fromJson(Map<String, dynamic> json) {
-    final allOf =
-        json.valueEnsureAsMap<String, dynamic>(XCMWildAssetType.allOf.type);
+    final allOf = json.valueEnsureAsMap<String, dynamic>(
+      XCMWildAssetType.allOf.type,
+    );
     return XCMV2WildMultiAssetAllOf(
-        id: XCMV2AssetId.fromJson(allOf.valueAs("id")),
-        fun: XCMV2WildFungibility.fromJson(allOf.valueAs("fun")));
+      id: XCMV2AssetId.fromJson(allOf.valueAs("id")),
+      fun: XCMV2WildFungibility.fromJson(allOf.valueAs("fun")),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.struct([
@@ -2126,8 +2365,9 @@ abstract class XCMV2MultiAssetFilter extends SubstrateVariantSerialization
     return switch (type) {
       XCMMultiAssetFilterType.definite =>
         XCMV2MultiAssetFilterDefinite.deserializeJson(decode.value),
-      XCMMultiAssetFilterType.wild =>
-        XCMV2MultiAssetFilterWild.deserializeJson(decode.value)
+      XCMMultiAssetFilterType.wild => XCMV2MultiAssetFilterWild.deserializeJson(
+        decode.value,
+      ),
     };
   }
   factory XCMV2MultiAssetFilter.fromJson(Map<String, dynamic> json) {
@@ -2135,20 +2375,22 @@ abstract class XCMV2MultiAssetFilter extends SubstrateVariantSerialization
     return switch (type) {
       XCMMultiAssetFilterType.definite =>
         XCMV2MultiAssetFilterDefinite.fromJson(json),
-      XCMMultiAssetFilterType.wild => XCMV2MultiAssetFilterWild.fromJson(json)
+      XCMMultiAssetFilterType.wild => XCMV2MultiAssetFilterWild.fromJson(json),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
     return LayoutConst.lazyEnum([
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2MultiAssetFilterDefinite.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2MultiAssetFilterDefinite.layout_(property: property),
         property: XCMMultiAssetFilterType.definite.name,
         index: 0,
       ),
       LazyVariantModel(
-        layout: ({property}) =>
-            XCMV2MultiAssetFilterWild.layout_(property: property),
+        layout:
+            ({property}) =>
+                XCMV2MultiAssetFilterWild.layout_(property: property),
         property: XCMMultiAssetFilterType.wild.name,
         index: 1,
       ),
@@ -2173,20 +2415,26 @@ class XCMV2MultiAssetFilterDefinite extends XCMV2MultiAssetFilter
   XCMV2MultiAssetFilterDefinite({required this.assets}) : super();
 
   factory XCMV2MultiAssetFilterDefinite.deserializeJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     return XCMV2MultiAssetFilterDefinite(
-        assets: XCMV2MultiAssets.deserializeJson(json.valueAs("assets")));
+      assets: XCMV2MultiAssets.deserializeJson(json.valueAs("assets")),
+    );
   }
   factory XCMV2MultiAssetFilterDefinite.fromJson(Map<String, dynamic> json) {
     final assets = json.valueEnsureAsList<Map<String, dynamic>>(
-        XCMMultiAssetFilterType.definite.type);
+      XCMMultiAssetFilterType.definite.type,
+    );
     return XCMV2MultiAssetFilterDefinite(
-        assets: XCMV2MultiAssets(
-            assets: assets.map((e) => XCMV2MultiAsset.fromJson(e)).toList()));
+      assets: XCMV2MultiAssets(
+        assets: assets.map((e) => XCMV2MultiAsset.fromJson(e)).toList(),
+      ),
+    );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV2MultiAssets.layout_(property: "assets")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV2MultiAssets.layout_(property: "assets"),
+    ], property: property);
   }
 
   @override
@@ -2211,17 +2459,21 @@ class XCMV2MultiAssetFilterWild extends XCMV2MultiAssetFilter
 
   factory XCMV2MultiAssetFilterWild.deserializeJson(Map<String, dynamic> json) {
     return XCMV2MultiAssetFilterWild(
-        asset: XCMV2WildMultiAsset.deserializeJson(json.valueAs("asset")));
+      asset: XCMV2WildMultiAsset.deserializeJson(json.valueAs("asset")),
+    );
   }
   factory XCMV2MultiAssetFilterWild.fromJson(Map<String, dynamic> json) {
     return XCMV2MultiAssetFilterWild(
-        asset: XCMV2WildMultiAsset.fromJson(
-            json.valueAs(XCMMultiAssetFilterType.wild.type)));
+      asset: XCMV2WildMultiAsset.fromJson(
+        json.valueAs(XCMMultiAssetFilterType.wild.type),
+      ),
+    );
   }
 
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return LayoutConst.struct([XCMV2WildMultiAsset.layout_(property: "asset")],
-        property: property);
+    return LayoutConst.struct([
+      XCMV2WildMultiAsset.layout_(property: "asset"),
+    ], property: property);
   }
 
   @override

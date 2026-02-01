@@ -21,9 +21,10 @@ import 'package:polkadot_dart/src/provider/provider.dart';
 /// internal operations only. They should **not** be used directly unless
 /// you fully understand their purpose and behavior.
 abstract mixin class BaseSubstrateNetworkController<
-    IDENTIFIER extends Object?,
-    ASSET extends BaseSubstrateNetworkAsset,
-    NETWORK extends BaseSubstrateNetwork> {
+  IDENTIFIER extends Object?,
+  ASSET extends BaseSubstrateNetworkAsset,
+  NETWORK extends BaseSubstrateNetwork
+> {
   /// Controller parameters.
   abstract final SubstrateNetworkControllerParams params;
 
@@ -38,12 +39,11 @@ abstract mixin class BaseSubstrateNetworkController<
 
   /// Filters a list of assets that can be transferred to a destination network.
   Future<List<R>>
-      filterTransferableAssets<R extends BaseSubstrateNetworkAsset>({
+  filterTransferableAssets<R extends BaseSubstrateNetworkAsset>({
     required List<R> assets,
     required BaseSubstrateNetwork destination,
   }) async {
-    return SubstrateNetworkControllerXCMTransferBuilder
-        .filterTransferableAssets(
+    return SubstrateNetworkControllerXCMTransferBuilder.filterTransferableAssets(
       assets: assets,
       destination: destination,
       network: network,
@@ -69,7 +69,8 @@ abstract mixin class BaseSubstrateNetworkController<
 
   /// Gets the free balance of the native asset for a given address.
   Future<SubstrateAccountAssetBalance<ASSET>?> getNativeAssetFreeBalance(
-      BaseSubstrateAddress address);
+    BaseSubstrateAddress address,
+  );
 
   /// Gets the list of network assets, optionally filtered by known asset IDs.
   Future<List<ASSET>> getAssetsInternal({List<IDENTIFIER>? knownAssetIds});
@@ -89,66 +90,78 @@ abstract mixin class BaseSubstrateNetworkController<
   });
 
   /// Internal method to perform an XCM transfer to a relay.
-  Future<SubstrateXCMCallPallet> xcmTransferToRelayInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToRelayInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     if (network.role.isRelay) {
       throw SubstrateNetworkControllerConstants.transferDisabled;
     }
     if (network.role.isSystem) {
       return SubstrateNetworkControllerXCMTransferBuilder.createXCMTransfer(
-          params: params,
-          provider: provider,
-          network: network,
-          method: XCMCallPalletMethod.limitedTeleportAssets,
-          pallet: SubtrateMetadataPallet.polkadotXcm);
+        params: params,
+        provider: provider,
+        network: network,
+        method: XCMCallPalletMethod.limitedTeleportAssets,
+        pallet: SubtrateMetadataPallet.polkadotXcm,
+      );
     }
-    return SubstrateNetworkControllerXCMTransferBuilder
-        .transferAssetsThroughUsingTypeAndThen(
-            params: params,
-            provider: provider,
-            network: network,
-            onEstimateFee: onControllerRequest);
+    return SubstrateNetworkControllerXCMTransferBuilder.transferAssetsThroughUsingTypeAndThen(
+      params: params,
+      provider: provider,
+      network: network,
+      onEstimateFee: onControllerRequest,
+    );
   }
 
   /// Internal method to perform an XCM transfer to a system chain.
-  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest});
+  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  });
 
   Future<MetadataWithProvider> metadata() {
     return params.loadMetadata(network);
   }
 
   /// Fetches all network assets, optionally filtered by known asset IDs.
-  Future<SubstrateNetworkAssets<ASSET>> getAssets(
-      {List<Object>? knownAssetIds}) async {
+  Future<SubstrateNetworkAssets<ASSET>> getAssets({
+    List<Object>? knownAssetIds,
+  }) async {
     final assets = await params.storage.get(onFetch: getAssetsInternal);
     if (knownAssetIds == null) {
       return SubstrateNetworkAssets(
-          assets: [defaultNativeAsset, ...assets], network: network);
+        assets: [defaultNativeAsset, ...assets],
+        network: network,
+      );
     }
-    final filterAssets = knownAssetIds
-        .map((e) => assets.firstWhereNullable((a) => a.identifierEqual(e)))
-        .whereType<ASSET>()
-        .toList();
+    final filterAssets =
+        knownAssetIds
+            .map((e) => assets.firstWhereNullable((a) => a.identifierEqual(e)))
+            .whereType<ASSET>()
+            .toList();
     return SubstrateNetworkAssets(assets: filterAssets, network: network);
   }
 
   /// Fetches all account asset balances, optionally including native balance.
-  Future<SubstrateNetworkAccountBalances<ASSET>> getAccountAssets(
-      {required BaseSubstrateAddress address,
-      List<Object>? knownAssetIds,
-      List<ASSET>? knownAssets,
-      bool nativeBalance = true}) async {
+  Future<SubstrateNetworkAccountBalances<ASSET>> getAccountAssets({
+    required BaseSubstrateAddress address,
+    List<Object>? knownAssetIds,
+    List<ASSET>? knownAssets,
+    bool nativeBalance = true,
+  }) async {
     final ids =
         SubstrateNetworkControllerAssetQueryHelper.toAssetId<IDENTIFIER>(
-            knownAssetIds);
+          knownAssetIds,
+        );
     List<SubstrateAccountAssetBalance<ASSET>> balances =
         await getAccountAssetsInternal(
-            address: address, knownAssetIds: ids, knownAssets: knownAssets);
+          address: address,
+          knownAssetIds: ids,
+          knownAssets: knownAssets,
+        );
     if (nativeBalance) {
       final nBalance = await getNativeAssetFreeBalance(address);
       if (nBalance != null) {
@@ -156,81 +169,99 @@ abstract mixin class BaseSubstrateNetworkController<
       }
     }
     return SubstrateNetworkAccountBalances(
-        balances: balances, network: network);
+      balances: balances,
+      network: network,
+    );
   }
 
   /// Prepares an XCM transfer to a different network, returning encoded call params.
-  Future<SubstrateXCMTransferEncodedParams<SubstrateXCMCallPallet>> xcmTransfer(
-      {required SubstrateXCMTransferParams params,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMTransferEncodedParams<SubstrateXCMCallPallet>>
+  xcmTransfer({
+    required SubstrateXCMTransferParams params,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     final provider = await metadata();
     if (params.destinationNetwork.relaySystem != network.relaySystem) {
       throw DartSubstratePluginException(
-          "XCM transfer not allowed between chains using different relay systems.");
+        "XCM transfer not allowed between chains using different relay systems.",
+      );
     }
     if (params.destinationNetwork == network) {
       throw DartSubstratePluginException(
-          "XCM transfer not allowed within the same network.");
+        "XCM transfer not allowed within the same network.",
+      );
     }
     try {
       params.assets.cast<ASSET>();
     } catch (_) {
-      throw DartSubstratePluginException("Invalid network assets.", details: {
-        "excpected": "$ASSET",
-        "assets": params.assets.map((e) => e.runtimeType).join(",")
-      });
+      throw DartSubstratePluginException(
+        "Invalid network assets.",
+        details: {
+          "excpected": "$ASSET",
+          "assets": params.assets.map((e) => e.runtimeType).join(","),
+        },
+      );
     }
     final NETWORK destination = params.destinationNetwork as NETWORK;
     SubstrateXCMCallPallet transfer = switch (destination.role) {
       SubstrateConsensusRole.system => await xcmTransferToSystemInternal(
-          params: params,
-          provider: provider,
-          onControllerRequest: onControllerRequest),
+        params: params,
+        provider: provider,
+        onControllerRequest: onControllerRequest,
+      ),
       SubstrateConsensusRole.relay => await xcmTransferToRelayInternal(
-          params: params,
-          provider: provider,
-          onControllerRequest: onControllerRequest),
+        params: params,
+        provider: provider,
+        onControllerRequest: onControllerRequest,
+      ),
       SubstrateConsensusRole.parachain => await xcmTransferToParaInternal(
-          params: params,
-          provider: provider,
-          onControllerRequest: onControllerRequest),
+        params: params,
+        provider: provider,
+        onControllerRequest: onControllerRequest,
+      ),
     };
 
     return SubstrateXCMTransferEncodedParams(
-        transfer: transfer,
-        pallet: transfer.pallet.name,
-        method: transfer.type.method,
-        params: params,
-        bytes: transfer.encodeCall(extrinsic: provider.metadata));
+      transfer: transfer,
+      pallet: transfer.pallet.name,
+      method: transfer.type.method,
+      params: params,
+      bytes: transfer.encodeCall(extrinsic: provider.metadata),
+    );
   }
 
   /// Creates a local asset transfer encoded call.
-  Future<SubstrateTransferEncodedParams<SubstrateCallPallet>> assetTransfer(
-      {required SubstrateLocalTransferAssetParams params}) async {
+  Future<SubstrateTransferEncodedParams<SubstrateCallPallet>> assetTransfer({
+    required SubstrateLocalTransferAssetParams params,
+  }) async {
     if (!network.allowLocalTransfer) {
       throw DartSubstratePluginException(
-          "Local asset transfers are currently disabled on this network.",
-          details: {"network": network.networkName});
+        "Local asset transfers are currently disabled on this network.",
+        details: {"network": network.networkName},
+      );
     }
     final provider = await this.params.loadMetadata(network);
-    return SubstrateNetworkControllerLocalAssetTransferBuilder
-        .createLocalTransfer(params: params, metadata: provider.metadata);
+    return SubstrateNetworkControllerLocalAssetTransferBuilder.createLocalTransfer(
+      params: params,
+      metadata: provider.metadata,
+    );
   }
 
   /// Creates a native/system asset transfer encoded call.
-  Future<SubstrateTransferEncodedParams<SubstrateCallPallet>> nativeTransfer(
-      {required SubstrateNativeAssetTransferParams params}) async {
+  Future<SubstrateTransferEncodedParams<SubstrateCallPallet>> nativeTransfer({
+    required SubstrateNativeAssetTransferParams params,
+  }) async {
     final provider = await this.params.loadMetadata(network);
-    return SubstrateNetworkControllerLocalAssetTransferBuilder
-        .createLocalTransfer(
-            params: SubstrateLocalTransferAssetParams(
-              asset: null,
-              destinationAddress: params.destinationAddress,
-              amount: params.amount,
-              keepAlive: params.keepAlive,
-              method: params.method,
-            ),
-            metadata: provider.metadata);
+    return SubstrateNetworkControllerLocalAssetTransferBuilder.createLocalTransfer(
+      params: SubstrateLocalTransferAssetParams(
+        asset: null,
+        destinationAddress: params.destinationAddress,
+        amount: params.amount,
+        keepAlive: params.keepAlive,
+        method: params.method,
+      ),
+      metadata: provider.metadata,
+    );
   }
 
   /// create and Submit native/system asset transfer transaction and optionally tracks events.
@@ -249,17 +280,18 @@ abstract mixin class BaseSubstrateNetworkController<
     required SubstrateTransactionSigner signer,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
     void Function(SubtrateTransactionSubmitionResult? event)?
-        onUpdateTransactionStatus,
+    onUpdateTransactionStatus,
     ASSET? chargeAssetTxPaymentAssetId,
   }) async {
     final transfer = await nativeTransfer(params: params);
     return submitTransaction(
-        owner: owner,
-        params: transfer,
-        signer: signer,
-        onUpdateTransactionStatus: onUpdateTransactionStatus,
-        onTransactionSubmited: onTransactionSubmited,
-        chargeAssetTxPaymentAssetId: chargeAssetTxPaymentAssetId);
+      owner: owner,
+      params: transfer,
+      signer: signer,
+      onUpdateTransactionStatus: onUpdateTransactionStatus,
+      onTransactionSubmited: onTransactionSubmited,
+      chargeAssetTxPaymentAssetId: chargeAssetTxPaymentAssetId,
+    );
   }
 
   /// create and Submit local asset transfer transaction and optionally tracks events.
@@ -278,17 +310,18 @@ abstract mixin class BaseSubstrateNetworkController<
     required SubstrateTransactionSigner signer,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
     void Function(SubtrateTransactionSubmitionResult? event)?
-        onUpdateTransactionStatus,
+    onUpdateTransactionStatus,
     ASSET? chargeAssetTxPaymentAssetId,
   }) async {
     final transfer = await assetTransfer(params: params);
     return submitTransaction(
-        owner: owner,
-        params: transfer,
-        signer: signer,
-        onUpdateTransactionStatus: onUpdateTransactionStatus,
-        onTransactionSubmited: onTransactionSubmited,
-        chargeAssetTxPaymentAssetId: chargeAssetTxPaymentAssetId);
+      owner: owner,
+      params: transfer,
+      signer: signer,
+      onUpdateTransactionStatus: onUpdateTransactionStatus,
+      onTransactionSubmited: onTransactionSubmited,
+      chargeAssetTxPaymentAssetId: chargeAssetTxPaymentAssetId,
+    );
   }
 
   /// create and Submits an XCM transaction and optionally tracks events on the destination chain.
@@ -307,41 +340,53 @@ abstract mixin class BaseSubstrateNetworkController<
     required SubstrateTransactionSigner signer,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
     void Function(SubtrateTransactionSubmitionResult? event)?
-        onUpdateTransactionStatus,
+    onUpdateTransactionStatus,
     ASSET? chargeAssetTxPaymentAssetId,
     BaseSubstrateNetworkController? destinationChainController,
   }) async {
     final transfer = await xcmTransfer(params: params);
     return submitXCMTransaction(
-        owner: owner,
-        params: transfer,
-        signer: signer,
-        onUpdateTransactionStatus: onUpdateTransactionStatus,
-        onTransactionSubmited: onTransactionSubmited,
-        destinationChainController: destinationChainController,
-        chargeAssetTxPaymentAssetId: chargeAssetTxPaymentAssetId);
+      owner: owner,
+      params: transfer,
+      signer: signer,
+      onUpdateTransactionStatus: onUpdateTransactionStatus,
+      onTransactionSubmited: onTransactionSubmited,
+      destinationChainController: destinationChainController,
+      chargeAssetTxPaymentAssetId: chargeAssetTxPaymentAssetId,
+    );
   }
 
   SubstrateTransactionChargeAssetTxPayment? _buildChargeAssetTxPaymentAssetId(
-      ASSET? chargeAssetTxPaymentAssetId) {
+    ASSET? chargeAssetTxPaymentAssetId,
+  ) {
     if (chargeAssetTxPaymentAssetId == null) return null;
     // if (chargeAssetTxPaymentAssetId != null) {
     final identifier = chargeAssetTxPaymentAssetId.asChargeTxPaymentAssetId(
-        network: network, version: network.defaultXcmVersion);
+      network: network,
+      version: network.defaultXcmVersion,
+    );
     if (identifier == null) {
       throw DartSubstratePluginException(
-          "Cannot pay transaction fee using the provided asset.");
+        "Cannot pay transaction fee using the provided asset.",
+      );
     }
     return SubstrateTransactionChargeAssetTxPayment(
-        assetId: identifier,
-        assetLocation: chargeAssetTxPaymentAssetId
-            .tryGetlocalizedLocation(
-                version: network.defaultXcmVersion, reserveNetwork: network)
-            ?.location,
-        nativeAssetLocation: defaultNativeAsset
-            .getlocalizedLocation(
-                version: network.defaultXcmVersion, reserveNetwork: network)
-            .location);
+      assetId: identifier,
+      assetLocation:
+          chargeAssetTxPaymentAssetId
+              .tryGetlocalizedLocation(
+                version: network.defaultXcmVersion,
+                reserveNetwork: network,
+              )
+              ?.location,
+      nativeAssetLocation:
+          defaultNativeAsset
+              .getlocalizedLocation(
+                version: network.defaultXcmVersion,
+                reserveNetwork: network,
+              )
+              .location,
+    );
   }
 
   /// Submits an XCM transaction and optionally tracks events on the destination chain.
@@ -366,46 +411,53 @@ abstract mixin class BaseSubstrateNetworkController<
     ASSET? chargeAssetTxPaymentAssetId,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
     void Function(SubtrateTransactionSubmitionResult event)?
-        onUpdateTransactionStatus,
+    onUpdateTransactionStatus,
     void Function(SubstrateXCMTransctionTrackerResult event)?
-        onDestinationChainEvent,
+    onDestinationChainEvent,
   }) async {
     final StreamController<void> controller = StreamController();
     final provider = await metadata();
     if (transaction == null) {
       if (signer == null) {
         throw DartSubstratePluginException(
-            "Failed to sign transaction. missing signer.");
+          "Failed to sign transaction. missing signer.",
+        );
       }
 
       transaction =
           await SubstrateTransactionBuilder.buildAndSignTransactionStatic(
-              owner: owner,
-              params: TransactionBuilderParams(genesisHash: network.genesis),
-              signer: signer,
-              calls: SubstrateTransactionSubmitableParams(
-                  calls: [params],
-                  chargeAssetTxPayment: _buildChargeAssetTxPaymentAssetId(
-                      chargeAssetTxPaymentAssetId)),
-              provider: provider);
+            owner: owner,
+            params: TransactionBuilderParams(genesisHash: network.genesis),
+            signer: signer,
+            calls: SubstrateTransactionSubmitableParams(
+              calls: [params],
+              chargeAssetTxPayment: _buildChargeAssetTxPaymentAssetId(
+                chargeAssetTxPaymentAssetId,
+              ),
+            ),
+            provider: provider,
+          );
     }
     final bool canTrack = destinationChainController != null;
     MetadataWithProvider? destinationProvider;
     int? destinationBlockId;
     if (canTrack) {
       destinationProvider = await destinationChainController.metadata();
-      final finalizeHead = await destinationProvider.provider
-          .request(SubstrateRequestChainChainGetFinalizedHead());
-      final currentBlock = await destinationProvider.provider
-          .request(SubstrateRequestChainGetBlock(atBlockHash: finalizeHead));
+      final finalizeHead = await destinationProvider.provider.request(
+        SubstrateRequestChainChainGetFinalizedHead(),
+      );
+      final currentBlock = await destinationProvider.provider.request(
+        SubstrateRequestChainGetBlock(atBlockHash: finalizeHead),
+      );
       destinationBlockId = currentBlock.block.header.number;
     }
 
     final stream =
         await SubstrateTransactionBuilder.submitExtrinsicAndWatchStatic(
-            extrinsic: transaction,
-            provider: provider,
-            onSubmitxtrinsic: onTransactionSubmited);
+          extrinsic: transaction,
+          provider: provider,
+          onSubmitxtrinsic: onTransactionSubmited,
+        );
     StreamSubscription? sub;
     void close() {
       sub?.cancel();
@@ -424,38 +476,42 @@ abstract mixin class BaseSubstrateNetworkController<
           }
           final messageId =
               SubstrateNetworkControllerUtils.findSendXCMMessageId(
-                  events: SubstrateGroupEvents(events: result.txEvents!),
-                  network: network,
-                  transferPallet: params.transfer.pallet);
+                events: SubstrateGroupEvents(events: result.txEvents!),
+                network: network,
+                transferPallet: params.transfer.pallet,
+              );
           if (messageId == null) {
             final callBack = onDestinationChainEvent;
             if (callBack != null) {
-              callBack(SubstrateXCMTransctionTrackerResult(
-                status: SubstrateXCMTransctionTrackerStatus.error,
-              ));
+              callBack(
+                SubstrateXCMTransctionTrackerResult(
+                  status: SubstrateXCMTransctionTrackerStatus.error,
+                ),
+              );
             }
             close();
             return;
           }
 
-          void track(
-              {required int blockId,
-              required BaseSubstrateNetworkController controller,
-              required MetadataWithProvider provider,
-              required String msgId}) {
+          void track({
+            required int blockId,
+            required BaseSubstrateNetworkController controller,
+            required MetadataWithProvider provider,
+            required String msgId,
+          }) {
             final onDestinationResult =
                 SubstrateTransactionBuilder.loockupBlockStream(
-                    blockId: blockId,
-                    onBlockEvents:
-                        (blockHash, blockId, blockExtrinsics, events) {
-                      return SubstrateNetworkControllerUtils
-                          .findProcessedXCMMessage(
-                              events: events,
-                              params: params,
-                              id: msgId,
-                              blockNumber: blockId);
-                    },
-                    provider: provider);
+                  blockId: blockId,
+                  onBlockEvents: (blockHash, blockId, blockExtrinsics, events) {
+                    return SubstrateNetworkControllerUtils.findProcessedXCMMessage(
+                      events: events,
+                      params: params,
+                      id: msgId,
+                      blockNumber: blockId,
+                    );
+                  },
+                  provider: provider,
+                );
             sub = onDestinationResult.listen(
               (event) {
                 final callBack = onDestinationChainEvent;
@@ -467,10 +523,14 @@ abstract mixin class BaseSubstrateNetworkController<
               onError: (e, s) {
                 final callBack = onDestinationChainEvent;
                 if (callBack != null) {
-                  callBack(SubstrateXCMTransctionTrackerResult(
-                      status: e == SubstrateLookupBlockExceptionConst.notFound
-                          ? SubstrateXCMTransctionTrackerStatus.notFound
-                          : SubstrateXCMTransctionTrackerStatus.error));
+                  callBack(
+                    SubstrateXCMTransctionTrackerResult(
+                      status:
+                          e == SubstrateLookupBlockExceptionConst.notFound
+                              ? SubstrateXCMTransctionTrackerStatus.notFound
+                              : SubstrateXCMTransctionTrackerStatus.error,
+                    ),
+                  );
                 }
                 close();
               },
@@ -479,10 +539,11 @@ abstract mixin class BaseSubstrateNetworkController<
 
           if (destinationBlockId != null) {
             track(
-                blockId: destinationBlockId,
-                controller: destinationChainController,
-                provider: destinationProvider!,
-                msgId: messageId);
+              blockId: destinationBlockId,
+              controller: destinationChainController,
+              provider: destinationProvider!,
+              msgId: messageId,
+            );
           } else {
             close();
           }
@@ -495,8 +556,9 @@ abstract mixin class BaseSubstrateNetworkController<
     }
 
     controller.onListen = stratTracking;
-    return controller.stream
-        .asBroadcastStream(onCancel: (subscription) => close());
+    return controller.stream.asBroadcastStream(
+      onCancel: (subscription) => close(),
+    );
   }
 
   /// Submits an transaction and optionally tracks events.
@@ -518,31 +580,36 @@ abstract mixin class BaseSubstrateNetworkController<
     ASSET? chargeAssetTxPaymentAssetId,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
     void Function(SubtrateTransactionSubmitionResult event)?
-        onUpdateTransactionStatus,
+    onUpdateTransactionStatus,
   }) async {
     final StreamController<void> controller = StreamController();
     final provider = await metadata();
     if (transaction == null) {
       if (signer == null) {
         throw DartSubstratePluginException(
-            "Failed to sign transaction. missing signer.");
+          "Failed to sign transaction. missing signer.",
+        );
       }
       transaction =
           await SubstrateTransactionBuilder.buildAndSignTransactionStatic(
-              owner: owner,
-              signer: signer,
-              fakeSignature: false,
-              calls: SubstrateTransactionSubmitableParams(
-                  calls: [params],
-                  chargeAssetTxPayment: _buildChargeAssetTxPaymentAssetId(
-                      chargeAssetTxPaymentAssetId)),
-              provider: provider);
+            owner: owner,
+            signer: signer,
+            fakeSignature: false,
+            calls: SubstrateTransactionSubmitableParams(
+              calls: [params],
+              chargeAssetTxPayment: _buildChargeAssetTxPaymentAssetId(
+                chargeAssetTxPaymentAssetId,
+              ),
+            ),
+            provider: provider,
+          );
     }
     final stream =
         await SubstrateTransactionBuilder.submitExtrinsicAndWatchStatic(
-            extrinsic: transaction,
-            provider: provider,
-            onSubmitxtrinsic: onTransactionSubmited);
+          extrinsic: transaction,
+          provider: provider,
+          onSubmitxtrinsic: onTransactionSubmited,
+        );
     StreamSubscription<SubtrateTransactionSubmitionResult>? sub;
     void close() {
       if (!controller.isClosed) controller.close();
@@ -551,21 +618,25 @@ abstract mixin class BaseSubstrateNetworkController<
     }
 
     void stratTracking() {
-      sub = stream.listen((result) {
-        final callBack = onUpdateTransactionStatus;
-        if (callBack != null) callBack(result);
-        close();
-      }, onError: (e) {
-        if (!controller.isClosed) {
-          controller.addError(e);
+      sub = stream.listen(
+        (result) {
+          final callBack = onUpdateTransactionStatus;
+          if (callBack != null) callBack(result);
           close();
-        }
-      });
+        },
+        onError: (e) {
+          if (!controller.isClosed) {
+            controller.addError(e);
+            close();
+          }
+        },
+      );
     }
 
     controller.onListen = stratTracking;
-    return controller.stream
-        .asBroadcastStream(onCancel: (subscription) => close());
+    return controller.stream.asBroadcastStream(
+      onCancel: (subscription) => close(),
+    );
   }
 
   /// Simulates a single Substrate transaction call to estimate fees and execution outcome.
@@ -578,16 +649,21 @@ abstract mixin class BaseSubstrateNetworkController<
     final provider = await metadata();
 
     return await SubstrateTransactionBuilder.dryRunTransaction(
-        provider: provider,
-        owner: owner,
-        signer: signer,
-        xcmVersion: network.defaultXcmVersion,
-        params: TransactionBuilderParams(
-            genesisHash: network.genesis, nonce: BigInt.zero),
-        calls: SubstrateTransactionSubmitableParams(
-            calls: [params],
-            chargeAssetTxPayment: _buildChargeAssetTxPaymentAssetId(
-                chargeAssetTxPaymentAssetId)));
+      provider: provider,
+      owner: owner,
+      signer: signer,
+      xcmVersion: network.defaultXcmVersion,
+      params: TransactionBuilderParams(
+        genesisHash: network.genesis,
+        nonce: BigInt.zero,
+      ),
+      calls: SubstrateTransactionSubmitableParams(
+        calls: [params],
+        chargeAssetTxPayment: _buildChargeAssetTxPaymentAssetId(
+          chargeAssetTxPaymentAssetId,
+        ),
+      ),
+    );
   }
 
   /// Performs a dry-run simulation of an XCM transfer.

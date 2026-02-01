@@ -15,8 +15,10 @@ enum AssetsCallPalletMethod implements SubstrateCallPalletTransferMethod {
   final int variantIndex;
   const AssetsCallPalletMethod(this.method, this.variantIndex);
   factory AssetsCallPalletMethod.fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 
   @override
@@ -38,26 +40,29 @@ class AssetsCallPalletTransfer extends AssetsCallPallet {
   final BaseSubstrateAddress target;
   final BigInt amount;
 
-  const AssetsCallPalletTransfer(
-      {required this.id,
-      required this.target,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.assets})
-      : super(type: AssetsCallPalletMethod.transfer);
+  const AssetsCallPalletTransfer({
+    required this.id,
+    required this.target,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.assets,
+  }) : super(type: AssetsCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "id": id,
-        "target": extrinsic.extrinsic.encodeAddress(target),
-        "amount": amount
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "id": id,
+          "target": extrinsic.extrinsic.encodeAddress(target),
+          "amount": amount,
+        },
+      },
+    );
   }
 
   @override
@@ -66,15 +71,18 @@ class AssetsCallPalletTransfer extends AssetsCallPallet {
       method ?? type.method: {
         "target": target.address,
         "amount": amount,
-        "id": id
-      }
+        "id": id,
+      },
     };
   }
 }
 
 class AssetsCallPalletTransferKeepAlive extends AssetsCallPalletTransfer {
-  const AssetsCallPalletTransferKeepAlive(
-      {required super.id, required super.target, required super.amount});
+  const AssetsCallPalletTransferKeepAlive({
+    required super.id,
+    required super.target,
+    required super.amount,
+  });
 
   @override
   AssetsCallPalletMethod get type => AssetsCallPalletMethod.transferKeepAlive;
@@ -85,29 +93,32 @@ class AssetsCallPalletTransferAll extends AssetsCallPallet {
   final BaseSubstrateAddress dest;
   final bool keepAlive;
 
-  const AssetsCallPalletTransferAll(
-      {required this.id,
-      required this.dest,
-      required this.keepAlive,
-      super.pallet = SubtrateMetadataPallet.assets})
-      : super(type: AssetsCallPalletMethod.transferAll);
+  const AssetsCallPalletTransferAll({
+    required this.id,
+    required this.dest,
+    required this.keepAlive,
+    super.pallet = SubtrateMetadataPallet.assets,
+  }) : super(type: AssetsCallPalletMethod.transferAll);
 
   @override
   AssetsCallPalletMethod get type => AssetsCallPalletMethod.transferAll;
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "id": id,
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "keep_alive": keepAlive
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "id": id,
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "keep_alive": keepAlive,
+        },
+      },
+    );
   }
 
   @override
@@ -116,8 +127,8 @@ class AssetsCallPalletTransferAll extends AssetsCallPallet {
       method ?? type.method: {
         "dest": dest.address,
         "keep_alive": keepAlive,
-        "id": id
-      }
+        "id": id,
+      },
     };
   }
 }

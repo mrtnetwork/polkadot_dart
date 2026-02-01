@@ -10,24 +10,27 @@ class ExtrinsicMetadataV15 extends ExtrinsicMetadata {
   final int signatureType;
   final int extraType;
   final List<SignedExtensionMetadataV14> signedExtensions;
-  ExtrinsicMetadataV15(
-      {required this.addressType,
-      required this.version,
-      required this.callType,
-      required this.signatureType,
-      required this.extraType,
-      required List<SignedExtensionMetadataV14> signedExtensions})
-      : signedExtensions =
-            List<SignedExtensionMetadataV14>.unmodifiable(signedExtensions);
+  ExtrinsicMetadataV15({
+    required this.addressType,
+    required this.version,
+    required this.callType,
+    required this.signatureType,
+    required this.extraType,
+    required List<SignedExtensionMetadataV14> signedExtensions,
+  }) : signedExtensions = List<SignedExtensionMetadataV14>.unmodifiable(
+         signedExtensions,
+       );
   ExtrinsicMetadataV15.deserializeJson(Map<String, dynamic> json)
-      : signedExtensions = List<SignedExtensionMetadataV14>.unmodifiable(
-            (json["signedExtensions"] as List)
-                .map((e) => SignedExtensionMetadataV14.deserializeJson(e))),
-        addressType = json["addressType"],
-        callType = json["callType"],
-        signatureType = json["signatureType"],
-        extraType = json["extraType"],
-        version = json["version"];
+    : signedExtensions = List<SignedExtensionMetadataV14>.unmodifiable(
+        (json["signedExtensions"] as List).map(
+          (e) => SignedExtensionMetadataV14.deserializeJson(e),
+        ),
+      ),
+      addressType = json["addressType"],
+      callType = json["callType"],
+      signatureType = json["signatureType"],
+      extraType = json["extraType"],
+      version = json["version"];
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {

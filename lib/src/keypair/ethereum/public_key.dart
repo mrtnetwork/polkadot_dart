@@ -19,15 +19,18 @@ class SubstrateEthereumPublicKey
       final pubKey = Secp256k1PublicKey.fromBytes(keyBytes);
       return SubstrateEthereumPublicKey._(pubKey);
     } catch (e) {
-      throw DartSubstratePluginException("Invalid ethereum public key.",
-          details: {"input": BytesUtils.toHexString(keyBytes)});
+      throw DartSubstratePluginException(
+        "Invalid ethereum public key.",
+        details: {"input": BytesUtils.toHexString(keyBytes)},
+      );
     }
   }
 
   /// Creates an [SubstrateEthereumPublicKey] instance from a hexadecimal public key string.
   factory SubstrateEthereumPublicKey(String pubHex) {
     return SubstrateEthereumPublicKey.fromBytes(
-        BytesUtils.fromHexString(pubHex));
+      BytesUtils.fromHexString(pubHex),
+    );
   }
 
   /// Retrieves the raw bytes of the public key.
@@ -41,8 +44,10 @@ class SubstrateEthereumPublicKey
 
   /// Converts the public key to a hexadecimal string.
   @override
-  String toHex(
-      {bool upperCase = false, PubKeyModes mode = PubKeyModes.compressed}) {
+  String toHex({
+    bool upperCase = false,
+    PubKeyModes mode = PubKeyModes.compressed,
+  }) {
     return BytesUtils.toHexString(toBytes(mode), lowerCase: !upperCase);
   }
 
@@ -52,12 +57,13 @@ class SubstrateEthereumPublicKey
     return SubstrateEthereumAddress.fromPublicKey(toBytes());
   }
 
-  SubstrateAddress toSS58Address(
-      {int ss58Format = SS58Const.genericSubstrate}) {
+  SubstrateAddress toSS58Address({
+    int ss58Format = SS58Const.genericSubstrate,
+  }) {
     return SubstrateAddress.fromBytes(
-        QuickCrypto.blake2b256Hash(
-            [...StringUtils.encode("evm:"), ...toBytes()]),
-        ss58Format: ss58Format);
+      QuickCrypto.blake2b256Hash([...StringUtils.encode("evm:"), ...toBytes()]),
+      ss58Format: ss58Format,
+    );
   }
 
   @override
@@ -69,18 +75,33 @@ class SubstrateEthereumPublicKey
   ///
   /// Optionally, [hashMessage] can be set to false to skip hashing the message before verification.
   /// Optionally, [payloadLength] can be set to specify the payload length for the message.
-  bool verifyPersonalMessage(List<int> messageDigest, List<int> signature,
-      {bool hashMessage = true, int? payloadLength}) {
+  bool verifyPersonalMessage(
+    List<int> messageDigest,
+    List<int> signature, {
+    bool hashMessage = true,
+    int? payloadLength,
+  }) {
     final verifier = ETHVerifier.fromKeyBytes(toBytes());
-    return verifier.verifyPersonalMessage(messageDigest, signature,
-        hashMessage: hashMessage, payloadLength: payloadLength);
+    return verifier.verifyPersonalMessage(
+      messageDigest,
+      signature,
+      hashMessage: hashMessage,
+      payloadLength: payloadLength,
+    );
   }
 
   static SubstrateEthereumPublicKey? getPublicKey(
-      List<int> messageDigest, List<int> signature,
-      {bool hashMessage = true, int? payloadLength}) {
-    final verifier = ETHVerifier.getPublicKey(messageDigest, signature,
-        hashMessage: hashMessage, payloadLength: payloadLength);
+    List<int> messageDigest,
+    List<int> signature, {
+    bool hashMessage = true,
+    int? payloadLength,
+  }) {
+    final verifier = ETHVerifier.getPublicKey(
+      messageDigest,
+      signature,
+      hashMessage: hashMessage,
+      payloadLength: payloadLength,
+    );
     if (verifier == null) return null;
     final pubKey = Secp256k1PublicKey.fromBytes(verifier.point.toBytes());
     return SubstrateEthereumPublicKey._(pubKey);

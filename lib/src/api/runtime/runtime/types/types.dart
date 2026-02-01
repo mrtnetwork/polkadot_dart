@@ -40,41 +40,54 @@ abstract class SubstrateRuntimeApi {
     return runtime.apis
         .firstWhere(
           (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
-          orElse: () => throw DartSubstratePluginException(
-              "Runtime api not available.",
-              details: {"api": this.api.name}),
+          orElse:
+              () =>
+                  throw DartSubstratePluginException(
+                    "Runtime api not available.",
+                    details: {"api": this.api.name},
+                  ),
         )
         .version;
   }
 
-  bool methodExists(
-      {required SubstrateRuntimeApiMethods method, required MetadataApi api}) {
-    final exists = api.metadata
-        .runtimeMethodExists(this.api.name, methodName: method.method);
+  bool methodExists({
+    required SubstrateRuntimeApiMethods method,
+    required MetadataApi api,
+  }) {
+    final exists = api.metadata.runtimeMethodExists(
+      this.api.name,
+      methodName: method.method,
+    );
     if (exists) return true;
     final runtime = api.runtimeVersion();
     final runtimeApi = runtime.apis.firstWhereNullable(
-        (e) => StringUtils.hexEqual(e.apiId, this.api.hash));
+      (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
+    );
     return this.api.versions.contains(runtimeApi?.version);
   }
 
-  bool methodsExists(
-      {required List<SubstrateRuntimeApiMethods> methods,
-      required MetadataApi api}) {
-    final exists = methods.every((e) =>
-        api.metadata.runtimeMethodExists(this.api.name, methodName: e.method));
+  bool methodsExists({
+    required List<SubstrateRuntimeApiMethods> methods,
+    required MetadataApi api,
+  }) {
+    final exists = methods.every(
+      (e) =>
+          api.metadata.runtimeMethodExists(this.api.name, methodName: e.method),
+    );
     if (exists) return true;
     final runtime = api.runtimeVersion();
     final runtimeApi = runtime.apis.firstWhereNullable(
-        (e) => StringUtils.hexEqual(e.apiId, this.api.hash));
+      (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
+    );
     return this.api.versions.contains(runtimeApi?.version);
   }
 
-  Future<T> callRuntimeApiInternal<T extends Object?>(
-      {required SubstrateRuntimeApiMethods method,
-      required MetadataApi api,
-      required SubstrateProvider provider,
-      List<Object?> params = const []}) async {
+  Future<T> callRuntimeApiInternal<T extends Object?>({
+    required SubstrateRuntimeApiMethods method,
+    required MetadataApi api,
+    required SubstrateProvider provider,
+    List<Object?> params = const [],
+  }) async {
     // final exists = api.metadata
     //     .runtimeMethodExists(this.api.name, methodName: method.method);
     // if (exists) {
@@ -87,30 +100,41 @@ abstract class SubstrateRuntimeApi {
     // }
     final types = SubstrateRuntimeApiConstants.apis[method.method];
     if (types == null) {
-      throw DartSubstratePluginException("Runtime api not available.",
-          details: {"api": this.api.name});
+      throw DartSubstratePluginException(
+        "Runtime api not available.",
+        details: {"api": this.api.name},
+      );
     }
     final runtime = api.runtimeVersion();
     final runtimeApi = runtime.apis.firstWhere(
       (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
-      orElse: () => throw DartSubstratePluginException(
-          "Runtime api not available.",
-          details: {"api": this.api.name}),
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                "Runtime api not available.",
+                details: {"api": this.api.name},
+              ),
     );
     if (!this.api.versions.contains(runtimeApi.version)) {
-      throw DartSubstratePluginException("Unsupported runtime api version.",
-          details: {
-            "api": this.api.name,
-            "method": method.method,
-            "version": runtimeApi.version
-          });
+      throw DartSubstratePluginException(
+        "Unsupported runtime api version.",
+        details: {
+          "api": this.api.name,
+          "method": method.method,
+          "version": runtimeApi.version,
+        },
+      );
     }
 
     final encode = types
         .inputBuilder(api, runtimeApi.version)
         .serializeHex(params, prefix: "0x");
-    final result = await provider.request(SubstrateRequestStateCall(
-        method: this.api.buildMethodName(method.method), data: encode));
+    final result = await provider.request(
+      SubstrateRequestStateCall(
+        method: this.api.buildMethodName(method.method),
+        data: encode,
+      ),
+    );
 
     return types
         .outputBuilder(api, runtimeApi.version)
@@ -140,8 +164,11 @@ enum DispatchResultType {
   static DispatchResultType fromJson(Map<String, dynamic>? json) {
     return values.firstWhere(
       (e) => e.method == json?.keys.firstOrNull,
-      orElse: () =>
-          throw DartSubstratePluginException("Invalid DispatchResult json."),
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                "Invalid DispatchResult json.",
+              ),
     );
   }
 }
@@ -150,47 +177,70 @@ abstract class DispatchResultWithPostInfo {
   final DispatchResultType type;
   Map<String, dynamic> toJson();
   const DispatchResultWithPostInfo({required this.type});
-  factory DispatchResultWithPostInfo.fromJson(Map<String, dynamic> json,
-      {ONEVENTDISPATCHERROR? onParseModuleError}) {
+  factory DispatchResultWithPostInfo.fromJson(
+    Map<String, dynamic> json, {
+    ONEVENTDISPATCHERROR? onParseModuleError,
+  }) {
     final type = DispatchResultType.fromJson(json);
     return switch (type) {
       DispatchResultType.err => DispatchResultWithPostInfoErr.fromJson(
-          json[type.method],
-          onParseModuleError: onParseModuleError),
-      DispatchResultType.ok =>
-        DispatchResultWithPostInfoOk.fromJson(json[type.method])
+        json[type.method],
+        onParseModuleError: onParseModuleError,
+      ),
+      DispatchResultType.ok => DispatchResultWithPostInfoOk.fromJson(
+        json[type.method],
+      ),
     };
   }
-  static Layout buildDispatchLayout(
-      {required MetadataApi metadata, String? property}) {
+  static Layout buildDispatchLayout({
+    required MetadataApi metadata,
+    String? property,
+  }) {
     final id = metadata.typeByPathTail("Result");
     if (id == null) {
       throw DartSubstratePluginException(
-          "Failed to build dispatch result layout. type not found.");
+        "Failed to build dispatch result layout. type not found.",
+      );
     }
     final varinatins = metadata.getTypeDefination<Si1TypeDefVariant>(id);
     final errr = varinatins.variants.firstWhere(
       (e) => e.name == "Err",
-      orElse: () => throw DartSubstratePluginException(
-          "Failed to build dispatch result layout. type not found."),
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                "Failed to build dispatch result layout. type not found.",
+              ),
     );
     final oK = varinatins.variants.firstWhere(
       (e) => e.name == "Ok",
-      orElse: () => throw DartSubstratePluginException(
-          "Failed to build dispatch result layout. type not found."),
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                "Failed to build dispatch result layout. type not found.",
+              ),
     );
-    return LayoutConst.lazyEnum([
-      LazyVariantModel(
-          layout: ({property}) =>
-              DispatchResultWithPostInfoOk.layout(property: property),
+    return LayoutConst.lazyEnum(
+      [
+        LazyVariantModel(
+          layout:
+              ({property}) =>
+                  DispatchResultWithPostInfoOk.layout(property: property),
           property: oK.name,
-          index: oK.index),
-      LazyVariantModel(
-          layout: ({property}) => DispatchResultWithPostInfoErr.layout(
-              metadata: metadata, property: property),
+          index: oK.index,
+        ),
+        LazyVariantModel(
+          layout:
+              ({property}) => DispatchResultWithPostInfoErr.layout(
+                metadata: metadata,
+                property: property,
+              ),
           property: errr.name,
-          index: errr.index),
-    ], useKeyAndValue: false, property: property);
+          index: errr.index,
+        ),
+      ],
+      useKeyAndValue: false,
+      property: property,
+    );
     // LazyVariantModel(layout: layout, property: property, index: index)
   }
 
@@ -205,30 +255,36 @@ abstract class DispatchResultWithPostInfo {
 class DispatchResultWithPostInfoOk extends DispatchResultWithPostInfo {
   final SubstrateWeightV2? actualWeight;
   final bool paysFee;
-  DispatchResultWithPostInfoOk(
-      {required this.actualWeight, required this.paysFee})
-      : super(type: DispatchResultType.ok);
+  DispatchResultWithPostInfoOk({
+    required this.actualWeight,
+    required this.paysFee,
+  }) : super(type: DispatchResultType.ok);
 
   factory DispatchResultWithPostInfoOk.fromJson(Map<String, dynamic> json) {
-    final Map<String, dynamic>? actualWeight =
-        MetadataUtils.parseOptional(json["actual_weight"]);
+    final Map<String, dynamic>? actualWeight = MetadataUtils.parseOptional(
+      json["actual_weight"],
+    );
     final Map<String, dynamic> paysFee = json["pays_fee"];
     return DispatchResultWithPostInfoOk(
-        actualWeight: actualWeight == null
-            ? null
-            : SubstrateWeightV2.deserializeJson(actualWeight),
-        paysFee: paysFee.containsKey("Yes"));
+      actualWeight:
+          actualWeight == null
+              ? null
+              : SubstrateWeightV2.deserializeJson(actualWeight),
+      paysFee: paysFee.containsKey("Yes"),
+    );
   }
 
   static Layout layout({String? property}) {
     return LayoutConst.struct([
       MetadataUtils.optionalLayout(
-          ({property}) => SubstrateWeightV2.layout_(property: property),
-          property: "actual_weight"),
-      LayoutConst.rustEnum([
-        LayoutConst.none(property: "Yes"),
-        LayoutConst.none(property: "No"),
-      ], property: "pays_fee", useKeyAndValue: false),
+        ({property}) => SubstrateWeightV2.layout_(property: property),
+        property: "actual_weight",
+      ),
+      LayoutConst.rustEnum(
+        [LayoutConst.none(property: "Yes"), LayoutConst.none(property: "No")],
+        property: "pays_fee",
+        useKeyAndValue: false,
+      ),
     ]);
   }
 
@@ -237,8 +293,8 @@ class DispatchResultWithPostInfoOk extends DispatchResultWithPostInfo {
     return {
       type.method: {
         "actual_weight": MetadataUtils.toOptionalJson(actualWeight),
-        "pays_fee": {paysFee ? "Yes" : "No": null}
-      }
+        "pays_fee": {paysFee ? "Yes" : "No": null},
+      },
     };
   }
 }
@@ -255,20 +311,22 @@ class DispatchResultWithPostInfoErr extends DispatchResultWithPostInfo {
     required Map<String, dynamic> errorJson,
     required this.errorTypes,
     this.description,
-  })  : errorJson = errorJson.immutable,
-        super(type: DispatchResultType.err);
+  }) : errorJson = errorJson.immutable,
+       super(type: DispatchResultType.err);
   static Layout layout({required MetadataApi metadata, String? property}) {
     return LayoutConst.struct([
       LayoutConst.struct([
         MetadataUtils.optionalLayout(
-            ({property}) => SubstrateWeightV2.layout_(property: property),
-            property: "actual_weight"),
-        LayoutConst.rustEnum([
-          LayoutConst.none(property: "Yes"),
-          LayoutConst.none(property: "No"),
-        ], property: "pays_fee", useKeyAndValue: false),
+          ({property}) => SubstrateWeightV2.layout_(property: property),
+          property: "actual_weight",
+        ),
+        LayoutConst.rustEnum(
+          [LayoutConst.none(property: "Yes"), LayoutConst.none(property: "No")],
+          property: "pays_fee",
+          useKeyAndValue: false,
+        ),
       ], property: "post_info"),
-      metadata.typeLayoutByPathTail("DispatchError", property: "error")
+      metadata.typeLayoutByPathTail("DispatchError", property: "error"),
     ], property: property);
   }
 
@@ -277,21 +335,25 @@ class DispatchResultWithPostInfoErr extends DispatchResultWithPostInfo {
     return {
       type.method: {
         "post_info": {
-          "actual_weight":
-              MetadataUtils.toOptionalJson(actualWeight?.serializeJson()),
+          "actual_weight": MetadataUtils.toOptionalJson(
+            actualWeight?.serializeJson(),
+          ),
           "pays_fee": {paysFee ? "Yes" : "No": null},
         },
         "error": errorJson,
-        "description": description
-      }
+        "description": description,
+      },
     };
   }
 
-  factory DispatchResultWithPostInfoErr.fromJson(Map<String, dynamic> json,
-      {ONEVENTDISPATCHERROR? onParseModuleError}) {
+  factory DispatchResultWithPostInfoErr.fromJson(
+    Map<String, dynamic> json, {
+    ONEVENTDISPATCHERROR? onParseModuleError,
+  }) {
     final Map<String, dynamic> postInfo = json["post_info"];
-    final Map<String, dynamic>? actualWeight =
-        MetadataUtils.parseOptional(postInfo["actual_weight"]);
+    final Map<String, dynamic>? actualWeight = MetadataUtils.parseOptional(
+      postInfo["actual_weight"],
+    );
     final Map<String, dynamic> paysFee = postInfo["pays_fee"];
     final Map<String, dynamic> error = json["error"];
     final errors = _DryRunResultUtils.getExecutionResultErrorParts(error);
@@ -305,13 +367,15 @@ class DispatchResultWithPostInfoErr extends DispatchResultWithPostInfo {
     }
 
     return DispatchResultWithPostInfoErr(
-        actualWeight: actualWeight == null
-            ? null
-            : SubstrateWeightV2.deserializeJson(actualWeight),
-        paysFee: paysFee.containsKey("Yes"),
-        errorJson: error,
-        errorTypes: errors,
-        description: descriptions);
+      actualWeight:
+          actualWeight == null
+              ? null
+              : SubstrateWeightV2.deserializeJson(actualWeight),
+      paysFee: paysFee.containsKey("Yes"),
+      errorJson: error,
+      errorTypes: errors,
+      description: descriptions,
+    );
   }
 }
 
@@ -326,26 +390,43 @@ class CallDryRunEffects {
     required this.localXcm,
     required this.forwardXcms,
   });
-  factory CallDryRunEffects.fromJson(Map<String, dynamic> json,
-      {ONEVENTDISPATCHERROR? onParseModuleError}) {
-    final Map<String, dynamic>? localXcm =
-        MetadataUtils.parseOptional(json["local_xcm"]);
+  factory CallDryRunEffects.fromJson(
+    Map<String, dynamic> json, {
+    ONEVENTDISPATCHERROR? onParseModuleError,
+  }) {
+    final Map<String, dynamic>? localXcm = MetadataUtils.parseOptional(
+      json["local_xcm"],
+    );
     return CallDryRunEffects(
       events: SubstrateGroupEvents(
-          events: (json["emitted_events"] as List)
-              .map((e) => SubstrateEvent.fromJson(e,
-                  onDispatchError: onParseModuleError))
-              .toList()),
+        events:
+            (json["emitted_events"] as List)
+                .map(
+                  (e) => SubstrateEvent.fromJson(
+                    e,
+                    onDispatchError: onParseModuleError,
+                  ),
+                )
+                .toList(),
+      ),
       executionResult: DispatchResultWithPostInfo.fromJson(
-          json["execution_result"],
-          onParseModuleError: onParseModuleError),
+        json["execution_result"],
+        onParseModuleError: onParseModuleError,
+      ),
       localXcm: localXcm == null ? null : XCMVersionedXCM.fromJson(localXcm),
-      forwardXcms: (json["forwarded_xcms"] as List)
-          .map((e) => (
-                XCMVersionedLocation.fromJson(Map<String, dynamic>.from(e[0])),
-                (e[1] as List).map((e) => XCMVersionedXCM.fromJson(e)).toList()
-              ))
-          .toList(),
+      forwardXcms:
+          (json["forwarded_xcms"] as List)
+              .map(
+                (e) => (
+                  XCMVersionedLocation.fromJson(
+                    Map<String, dynamic>.from(e[0]),
+                  ),
+                  (e[1] as List)
+                      .map((e) => XCMVersionedXCM.fromJson(e))
+                      .toList(),
+                ),
+              )
+              .toList(),
     );
   }
 
@@ -354,9 +435,10 @@ class CallDryRunEffects {
       "execution_result": executionResult.toJson(),
       "emitted_events": events.toJson(),
       "local_xcm": localXcm?.toJson(),
-      "forwarded_xcms": forwardXcms
-          .map((e) => [e.$1.toJson(), e.$2.map((e) => e.toJson()).toList()])
-          .toList()
+      "forwarded_xcms":
+          forwardXcms
+              .map((e) => [e.$1.toJson(), e.$2.map((e) => e.toJson()).toList()])
+              .toList(),
     };
   }
 }
@@ -373,8 +455,8 @@ enum OutcomeType {
   static OutcomeType fromJson(Map<String, dynamic>? json) {
     return values.firstWhere(
       (e) => e.method == json?.keys.firstOrNull,
-      orElse: () =>
-          throw DartSubstratePluginException("Invalid OutcomeType json."),
+      orElse:
+          () => throw DartSubstratePluginException("Invalid OutcomeType json."),
     );
   }
 }
@@ -383,13 +465,16 @@ abstract class OutcomeResult {
   final OutcomeType type;
   Map<String, dynamic> toJson();
   const OutcomeResult({required this.type});
-  factory OutcomeResult.fromJson(Map<String, dynamic> json,
-      {ONEVENTDISPATCHERROR? onParseModuleError}) {
+  factory OutcomeResult.fromJson(
+    Map<String, dynamic> json, {
+    ONEVENTDISPATCHERROR? onParseModuleError,
+  }) {
     final type = OutcomeType.fromJson(json);
     return switch (type) {
       OutcomeType.complete => OutcomeResultComplete.fromJson(json[type.method]),
-      OutcomeType.incomplete =>
-        OutcomeResultIncomplete.fromJson(json[type.method]),
+      OutcomeType.incomplete => OutcomeResultIncomplete.fromJson(
+        json[type.method],
+      ),
       OutcomeType.error => OutcomeResultErr.fromJson(json[type.method]),
     };
   }
@@ -404,7 +489,7 @@ abstract class OutcomeResult {
 class OutcomeResultComplete extends OutcomeResult {
   final SubstrateWeightV2 actualWeight;
   OutcomeResultComplete({required this.actualWeight})
-      : super(type: OutcomeType.complete);
+    : super(type: OutcomeType.complete);
   factory OutcomeResultComplete.fromJson(Map<String, dynamic> json) {
     return OutcomeResultComplete(
       actualWeight: SubstrateWeightV2.deserializeJson(json),
@@ -420,22 +505,26 @@ class OutcomeResultIncomplete extends OutcomeResult {
   final SubstrateWeightV2 used;
   final Map<String, dynamic> errorJson;
   final List<String> errorTypes;
-  OutcomeResultIncomplete(
-      {required this.used, required this.errorJson, required this.errorTypes})
-      : super(type: OutcomeType.incomplete);
+  OutcomeResultIncomplete({
+    required this.used,
+    required this.errorJson,
+    required this.errorTypes,
+  }) : super(type: OutcomeType.incomplete);
   factory OutcomeResultIncomplete.fromJson(Map<String, dynamic> json) {
-    final errors =
-        _DryRunResultUtils.getExecutionResultErrorParts(json["error"]);
+    final errors = _DryRunResultUtils.getExecutionResultErrorParts(
+      json["error"],
+    );
     return OutcomeResultIncomplete(
-        used: SubstrateWeightV2.deserializeJson(json["used"]),
-        errorJson: json["error"],
-        errorTypes: errors);
+      used: SubstrateWeightV2.deserializeJson(json["used"]),
+      errorJson: json["error"],
+      errorTypes: errors,
+    );
   }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.method: {"used": used.serializeJson(), "error": errorJson}
+      type.method: {"used": used.serializeJson(), "error": errorJson},
     };
   }
 }
@@ -444,7 +533,7 @@ class OutcomeResultErr extends OutcomeResult {
   final Map<String, dynamic> errorJson;
   final List<String> errorTypes;
   OutcomeResultErr({required this.errorJson, required this.errorTypes})
-      : super(type: OutcomeType.error);
+    : super(type: OutcomeType.error);
   factory OutcomeResultErr.fromJson(Map<String, dynamic> json) {
     final errors = _DryRunResultUtils.getExecutionResultErrorParts(json);
     return OutcomeResultErr(errorJson: json, errorTypes: errors);
@@ -464,7 +553,7 @@ class XcmDryRunEffects {
   SubstrateWeightV2? get weight {
     return switch (isComplete) {
       false => null,
-      true => executionResult.cast<OutcomeResultComplete>().actualWeight
+      true => executionResult.cast<OutcomeResultComplete>().actualWeight,
     };
   }
 
@@ -473,21 +562,36 @@ class XcmDryRunEffects {
     required this.executionResult,
     required this.forwardXcms,
   });
-  factory XcmDryRunEffects.fromJson(Map<String, dynamic> json,
-      {ONEVENTDISPATCHERROR? onParseModuleError}) {
+  factory XcmDryRunEffects.fromJson(
+    Map<String, dynamic> json, {
+    ONEVENTDISPATCHERROR? onParseModuleError,
+  }) {
     return XcmDryRunEffects(
       events: SubstrateGroupEvents(
-          events: (json["emitted_events"] as List)
-              .map((e) => SubstrateEvent.fromJson(e,
-                  onDispatchError: onParseModuleError))
-              .toList()),
+        events:
+            (json["emitted_events"] as List)
+                .map(
+                  (e) => SubstrateEvent.fromJson(
+                    e,
+                    onDispatchError: onParseModuleError,
+                  ),
+                )
+                .toList(),
+      ),
       executionResult: OutcomeResult.fromJson(json["execution_result"]),
-      forwardXcms: (json["forwarded_xcms"] as List)
-          .map((e) => (
-                XCMVersionedLocation.fromJson(Map<String, dynamic>.from(e[0])),
-                (e[1] as List).map((e) => XCMVersionedXCM.fromJson(e)).toList()
-              ))
-          .toList(),
+      forwardXcms:
+          (json["forwarded_xcms"] as List)
+              .map(
+                (e) => (
+                  XCMVersionedLocation.fromJson(
+                    Map<String, dynamic>.from(e[0]),
+                  ),
+                  (e[1] as List)
+                      .map((e) => XCMVersionedXCM.fromJson(e))
+                      .toList(),
+                ),
+              )
+              .toList(),
     );
   }
 
@@ -495,15 +599,16 @@ class XcmDryRunEffects {
     return {
       "emitted_events": events.toJson(),
       "execution_result": executionResult.toJson(),
-      "forwarded_xcms": forwardXcms
-          .map((e) => [e.$1.toJson(), e.$2.map((e) => e.toJson()).toList()])
-          .toList()
+      "forwarded_xcms":
+          forwardXcms
+              .map((e) => [e.$1.toJson(), e.$2.map((e) => e.toJson()).toList()])
+              .toList(),
     };
   }
 }
 
-typedef ONDISPATCHSUCCESS<OK, RESULT extends Object?> = OK Function(
-    RESULT result);
+typedef ONDISPATCHSUCCESS<OK, RESULT extends Object?> =
+    OK Function(RESULT result);
 
 abstract class SubstrateDispatchResult<OK extends Object?> {
   final DispatchResultType type;
@@ -518,42 +623,54 @@ abstract class SubstrateDispatchResult<OK extends Object?> {
 
   OK? get ok => null;
 
-  static Layout buildDispatchLayout(
-      {required MetadataApi metadata, required LayoutFunc onOk}) {
+  static Layout buildDispatchLayout({
+    required MetadataApi metadata,
+    required LayoutFunc onOk,
+  }) {
     final id = metadata.typeByPathTail("Result");
     if (id == null) throw DartSubstratePluginException("message");
     final varinatins = metadata.getTypeDefination<Si1TypeDefVariant>(id);
     final errr = varinatins.variants.firstWhere(
       (e) => e.name == "Err",
-      orElse: () => throw DartSubstratePluginException(
-          "Failed to build dispatch result layout. type not found."),
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                "Failed to build dispatch result layout. type not found.",
+              ),
     );
     final oK = varinatins.variants.firstWhere(
       (e) => e.name == "Ok",
-      orElse: () => throw DartSubstratePluginException(
-          "Failed to build dispatch result layout. type not found."),
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                "Failed to build dispatch result layout. type not found.",
+              ),
     );
     return LayoutConst.lazyEnum([
       LazyVariantModel(layout: onOk, property: oK.name, index: oK.index),
       LazyVariantModel(
-          layout: ({property}) =>
-              SubstrateDispatchResultError.layout(property: property),
-          property: errr.name,
-          index: errr.index),
+        layout:
+            ({property}) =>
+                SubstrateDispatchResultError.layout(property: property),
+        property: errr.name,
+        index: errr.index,
+      ),
     ], useKeyAndValue: false);
     // LazyVariantModel(layout: layout, property: property, index: index)
   }
 
-  static SubstrateDispatchResult<OK>
-      fromJson<OK extends Object?, RESULT extends Object?>(
-          Map<String, dynamic> json, ONDISPATCHSUCCESS<OK, RESULT> onOk) {
+  static SubstrateDispatchResult<OK> fromJson<
+    OK extends Object?,
+    RESULT extends Object?
+  >(Map<String, dynamic> json, ONDISPATCHSUCCESS<OK, RESULT> onOk) {
     final type = DispatchResultType.fromJson(json);
 
     return switch (type) {
       DispatchResultType.err => SubstrateDispatchResultError<OK>.fromJson(json),
       DispatchResultType.ok => SubstrateDispatchResultSuccess<OK>(
-          ok: onOk(json.valueAs<RESULT>(DispatchResultType.ok.method)),
-          result: json)
+        ok: onOk(json.valueAs<RESULT>(DispatchResultType.ok.method)),
+        result: json,
+      ),
     };
   }
 
@@ -568,41 +685,43 @@ class SubstrateDispatchResultSuccess<OK extends Object?>
     extends SubstrateDispatchResult<OK> {
   @override
   final OK ok;
-  const SubstrateDispatchResultSuccess(
-      {required this.ok, required super.result})
-      : super(type: DispatchResultType.ok);
+  const SubstrateDispatchResultSuccess({
+    required this.ok,
+    required super.result,
+  }) : super(type: DispatchResultType.ok);
 }
 
 class SubstrateDispatchResultError<OK extends Object?>
     extends SubstrateDispatchResult<OK> {
   final XcmPaymentApiDispatchErrorType error;
-  const SubstrateDispatchResultError(
-      {required this.error, required super.result})
-      : super(type: DispatchResultType.err);
+  const SubstrateDispatchResultError({
+    required this.error,
+    required super.result,
+  }) : super(type: DispatchResultType.err);
   factory SubstrateDispatchResultError.fromJson(Map<String, dynamic> json) {
     return SubstrateDispatchResultError(
-        error: XcmPaymentApiDispatchErrorType.fromJson(
-            json.valueAs(DispatchResultType.err.method)),
-        result: json);
+      error: XcmPaymentApiDispatchErrorType.fromJson(
+        json.valueAs(DispatchResultType.err.method),
+      ),
+      result: json,
+    );
   }
 
   static Layout layout({String? property}) {
     return LayoutConst.lazyEnum(
-        List.generate(
-          20,
-          (index) {
-            final item =
-                XcmPaymentApiDispatchErrorType.values.elementAtOrNull(index);
-            return LazyVariantModel(
-              layout: ({property}) => LayoutConst.none(property: property),
-              property:
-                  item?.type ?? XcmPaymentApiDispatchErrorType.unknown.type,
-              index: index,
-            );
-          },
-        ),
-        property: property,
-        useKeyAndValue: false);
+      List.generate(20, (index) {
+        final item = XcmPaymentApiDispatchErrorType.values.elementAtOrNull(
+          index,
+        );
+        return LazyVariantModel(
+          layout: ({property}) => LayoutConst.none(property: property),
+          property: item?.type ?? XcmPaymentApiDispatchErrorType.unknown.type,
+          index: index,
+        );
+      }),
+      property: property,
+      useKeyAndValue: false,
+    );
   }
 }
 
@@ -611,11 +730,12 @@ class QuotePriceParams {
   final BigInt amount;
   final XCMMultiLocation assetA;
   final XCMMultiLocation assetB;
-  const QuotePriceParams(
-      {required this.includeFee,
-      required this.amount,
-      required this.assetA,
-      required this.assetB});
+  const QuotePriceParams({
+    required this.includeFee,
+    required this.amount,
+    required this.assetA,
+    required this.assetB,
+  });
 }
 
 enum XcmPaymentApiDispatchErrorType {
@@ -632,8 +752,9 @@ enum XcmPaymentApiDispatchErrorType {
 
   const XcmPaymentApiDispatchErrorType(this.type);
   static XcmPaymentApiDispatchErrorType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? XcmPaymentApiDispatchErrorType.unknown;
   }
 
@@ -652,8 +773,10 @@ enum SubstrateDryRunCllOriginType {
   const SubstrateDryRunCllOriginType(this.type);
   final String type;
   static SubstrateDryRunCllOriginType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -666,8 +789,10 @@ enum SubstrateDryRunCllOriginSystemType {
   const SubstrateDryRunCllOriginSystemType(this.type);
   final String type;
   static SubstrateDryRunCllOriginSystemType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -687,7 +812,7 @@ abstract class BaseSubstrateDryRunCllOriginSystem {
 class SubstrateDryRunCllOriginSystemRoot
     extends BaseSubstrateDryRunCllOriginSystem {
   const SubstrateDryRunCllOriginSystemRoot()
-      : super(type: SubstrateDryRunCllOriginSystemType.root);
+    : super(type: SubstrateDryRunCllOriginSystemType.root);
 
   @override
   Map<String, dynamic> toJson() {
@@ -699,7 +824,7 @@ class SubstrateDryRunCllOriginSystemSigned
     extends BaseSubstrateDryRunCllOriginSystem {
   final BaseSubstrateAddress address;
   const SubstrateDryRunCllOriginSystemSigned({required this.address})
-      : super(type: SubstrateDryRunCllOriginSystemType.signed);
+    : super(type: SubstrateDryRunCllOriginSystemType.signed);
   @override
   Map<String, dynamic> toJson() {
     return {type.type: address.toBytes()};
@@ -709,7 +834,7 @@ class SubstrateDryRunCllOriginSystemSigned
 class SubstrateDryRunCllOriginSystemNone
     extends BaseSubstrateDryRunCllOriginSystem {
   const SubstrateDryRunCllOriginSystemNone()
-      : super(type: SubstrateDryRunCllOriginSystemType.none);
+    : super(type: SubstrateDryRunCllOriginSystemType.none);
 
   @override
   Map<String, dynamic> toJson() {
@@ -720,7 +845,7 @@ class SubstrateDryRunCllOriginSystemNone
 class SubstrateDryRunCllOriginSystemAuthorized
     extends BaseSubstrateDryRunCllOriginSystem {
   const SubstrateDryRunCllOriginSystemAuthorized()
-      : super(type: SubstrateDryRunCllOriginSystemType.none);
+    : super(type: SubstrateDryRunCllOriginSystemType.none);
   @override
   Map<String, dynamic> toJson() {
     return {type.type: null};
@@ -734,8 +859,10 @@ enum SubstrateDryRunCllOriginPolkadotXcmType {
   const SubstrateDryRunCllOriginPolkadotXcmType(this.type);
   final String type;
   static SubstrateDryRunCllOriginPolkadotXcmType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -749,7 +876,7 @@ class SubstrateDryRunCllOriginPolkadotXcmXcm
     extends BaseSubstrateDryRunCllOriginPolkadotXcm {
   final XCMMultiLocation location;
   const SubstrateDryRunCllOriginPolkadotXcmXcm(this.location)
-      : super(type: SubstrateDryRunCllOriginPolkadotXcmType.xcm);
+    : super(type: SubstrateDryRunCllOriginPolkadotXcmType.xcm);
   @override
   Map<String, dynamic> toJson() {
     return {type.type: location.toJson()};
@@ -760,7 +887,7 @@ class SubstrateDryRunCllOriginPolkadotXcmResponse
     extends BaseSubstrateDryRunCllOriginPolkadotXcm {
   final XCMMultiLocation location;
   const SubstrateDryRunCllOriginPolkadotXcmResponse(this.location)
-      : super(type: SubstrateDryRunCllOriginPolkadotXcmType.response);
+    : super(type: SubstrateDryRunCllOriginPolkadotXcmType.response);
   @override
   Map<String, dynamic> toJson() {
     return {type.type: location.toJson()};
@@ -774,8 +901,10 @@ enum SubstrateDryRunCllOriginCumulusXcmType {
   const SubstrateDryRunCllOriginCumulusXcmType(this.type);
   final String type;
   static SubstrateDryRunCllOriginCumulusXcmType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -788,7 +917,7 @@ abstract class BaseSubstrateDryRunCllOriginCumulusXcm {
 class SubstrateDryRunCllOriginCumulusXcmRelay
     extends BaseSubstrateDryRunCllOriginCumulusXcm {
   const SubstrateDryRunCllOriginCumulusXcmRelay()
-      : super(type: SubstrateDryRunCllOriginCumulusXcmType.relay);
+    : super(type: SubstrateDryRunCllOriginCumulusXcmType.relay);
   @override
   Map<String, dynamic> toJson() {
     return {type.type: null};
@@ -799,7 +928,7 @@ class SubstrateDryRunCllOriginCumulusXcmSiblingParachain
     extends BaseSubstrateDryRunCllOriginCumulusXcm {
   final int paraId;
   const SubstrateDryRunCllOriginCumulusXcmSiblingParachain(this.paraId)
-      : super(type: SubstrateDryRunCllOriginCumulusXcmType.siblingParachain);
+    : super(type: SubstrateDryRunCllOriginCumulusXcmType.siblingParachain);
   @override
   Map<String, dynamic> toJson() {
     return {type.type: paraId};
@@ -850,7 +979,7 @@ enum SubstrateDryRunCallOriginType {
 class SubstrateDryRunCllOriginSystem extends BaseSubstrateDryRunCllOrigin {
   final BaseSubstrateDryRunCllOriginSystem origin;
   const SubstrateDryRunCllOriginSystem(this.origin)
-      : super(type: SubstrateDryRunCllOriginType.system);
+    : super(type: SubstrateDryRunCllOriginType.system);
 
   @override
   Map<String, dynamic> toJson() {
@@ -861,7 +990,7 @@ class SubstrateDryRunCllOriginSystem extends BaseSubstrateDryRunCllOrigin {
 class SubstrateDryRunCllOriginPolkadotXcm extends BaseSubstrateDryRunCllOrigin {
   final BaseSubstrateDryRunCllOriginPolkadotXcm origin;
   const SubstrateDryRunCllOriginPolkadotXcm(this.origin)
-      : super(type: SubstrateDryRunCllOriginType.polkadotXcm);
+    : super(type: SubstrateDryRunCllOriginType.polkadotXcm);
 
   @override
   Map<String, dynamic> toJson() {
@@ -872,7 +1001,7 @@ class SubstrateDryRunCllOriginPolkadotXcm extends BaseSubstrateDryRunCllOrigin {
 class SubstrateDryRunCllOriginCumulusXcm extends BaseSubstrateDryRunCllOrigin {
   final BaseSubstrateDryRunCllOriginCumulusXcm origin;
   const SubstrateDryRunCllOriginCumulusXcm(this.origin)
-      : super(type: SubstrateDryRunCllOriginType.cumulusXcm);
+    : super(type: SubstrateDryRunCllOriginType.cumulusXcm);
 
   @override
   Map<String, dynamic> toJson() {
@@ -883,22 +1012,24 @@ class SubstrateDryRunCllOriginCumulusXcm extends BaseSubstrateDryRunCllOrigin {
 class SubstrateDryRunCllOriginOrigins extends BaseSubstrateDryRunCllOrigin {
   final SubstrateDryRunCallOriginType origin;
   const SubstrateDryRunCllOriginOrigins(this.origin)
-      : super(type: SubstrateDryRunCllOriginType.origins);
+    : super(type: SubstrateDryRunCllOriginType.origins);
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {origin.type: null}
+      type.type: {origin.type: null},
     };
   }
 }
 
-typedef ONSUBSTRATERUNTIMELAYOUTBUILDER = Layout Function(
-    MetadataApi api, int version);
+typedef ONSUBSTRATERUNTIMELAYOUTBUILDER =
+    Layout Function(MetadataApi api, int version);
 
 class SubstrateRuntimeApiLayoutBuilder {
   final ONSUBSTRATERUNTIMELAYOUTBUILDER inputBuilder;
   final ONSUBSTRATERUNTIMELAYOUTBUILDER outputBuilder;
-  const SubstrateRuntimeApiLayoutBuilder(
-      {required this.outputBuilder, required this.inputBuilder});
+  const SubstrateRuntimeApiLayoutBuilder({
+    required this.outputBuilder,
+    required this.inputBuilder,
+  });
 }

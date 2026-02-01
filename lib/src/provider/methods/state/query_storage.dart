@@ -5,8 +5,11 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#state
 class SubstrateRequestStateQueryStorage
     extends SubstrateRequest<List<dynamic>, List<dynamic>> {
-  const SubstrateRequestStateQueryStorage(
-      {required this.keys, required this.fromBlock, this.toBlock});
+  const SubstrateRequestStateQueryStorage({
+    required this.keys,
+    required this.fromBlock,
+    this.toBlock,
+  });
   final List<String> keys;
   final String fromBlock;
   final String? toBlock;

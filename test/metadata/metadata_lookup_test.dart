@@ -18,12 +18,17 @@ void _encodeDecode(MetadataV14 api) {
   test("lockup-16", () {
     const int loockUpId = 16;
     final value = [
-      {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))}
+      {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))},
     ];
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
@@ -39,8 +44,11 @@ void _encodeDecode(MetadataV14 api) {
   test("lockup-6", () {
     const int loockUpId = 6;
     final value = BigInt.from(1233333);
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
     expect(BytesUtils.toHexString(encode), "b5d11200000000000000000000000000");
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
@@ -56,13 +64,18 @@ void _encodeDecode(MetadataV14 api) {
         "free": BigInt.one,
         "reserved": BigInt.one,
         "frozen": BigInt.one,
-        "flags": BigInt.two
-      }
+        "flags": BigInt.two,
+      },
     };
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "0100000001000000de0000000100000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000002000000000000000000000000000000");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "0100000001000000de0000000100000001000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000002000000000000000000000000000000",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
@@ -73,8 +86,11 @@ void _encodeDecode(MetadataV14 api) {
       "operational": {"ref_time": BigInt.one, "proof_size": BigInt.one},
       "mandatory": {"ref_time": BigInt.one, "proof_size": BigInt.one},
     };
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
     expect(BytesUtils.toHexString(encode), "040404040404");
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
@@ -82,8 +98,11 @@ void _encodeDecode(MetadataV14 api) {
   test("lockup-12", () {
     const int loockUpId = 12;
     final value = BigInt.from(12323);
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
     expect(BytesUtils.toHexString(encode), "2330000000000000");
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
@@ -91,20 +110,30 @@ void _encodeDecode(MetadataV14 api) {
   test("lockup-13", () {
     const int loockUpId = 13;
     final value = BytesUtils.toHexString(List<int>.filled(32, 12));
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-14", () {
     const int loockUpId = 14;
     final value = BytesUtils.toHexString(List<int>.filled(32, 12));
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "800c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "800c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
@@ -115,15 +144,20 @@ void _encodeDecode(MetadataV14 api) {
         {
           "Consensus": [
             BytesUtils.toHexString(List<int>.filled(4, 2)),
-            BytesUtils.toHexString(List<int>.filled(20, 12))
-          ]
-        }
-      ]
+            BytesUtils.toHexString(List<int>.filled(20, 12)),
+          ],
+        },
+      ],
     };
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "040402020202500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "040402020202500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
@@ -131,11 +165,14 @@ void _encodeDecode(MetadataV14 api) {
     const int loockUpId = 15;
     final value = {
       "logs": [
-        {"RuntimeEnvironmentUpdated": null}
-      ]
+        {"RuntimeEnvironmentUpdated": null},
+      ],
     };
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
     expect(BytesUtils.toHexString(encode), "0408");
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
@@ -144,43 +181,61 @@ void _encodeDecode(MetadataV14 api) {
     const int loockUpId = 15;
     final value = {
       "logs": [
-        {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))}
-      ]
+        {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))},
+      ],
     };
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-16", () {
     const int loockUpId = 16;
     final value = [
-      {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))}
+      {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))},
     ];
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "0400500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-17", () {
     const int loockUpId = 17;
     final value = {"Other": BytesUtils.toHexString(List<int>.filled(20, 12))};
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "00500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "00500c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-18", () {
     const int loockUpId = 18;
     final value = List<int>.filled(4, 12);
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
     expect(BytesUtils.toHexString(encode), "0c0c0c0c");
     final String decode = api.decodeLookup(loockUpId, encode);
     expect(BytesUtils.fromHexString(decode), value);
@@ -191,15 +246,20 @@ void _encodeDecode(MetadataV14 api) {
       {
         "phase": {"ApplyExtrinsic": 12},
         "event": {
-          "System": {"CodeUpdated": null}
+          "System": {"CodeUpdated": null},
         },
-        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
-      }
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))],
+      },
     ];
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "04000c0000000002040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "04000c0000000002040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
@@ -210,17 +270,22 @@ void _encodeDecode(MetadataV14 api) {
         "phase": {"ApplyExtrinsic": 12},
         "event": {
           "System": {
-            "NewAccount": BytesUtils.toHexString(List<int>.filled(32, 1))
-          }
+            "NewAccount": BytesUtils.toHexString(List<int>.filled(32, 1)),
+          },
         },
-        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
-      }
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))],
+      },
     ];
 
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "04000c00000000030101010101010101010101010101010101010101010101010101010101010101040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "04000c00000000030101010101010101010101010101010101010101010101010101010101010101040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
@@ -234,17 +299,22 @@ void _encodeDecode(MetadataV14 api) {
             "EraPaid": {
               "era_index": 1,
               "validator_payout": BigInt.from(10000),
-              "remainder": BigInt.from(2000)
-            }
-          }
+              "remainder": BigInt.from(2000),
+            },
+          },
         },
-        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
-      }
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))],
+      },
     ];
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "04000c00000006000100000010270000000000000000000000000000d0070000000000000000000000000000040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "04000c00000006000100000010270000000000000000000000000000d0070000000000000000000000000000040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
@@ -254,25 +324,35 @@ void _encodeDecode(MetadataV14 api) {
       {
         "phase": {"ApplyExtrinsic": 12},
         "event": {
-          "XcmPallet": {"VersionMigrationFinished": 1212}
+          "XcmPallet": {"VersionMigrationFinished": 1212},
         },
-        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))]
-      }
+        "topics": [BytesUtils.toHexString(List<int>.filled(32, 12))],
+      },
     ];
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "04000c0000006317bc040000040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "04000c0000006317bc040000040c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });
   test("lockup-57", () {
     const int loockUpId = 57;
     final value = {"Some": BytesUtils.toHexString(List<int>.filled(32, 2))};
-    final encode =
-        api.encodeLookup(id: loockUpId, value: value, fromTemplate: false);
-    expect(BytesUtils.toHexString(encode),
-        "010202020202020202020202020202020202020202020202020202020202020202");
+    final encode = api.encodeLookup(
+      id: loockUpId,
+      value: value,
+      fromTemplate: false,
+    );
+    expect(
+      BytesUtils.toHexString(encode),
+      "010202020202020202020202020202020202020202020202020202020202020202",
+    );
     final decode = api.decodeLookup(loockUpId, encode);
     expect(decode, value);
   });

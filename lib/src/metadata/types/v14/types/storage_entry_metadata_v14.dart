@@ -27,14 +27,14 @@ class StorageEntryMetadataV14
     required this.type,
     required List<int> fallback,
     required List<String> docs,
-  })  : fallback = BytesUtils.toBytes(fallback, unmodifiable: true),
-        docs = List<String>.unmodifiable(docs);
+  }) : fallback = BytesUtils.toBytes(fallback, unmodifiable: true),
+       docs = List<String>.unmodifiable(docs);
   StorageEntryMetadataV14.deserializeJson(Map<String, dynamic> json)
-      : name = json["name"],
-        modifier = StorageEntryModifierV14.deserializeJson(json["modifier"]),
-        type = StorageEntryTypeV14.deserializeJson(json["type"]),
-        fallback = BytesUtils.toBytes(json["fallback"], unmodifiable: true),
-        docs = List<String>.unmodifiable(json["docs"]);
+    : name = json["name"],
+      modifier = StorageEntryModifierV14.deserializeJson(json["modifier"]),
+      type = StorageEntryTypeV14.deserializeJson(json["type"]),
+      fallback = BytesUtils.toBytes(json["fallback"], unmodifiable: true),
+      docs = List<String>.unmodifiable(json["docs"]);
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -48,7 +48,7 @@ class StorageEntryMetadataV14
       "modifier": modifier.serializeJson(),
       "type": {type.typeName: type.serializeJson()},
       "fallback": fallback,
-      "docs": docs
+      "docs": docs,
     };
   }
 }

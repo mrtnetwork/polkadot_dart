@@ -24,12 +24,13 @@ enum SubtrateMetadataPallet {
   system("System"),
   evm("EVM"),
   common("Common"),
-  erc20XcmBridge("Erc20XcmBridge"),
-  ;
+  erc20XcmBridge("Erc20XcmBridge");
 
   static SubtrateMetadataPallet fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   final String name;
@@ -38,10 +39,11 @@ enum SubtrateMetadataPallet {
 
 abstract mixin class SubstrateCallPallet {
   SubtrateMetadataPallet get pallet;
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method});
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  });
   Map<String, dynamic> toJson({String? method});
 
   T cast<T extends SubstrateCallPallet>() {

@@ -9,11 +9,12 @@ import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_storage_metada
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 abstract class PalletMetadata<
-        STORAGE extends PalletStorageMetadata,
-        CALL extends PalletCallMetadata,
-        EVENT extends PalletEventMetadata,
-        CONSTANT extends PalletConstantMetadata,
-        ERROR extends PalletErrorMetadata>
+  STORAGE extends PalletStorageMetadata,
+  CALL extends PalletCallMetadata,
+  EVENT extends PalletEventMetadata,
+  CONSTANT extends PalletConstantMetadata,
+  ERROR extends PalletErrorMetadata
+>
     extends SubstrateSerialization<Map<String, dynamic>> {
   /// Pallet name.
   final String name;
@@ -42,9 +43,9 @@ abstract class PalletMetadata<
   PalletMetadata({required this.name, required this.index, required this.docs});
 
   PalletMetadata.deserializeJson(Map<String, dynamic> json)
-      : name = json["name"],
-        index = json["index"],
-        docs = (json["docs"] as List?)?.cast<String>().immutable;
+    : name = json["name"],
+      index = json["index"],
+      docs = (json["docs"] as List?)?.cast<String>().immutable;
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -60,7 +61,7 @@ abstract class PalletMetadata<
       "events": events?.serializeJson(),
       "constants": constants.map((e) => e.serializeJson()).toList(),
       "errors": errors?.serializeJson(),
-      "index": index
+      "index": index,
     };
   }
 }

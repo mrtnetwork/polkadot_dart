@@ -10,10 +10,10 @@ import 'package:polkadot_dart/src/provider/methods/methods.dart';
 import 'package:polkadot_dart/src/provider/provider/provider.dart';
 
 /// Function type for fetching cached assets.
-typedef ONFETCHCACHEDASSET<T extends BaseSubstrateNetworkAsset>
-    = Future<List<T>> Function();
-typedef ONREQUESTPROVIDER = Future<SubstrateProvider> Function(
-    BaseSubstrateNetwork network);
+typedef ONFETCHCACHEDASSET<T extends BaseSubstrateNetworkAsset> =
+    Future<List<T>> Function();
+typedef ONREQUESTPROVIDER =
+    Future<SubstrateProvider> Function(BaseSubstrateNetwork network);
 
 /// Base parameters for Substrate network controllers.
 abstract mixin class SubstrateNetworkControllerParams {
@@ -54,27 +54,35 @@ class SubstrateNetworkApiDefaultParams
 
   final _lock = SafeAtomicLock();
 
-  SubstrateNetworkApiDefaultParams(this.onRequestProvider,
-      {BaseSubstrateCachedAssetStorage? storage, this.evmParams})
-      : storage = storage ??
-            DefaultSubstrateCachedAssetStorage(interval: Duration.zero);
+  SubstrateNetworkApiDefaultParams(
+    this.onRequestProvider, {
+    BaseSubstrateCachedAssetStorage? storage,
+    this.evmParams,
+  }) : storage =
+           storage ??
+           DefaultSubstrateCachedAssetStorage(interval: Duration.zero);
 
   Future<SubstrateMetadata?> _getRuntimeMetadata(
-      SubstrateProvider provider) async {
+    SubstrateProvider provider,
+  ) async {
     try {
-      final metadata = await provider
-          .request(const SubstrateRequestRuntimeMetadataGetMetadata());
+      final metadata = await provider.request(
+        const SubstrateRequestRuntimeMetadataGetMetadata(),
+      );
       return metadata?.metadata;
     } on MetadataException {
       return null;
     }
   }
 
-  Future<SubstrateMetadata?> _getMetadataApiAtVersion(
-      {required SubstrateProvider provider, required int version}) async {
+  Future<SubstrateMetadata?> _getMetadataApiAtVersion({
+    required SubstrateProvider provider,
+    required int version,
+  }) async {
     try {
       final metadata = await provider.request(
-          SubstrateRequestRuntimeMetadataGetMetadataAtVersion(version));
+        SubstrateRequestRuntimeMetadataGetMetadataAtVersion(version),
+      );
       return metadata?.metadata;
     } on MetadataException {
       return null;
@@ -84,7 +92,9 @@ class SubstrateNetworkApiDefaultParams
   }
 
   Future<MetadataApi> _getMetadataApi(
-      SubstrateProvider provider, BaseSubstrateNetwork network) async {
+    SubstrateProvider provider,
+    BaseSubstrateNetwork network,
+  ) async {
     SubstrateMetadata<dynamic>? metadata;
 
     for (final i in MetadataConstant.supportedMetadataVersion) {
@@ -101,9 +111,12 @@ class SubstrateNetworkApiDefaultParams
   }
 
   Future<SubstrateProvider?> _checkProviderStatus(
-      SubstrateProvider provider, String genesis) async {
-    final blockHash = await provider
-        .request(const SubstrateRequestChainGetBlockHash<String>(number: 0));
+    SubstrateProvider provider,
+    String genesis,
+  ) async {
+    final blockHash = await provider.request(
+      const SubstrateRequestChainGetBlockHash<String>(number: 0),
+    );
     if (StringUtils.hexEqual(blockHash, genesis)) {
       return provider;
     }
@@ -112,21 +125,26 @@ class SubstrateNetworkApiDefaultParams
 
   @override
   Future<MetadataWithProvider> loadMetadata(
-      BaseSubstrateNetwork network) async {
+    BaseSubstrateNetwork network,
+  ) async {
     return _lock.run(() async {
       final provider = _cachedProvider[network];
       if (provider != null) return provider;
       SubstrateProvider? activeProvider = await loadProvider(network);
-      activeProvider =
-          await _checkProviderStatus(activeProvider, network.genesis);
+      activeProvider = await _checkProviderStatus(
+        activeProvider,
+        network.genesis,
+      );
       if (activeProvider == null) {
         throw const DartSubstratePluginException(
-            "Invalid provider: returned genesis hash does not match the network.");
+          "Invalid provider: returned genesis hash does not match the network.",
+        );
       }
       final api = await _getMetadataApi(activeProvider, network);
       final networkProvider = MetadataWithProvider(
-          provider: activeProvider,
-          metadata: MetadataWithExtrinsic.fromMetadata(api));
+        provider: activeProvider,
+        metadata: MetadataWithExtrinsic.fromMetadata(api),
+      );
       _cachedProvider[network] = networkProvider;
       return networkProvider;
     });
@@ -158,8 +176,9 @@ class DefaultSubstrateCachedAssetStorage
   final Duration interval;
   List<BaseSubstrateNetworkAsset>? _assets;
   DateTime? _update;
-  DefaultSubstrateCachedAssetStorage(
-      {this.interval = const Duration(minutes: 10)});
+  DefaultSubstrateCachedAssetStorage({
+    this.interval = const Duration(minutes: 10),
+  });
 
   bool _shouldFetch({Duration? interval}) {
     interval ??= this.interval;
@@ -173,8 +192,10 @@ class DefaultSubstrateCachedAssetStorage
   }
 
   @override
-  Future<List<T>> get<T extends BaseSubstrateNetworkAsset>(
-      {required ONFETCHCACHEDASSET<T> onFetch, Duration? cachedTimeout}) {
+  Future<List<T>> get<T extends BaseSubstrateNetworkAsset>({
+    required ONFETCHCACHEDASSET<T> onFetch,
+    Duration? cachedTimeout,
+  }) {
     return _lock.run(() async {
       final fetch = _shouldFetch(interval: cachedTimeout);
       if (!fetch) return _assets!.cast<T>().toList();
@@ -187,11 +208,9 @@ class DefaultSubstrateCachedAssetStorage
 
   /// Clears all cached assets.
   Future<void> clear() async {
-    await _lock.run(
-      () {
-        _assets = null;
-        _update = null;
-      },
-    );
+    await _lock.run(() {
+      _assets = null;
+      _update = null;
+    });
   }
 }

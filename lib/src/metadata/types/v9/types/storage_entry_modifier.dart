@@ -8,24 +8,28 @@ class StorageEntryModifierV9
   final String name;
   const StorageEntryModifierV9._(this.name);
   StorageEntryModifierV9(String name) : name = fromValue(name).name;
-  static const StorageEntryModifierV9 optional =
-      StorageEntryModifierV9._("Optional");
+  static const StorageEntryModifierV9 optional = StorageEntryModifierV9._(
+    "Optional",
+  );
   static const StorageEntryModifierV9 def = StorageEntryModifierV9._("Default");
-  static const StorageEntryModifierV9 required =
-      StorageEntryModifierV9._("Required");
+  static const StorageEntryModifierV9 required = StorageEntryModifierV9._(
+    "Required",
+  );
 
   static const List<StorageEntryModifierV9> values = [
     StorageEntryModifierV9.optional,
     StorageEntryModifierV9.def,
-    StorageEntryModifierV9.required
+    StorageEntryModifierV9.required,
   ];
   static StorageEntryModifierV9 fromValue(String? value) {
-    return values.firstWhere((element) => element.name == value,
-        orElse: () => throw ItemNotFoundException(value: value));
+    return values.firstWhere(
+      (element) => element.name == value,
+      orElse: () => throw ItemNotFoundException(value: value),
+    );
   }
 
   StorageEntryModifierV9.deserializeJson(Map<String, dynamic> json)
-      : name = fromValue(json.keys.firstOrNull).name;
+    : name = fromValue(json.keys.firstOrNull).name;
   @override
   Layout<Map<String, dynamic>> layout({String? property}) =>
       SubstrateMetadataLayouts.storageEntryModifierV9(property: property);

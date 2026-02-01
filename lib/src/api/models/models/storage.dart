@@ -3,12 +3,12 @@ import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 
-typedef ONSTORAGERESPONEBYTES<T extends Object?> = T Function(
-    List<int> response, StorageKey storageKey);
-typedef ONSTORAGERESPONEJSON<T extends Object?, JSON extends Object> = T
-    Function(JSON response, List<int> bytes, StorageKey storageKey);
-typedef ONSTORAGERESPONENULL<T extends Object?> = T Function(
-    StorageKey storageKey);
+typedef ONSTORAGERESPONEBYTES<T extends Object?> =
+    T Function(List<int> response, StorageKey storageKey);
+typedef ONSTORAGERESPONEJSON<T extends Object?, JSON extends Object> =
+    T Function(JSON response, List<int> bytes, StorageKey storageKey);
+typedef ONSTORAGERESPONENULL<T extends Object?> =
+    T Function(StorageKey storageKey);
 typedef DECODERESPONSE = Object? Function();
 typedef ENCODEINPUT = List<int> Function(Object? input);
 typedef ENCODEINPUTS = List<int>? Function(int index, ENCODEINPUT onEncode);
@@ -26,19 +26,23 @@ class QueryStorageResult<T extends Object?> {
 class StorageChangeStateResponse {
   final Map<String, String?> changes;
   StorageChangeStateResponse(List<List<String?>> changes)
-      : changes =
-            Map.unmodifiable(Map<String, String?>.fromEntries(changes.map((e) {
-          if (e.length != 2 || e[0] == null) {
-            throw MetadataException(
+    : changes = Map.unmodifiable(
+        Map<String, String?>.fromEntries(
+          changes.map((e) {
+            if (e.length != 2 || e[0] == null) {
+              throw MetadataException(
                 "Invalid StorageChangeState response. response must be list with two string object",
                 details: {
                   "length": e.length,
                   "value": e,
-                  "storage_key": e.isEmpty ? null : e[0]
-                });
-          }
-          return MapEntry(e[0]!, e[1]);
-        })));
+                  "storage_key": e.isEmpty ? null : e[0],
+                },
+              );
+            }
+            return MapEntry(e[0]!, e[1]);
+          }),
+        ),
+      );
   List<int>? getValue(String key) {
     final val = changes[key];
     if (val == null) return null;
@@ -55,12 +59,17 @@ class QueryStorageRequestBlock {
     return request
         .firstWhere(
           (element) => element.request.identifier == identifier,
-          orElse: () => throw MetadataException("An identifier does not exist.",
-              details: {
-                "identifier": identifier,
-                "identifiers":
-                    request.map((e) => e.request.identifier).join(", ")
-              }),
+          orElse:
+              () =>
+                  throw MetadataException(
+                    "An identifier does not exist.",
+                    details: {
+                      "identifier": identifier,
+                      "identifiers": request
+                          .map((e) => e.request.identifier)
+                          .join(", "),
+                    },
+                  ),
         )
         .result;
   }
@@ -81,31 +90,37 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
   final ONSTORAGERESPONEJSON<RESPONSE, JSON>? onJsonResponse;
   final ENCODEINPUTS? onEncodeInputs;
   final ONSTORAGERESPONENULL<RESPONSE>? onNullResponse;
-  const StorageRequest(
-      {required this.onBytesResponse,
-      required this.onJsonResponse,
-      required this.onEncodeInputs,
-      required this.onNullResponse});
+  const StorageRequest({
+    required this.onBytesResponse,
+    required this.onJsonResponse,
+    required this.onEncodeInputs,
+    required this.onNullResponse,
+  });
 
-  RESPONSE toResponse(
-      {required DECODERESPONSE decode,
-      required List<int>? bytes,
-      required StorageKey storageKey}) {
+  RESPONSE toResponse({
+    required DECODERESPONSE decode,
+    required List<int>? bytes,
+    required StorageKey storageKey,
+  }) {
     if (bytes == null) {
       if (null is RESPONSE) return null as RESPONSE;
       if (onNullResponse != null) {
         return onNullResponse!(storageKey);
       }
-      throw DartSubstratePluginException('Unexpected response type.',
-          details: {"excpected": "$RESPONSE", "value": 'Null'});
+      throw DartSubstratePluginException(
+        'Unexpected response type.',
+        details: {"excpected": "$RESPONSE", "value": 'Null'},
+      );
     }
     final onBytesResponse = this.onBytesResponse;
     if (onBytesResponse != null) return onBytesResponse(bytes, storageKey);
     final json = decode();
     if (json == null) {
       if (null is RESPONSE) return null as RESPONSE;
-      throw DartSubstratePluginException('Unexpected response type.',
-          details: {"excpected": "$RESPONSE", "value": 'Null'});
+      throw DartSubstratePluginException(
+        'Unexpected response type.',
+        details: {"excpected": "$RESPONSE", "value": 'Null'},
+      );
     }
     final onJsonResponse = this.onJsonResponse;
     if (onJsonResponse != null) {
@@ -113,8 +128,10 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
       try {
         data = JsonParser.valueAs<JSON>(json);
       } catch (_) {
-        throw DartSubstratePluginException('Unexpected response type.',
-            details: {"excpected": "$JSON", "value": json.runtimeType});
+        throw DartSubstratePluginException(
+          'Unexpected response type.',
+          details: {"excpected": "$JSON", "value": json.runtimeType},
+        );
       }
       return onJsonResponse(data, bytes, storageKey);
     }
@@ -122,8 +139,10 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
     try {
       data = JsonParser.valueAs<RESPONSE>(json);
     } catch (_) {
-      throw DartSubstratePluginException('Unexpected response type.',
-          details: {"excpected": "$RESPONSE", "value": json.runtimeType});
+      throw DartSubstratePluginException(
+        'Unexpected response type.',
+        details: {"excpected": "$RESPONSE", "value": json.runtimeType},
+      );
     }
     return data;
   }
@@ -140,14 +159,15 @@ class GetStorageRequest<RESPONSE extends Object?, JSON extends Object>
   final String palletNameOrIndex;
   final String methodName;
   final Object? inputs;
-  GetStorageRequest(
-      {required this.palletNameOrIndex,
-      required this.methodName,
-      super.onNullResponse,
-      this.inputs,
-      super.onBytesResponse,
-      super.onJsonResponse,
-      super.onEncodeInputs});
+  GetStorageRequest({
+    required this.palletNameOrIndex,
+    required this.methodName,
+    super.onNullResponse,
+    this.inputs,
+    super.onBytesResponse,
+    super.onJsonResponse,
+    super.onEncodeInputs,
+  });
 }
 
 /// [RESPONSE] The exact type of data you expect to receive.
@@ -164,17 +184,18 @@ class GetStorageEntriesRequest<RESPONSE extends Object?, JSON extends Object>
   final int? count;
   final String? startKey;
   final String? storageKey;
-  GetStorageEntriesRequest._(
-      {required this.palletNameOrIndex,
-      required this.methodName,
-      this.inputs,
-      this.storageKey,
-      super.onBytesResponse,
-      super.onJsonResponse,
-      super.onNullResponse,
-      super.onEncodeInputs,
-      this.count,
-      this.startKey});
+  GetStorageEntriesRequest._({
+    required this.palletNameOrIndex,
+    required this.methodName,
+    this.inputs,
+    this.storageKey,
+    super.onBytesResponse,
+    super.onJsonResponse,
+    super.onNullResponse,
+    super.onEncodeInputs,
+    this.count,
+    this.startKey,
+  });
 
   factory GetStorageEntriesRequest.paged({
     required String palletNameOrIndex,
@@ -188,19 +209,21 @@ class GetStorageEntriesRequest<RESPONSE extends Object?, JSON extends Object>
   }) {
     assert(count > 0, "invalid paged request count");
     assert(
-        (storageKey == null && inputs == null) ||
-            (storageKey != null && inputs == null) ||
-            (storageKey == null && inputs != null),
-        "use input or storageKey for create or query from key or leaves them null for generate from pallet and method name");
+      (storageKey == null && inputs == null) ||
+          (storageKey != null && inputs == null) ||
+          (storageKey == null && inputs != null),
+      "use input or storageKey for create or query from key or leaves them null for generate from pallet and method name",
+    );
     return GetStorageEntriesRequest._(
-        palletNameOrIndex: palletNameOrIndex,
-        methodName: methodName,
-        onBytesResponse: onBytesResponse,
-        onJsonResponse: onJsonResponse,
-        count: count,
-        startKey: startKey,
-        storageKey: storageKey,
-        inputs: inputs);
+      palletNameOrIndex: palletNameOrIndex,
+      methodName: methodName,
+      onBytesResponse: onBytesResponse,
+      onJsonResponse: onJsonResponse,
+      count: count,
+      startKey: startKey,
+      storageKey: storageKey,
+      inputs: inputs,
+    );
   }
 }
 
@@ -210,8 +233,11 @@ class GetStorageEntriesRequest<RESPONSE extends Object?, JSON extends Object>
 /// [onBytesResponse] A callback invoked when raw bytes are received; you should handle deserialization here.
 /// [onJsonResponse] A callback invoked when the bytes are decoded into [JSON] using the output lookup.
 /// [onEncodeInputs] called before encoding inputs instead encoding with metadata
-class GetStreamStorageEntriesRequest<RESPONSE extends Object?,
-    JSON extends Object> extends StorageRequest<RESPONSE, JSON> {
+class GetStreamStorageEntriesRequest<
+  RESPONSE extends Object?,
+  JSON extends Object
+>
+    extends StorageRequest<RESPONSE, JSON> {
   final String palletNameOrIndex;
   final String methodName;
   final int count;
@@ -235,11 +261,13 @@ class GetStreamStorageEntriesRequest<RESPONSE extends Object?,
 class QueryStorageResponses<T extends Object?> {
   final List<QueryStorageResult<T>> results;
   final String? block;
-  QueryStorageResponses(
-      {List<QueryStorageResult<T>> results = const [], this.block})
-      : results = results.immutable;
+  QueryStorageResponses({
+    List<QueryStorageResult<T>> results = const [],
+    this.block,
+  }) : results = results.immutable;
   QueryStorageResult<RESPONSE> getResultAt<RESPONSE extends Object?>(
-      int index) {
+    int index,
+  ) {
     if (index >= results.length) {
       throw DartSubstratePluginException('Index out of reange.');
     }
@@ -249,11 +277,15 @@ class QueryStorageResponses<T extends Object?> {
     try {
       response = result as RESPONSE;
     } catch (_) {
-      throw DartSubstratePluginException('Unexpected response type.',
-          details: {"excpected": "$RESPONSE", "value": result.runtimeType});
+      throw DartSubstratePluginException(
+        'Unexpected response type.',
+        details: {"excpected": "$RESPONSE", "value": result.runtimeType},
+      );
     }
     return QueryStorageResult<RESPONSE>(
-        storageKey: query.storageKey, result: response);
+      storageKey: query.storageKey,
+      result: response,
+    );
   }
 }
 
@@ -263,11 +295,12 @@ class QueryStorageRequest<T> {
   final Object identifier;
   final Object? input;
 
-  QueryStorageRequest(
-      {required this.palletNameOrIndex,
-      required this.methodName,
-      this.input,
-      required this.identifier});
+  QueryStorageRequest({
+    required this.palletNameOrIndex,
+    required this.methodName,
+    this.input,
+    required this.identifier,
+  });
   QueryStorageResponse<T> toResponse(T result) {
     return QueryStorageResponse(request: this, result: result);
   }
@@ -278,7 +311,7 @@ class MethodStorageKey {
   final List<int> keyBytes;
   late String keyHex = BytesUtils.toHexString(keyBytes, prefix: "0x");
   MethodStorageKey({required List<int> keyBytes})
-      : keyBytes = keyBytes.immutable;
+    : keyBytes = keyBytes.immutable;
 }
 
 class StorageKeyInput {
@@ -286,7 +319,7 @@ class StorageKeyInput {
 
   final Object? input;
   StorageKeyInput({List<int>? encodedInput, this.input})
-      : encodedInput = encodedInput?.asImmutableBytes;
+    : encodedInput = encodedInput?.asImmutableBytes;
 }
 
 class StorageKey {
@@ -311,11 +344,15 @@ class StorageKey {
 
   BigInt inputAsBigInt(int index) {
     _checkIndex(index);
-    final result =
-        BigintUtils.tryParse(inputs.elementAt(index).input, allowHex: false);
+    final result = BigintUtils.tryParse(
+      inputs.elementAt(index).input,
+      allowHex: false,
+    );
     if (result == null) {
-      throw DartSubstratePluginException("Failed to cast input as BigInt.",
-          details: {"input": inputs.elementAt(index).input.runtimeType});
+      throw DartSubstratePluginException(
+        "Failed to cast input as BigInt.",
+        details: {"input": inputs.elementAt(index).input.runtimeType},
+      );
     }
     return result;
   }
@@ -324,19 +361,25 @@ class StorageKey {
     _checkIndex(index);
     final result = inputs.elementAt(index).input;
     if (result is! T) {
-      throw DartSubstratePluginException("Failed to cast input.",
-          details: {"excepted": "$T", "input": result.runtimeType});
+      throw DartSubstratePluginException(
+        "Failed to cast input.",
+        details: {"excepted": "$T", "input": result.runtimeType},
+      );
     }
     return result;
   }
 
   int inputAsInt(int index) {
     _checkIndex(index);
-    final result =
-        IntUtils.tryParse(inputs.elementAt(index).input, allowHex: false);
+    final result = IntUtils.tryParse(
+      inputs.elementAt(index).input,
+      allowHex: false,
+    );
     if (result == null) {
-      throw DartSubstratePluginException("Failed to cast input as Int.",
-          details: {"input": inputs.elementAt(index).input.runtimeType});
+      throw DartSubstratePluginException(
+        "Failed to cast input as Int.",
+        details: {"input": inputs.elementAt(index).input.runtimeType},
+      );
     }
     return result;
   }
@@ -357,8 +400,10 @@ class StorageKey {
     try {
       return Map<K, V>.from(input as Map);
     } catch (_) {}
-    throw DartSubstratePluginException("Failed to cast input as ${Map<K, V>}.",
-        details: {"input": inputs.elementAt(index).input.runtimeType});
+    throw DartSubstratePluginException(
+      "Failed to cast input as ${Map<K, V>}.",
+      details: {"input": inputs.elementAt(index).input.runtimeType},
+    );
   }
 }
 
@@ -371,8 +416,9 @@ class QueryStorageFullResponse<T extends Object?> {
 
   /// decoded response.
   final T response;
-  const QueryStorageFullResponse(
-      {required this.storageKey,
-      required this.responseBytes,
-      required this.response});
+  const QueryStorageFullResponse({
+    required this.storageKey,
+    required this.responseBytes,
+    required this.response,
+  });
 }

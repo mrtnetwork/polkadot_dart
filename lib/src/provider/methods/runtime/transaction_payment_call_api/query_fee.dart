@@ -8,14 +8,19 @@ import 'package:polkadot_dart/src/provider/models/runtime/query_info.dart';
 /// https://polkadot.js.org/docs/substrate/runtime/#metadata
 class SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallInfo
     extends SubstrateRequest<String, QueryFeeInfo> {
-  const SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallInfo(
-      {required this.data, this.atBlockHash});
-  factory SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallInfo.fromCallBytes(
-      {required List<int> call, String? atBlockHash}) {
+  const SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallInfo({
+    required this.data,
+    this.atBlockHash,
+  });
+  factory SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallInfo.fromCallBytes({
+    required List<int> call,
+    String? atBlockHash,
+  }) {
     final length = LayoutConst.u32().serialize(call.length);
     return SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallInfo(
-        data: BytesUtils.toHexString([...call, ...length], prefix: "0x"),
-        atBlockHash: atBlockHash);
+      data: BytesUtils.toHexString([...call, ...length], prefix: "0x"),
+      atBlockHash: atBlockHash,
+    );
   }
 
   final String? atBlockHash;

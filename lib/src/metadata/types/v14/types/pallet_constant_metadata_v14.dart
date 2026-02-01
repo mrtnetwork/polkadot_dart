@@ -21,14 +21,14 @@ abstract class PalletConstantMetadata
     required this.type,
     required List<int> value,
     required List<String> docs,
-  })  : value = value.asImmutableBytes,
-        docs = docs.immutable;
+  }) : value = value.asImmutableBytes,
+       docs = docs.immutable;
 
   PalletConstantMetadata.deserializeJson(Map<String, dynamic> json)
-      : name = json["name"],
-        type = json["type"],
-        value = (json["value"] as List).cast<int>().asImmutableBytes,
-        docs = (json["docs"] as List).cast<String>().immutable;
+    : name = json["name"],
+      type = json["type"],
+      value = (json["value"] as List).cast<int>().asImmutableBytes,
+      docs = (json["docs"] as List).cast<String>().immutable;
 }
 
 class PalletConstantMetadataV14 extends PalletConstantMetadata {
@@ -39,11 +39,12 @@ class PalletConstantMetadataV14 extends PalletConstantMetadata {
     required super.docs,
   });
   PalletConstantMetadataV14.deserializeJson(super.json)
-      : super.deserializeJson();
+    : super.deserializeJson();
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.palletConstantMetadataV14(
-        property: property);
+      property: property,
+    );
   }
 
   @override

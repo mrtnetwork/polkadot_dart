@@ -18,8 +18,10 @@ enum BalancesCallPalletMethod implements SubstrateCallPalletTransferMethod {
   const BalancesCallPalletMethod(this.method, this.variantIndex);
 
   factory BalancesCallPalletMethod.fromMethod(String? method) {
-    return values.firstWhere((e) => e.method == method,
-        orElse: () => throw ItemNotFoundException(value: method));
+    return values.firstWhere(
+      (e) => e.method == method,
+      orElse: () => throw ItemNotFoundException(value: method),
+    );
   }
 }
 
@@ -36,33 +38,33 @@ abstract class BalancesCallPallet
 class BalancesCallPalletTransferAllowDeath extends BalancesCallPallet {
   final BaseSubstrateAddress dest;
   final BigInt amount;
-  const BalancesCallPalletTransferAllowDeath(
-      {required this.dest,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.balances})
-      : super(type: BalancesCallPalletMethod.transferAllowDeath);
+  const BalancesCallPalletTransferAllowDeath({
+    required this.dest,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.balances,
+  }) : super(type: BalancesCallPalletMethod.transferAllowDeath);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "value": amount
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "value": amount,
+        },
+      },
+    );
   }
 
   @override
   Map<String, dynamic> toJson({String? method}) {
     return {
-      method ?? type.method: {
-        "dest": dest.address,
-        "value": amount,
-      }
+      method ?? type.method: {"dest": dest.address, "value": amount},
     };
   }
 }
@@ -70,32 +72,32 @@ class BalancesCallPalletTransferAllowDeath extends BalancesCallPallet {
 class BalancesCallPalletTransferKeepAlive extends BalancesCallPallet {
   final BaseSubstrateAddress dest;
   final BigInt amount;
-  const BalancesCallPalletTransferKeepAlive(
-      {required this.dest,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.balances})
-      : super(type: BalancesCallPalletMethod.transferKeepAlive);
+  const BalancesCallPalletTransferKeepAlive({
+    required this.dest,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.balances,
+  }) : super(type: BalancesCallPalletMethod.transferKeepAlive);
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "value": amount
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "value": amount,
+        },
+      },
+    );
   }
 
   @override
   Map<String, dynamic> toJson({String? method}) {
     return {
-      method ?? type.method: {
-        "dest": dest.address,
-        "value": amount,
-      }
+      method ?? type.method: {"dest": dest.address, "value": amount},
     };
   }
 }
@@ -104,33 +106,33 @@ class BalancesCallPalletTransferAll extends BalancesCallPallet {
   final BaseSubstrateAddress dest;
   final bool keepAlive;
 
-  const BalancesCallPalletTransferAll(
-      {required this.dest,
-      required this.keepAlive,
-      super.pallet = SubtrateMetadataPallet.balances})
-      : super(type: BalancesCallPalletMethod.transferAll);
+  const BalancesCallPalletTransferAll({
+    required this.dest,
+    required this.keepAlive,
+    super.pallet = SubtrateMetadataPallet.balances,
+  }) : super(type: BalancesCallPalletMethod.transferAll);
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "keep_alive": keepAlive
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "keep_alive": keepAlive,
+        },
+      },
+    );
   }
 
   @override
   Map<String, dynamic> toJson({String? method}) {
     return {
-      method ?? type.method: {
-        "dest": dest.address,
-        "keep_alive": keepAlive,
-      }
+      method ?? type.method: {"dest": dest.address, "keep_alive": keepAlive},
     };
   }
 }

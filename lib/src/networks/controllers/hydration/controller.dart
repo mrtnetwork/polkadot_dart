@@ -11,68 +11,87 @@ import 'package:polkadot_dart/src/networks/utils/utils.dart';
 import 'package:polkadot_dart/src/networks/utils/xcm.dart';
 
 abstract class BaseHydrationNetworkController<
-        NETWORK extends BaseSubstrateNetwork>
-    extends BaseSubstrateNetworkController<BigInt, BaseHydrationNetworkAsset,
-        NETWORK> {
+  NETWORK extends BaseSubstrateNetwork
+>
+    extends
+        BaseSubstrateNetworkController<
+          BigInt,
+          BaseHydrationNetworkAsset,
+          NETWORK
+        > {
   @override
   final SubstrateNetworkControllerParams params;
   BaseHydrationNetworkController({required this.params});
 
-  Future<Map<BigInt, HydrationNetworkAsset>> _getAssets(
-      {required MetadataWithProvider provider, List<BigInt>? assetIds}) async {
-    final assetsEntries = await SubstrateNetworkControllerAssetQueryHelper
-        .getAssetRegisteryPalletAssetsIdentifierBigInt(provider,
-            assetIds: assetIds);
-    final locations = await SubstrateNetworkControllerAssetQueryHelper
-        .getAssetRegistryPalletAssetLocationsIdentifierBigInt(
-            provider, network.defaultXcmVersion,
-            palletXCMVersion: XCMVersion.v3);
-    final metadatas = await SubstrateNetworkControllerAssetQueryHelper
-        .tryGetAssetRegistryPalletAssetMetadataMapIdentifierBigInt(provider);
+  Future<Map<BigInt, HydrationNetworkAsset>> _getAssets({
+    required MetadataWithProvider provider,
+    List<BigInt>? assetIds,
+  }) async {
+    final assetsEntries =
+        await SubstrateNetworkControllerAssetQueryHelper.getAssetRegisteryPalletAssetsIdentifierBigInt(
+          provider,
+          assetIds: assetIds,
+        );
+    final locations =
+        await SubstrateNetworkControllerAssetQueryHelper.getAssetRegistryPalletAssetLocationsIdentifierBigInt(
+          provider,
+          network.defaultXcmVersion,
+          palletXCMVersion: XCMVersion.v3,
+        );
+    final metadatas =
+        await SubstrateNetworkControllerAssetQueryHelper.tryGetAssetRegistryPalletAssetMetadataMapIdentifierBigInt(
+          provider,
+        );
 
-    final fees = await SubstrateNetworkControllerAssetQueryHelper
-        .queryAcceptablePaymentAsset(
-            provider: provider, version: network.defaultXcmVersion);
+    final fees =
+        await SubstrateNetworkControllerAssetQueryHelper.queryAcceptablePaymentAsset(
+          provider: provider,
+          version: network.defaultXcmVersion,
+        );
 
-    final assets = assetsEntries.entries.map((e) {
-      final location = locations[e.key];
-      final metadata = () {
-        final metadata = metadatas[e.key];
-        if (metadata == null) return null;
-        return HydrationAssetMetadata.fromJson(metadata);
-      }();
-      final asset = HydrationAsset.fromJson(e.value).copyWith(
-          decimals: metadata?.decimals,
-          symbol: metadata?.symbol,
-          name: metadata?.symbol);
-      bool isFee = asset.xcmRateLimit != null || fees.contains(location);
+    final assets =
+        assetsEntries.entries.map((e) {
+          final location = locations[e.key];
+          final metadata = () {
+            final metadata = metadatas[e.key];
+            if (metadata == null) return null;
+            return HydrationAssetMetadata.fromJson(metadata);
+          }();
+          final asset = HydrationAsset.fromJson(e.value).copyWith(
+            decimals: metadata?.decimals,
+            symbol: metadata?.symbol,
+            name: metadata?.symbol,
+          );
+          bool isFee = asset.xcmRateLimit != null || fees.contains(location);
 
-      return HydrationNetworkAsset(
-        identifier: e.key,
-        isFeeToken: isFee,
-        asset: asset,
-        location: () {
-          try {
-            return location == null
-                ? null
-                : SubstrateNetworkControllerUtils.asForeignLocation(
-                        from: network, location: location.location)
-                    .asVersioned();
-          } catch (e) {
-            return null;
-          }
-        }(),
-      );
-    }).toList();
+          return HydrationNetworkAsset(
+            identifier: e.key,
+            isFeeToken: isFee,
+            asset: asset,
+            location: () {
+              try {
+                return location == null
+                    ? null
+                    : SubstrateNetworkControllerUtils.asForeignLocation(
+                      from: network,
+                      location: location.location,
+                    ).asVersioned();
+              } catch (e) {
+                return null;
+              }
+            }(),
+          );
+        }).toList();
     return {for (final i in assets) i.identifier: i};
   }
 
   @override
   Future<List<SubstrateAccountAssetBalance<BaseHydrationNetworkAsset>>>
-      getAccountAssetsInternal(
-          {required BaseSubstrateAddress address,
-          List<BigInt>? knownAssetIds,
-          List<BaseHydrationNetworkAsset>? knownAssets}) async {
+  getAccountAssetsInternal({
+    required BaseSubstrateAddress address,
+    List<BigInt>? knownAssetIds,
+    List<BaseHydrationNetworkAsset>? knownAssets,
+  }) async {
     final provider = await params.loadMetadata(network);
     List<SubstrateAccountAssetBalance<BaseHydrationNetworkAsset>> balances = [];
     final allAssets =
@@ -84,35 +103,42 @@ abstract class BaseHydrationNetworkController<
       assets[assetId] = i;
     }
     if (assets.isNotEmpty) {
-      final balancesEntries = await SubstrateNetworkControllerAssetQueryHelper
-          .getTokensPalletAccountIdentifierBigInt(
-              provider: provider,
-              address: address,
-              assetIds: assets.keys.toList());
+      final balancesEntries =
+          await SubstrateNetworkControllerAssetQueryHelper.getTokensPalletAccountIdentifierBigInt(
+            provider: provider,
+            address: address,
+            assetIds: assets.keys.toList(),
+          );
       for (final i in balancesEntries.entries) {
         if (i.value == null) continue;
         final asset = assets[i.key];
         if (asset == null) continue;
         final balance = TokenPalletAccountBalance.fromJson(i.value!);
-        balances.add(SubstrateAccountAssetBalance(
+        balances.add(
+          SubstrateAccountAssetBalance(
             asset: asset,
             free: balance.free,
             frozen: balance.frozen,
-            reserved: balance.reserved));
+            reserved: balance.reserved,
+          ),
+        );
       }
     }
     return balances;
   }
 
   @override
-  Future<List<HydrationNetworkAsset>> getAssetsInternal(
-      {List<BigInt>? knownAssetIds}) async {
+  Future<List<HydrationNetworkAsset>> getAssetsInternal({
+    List<BigInt>? knownAssetIds,
+  }) async {
     final provider = await params.loadMetadata(network);
 
     List<HydrationNetworkAsset> allAssets = [];
     if (knownAssetIds == null || knownAssetIds.isNotEmpty) {
-      final assets =
-          await _getAssets(provider: provider, assetIds: knownAssetIds);
+      final assets = await _getAssets(
+        provider: provider,
+        assetIds: knownAssetIds,
+      );
       allAssets.addAll(assets.values);
     }
     return allAssets;
@@ -120,15 +146,19 @@ abstract class BaseHydrationNetworkController<
 
   @override
   Future<SubstrateAccountAssetBalance<BaseHydrationNetworkAsset>?>
-      getNativeAssetFreeBalance(BaseSubstrateAddress address) async {
+  getNativeAssetFreeBalance(BaseSubstrateAddress address) async {
     final provider = await params.loadMetadata(network);
     final balance = await SubstrateQuickStorageApi.system.accountWithDataFrame(
-        api: provider.metadata.api, rpc: provider.provider, address: address);
+      api: provider.metadata.api,
+      rpc: provider.provider,
+      address: address,
+    );
     return SubstrateAccountAssetBalance<BaseHydrationNetworkAsset>(
-        asset: defaultNativeAsset,
-        reserved: balance.data.reserved,
-        frozen: balance.data.flags,
-        free: balance.data.free);
+      asset: defaultNativeAsset,
+      reserved: balance.data.reserved,
+      frozen: balance.data.flags,
+      free: balance.data.free,
+    );
   }
 }
 
@@ -138,56 +168,63 @@ class HydrationNetworkController
   @override
   late final HydrationNetworkNativeAsset defaultNativeAsset =
       HydrationNetworkNativeAsset(
-    decimals: 12,
-    name: "Hydration",
-    symbol: "HDX",
-    location: SubstrateNetworkControllerUtils.locationWithGeneralIndex(
-        paraId: network.paraId,
-        index: BigInt.zero,
-        version: network.defaultXcmVersion),
-  );
+        decimals: 12,
+        name: "Hydration",
+        symbol: "HDX",
+        location: SubstrateNetworkControllerUtils.locationWithGeneralIndex(
+          paraId: network.paraId,
+          index: BigInt.zero,
+          version: network.defaultXcmVersion,
+        ),
+      );
 
   @override
   PolkadotNetwork get network => PolkadotNetwork.hydration;
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     if (params.hasRelayAsset) {
-      if (SubstrateNetworkControllerConstants.disabledDotReserve
-          .contains(params.destinationNetwork)) {
+      if (SubstrateNetworkControllerConstants.disabledDotReserve.contains(
+        params.destinationNetwork,
+      )) {
         throw SubstrateNetworkControllerConstants.transferDisabled;
       }
-      return SubstrateNetworkControllerXCMTransferBuilder
-          .transferAssetsThroughUsingTypeAndThen(
-              params: params,
-              provider: provider,
-              network: network,
-              onEstimateFee: onControllerRequest);
+      return SubstrateNetworkControllerXCMTransferBuilder.transferAssetsThroughUsingTypeAndThen(
+        params: params,
+        provider: provider,
+        network: network,
+        onEstimateFee: onControllerRequest,
+      );
     }
 
     return SubstrateNetworkControllerXCMTransferBuilder.createXCMTransfer(
-        params: params,
-        provider: provider,
-        network: network,
-        pallet: params.isLocalAssets
-            ? SubtrateMetadataPallet.polkadotXcm
-            : SubtrateMetadataPallet.xTokens);
+      params: params,
+      provider: provider,
+      network: network,
+      pallet:
+          params.isLocalAssets
+              ? SubtrateMetadataPallet.polkadotXcm
+              : SubtrateMetadataPallet.xTokens,
+    );
   }
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     return SubstrateNetworkControllerXCMTransferBuilder.xcmTransferParaToSystem(
-        params: params,
-        provider: provider,
-        network: network,
-        defaultPallet: SubtrateMetadataPallet.xTokens,
-        onControllerRequest: onControllerRequest);
+      params: params,
+      provider: provider,
+      network: network,
+      defaultPallet: SubtrateMetadataPallet.xTokens,
+      onControllerRequest: onControllerRequest,
+    );
   }
 }
 
@@ -197,56 +234,63 @@ class BasiliskNetworkController
   @override
   late final HydrationNetworkNativeAsset defaultNativeAsset =
       HydrationNetworkNativeAsset(
-    decimals: 12,
-    name: "Basilisk",
-    symbol: "BSX",
-    minBalance: BigInt.parse("1000000000000"),
-    location: SubstrateNetworkControllerUtils.locationWithGeneralIndex(
-        paraId: network.paraId,
-        version: network.defaultXcmVersion,
-        index: BigInt.zero),
-  );
+        decimals: 12,
+        name: "Basilisk",
+        symbol: "BSX",
+        minBalance: BigInt.parse("1000000000000"),
+        location: SubstrateNetworkControllerUtils.locationWithGeneralIndex(
+          paraId: network.paraId,
+          version: network.defaultXcmVersion,
+          index: BigInt.zero,
+        ),
+      );
   @override
   KusamaNetwork get network => KusamaNetwork.basilisk;
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     if (params.hasRelayAsset) {
-      if (SubstrateNetworkControllerConstants.disabledDotReserve
-          .contains(params.destinationNetwork)) {
+      if (SubstrateNetworkControllerConstants.disabledDotReserve.contains(
+        params.destinationNetwork,
+      )) {
         throw SubstrateNetworkControllerConstants.transferDisabled;
       }
-      return SubstrateNetworkControllerXCMTransferBuilder
-          .transferAssetsThroughUsingTypeAndThen(
-              params: params,
-              provider: provider,
-              network: network,
-              onEstimateFee: onControllerRequest);
+      return SubstrateNetworkControllerXCMTransferBuilder.transferAssetsThroughUsingTypeAndThen(
+        params: params,
+        provider: provider,
+        network: network,
+        onEstimateFee: onControllerRequest,
+      );
     }
 
     return SubstrateNetworkControllerXCMTransferBuilder.createXCMTransfer(
-        params: params,
-        provider: provider,
-        network: network,
-        pallet: params.isLocalAssets
-            ? SubtrateMetadataPallet.polkadotXcm
-            : SubtrateMetadataPallet.xTokens);
+      params: params,
+      provider: provider,
+      network: network,
+      pallet:
+          params.isLocalAssets
+              ? SubtrateMetadataPallet.polkadotXcm
+              : SubtrateMetadataPallet.xTokens,
+    );
   }
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     return SubstrateNetworkControllerXCMTransferBuilder.xcmTransferParaToSystem(
-        params: params,
-        provider: provider,
-        network: network,
-        defaultPallet: SubtrateMetadataPallet.polkadotXcm,
-        onControllerRequest: onControllerRequest);
+      params: params,
+      provider: provider,
+      network: network,
+      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      onControllerRequest: onControllerRequest,
+    );
   }
 }
 
@@ -256,55 +300,62 @@ class HydrationPaseoNetworkController
   @override
   late final HydrationNetworkNativeAsset defaultNativeAsset =
       HydrationNetworkNativeAsset(
-    decimals: 12,
-    name: "Hydration",
-    symbol: "HDX",
-    location: SubstrateNetworkControllerUtils.locationWithGeneralIndex(
-        paraId: network.paraId,
-        index: BigInt.zero,
-        version: network.defaultXcmVersion),
-  );
+        decimals: 12,
+        name: "Hydration",
+        symbol: "HDX",
+        location: SubstrateNetworkControllerUtils.locationWithGeneralIndex(
+          paraId: network.paraId,
+          index: BigInt.zero,
+          version: network.defaultXcmVersion,
+        ),
+      );
 
   @override
   PaseoNetwork get network => PaseoNetwork.hydration;
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToParaInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     if (params.hasRelayAsset) {
-      if (SubstrateNetworkControllerConstants.disabledDotReserve
-          .contains(params.destinationNetwork)) {
+      if (SubstrateNetworkControllerConstants.disabledDotReserve.contains(
+        params.destinationNetwork,
+      )) {
         throw SubstrateNetworkControllerConstants.transferDisabled;
       }
-      return SubstrateNetworkControllerXCMTransferBuilder
-          .transferAssetsThroughUsingTypeAndThen(
-              params: params,
-              provider: provider,
-              network: network,
-              onEstimateFee: onControllerRequest);
+      return SubstrateNetworkControllerXCMTransferBuilder.transferAssetsThroughUsingTypeAndThen(
+        params: params,
+        provider: provider,
+        network: network,
+        onEstimateFee: onControllerRequest,
+      );
     }
 
     return SubstrateNetworkControllerXCMTransferBuilder.createXCMTransfer(
-        params: params,
-        provider: provider,
-        network: network,
-        pallet: params.isLocalAssets
-            ? SubtrateMetadataPallet.polkadotXcm
-            : SubtrateMetadataPallet.xTokens);
+      params: params,
+      provider: provider,
+      network: network,
+      pallet:
+          params.isLocalAssets
+              ? SubtrateMetadataPallet.polkadotXcm
+              : SubtrateMetadataPallet.xTokens,
+    );
   }
 
   @override
-  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal(
-      {required SubstrateXCMTransferParams params,
-      required MetadataWithProvider provider,
-      ONREQUESTNETWORKPROVIDER? onControllerRequest}) async {
+  Future<SubstrateXCMCallPallet> xcmTransferToSystemInternal({
+    required SubstrateXCMTransferParams params,
+    required MetadataWithProvider provider,
+    ONREQUESTNETWORKPROVIDER? onControllerRequest,
+  }) async {
     return SubstrateNetworkControllerXCMTransferBuilder.xcmTransferParaToSystem(
-        params: params,
-        provider: provider,
-        network: network,
-        defaultPallet: SubtrateMetadataPallet.xTokens,
-        onControllerRequest: onControllerRequest);
+      params: params,
+      provider: provider,
+      network: network,
+      defaultPallet: SubtrateMetadataPallet.xTokens,
+      onControllerRequest: onControllerRequest,
+    );
   }
 }

@@ -5,14 +5,16 @@ import 'header.dart';
 class SubstrateBlockResponse {
   final SubstrateHeaderResponse header;
   final List<String> extrinsics;
-  SubstrateBlockResponse(
-      {required this.header, required List<String> extrinsics})
-      : extrinsics =
-            extrinsics.map((e) => StringUtils.normalizeHex(e)).toImutableList;
+  SubstrateBlockResponse({
+    required this.header,
+    required List<String> extrinsics,
+  }) : extrinsics =
+           extrinsics.map((e) => StringUtils.normalizeHex(e)).toImutableList;
   factory SubstrateBlockResponse.fromJson(Map<String, dynamic> json) {
     return SubstrateBlockResponse(
-        header: SubstrateHeaderResponse.fromJson(json.valueAs("header")),
-        extrinsics: json.valueAs("extrinsics"));
+      header: SubstrateHeaderResponse.fromJson(json.valueAs("header")),
+      extrinsics: json.valueAs("extrinsics"),
+    );
   }
 
   int? findExtrinsicIndex(String extrinsic) {
@@ -29,7 +31,8 @@ class SubstrateGetBlockResponse {
   const SubstrateGetBlockResponse({required this.block, this.justifications});
   factory SubstrateGetBlockResponse.fromJson(Map<String, dynamic> json) {
     return SubstrateGetBlockResponse(
-        block: SubstrateBlockResponse.fromJson(json["block"]),
-        justifications: json.valueAs("justifications"));
+      block: SubstrateBlockResponse.fromJson(json["block"]),
+      justifications: json.valueAs("justifications"),
+    );
   }
 }

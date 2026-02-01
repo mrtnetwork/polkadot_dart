@@ -20,42 +20,56 @@ class SubstrateStorageXcAssetConfig extends SubstrateStorageApi {
   @override
   SubstrateStorageApis get api => SubstrateStorageApis.xcAssetConfig;
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
-      assetIdToLocationEntries(
-          {required MetadataApi api, required SubstrateProvider rpc}) async {
+  assetIdToLocationEntries({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request: GetStreamStorageEntriesRequest<
-                QueryStorageFullResponse<Map<String, dynamic>>,
-                Map<String, dynamic>>(
-            palletNameOrIndex: this.api.name,
-            methodName:
-                SubstrateStorageXcAssetConfigMethods.assetIdToLocation.name,
-            onJsonResponse: (response, responseBytes, storageKey) {
-              return QueryStorageFullResponse(
-                  storageKey: storageKey,
-                  responseBytes: responseBytes,
-                  response: response);
-            }),
-        rpc: rpc);
+      request: GetStreamStorageEntriesRequest<
+        QueryStorageFullResponse<Map<String, dynamic>>,
+        Map<String, dynamic>
+      >(
+        palletNameOrIndex: this.api.name,
+        methodName: SubstrateStorageXcAssetConfigMethods.assetIdToLocation.name,
+        onJsonResponse: (response, responseBytes, storageKey) {
+          return QueryStorageFullResponse(
+            storageKey: storageKey,
+            responseBytes: responseBytes,
+            response: response,
+          );
+        },
+      ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }
 
   Future<List<QueryStorageFullResponse<BigInt>>>
-      assetLocationUnitsPerSecondEntries(
-          {required MetadataApi api, required SubstrateProvider rpc}) async {
+  assetLocationUnitsPerSecondEntries({
+    required MetadataApi api,
+    required SubstrateProvider rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
-        request: GetStreamStorageEntriesRequest<
-                QueryStorageFullResponse<BigInt>, Object>(
-            palletNameOrIndex: this.api.name,
-            methodName: SubstrateStorageXcAssetConfigMethods
-                .assetLocationUnitsPerSecond.name,
-            onJsonResponse: (response, responseBytes, storageKey) {
-              return QueryStorageFullResponse(
-                  storageKey: storageKey,
-                  responseBytes: responseBytes,
-                  response: BigintUtils.parse(response));
-            }),
-        rpc: rpc);
+      request: GetStreamStorageEntriesRequest<
+        QueryStorageFullResponse<BigInt>,
+        Object
+      >(
+        palletNameOrIndex: this.api.name,
+        methodName:
+            SubstrateStorageXcAssetConfigMethods
+                .assetLocationUnitsPerSecond
+                .name,
+        onJsonResponse: (response, responseBytes, storageKey) {
+          return QueryStorageFullResponse(
+            storageKey: storageKey,
+            responseBytes: responseBytes,
+            response: BigintUtils.parse(response),
+          );
+        },
+      ),
+      rpc: rpc,
+    );
     final result = await locations.toList();
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }

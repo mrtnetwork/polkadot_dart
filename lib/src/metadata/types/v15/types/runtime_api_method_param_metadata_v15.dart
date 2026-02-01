@@ -6,15 +6,18 @@ class RuntimeApiMethodParamMetadataV15
     extends SubstrateSerialization<Map<String, dynamic>> {
   final String name;
   final int type;
-  const RuntimeApiMethodParamMetadataV15(
-      {required this.name, required this.type});
+  const RuntimeApiMethodParamMetadataV15({
+    required this.name,
+    required this.type,
+  });
   RuntimeApiMethodParamMetadataV15.deserializeJson(Map<String, dynamic> json)
-      : name = json["name"],
-        type = json["type"];
+    : name = json["name"],
+      type = json["type"];
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.runtimeApiMethodParamMetadataV15(
-        property: property);
+      property: property,
+    );
   }
 
   @override

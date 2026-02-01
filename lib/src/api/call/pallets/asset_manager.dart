@@ -31,30 +31,33 @@ class AssetManagerCallPalletTransfer extends AssetManagerCallPallet {
   final BigInt amount;
   final Object currencyId;
 
-  const AssetManagerCallPalletTransfer(
-      {required this.dest,
-      required this.currencyId,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.assetManager})
-      : super(type: AssetManagerCallPalletMethod.transfer);
+  const AssetManagerCallPalletTransfer({
+    required this.dest,
+    required this.currencyId,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.assetManager,
+  }) : super(type: AssetManagerCallPalletMethod.transfer);
 
   @override
   AssetManagerCallPalletMethod get type =>
       AssetManagerCallPalletMethod.transfer;
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      method ?? type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "amount": amount,
-        "currency_id": currencyId
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        method ?? type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "amount": amount,
+          "currency_id": currencyId,
+        },
+      },
+    );
   }
 
   @override
@@ -63,8 +66,8 @@ class AssetManagerCallPalletTransfer extends AssetManagerCallPallet {
       method ?? type.method: {
         "dest": dest.address,
         "amount": amount,
-        "currency_id": currencyId
-      }
+        "currency_id": currencyId,
+      },
     };
   }
 }
@@ -74,34 +77,37 @@ class AssetManagerCallPalletTransferNativeCurrency
   final BaseSubstrateAddress dest;
   final BigInt amount;
 
-  const AssetManagerCallPalletTransferNativeCurrency(
-      {required this.dest,
-      required this.amount,
-      super.pallet = SubtrateMetadataPallet.assetManager})
-      : super(type: AssetManagerCallPalletMethod.transfernativeCurrency);
+  const AssetManagerCallPalletTransferNativeCurrency({
+    required this.dest,
+    required this.amount,
+    super.pallet = SubtrateMetadataPallet.assetManager,
+  }) : super(type: AssetManagerCallPalletMethod.transfernativeCurrency);
 
   @override
   AssetManagerCallPalletMethod get type =>
       AssetManagerCallPalletMethod.transfernativeCurrency;
 
   @override
-  List<int> encodeCall(
-      {required MetadataWithExtrinsic extrinsic,
-      String? pallet,
-      String? method}) {
-    return extrinsic.api
-        .encodeCall(palletNameOrIndex: pallet ?? this.pallet.name, value: {
-      type.method: {
-        "dest": extrinsic.extrinsic.encodeAddress(dest),
-        "amount": amount,
-      }
-    });
+  List<int> encodeCall({
+    required MetadataWithExtrinsic extrinsic,
+    String? pallet,
+    String? method,
+  }) {
+    return extrinsic.api.encodeCall(
+      palletNameOrIndex: pallet ?? this.pallet.name,
+      value: {
+        type.method: {
+          "dest": extrinsic.extrinsic.encodeAddress(dest),
+          "amount": amount,
+        },
+      },
+    );
   }
 
   @override
   Map<String, dynamic> toJson({String? method}) {
     return {
-      method ?? type.method: {"dest": dest.address, "amount": amount}
+      method ?? type.method: {"dest": dest.address, "amount": amount},
     };
   }
 }

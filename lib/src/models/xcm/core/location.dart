@@ -49,12 +49,15 @@ abstract class XCMMultiLocation
   }
 
   bool hasGlobalConsensus() {
-    return interior.junctions
-        .any((e) => e.type == XCMJunctionType.globalConsensus);
+    return interior.junctions.any(
+      (e) => e.type == XCMJunctionType.globalConsensus,
+    );
   }
 
-  factory XCMMultiLocation.fromJson(
-      {required Map<String, dynamic> json, required XCMVersion version}) {
+  factory XCMMultiLocation.fromJson({
+    required Map<String, dynamic> json,
+    required XCMVersion version,
+  }) {
     final location = switch (version) {
       XCMVersion.v2 => XCMV2MultiLocation.fromJson(json),
       XCMVersion.v3 => XCMV3MultiLocation.fromJson(json),
@@ -64,31 +67,42 @@ abstract class XCMMultiLocation
     return location;
   }
 
-  factory XCMMultiLocation.fromVersion(
-      {XCMJunctions? interior,
-      required int parents,
-      XCMVersion version = XCMVersion.v4}) {
+  factory XCMMultiLocation.fromVersion({
+    XCMJunctions? interior,
+    required int parents,
+    XCMVersion version = XCMVersion.v4,
+  }) {
     interior ??= XCMJunctions.fromVersion(junctions: [], version: version);
     final xcm = switch (version) {
-      XCMVersion.v2 =>
-        XCMV2MultiLocation(interior: interior.cast(), parents: parents),
-      XCMVersion.v3 =>
-        XCMV3MultiLocation(interior: interior.cast(), parents: parents),
-      XCMVersion.v4 =>
-        XCMV4Location(interior: interior.cast(), parents: parents),
-      XCMVersion.v5 =>
-        XCMV5Location(interior: interior.cast(), parents: parents)
+      XCMVersion.v2 => XCMV2MultiLocation(
+        interior: interior.cast(),
+        parents: parents,
+      ),
+      XCMVersion.v3 => XCMV3MultiLocation(
+        interior: interior.cast(),
+        parents: parents,
+      ),
+      XCMVersion.v4 => XCMV4Location(
+        interior: interior.cast(),
+        parents: parents,
+      ),
+      XCMVersion.v5 => XCMV5Location(
+        interior: interior.cast(),
+        parents: parents,
+      ),
     };
     return xcm.cast();
   }
 
-  T copyWith<T extends XCMMultiLocation>(
-      {XCMJunctions? interior, int? parents}) {
+  T copyWith<T extends XCMMultiLocation>({
+    XCMJunctions? interior,
+    int? parents,
+  }) {
     return XCMMultiLocation.fromVersion(
-            parents: parents ?? this.parents,
-            interior: interior ?? this.interior,
-            version: version)
-        .cast<T>();
+      parents: parents ?? this.parents,
+      interior: interior ?? this.interior,
+      version: version,
+    ).cast<T>();
   }
 
   T asVersion<T extends XCMMultiLocation>(XCMVersion version) {
@@ -97,7 +111,7 @@ abstract class XCMMultiLocation
       XCMVersion.v2 => XCMV2MultiLocation.from(this),
       XCMVersion.v3 => XCMV3MultiLocation.from(this),
       XCMVersion.v4 => XCMV4Location.from(this),
-      XCMVersion.v5 => XCMV5Location.from(this)
+      XCMVersion.v5 => XCMV5Location.from(this),
     };
     return xcm.cast<T>();
   }
@@ -110,8 +124,9 @@ abstract class XCMMultiLocation
     }
   }
 
-  XCMVersionedLocation asVersioned<T extends XCMVersionedLocation>(
-      {XCMVersion? version}) {
+  XCMVersionedLocation asVersioned<T extends XCMVersionedLocation>({
+    XCMVersion? version,
+  }) {
     version ??= this.version;
     final location = asVersion(version);
     return XCMVersionedLocation.fromLocation(location);
@@ -124,15 +139,20 @@ abstract class XCMMultiLocation
     }
     final para = XCMJunctionParaChain.fromVersion(id: paraId, version: version);
     final junctions = XCMJunctions.fromVersion(
-        junctions: [para, ...interior.junctions], version: version);
+      junctions: [para, ...interior.junctions],
+      version: version,
+    );
     return XCMMultiLocation.fromVersion(
-        parents: 1, interior: junctions, version: version);
+      parents: 1,
+      interior: junctions,
+      version: version,
+    );
   }
 
   bool hasParachain(int id) {
-    return interior.junctions
-        .whereType<XCMJunctionParaChain>()
-        .any((e) => e.id == id);
+    return interior.junctions.whereType<XCMJunctionParaChain>().any(
+      (e) => e.id == id,
+    );
   }
 
   XCMJunctionParaChain? getParachain() {
@@ -140,7 +160,8 @@ abstract class XCMMultiLocation
   }
 
   T? firstWhereOrNull<T extends XCMJunction>(
-      bool Function(XCMJunction junction) test) {
+    bool Function(XCMJunction junction) test,
+  ) {
     for (final i in interior.junctions) {
       final find = test(i);
       if (find) return i.cast<T>();
@@ -149,7 +170,8 @@ abstract class XCMMultiLocation
   }
 
   List<T> where<T extends XCMJunction>(
-      bool Function(XCMJunction junction) test) {
+    bool Function(XCMJunction junction) test,
+  ) {
     List<T> objects = [];
     for (final i in interior.junctions) {
       final find = test(i);
@@ -159,11 +181,17 @@ abstract class XCMMultiLocation
   }
 
   @override
-  String toHex(
-      {bool versioned = false, String? prefix, bool lowerCase = true}) {
+  String toHex({
+    bool versioned = false,
+    String? prefix,
+    bool lowerCase = true,
+  }) {
     if (versioned) {
-      return BytesUtils.toHexString([version.version, ...serialize()],
-          lowerCase: lowerCase, prefix: prefix);
+      return BytesUtils.toHexString(
+        [version.version, ...serialize()],
+        lowerCase: lowerCase,
+        prefix: prefix,
+      );
     }
     return super.toHex(prefix: prefix, lowerCase: lowerCase);
   }
@@ -176,7 +204,7 @@ abstract class XCMMultiLocation
   }
 
   @override
-  List get variabels => [version, parents, interior];
+  List get variables => [version, parents, interior];
 
   XCMAssetId toAssetId() {
     return XCMAssetId.fromLocation(this);

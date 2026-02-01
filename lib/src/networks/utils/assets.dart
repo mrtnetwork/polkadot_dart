@@ -16,112 +16,161 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     }
     if (method != AssetsCallPalletMethod.transferAll && amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required unless using ${AssetsCallPalletMethod.transferAll.method}.");
+        "An amount is required unless using ${AssetsCallPalletMethod.transferAll.method}.",
+      );
     }
     return switch (method) {
-      AssetsCallPalletMethod.transfer =>
-        AssetsCallPalletTransfer(target: target, amount: amount!, id: assetId),
+      AssetsCallPalletMethod.transfer => AssetsCallPalletTransfer(
+        target: target,
+        amount: amount!,
+        id: assetId,
+      ),
       AssetsCallPalletMethod.transferKeepAlive =>
         AssetsCallPalletTransferKeepAlive(
-            target: target, amount: amount!, id: assetId),
+          target: target,
+          amount: amount!,
+          id: assetId,
+        ),
       AssetsCallPalletMethod.transferAll => AssetsCallPalletTransferAll(
-          dest: target, keepAlive: keepAlive ?? true, id: assetId),
+        dest: target,
+        keepAlive: keepAlive ?? true,
+        id: assetId,
+      ),
     };
   }
 
-  static SubstrateLocalTransferCallPallet createLocalForeignAssetPalletTransfer(
-      {required BaseSubstrateAddress target,
-      required MetadataWithExtrinsic metadata,
-      required BaseSubstrateNetworkAsset? asset,
-      BigInt? amount,
-      required ForeignAssetsCallPalletMethod method,
-      bool? keepAlive}) {
+  static SubstrateLocalTransferCallPallet
+  createLocalForeignAssetPalletTransfer({
+    required BaseSubstrateAddress target,
+    required MetadataWithExtrinsic metadata,
+    required BaseSubstrateNetworkAsset? asset,
+    BigInt? amount,
+    required ForeignAssetsCallPalletMethod method,
+    bool? keepAlive,
+  }) {
     final location = asset?.location?.location;
     if (method != ForeignAssetsCallPalletMethod.transferAll && amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required unless using ${ForeignAssetsCallPalletMethod.transferAll.method}.");
+        "An amount is required unless using ${ForeignAssetsCallPalletMethod.transferAll.method}.",
+      );
     }
     if (location == null) {
       throw DartSubstratePluginException(
-          "Invalid foreign asset. missing asset location.");
+        "Invalid foreign asset. missing asset location.",
+      );
     }
     if (location.isZeroParents()) {
       throw DartSubstratePluginException("Invalid asset location.");
     }
     return switch (method) {
       ForeignAssetsCallPalletMethod.transfer => ForeignAssetsCallPalletTransfer(
-          target: target, amount: amount!, id: location),
+        target: target,
+        amount: amount!,
+        id: location,
+      ),
       ForeignAssetsCallPalletMethod.transferKeepAlive =>
         ForeignAssetsCallPalletTransferKeepAlive(
-            target: target, amount: amount!, id: location),
+          target: target,
+          amount: amount!,
+          id: location,
+        ),
       ForeignAssetsCallPalletMethod.transferAll =>
         ForeignAssetsCallPalletTransferAll(
-            dest: target, keepAlive: keepAlive ?? true, id: location),
+          dest: target,
+          keepAlive: keepAlive ?? true,
+          id: location,
+        ),
     };
   }
 
-  static SubstrateLocalTransferCallPallet createLocalFungiblesPalletTransfer(
-      {required BaseSubstrateAddress target,
-      required MetadataWithExtrinsic metadata,
-      required BaseSubstrateNetworkAsset? asset,
-      BigInt? amount,
-      required FungiblesCallPalletMethod method,
-      bool? keepAlive}) {
+  static SubstrateLocalTransferCallPallet createLocalFungiblesPalletTransfer({
+    required BaseSubstrateAddress target,
+    required MetadataWithExtrinsic metadata,
+    required BaseSubstrateNetworkAsset? asset,
+    BigInt? amount,
+    required FungiblesCallPalletMethod method,
+    bool? keepAlive,
+  }) {
     if (method != FungiblesCallPalletMethod.transferAll && amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required unless using ${FungiblesCallPalletMethod.transferAll.method}.");
+        "An amount is required unless using ${FungiblesCallPalletMethod.transferAll.method}.",
+      );
     }
     final location = asset?.location?.location;
     if (location == null) {
       throw DartSubstratePluginException(
-          "Invalid foreign asset. missing asset location.");
+        "Invalid foreign asset. missing asset location.",
+      );
     }
     return switch (method) {
       FungiblesCallPalletMethod.transfer => FungiblesCallPalletTransfer(
-          target: target, amount: amount!, id: location),
+        target: target,
+        amount: amount!,
+        id: location,
+      ),
       FungiblesCallPalletMethod.transferKeepAlive =>
         FungiblesCallPalletTransferKeepAlive(
-            target: target, amount: amount!, id: location),
+          target: target,
+          amount: amount!,
+          id: location,
+        ),
       FungiblesCallPalletMethod.transferAll => FungiblesCallPalletTransferAll(
-          dest: target, keepAlive: keepAlive ?? true, id: location),
+        dest: target,
+        keepAlive: keepAlive ?? true,
+        id: location,
+      ),
     };
   }
 
-  static SubstrateLocalTransferCallPallet createLocalTokensPalletTransfer(
-      {required BaseSubstrateAddress target,
-      required MetadataWithExtrinsic metadata,
-      required BaseSubstrateNetworkAsset? asset,
-      required TokensCallPalletMethod method,
-      bool? keepAlive,
-      BigInt? amount}) {
+  static SubstrateLocalTransferCallPallet createLocalTokensPalletTransfer({
+    required BaseSubstrateAddress target,
+    required MetadataWithExtrinsic metadata,
+    required BaseSubstrateNetworkAsset? asset,
+    required TokensCallPalletMethod method,
+    bool? keepAlive,
+    BigInt? amount,
+  }) {
     final assetId = asset?.identifierAs();
     if (assetId == null) {
       throw DartSubstratePluginException("Missing transfer asset.");
     }
     if (method != TokensCallPalletMethod.transferAll && amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required unless using ${TokensCallPalletMethod.transferAll.method}.");
+        "An amount is required unless using ${TokensCallPalletMethod.transferAll.method}.",
+      );
     }
     return switch (method) {
       TokensCallPalletMethod.transfer => TokensCallPalletTransfer(
-          dest: target, amount: amount!, currencyId: assetId),
+        dest: target,
+        amount: amount!,
+        currencyId: assetId,
+      ),
       TokensCallPalletMethod.transferKeepAlive =>
         TokensCallPalletTransferKeepAlive(
-            dest: target, amount: amount!, currencyId: assetId),
+          dest: target,
+          amount: amount!,
+          currencyId: assetId,
+        ),
       TokensCallPalletMethod.transferAll => TokensCallPalletTransferAll(
-          dest: target, keepAlive: keepAlive ?? true, currencyId: assetId),
+        dest: target,
+        keepAlive: keepAlive ?? true,
+        currencyId: assetId,
+      ),
     };
   }
 
-  static SubstrateLocalTransferCallPallet createLocalAssetManagerPalletTransfer(
-      {required BaseSubstrateAddress destination,
-      BigInt? amount,
-      required MetadataWithExtrinsic metadata,
-      required AssetManagerCallPalletMethod method,
-      required BaseSubstrateNetworkAsset? asset}) {
+  static SubstrateLocalTransferCallPallet
+  createLocalAssetManagerPalletTransfer({
+    required BaseSubstrateAddress destination,
+    BigInt? amount,
+    required MetadataWithExtrinsic metadata,
+    required AssetManagerCallPalletMethod method,
+    required BaseSubstrateNetworkAsset? asset,
+  }) {
     if (amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required for transfer asset.");
+        "An amount is required for transfer asset.",
+      );
     }
     if (method == AssetManagerCallPalletMethod.transfer &&
         asset?.identifier == null) {
@@ -131,26 +180,34 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
         asset != null &&
         !asset.type.isNative) {
       throw DartSubstratePluginException(
-          "Mismatch between transfer method and asset type.");
+        "Mismatch between transfer method and asset type.",
+      );
     }
     return switch (method) {
       AssetManagerCallPalletMethod.transfernativeCurrency =>
         AssetManagerCallPalletTransferNativeCurrency(
-            dest: destination, amount: amount),
+          dest: destination,
+          amount: amount,
+        ),
       AssetManagerCallPalletMethod.transfer => AssetManagerCallPalletTransfer(
-          dest: destination, currencyId: asset!.identifierAs(), amount: amount)
+        dest: destination,
+        currencyId: asset!.identifierAs(),
+        amount: amount,
+      ),
     };
   }
 
-  static SubstrateLocalTransferCallPallet createLocalCurrenciesPalletTransfer(
-      {required BaseSubstrateAddress destination,
-      required BigInt? amount,
-      required MetadataWithExtrinsic metadata,
-      required BaseSubstrateNetworkAsset? asset,
-      required CurrenciesCallPalletMethod method}) {
+  static SubstrateLocalTransferCallPallet createLocalCurrenciesPalletTransfer({
+    required BaseSubstrateAddress destination,
+    required BigInt? amount,
+    required MetadataWithExtrinsic metadata,
+    required BaseSubstrateNetworkAsset? asset,
+    required CurrenciesCallPalletMethod method,
+  }) {
     if (amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required for transfer asset.");
+        "An amount is required for transfer asset.",
+      );
     }
     if (method == CurrenciesCallPalletMethod.transfer &&
         asset?.identifier == null) {
@@ -160,20 +217,28 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
         asset != null &&
         !asset.type.isNative) {
       throw DartSubstratePluginException(
-          "Mismatch between transfer method and asset type.");
+        "Mismatch between transfer method and asset type.",
+      );
     }
     CurrenciesCallPallet transfer = switch (method) {
       CurrenciesCallPalletMethod.transfernativeCurrency =>
         CurrenciesCallPalletTransferNativeCurrency(
-            dest: destination, amount: amount),
+          dest: destination,
+          amount: amount,
+        ),
       CurrenciesCallPalletMethod.transfer => CurrenciesCallPalletTransfer(
-          dest: destination, currencyId: asset!.identifierAs(), amount: amount),
+        dest: destination,
+        currencyId: asset!.identifierAs(),
+        amount: amount,
+      ),
     };
     return transfer;
   }
 
   static List<T> _getMethods<T extends SubstrateCallPalletTransferMethod>(
-      MetadataWithExtrinsic metadata, SubtrateMetadataPallet pallet) {
+    MetadataWithExtrinsic metadata,
+    SubtrateMetadataPallet pallet,
+  ) {
     final methods = metadata.api.metadata.getCallMethodNames(pallet.name);
     switch (pallet) {
       case SubtrateMetadataPallet.balances:
@@ -217,82 +282,103 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     }
   }
 
-  static SubstrateLocalTransferCallPallet createLocalBalancesPalletTransfer(
-      {required BaseSubstrateAddress destination,
-      required MetadataWithExtrinsic metadata,
-      BigInt? amount,
-      required BalancesCallPalletMethod method,
-      bool? keepAlive}) {
+  static SubstrateLocalTransferCallPallet createLocalBalancesPalletTransfer({
+    required BaseSubstrateAddress destination,
+    required MetadataWithExtrinsic metadata,
+    BigInt? amount,
+    required BalancesCallPalletMethod method,
+    bool? keepAlive,
+  }) {
     if (method != BalancesCallPalletMethod.transferAll && amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required unless using ${BalancesCallPalletMethod.transferAll.method}.");
+        "An amount is required unless using ${BalancesCallPalletMethod.transferAll.method}.",
+      );
     }
     if (method == BalancesCallPalletMethod.transferAll && amount != null) {
       throw DartSubstratePluginException(
-          "${BalancesCallPalletMethod.transferAll.method} does not accept an amount. amount must be null.");
+        "${BalancesCallPalletMethod.transferAll.method} does not accept an amount. amount must be null.",
+      );
     }
     return switch (method) {
       BalancesCallPalletMethod.transferAllowDeath =>
         BalancesCallPalletTransferAllowDeath(
-            dest: destination, amount: amount!),
+          dest: destination,
+          amount: amount!,
+        ),
       BalancesCallPalletMethod.transferKeepAlive =>
         BalancesCallPalletTransferKeepAlive(dest: destination, amount: amount!),
       BalancesCallPalletMethod.transferAll => BalancesCallPalletTransferAll(
-          dest: destination, keepAlive: keepAlive ?? true),
+        dest: destination,
+        keepAlive: keepAlive ?? true,
+      ),
     };
   }
 
-  static SubtrateMetadataPallet findExcutionPallet(
-      {BaseSubstrateNetworkAsset? asset,
-      required MetadataWithExtrinsic metadata}) {
+  static SubtrateMetadataPallet findExcutionPallet({
+    BaseSubstrateNetworkAsset? asset,
+    required MetadataWithExtrinsic metadata,
+  }) {
     if (asset != null) return asset.excutionPallet;
     final currencies = _getMethods(metadata, SubtrateMetadataPallet.currencies);
-    final assetManager =
-        _getMethods(metadata, SubtrateMetadataPallet.assetManager);
+    final assetManager = _getMethods(
+      metadata,
+      SubtrateMetadataPallet.assetManager,
+    );
     final balances = _getMethods(metadata, SubtrateMetadataPallet.balances);
     SubtrateMetadataPallet? excutionPallet;
     if (balances.isNotEmpty) {
       excutionPallet = SubtrateMetadataPallet.balances;
-    } else if (currencies
-        .contains(CurrenciesCallPalletMethod.transfernativeCurrency)) {
+    } else if (currencies.contains(
+      CurrenciesCallPalletMethod.transfernativeCurrency,
+    )) {
       excutionPallet = SubtrateMetadataPallet.currencies;
-    } else if (assetManager
-        .contains(AssetManagerCallPalletMethod.transfernativeCurrency)) {
+    } else if (assetManager.contains(
+      AssetManagerCallPalletMethod.transfernativeCurrency,
+    )) {
       excutionPallet = SubtrateMetadataPallet.assetManager;
     }
     if (excutionPallet == null) {
       throw DartSubstratePluginException(
-          "Unable to find asset transfer pallet.");
+        "Unable to find asset transfer pallet.",
+      );
     }
     return excutionPallet;
   }
 
-  static List<SubstrateCallPalletTransferMethod> transferMethods(
-      {BaseSubstrateNetworkAsset? asset,
-      required MetadataWithExtrinsic metadata}) {
+  static List<SubstrateCallPalletTransferMethod> transferMethods({
+    BaseSubstrateNetworkAsset? asset,
+    required MetadataWithExtrinsic metadata,
+  }) {
     final excution = findExcutionPallet(metadata: metadata, asset: asset);
     final bool isNativeAssets = asset == null || asset.type.isNative;
 
     final methods = _getMethods(metadata, excution);
     switch (excution) {
       case SubtrateMetadataPallet.balances:
-        final currencies =
-            _getMethods(metadata, SubtrateMetadataPallet.currencies);
-        final assetManager =
-            _getMethods(metadata, SubtrateMetadataPallet.assetManager);
+        final currencies = _getMethods(
+          metadata,
+          SubtrateMetadataPallet.currencies,
+        );
+        final assetManager = _getMethods(
+          metadata,
+          SubtrateMetadataPallet.assetManager,
+        );
         return [
           ...methods,
-          if (currencies
-              .contains(CurrenciesCallPalletMethod.transfernativeCurrency))
+          if (currencies.contains(
             CurrenciesCallPalletMethod.transfernativeCurrency,
-          if (assetManager
-              .contains(AssetManagerCallPalletMethod.transfernativeCurrency))
-            AssetManagerCallPalletMethod.transfernativeCurrency
+          ))
+            CurrenciesCallPalletMethod.transfernativeCurrency,
+          if (assetManager.contains(
+            AssetManagerCallPalletMethod.transfernativeCurrency,
+          ))
+            AssetManagerCallPalletMethod.transfernativeCurrency,
         ];
       case SubtrateMetadataPallet.currencies:
         if (isNativeAssets) {
-          if (methods
-              .contains(CurrenciesCallPalletMethod.transfernativeCurrency)) {
+          if (methods.contains(
+            CurrenciesCallPalletMethod.transfernativeCurrency,
+          )) {
             return [CurrenciesCallPalletMethod.transfernativeCurrency];
           }
         } else if (methods.contains(CurrenciesCallPalletMethod.transfer)) {
@@ -301,8 +387,9 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
         return [];
       case SubtrateMetadataPallet.assetManager:
         if (isNativeAssets) {
-          if (methods
-              .contains(AssetManagerCallPalletMethod.transfernativeCurrency)) {
+          if (methods.contains(
+            AssetManagerCallPalletMethod.transfernativeCurrency,
+          )) {
             return [AssetManagerCallPalletMethod.transfernativeCurrency];
           }
         } else if (methods.contains(AssetManagerCallPalletMethod.transfer)) {
@@ -314,16 +401,20 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     }
   }
 
-  static SubstrateTransferEncodedParams createLocalTransfer(
-      {required SubstrateLocalTransferAssetParams params,
-      required MetadataWithExtrinsic metadata}) {
-    SubtrateMetadataPallet source =
-        findExcutionPallet(metadata: metadata, asset: params.asset);
+  static SubstrateTransferEncodedParams createLocalTransfer({
+    required SubstrateLocalTransferAssetParams params,
+    required MetadataWithExtrinsic metadata,
+  }) {
+    SubtrateMetadataPallet source = findExcutionPallet(
+      metadata: metadata,
+      asset: params.asset,
+    );
     final methods = transferMethods(metadata: metadata, asset: params.asset);
     final keepAlive = params.keepAlive;
     if (methods.isEmpty) {
       throw DartSubstratePluginException(
-          "No transfer method available in ${source.name} pallet.");
+        "No transfer method available in ${source.name} pallet.",
+      );
     }
     String? method = params.method;
 
@@ -337,13 +428,15 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
         case SubtrateMetadataPallet.foreignAssets:
         case SubtrateMetadataPallet.tokens:
           if (keepAlive == null) {
-            method = methods
-                .firstWhere(
-                    (e) =>
-                        e.method ==
-                        BalancesCallPalletMethod.transferKeepAlive.method,
-                    orElse: () => methods.first)
-                .method;
+            method =
+                methods
+                    .firstWhere(
+                      (e) =>
+                          e.method ==
+                          BalancesCallPalletMethod.transferKeepAlive.method,
+                      orElse: () => methods.first,
+                    )
+                    .method;
           } else {
             if (keepAlive) {
               method = AssetsCallPalletMethod.transferKeepAlive.method;
@@ -366,16 +459,21 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     }
 
     SubstrateCallPalletTransferMethod transferMethod = methods.firstWhere(
-        (e) => e.method == method,
-        orElse: () => throw DartSubstratePluginException(
-            "$method not supported by ${source.name} pallet."));
+      (e) => e.method == method,
+      orElse:
+          () =>
+              throw DartSubstratePluginException(
+                "$method not supported by ${source.name} pallet.",
+              ),
+    );
     if (source == SubtrateMetadataPallet.balances &&
         transferMethod.method ==
             CurrenciesCallPalletMethod.transfernativeCurrency.method) {
       if (metadata.api.palletExists(SubtrateMetadataPallet.currencies.name)) {
         source = SubtrateMetadataPallet.currencies;
-      } else if (metadata.api
-          .palletExists(SubtrateMetadataPallet.assetManager.name)) {
+      } else if (metadata.api.palletExists(
+        SubtrateMetadataPallet.assetManager.name,
+      )) {
         source = SubtrateMetadataPallet.assetManager;
       }
     }
@@ -384,75 +482,88 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
         keepAlive != null &&
         keepAlive != transferMethod.keepAlive) {
       throw DartSubstratePluginException(
-          "keepAlive parameter does not match the selected transfer method.");
+        "keepAlive parameter does not match the selected transfer method.",
+      );
     }
     if (!transferMethod.isTransferAll && params.amount == null) {
       throw DartSubstratePluginException(
-          "An amount is required unless using ${BalancesCallPalletMethod.transferAll.method}.");
+        "An amount is required unless using ${BalancesCallPalletMethod.transferAll.method}.",
+      );
     }
     if (transferMethod.isTransferAll &&
         params.method == null &&
         params.amount == null) {
       throw DartSubstratePluginException(
-          "No amount specified — please use ${BalancesCallPalletMethod.transferAll.method} method explicitly.");
+        "No amount specified — please use ${BalancesCallPalletMethod.transferAll.method} method explicitly.",
+      );
     }
 
     final SubstrateLocalTransferCallPallet transfer = switch (source) {
       SubtrateMetadataPallet.balances => createLocalBalancesPalletTransfer(
-          destination: params.destinationAddress,
-          metadata: metadata,
-          method: transferMethod as BalancesCallPalletMethod,
-          amount: params.amount,
-          keepAlive: params.keepAlive),
+        destination: params.destinationAddress,
+        metadata: metadata,
+        method: transferMethod as BalancesCallPalletMethod,
+        amount: params.amount,
+        keepAlive: params.keepAlive,
+      ),
       SubtrateMetadataPallet.tokens => createLocalTokensPalletTransfer(
-          target: params.destinationAddress,
-          metadata: metadata,
-          method: transferMethod as TokensCallPalletMethod,
-          amount: params.amount,
-          keepAlive: params.keepAlive,
-          asset: params.asset),
+        target: params.destinationAddress,
+        metadata: metadata,
+        method: transferMethod as TokensCallPalletMethod,
+        amount: params.amount,
+        keepAlive: params.keepAlive,
+        asset: params.asset,
+      ),
       SubtrateMetadataPallet.currencies => createLocalCurrenciesPalletTransfer(
-          destination: params.destinationAddress,
-          metadata: metadata,
-          amount: params.amount,
-          method: transferMethod as CurrenciesCallPalletMethod,
-          asset: params.asset),
+        destination: params.destinationAddress,
+        metadata: metadata,
+        amount: params.amount,
+        method: transferMethod as CurrenciesCallPalletMethod,
+        asset: params.asset,
+      ),
       SubtrateMetadataPallet.assetManager =>
         createLocalAssetManagerPalletTransfer(
-            destination: params.destinationAddress,
-            metadata: metadata,
-            amount: params.amount,
-            method: transferMethod as AssetManagerCallPalletMethod,
-            asset: params.asset),
+          destination: params.destinationAddress,
+          metadata: metadata,
+          amount: params.amount,
+          method: transferMethod as AssetManagerCallPalletMethod,
+          asset: params.asset,
+        ),
       SubtrateMetadataPallet.foreignAssets =>
         createLocalForeignAssetPalletTransfer(
-            target: params.destinationAddress,
-            metadata: metadata,
-            method: transferMethod as ForeignAssetsCallPalletMethod,
-            amount: params.amount,
-            keepAlive: params.keepAlive,
-            asset: params.asset),
+          target: params.destinationAddress,
+          metadata: metadata,
+          method: transferMethod as ForeignAssetsCallPalletMethod,
+          amount: params.amount,
+          keepAlive: params.keepAlive,
+          asset: params.asset,
+        ),
       SubtrateMetadataPallet.fungibles => createLocalFungiblesPalletTransfer(
-          target: params.destinationAddress,
-          metadata: metadata,
-          method: transferMethod as FungiblesCallPalletMethod,
-          amount: params.amount,
-          keepAlive: params.keepAlive,
-          asset: params.asset),
+        target: params.destinationAddress,
+        metadata: metadata,
+        method: transferMethod as FungiblesCallPalletMethod,
+        amount: params.amount,
+        keepAlive: params.keepAlive,
+        asset: params.asset,
+      ),
       SubtrateMetadataPallet.assets => createLocalAssetPalletTransfer(
-          target: params.destinationAddress,
-          metadata: metadata,
-          method: transferMethod as AssetsCallPalletMethod,
-          amount: params.amount,
-          keepAlive: params.keepAlive,
-          assetId: params.asset?.identifierAs<BigInt>()),
-      _ => throw DartSubstratePluginException(
-          "Unable to find asset transfer pallet.")
+        target: params.destinationAddress,
+        metadata: metadata,
+        method: transferMethod as AssetsCallPalletMethod,
+        amount: params.amount,
+        keepAlive: params.keepAlive,
+        assetId: params.asset?.identifierAs<BigInt>(),
+      ),
+      _ =>
+        throw DartSubstratePluginException(
+          "Unable to find asset transfer pallet.",
+        ),
     };
     return SubstrateTransferEncodedParams(
-        transfer: transfer,
-        pallet: transfer.pallet.name,
-        method: transfer.type.method,
-        bytes: transfer.encodeCall(extrinsic: metadata));
+      transfer: transfer,
+      pallet: transfer.pallet.name,
+      method: transfer.type.method,
+      bytes: transfer.encodeCall(extrinsic: metadata),
+    );
   }
 }

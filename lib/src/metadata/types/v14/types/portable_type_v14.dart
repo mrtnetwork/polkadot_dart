@@ -12,8 +12,8 @@ class PortableTypeV14 extends SubstrateSerialization<Map<String, dynamic>>
   final Si1Type type;
   const PortableTypeV14({required this.id, required this.type});
   PortableTypeV14.deserializeJson(Map<String, dynamic> json)
-      : type = Si1Type.deserializeJson(json["type"]),
-        id = json["id"];
+    : type = Si1Type.deserializeJson(json["type"]),
+      id = json["id"];
   @override
   StructLayout layout({String? property}) =>
       SubstrateMetadataLayouts.portableTypeV14(property: property);

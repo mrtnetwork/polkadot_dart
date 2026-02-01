@@ -20,16 +20,18 @@ enum ZeitgeistAssetType {
 
   const ZeitgeistAssetType(this.type);
   static ZeitgeistAssetType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? ZeitgeistAssetType.unknown;
   }
 }
 
 class ZeitgeistAsstConst {
   static const int ztgDecimals = 10;
-  static final BaseZeitgeistAsset ztg =
-      ZeitgeistAssetZtg(identifier: {ZeitgeistAssetType.ztg.type: null});
+  static final BaseZeitgeistAsset ztg = ZeitgeistAssetZtg(
+    identifier: {ZeitgeistAssetType.ztg.type: null},
+  );
 }
 
 abstract class BaseZeitgeistAsset {
@@ -47,10 +49,12 @@ abstract class BaseZeitgeistAsset {
         ZeitgeistAssetCategoricalOutcome.fromJson(json),
       ZeitgeistAssetType.parimutuelShare =>
         ZeitgeistAssetParimutuelShare.fromJson(json),
-      ZeitgeistAssetType.foreignAsset =>
-        ZeitgeistAssetForeignAsset.fromJson(json),
-      ZeitgeistAssetType.scalarOutcome =>
-        ZeitgeistAssetScalarOutcome.fromJson(json),
+      ZeitgeistAssetType.foreignAsset => ZeitgeistAssetForeignAsset.fromJson(
+        json,
+      ),
+      ZeitgeistAssetType.scalarOutcome => ZeitgeistAssetScalarOutcome.fromJson(
+        json,
+      ),
       ZeitgeistAssetType.poolShare => ZeitgeistAssetPoolShare.fromJson(json),
       ZeitgeistAssetType.combinatorialToken =>
         ZeitgeistAssetCombinatorialToken.fromJson(json),
@@ -61,53 +65,62 @@ abstract class BaseZeitgeistAsset {
 
 class ZeitgeistAssetCombinatorialOutcomeLegacy extends BaseZeitgeistAsset {
   const ZeitgeistAssetCombinatorialOutcomeLegacy({required super.identifier})
-      : super(type: ZeitgeistAssetType.combinatorialOutcomeLegacy);
+    : super(type: ZeitgeistAssetType.combinatorialOutcomeLegacy);
   ZeitgeistAssetCombinatorialOutcomeLegacy.fromJson(Map<String, dynamic> json)
-      : super(
-            type: ZeitgeistAssetType.combinatorialOutcomeLegacy,
-            identifier: json);
+    : super(
+        type: ZeitgeistAssetType.combinatorialOutcomeLegacy,
+        identifier: json,
+      );
 }
 
 class ZeitgeistAssetZtg extends BaseZeitgeistAsset {
   const ZeitgeistAssetZtg({required super.identifier})
-      : super(type: ZeitgeistAssetType.ztg);
+    : super(type: ZeitgeistAssetType.ztg);
   ZeitgeistAssetZtg.fromJson(Map<String, dynamic> json)
-      : super(type: ZeitgeistAssetType.ztg, identifier: json);
+    : super(type: ZeitgeistAssetType.ztg, identifier: json);
 }
 
 class ZeitgeistAssetCategoricalOutcome extends BaseZeitgeistAsset {
   final BigInt a;
   final int b;
-  ZeitgeistAssetCategoricalOutcome(
-      {required BigInt a, required int b, required super.identifier})
-      : a = a.asUint128,
-        b = b.asUint16,
-        super(type: ZeitgeistAssetType.categoricalOutcome);
+  ZeitgeistAssetCategoricalOutcome({
+    required BigInt a,
+    required int b,
+    required super.identifier,
+  }) : a = a.asU128,
+       b = b.asU16,
+       super(type: ZeitgeistAssetType.categoricalOutcome);
   factory ZeitgeistAssetCategoricalOutcome.fromJson(Map<String, dynamic> json) {
-    final data =
-        json.valueEnsureAsList(ZeitgeistAssetType.categoricalOutcome.type);
+    final data = json.valueEnsureAsList(
+      ZeitgeistAssetType.categoricalOutcome.type,
+    );
     return ZeitgeistAssetCategoricalOutcome(
-        b: IntUtils.parse(data[1]),
-        a: BigintUtils.parse(data[0]),
-        identifier: json);
+      b: IntUtils.parse(data[1]),
+      a: BigintUtils.parse(data[0]),
+      identifier: json,
+    );
   }
 }
 
 class ZeitgeistAssetParimutuelShare extends BaseZeitgeistAsset {
   final BigInt a;
   final int b;
-  ZeitgeistAssetParimutuelShare(
-      {required BigInt a, required int b, required super.identifier})
-      : a = a.asUint128,
-        b = b.asUint16,
-        super(type: ZeitgeistAssetType.parimutuelShare);
+  ZeitgeistAssetParimutuelShare({
+    required BigInt a,
+    required int b,
+    required super.identifier,
+  }) : a = a.asU128,
+       b = b.asU16,
+       super(type: ZeitgeistAssetType.parimutuelShare);
   factory ZeitgeistAssetParimutuelShare.fromJson(Map<String, dynamic> json) {
-    final data =
-        json.valueEnsureAsList(ZeitgeistAssetType.parimutuelShare.type);
+    final data = json.valueEnsureAsList(
+      ZeitgeistAssetType.parimutuelShare.type,
+    );
     return ZeitgeistAssetParimutuelShare(
-        b: IntUtils.parse(data[1]),
-        a: BigintUtils.parse(data[0]),
-        identifier: json);
+      b: IntUtils.parse(data[1]),
+      a: BigintUtils.parse(data[0]),
+      identifier: json,
+    );
   }
 }
 
@@ -120,8 +133,9 @@ enum ZeitgeistAssetScalarOutcomeType {
 
   const ZeitgeistAssetScalarOutcomeType(this.type);
   static ZeitgeistAssetScalarOutcomeType fromJson(Map<String, dynamic>? json) {
-    final type =
-        values.firstWhereNullable((e) => e.type == json?.keys.firstOrNull);
+    final type = values.firstWhereNullable(
+      (e) => e.type == json?.keys.firstOrNull,
+    );
     return type ?? ZeitgeistAssetScalarOutcomeType.unknown;
   }
 }
@@ -129,65 +143,87 @@ enum ZeitgeistAssetScalarOutcomeType {
 class ZeitgeistAssetScalarOutcome extends BaseZeitgeistAsset {
   final int id;
   final ZeitgeistAssetScalarOutcomeType outcomeType;
-  ZeitgeistAssetScalarOutcome(
-      {required int id, required this.outcomeType, required super.identifier})
-      : id = id.asUint16,
-        super(type: ZeitgeistAssetType.scalarOutcome);
+  ZeitgeistAssetScalarOutcome({
+    required int id,
+    required this.outcomeType,
+    required super.identifier,
+  }) : id = id.asU16,
+       super(type: ZeitgeistAssetType.scalarOutcome);
   factory ZeitgeistAssetScalarOutcome.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(ZeitgeistAssetType.scalarOutcome.type);
     return ZeitgeistAssetScalarOutcome(
-        id: IntUtils.parse(data[0]),
-        outcomeType: ZeitgeistAssetScalarOutcomeType.fromJson(data[1]),
-        identifier: json);
+      id: IntUtils.parse(data[0]),
+      outcomeType: ZeitgeistAssetScalarOutcomeType.fromJson(data[1]),
+      identifier: json,
+    );
   }
 }
 
 class ZeitgeistAssetPoolShare extends BaseZeitgeistAsset {
   final BigInt id;
   const ZeitgeistAssetPoolShare({required this.id, required super.identifier})
-      : super(type: ZeitgeistAssetType.poolShare);
+    : super(type: ZeitgeistAssetType.poolShare);
   ZeitgeistAssetPoolShare.fromJson(Map<String, dynamic> json)
-      : id = json.valueAs(ZeitgeistAssetType.poolShare.type),
-        super(type: ZeitgeistAssetType.poolShare, identifier: json);
+    : id = json.valueAs(ZeitgeistAssetType.poolShare.type),
+      super(type: ZeitgeistAssetType.poolShare, identifier: json);
 }
 
 class ZeitgeistAssetCombinatorialToken extends BaseZeitgeistAsset {
   final List<int> token;
-  ZeitgeistAssetCombinatorialToken(
-      {required List<int> token, required super.identifier})
-      : token = token.exc(32).asImmutableBytes,
-        super(type: ZeitgeistAssetType.combinatorialToken);
+  ZeitgeistAssetCombinatorialToken({
+    required List<int> token,
+    required super.identifier,
+  }) : token =
+           token
+               .exc(
+                 length: 32,
+                 operation: "ZeitgeistAssetCombinatorialToken",
+                 name: "token",
+                 reason: "Invalid token bytes length.",
+               )
+               .asImmutableBytes,
+       super(type: ZeitgeistAssetType.combinatorialToken);
   ZeitgeistAssetCombinatorialToken.fromJson(Map<String, dynamic> json)
-      : token = json
-            .valueAsBytes<List<int>>(ZeitgeistAssetType.combinatorialToken.type)
-            .exc(32)
-            .asImmutableBytes,
-        super(type: ZeitgeistAssetType.poolShare, identifier: json);
+    : token =
+          json
+              .valueAsBytes<List<int>>(
+                ZeitgeistAssetType.combinatorialToken.type,
+              )
+              .exc(
+                length: 32,
+                operation: "ZeitgeistAssetCombinatorialToken",
+                name: "token",
+                reason: "Invalid token bytes length.",
+              )
+              .asImmutableBytes,
+      super(type: ZeitgeistAssetType.poolShare, identifier: json);
 }
 
 class ZeitgeistAssetForeignAsset extends BaseZeitgeistAsset {
   final int id;
-  const ZeitgeistAssetForeignAsset(
-      {required this.id, required super.identifier})
-      : super(type: ZeitgeistAssetType.foreignAsset);
+  const ZeitgeistAssetForeignAsset({
+    required this.id,
+    required super.identifier,
+  }) : super(type: ZeitgeistAssetType.foreignAsset);
   ZeitgeistAssetForeignAsset.fromJson(Map<String, dynamic> json)
-      : id = json.valueAs(ZeitgeistAssetType.foreignAsset.type),
-        super(type: ZeitgeistAssetType.foreignAsset, identifier: json);
+    : id = json.valueAs(ZeitgeistAssetType.foreignAsset.type),
+      super(type: ZeitgeistAssetType.foreignAsset, identifier: json);
 }
 
 class ZeitgeistAssetUnknown extends BaseZeitgeistAsset {
   const ZeitgeistAssetUnknown({required super.identifier})
-      : super(type: ZeitgeistAssetType.unknown);
+    : super(type: ZeitgeistAssetType.unknown);
   ZeitgeistAssetUnknown.fromJson(Map<String, dynamic> json)
-      : super(type: ZeitgeistAssetType.unknown, identifier: json);
+    : super(type: ZeitgeistAssetType.unknown, identifier: json);
 }
 
 class CentrifugeAssetMetadatAadditionalXCM {
   final BigInt? feeFactor;
   const CentrifugeAssetMetadatAadditionalXCM({this.feeFactor});
   CentrifugeAssetMetadatAadditionalXCM.fromJson(Map<String, dynamic> json)
-      : feeFactor =
-            MetadataUtils.parseOptional(json.valueEnsureAsMap("fee_factor"));
+    : feeFactor = MetadataUtils.parseOptional(
+        json.valueEnsureAsMap("fee_factor"),
+      );
   Map<String, dynamic> toJson() {
     return {"fee_factor": MetadataUtils.toOptionalJson(feeFactor)};
   }
@@ -197,9 +233,8 @@ class ZeitgeistAssetMetadatAdditional {
   final CentrifugeAssetMetadatAadditionalXCM xcm;
   final bool allowAsBaseAsset;
   ZeitgeistAssetMetadatAdditional.fromJson(Map<String, dynamic> json)
-      : xcm =
-            CentrifugeAssetMetadatAadditionalXCM.fromJson(json.valueAs("xcm")),
-        allowAsBaseAsset = json.valueAs("allow_as_base_asset");
+    : xcm = CentrifugeAssetMetadatAadditionalXCM.fromJson(json.valueAs("xcm")),
+      allowAsBaseAsset = json.valueAs("allow_as_base_asset");
   Map<String, dynamic> toJson() {
     return {"xcm": xcm.toJson(), "allow_as_base_asset": allowAsBaseAsset};
   }
@@ -232,26 +267,33 @@ class ZeitgeistAssetMetadata {
 
   // final bool isFrozen;
   ZeitgeistAssetMetadata.fromJson(Map<String, dynamic> json)
-      : existentialDeposit = json.valueAs("existential_deposit"),
-        decimals = json.valueAs("decimals"),
-        name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
-        symbol =
-            SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("symbol")),
-        additional = json
-            .valueTo<ZeitgeistAssetMetadatAdditional?, Map<String, dynamic>>(
-                key: "additional",
-                parse: (v) => ZeitgeistAssetMetadatAdditional.fromJson(v)),
-        location = MetadataUtils.parseOptional<XCMVersionedLocation,
-                Map<String, dynamic>>(json.valueAs("location"),
-            parse: (v) => XCMVersionedLocation.fromJson(v)),
-        super();
-  const ZeitgeistAssetMetadata(
-      {required this.location,
-      required this.name,
-      required this.symbol,
-      required this.decimals,
-      required this.existentialDeposit,
-      this.additional});
+    : existentialDeposit = json.valueAs("existential_deposit"),
+      decimals = json.valueAs("decimals"),
+      name = SubstrateNetworkControllerUtils.tryToUtf8(json.valueAs("name")),
+      symbol = SubstrateNetworkControllerUtils.tryToUtf8(
+        json.valueAs("symbol"),
+      ),
+      additional = json
+          .valueTo<ZeitgeistAssetMetadatAdditional?, Map<String, dynamic>>(
+            key: "additional",
+            parse: (v) => ZeitgeistAssetMetadatAdditional.fromJson(v),
+          ),
+      location = MetadataUtils.parseOptional<
+        XCMVersionedLocation,
+        Map<String, dynamic>
+      >(
+        json.valueAs("location"),
+        parse: (v) => XCMVersionedLocation.fromJson(v),
+      ),
+      super();
+  const ZeitgeistAssetMetadata({
+    required this.location,
+    required this.name,
+    required this.symbol,
+    required this.decimals,
+    required this.existentialDeposit,
+    this.additional,
+  });
   Map<String, dynamic> toJson() {
     return {
       "existential_deposit": existentialDeposit.toString(),
@@ -259,20 +301,21 @@ class ZeitgeistAssetMetadata {
       "symbol": symbol,
       "decimals": decimals,
       "additional": additional?.toJson(),
-      "location": MetadataUtils.toOptionalJson(location?.toJson())
+      "location": MetadataUtils.toOptionalJson(location?.toJson()),
     };
   }
 }
 
 abstract class BaseZeitgeistNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseZeitgeistNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseZeitgeistNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseZeitgeistNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -286,19 +329,22 @@ class ZeitgeistNetworkAsset extends BaseZeitgeistNetworkAsset {
     required this.metadata,
     bool? isFeeToken,
   }) : super(
-            isFeeToken:
-                isFeeToken ?? (metadata?.additional?.xcm.feeFactor != null),
-            isSpendable: true,
-            minBalance: metadata?.existentialDeposit,
-            name: metadata?.name,
-            symbol: metadata?.symbol,
-            decimals: metadata?.decimals,
-            excutionPallet: SubtrateMetadataPallet.assetManager);
+         isFeeToken:
+             isFeeToken ?? (metadata?.additional?.xcm.feeFactor != null),
+         isSpendable: true,
+         minBalance: metadata?.existentialDeposit,
+         name: metadata?.name,
+         symbol: metadata?.symbol,
+         decimals: metadata?.decimals,
+         excutionPallet: SubtrateMetadataPallet.assetManager,
+       );
   ZeitgeistNetworkAsset.fromJson(super.json)
-      : asset = BaseZeitgeistAsset.fromJson(json.valueAs("asset")),
-        metadata = json.valueTo<ZeitgeistAssetMetadata?, Map<String, dynamic>>(
-            key: "metadata", parse: (v) => ZeitgeistAssetMetadata.fromJson(v)),
-        super.fromJson();
+    : asset = BaseZeitgeistAsset.fromJson(json.valueAs("asset")),
+      metadata = json.valueTo<ZeitgeistAssetMetadata?, Map<String, dynamic>>(
+        key: "metadata",
+        parse: (v) => ZeitgeistAssetMetadata.fromJson(v),
+      ),
+      super.fromJson();
 
   @override
   Map<String, dynamic> get identifier => asset.toJson();
@@ -308,7 +354,7 @@ class ZeitgeistNetworkAsset extends BaseZeitgeistNetworkAsset {
     return {
       "asset": asset.toJson(),
       "metadata": metadata?.toJson(),
-      ...super.toJson()
+      ...super.toJson(),
     };
   }
 
@@ -329,12 +375,13 @@ class ZeitgeistNetworkNativeAsset extends BaseZeitgeistNetworkAsset {
     required this.location,
     super.minBalance,
   }) : super(
-            isFeeToken: true,
-            isSpendable: true,
-            excutionPallet: SubtrateMetadataPallet.balances);
+         isFeeToken: true,
+         isSpendable: true,
+         excutionPallet: SubtrateMetadataPallet.balances,
+       );
   ZeitgeistNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
 
   @override
   Object? get identifier => null;

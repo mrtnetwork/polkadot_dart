@@ -4,14 +4,15 @@ import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
 
 abstract class BaseLaosNetworkAsset extends BaseSubstrateNetworkAsset {
-  BaseLaosNetworkAsset(
-      {required super.isSpendable,
-      required super.isFeeToken,
-      required super.minBalance,
-      required super.name,
-      required super.symbol,
-      required super.decimals,
-      required super.excutionPallet});
+  BaseLaosNetworkAsset({
+    required super.isSpendable,
+    required super.isFeeToken,
+    required super.minBalance,
+    required super.name,
+    required super.symbol,
+    required super.decimals,
+    required super.excutionPallet,
+  });
   BaseLaosNetworkAsset.fromJson(super.json) : super.fromJson();
 }
 
@@ -30,8 +31,8 @@ class LaosnetNetworkNativeAsset extends BaseLaosNetworkAsset {
     super.minBalance,
   }) : super(excutionPallet: SubtrateMetadataPallet.balances);
   LaosnetNetworkNativeAsset.fromJson(super.json)
-      : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
-        super.fromJson();
+    : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
+      super.fromJson();
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
 

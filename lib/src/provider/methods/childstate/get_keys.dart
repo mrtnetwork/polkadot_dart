@@ -5,8 +5,11 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#childstate
 class SubstrateRequestChildStateGetKeys
     extends SubstrateRequest<List<dynamic>, List<String>> {
-  const SubstrateRequestChildStateGetKeys(
-      {required this.childKey, required this.prefix, this.atBlockHash});
+  const SubstrateRequestChildStateGetKeys({
+    required this.childKey,
+    required this.prefix,
+    this.atBlockHash,
+  });
   final String childKey;
   final String prefix;
   final String? atBlockHash;

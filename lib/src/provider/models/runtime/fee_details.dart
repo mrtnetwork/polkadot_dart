@@ -7,10 +7,11 @@ class InclusionFee extends SubstrateSerialization<Map<String, dynamic>> {
   final BigInt baseFee;
   final BigInt lenFee;
   final BigInt adjustedWeightFee;
-  const InclusionFee(
-      {required this.baseFee,
-      required this.lenFee,
-      required this.adjustedWeightFee});
+  const InclusionFee({
+    required this.baseFee,
+    required this.lenFee,
+    required this.adjustedWeightFee,
+  });
 
   factory InclusionFee.fromJson(Map<String, dynamic> json) {
     return InclusionFee(
@@ -29,7 +30,7 @@ class InclusionFee extends SubstrateSerialization<Map<String, dynamic>> {
     return {
       "baseFee": baseFee,
       "lenFee": lenFee,
-      "adjustedWeightFee": adjustedWeightFee
+      "adjustedWeightFee": adjustedWeightFee,
     };
   }
 }

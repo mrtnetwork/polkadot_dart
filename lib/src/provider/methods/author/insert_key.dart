@@ -5,8 +5,11 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// This method is only active with appropriate flags
 /// https://polkadot.js.org/docs/substrate/rpc/#author
 class SubstrateRequestAuthorInsertKey extends SubstrateRequest<String, String> {
-  const SubstrateRequestAuthorInsertKey(
-      {required this.publicKey, required this.keyType, required this.suri});
+  const SubstrateRequestAuthorInsertKey({
+    required this.publicKey,
+    required this.keyType,
+    required this.suri,
+  });
   final String publicKey;
   final String suri;
   final String keyType;
@@ -17,10 +20,6 @@ class SubstrateRequestAuthorInsertKey extends SubstrateRequest<String, String> {
 
   @override
   List<dynamic> toJson() {
-    return [
-      keyType,
-      suri,
-      publicKey,
-    ];
+    return [keyType, suri, publicKey];
   }
 }

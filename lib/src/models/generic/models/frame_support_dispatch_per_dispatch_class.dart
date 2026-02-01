@@ -8,15 +8,16 @@ class FrameSupportDispatchPerDispatchClass
   final SubstrateWeightV2 normal;
   final SubstrateWeightV2 operational;
   final SubstrateWeightV2 mandatory;
-  const FrameSupportDispatchPerDispatchClass(
-      {required this.normal,
-      required this.operational,
-      required this.mandatory});
+  const FrameSupportDispatchPerDispatchClass({
+    required this.normal,
+    required this.operational,
+    required this.mandatory,
+  });
   FrameSupportDispatchPerDispatchClass.deserializeJson(
-      Map<String, dynamic> json)
-      : normal = SubstrateWeightV2.deserializeJson(json["normal"]),
-        mandatory = SubstrateWeightV2.deserializeJson(json["mandatory"]),
-        operational = SubstrateWeightV2.deserializeJson(json["operational"]);
+    Map<String, dynamic> json,
+  ) : normal = SubstrateWeightV2.deserializeJson(json["normal"]),
+      mandatory = SubstrateWeightV2.deserializeJson(json["mandatory"]),
+      operational = SubstrateWeightV2.deserializeJson(json["operational"]);
   static StructLayout layout_({String? property}) {
     return LayoutConst.struct([
       SubstrateWeightV2.layout_(property: "normal"),
@@ -35,7 +36,7 @@ class FrameSupportDispatchPerDispatchClass
     return {
       "normal": normal.serializeJson(),
       "operational": operational.serializeJson(),
-      "mandatory": mandatory.serializeJson()
+      "mandatory": mandatory.serializeJson(),
     };
   }
 }

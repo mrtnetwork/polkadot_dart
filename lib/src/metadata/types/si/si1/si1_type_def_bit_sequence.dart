@@ -11,11 +11,13 @@ import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 class Si1TypeDefBitSequence extends Si1TypeDef<Map<String, dynamic>> {
   final int bitStoreType;
   final int bitOrderType;
-  Si1TypeDefBitSequence(
-      {required this.bitOrderType, required this.bitStoreType});
+  Si1TypeDefBitSequence({
+    required this.bitOrderType,
+    required this.bitStoreType,
+  });
   Si1TypeDefBitSequence.deserializeJson(Map<String, dynamic> json)
-      : bitStoreType = json["bitStoreType"],
-        bitOrderType = json["bitOrderType"];
+    : bitStoreType = json["bitStoreType"],
+      bitOrderType = json["bitOrderType"];
 
   @override
   StructLayout layout({String? property}) =>
@@ -36,17 +38,19 @@ class Si1TypeDefBitSequence extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Object? getValue(
-      {required PortableRegistry registry,
-      required Object? value,
-      required bool fromTemplate,
-      required int self}) {
+  Object? getValue({
+    required PortableRegistry registry,
+    required Object? value,
+    required bool fromTemplate,
+    required int self,
+  }) {
     return MetadataCastingUtils.getValue(
-        value: value,
-        type: typeName,
-        fromTemplate: fromTemplate,
-        id: self,
-        registry: registry);
+      value: value,
+      type: typeName,
+      fromTemplate: fromTemplate,
+      id: self,
+      registry: registry,
+    );
   }
 
   @override
@@ -65,8 +69,11 @@ class Si1TypeDefBitSequence extends Si1TypeDef<Map<String, dynamic>> {
   }
 
   @override
-  Layout serializationLayout(PortableRegistry registry,
-      {String? property, LookupDecodeParams? params}) {
+  Layout serializationLayout(
+    PortableRegistry registry, {
+    String? property,
+    LookupDecodeParams? params,
+  }) {
     return SubstrateBitSequenceLayout(property: property);
   }
 }

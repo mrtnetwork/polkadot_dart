@@ -6,12 +6,12 @@ import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 class CustomMetadata15 extends SubstrateSerialization<Map<String, dynamic>> {
   final Map<String, CustomValueMetadata15> map;
   CustomMetadata15(Map<String, CustomValueMetadata15> map)
-      : map = Map<String, CustomValueMetadata15>.unmodifiable(map);
+    : map = Map<String, CustomValueMetadata15>.unmodifiable(map);
   CustomMetadata15.deserializeJson(Map<String, dynamic> json)
-      : map = Map<String, CustomValueMetadata15>.unmodifiable(<String, dynamic>{
-          for (final i in (json["map"] as Map).entries)
-            i.key: CustomValueMetadata15.deserializeJson(i.value)
-        });
+    : map = Map<String, CustomValueMetadata15>.unmodifiable(<String, dynamic>{
+        for (final i in (json["map"] as Map).entries)
+          i.key: CustomValueMetadata15.deserializeJson(i.value),
+      });
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
     return SubstrateMetadataLayouts.customMetadata15(property: property);
@@ -20,7 +20,7 @@ class CustomMetadata15 extends SubstrateSerialization<Map<String, dynamic>> {
   @override
   Map<String, dynamic> serializeJson({String? property}) {
     return {
-      "map": {for (final i in map.entries) i.key: i.value.serializeJson()}
+      "map": {for (final i in map.entries) i.key: i.value.serializeJson()},
     };
   }
 }

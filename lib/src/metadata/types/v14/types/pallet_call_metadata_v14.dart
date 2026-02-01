@@ -14,7 +14,7 @@ class PalletCallMetadataV14 extends PalletCallMetadata {
   final int type;
   const PalletCallMetadataV14(this.type);
   PalletCallMetadataV14.deserializeJson(Map<String, dynamic> json)
-      : type = json["type"];
+    : type = json["type"];
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -28,8 +28,12 @@ class PalletCallMetadataV14 extends PalletCallMetadata {
 }
 
 abstract class BaseMetadataInterface {
-  Layout typeDefLayout(PortableRegistry registry, dynamic value,
-      {String? property, int? id});
+  Layout typeDefLayout(
+    PortableRegistry registry,
+    dynamic value, {
+    String? property,
+    int? id,
+  });
   String showTemplate(PortableRegistry registry);
   LayoutDecodeResult decode(PortableRegistry registry, List<int> bytes);
 }

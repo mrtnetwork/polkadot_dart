@@ -5,8 +5,9 @@ import 'package:test/test.dart';
 import 'v14_metadata_hex.dart';
 
 void main() {
-  final VersionedMetadata<MetadataV14> metadata =
-      VersionedMetadata.fromBytes(BytesUtils.fromHexString(metadataV14));
+  final VersionedMetadata<MetadataV14> metadata = VersionedMetadata.fromBytes(
+    BytesUtils.fromHexString(metadataV14),
+  );
 
   group("Template", () {
     _test(metadata.metadata.registry);
@@ -20,15 +21,21 @@ void _test(PortableRegistry registry) {
     final Map<String, dynamic> template = {
       "type": "Bool",
       'lookup_id': 8,
-      "value": null
+      "value": null,
     };
     expect(template, typeTemplate.buildJsonTemplate());
     template["value"] = false;
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     expect(value, false);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: false, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: false,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("loookup-0", () {
@@ -37,18 +44,22 @@ void _test(PortableRegistry registry) {
     final Map<String, dynamic> template = {
       "type": "[U8;32]",
       'lookup_id': 1,
-      "value": null
+      "value": null,
     };
     expect(template, typeTemplate.buildJsonTemplate());
     final bytes = List<int>.filled(32, 0);
     template["value"] = BytesUtils.toHexString(bytes);
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     expect(value, bytes);
     final withoutTemplate = registry.getValue(
-        id: lookupId,
-        value: BytesUtils.toHexString(bytes),
-        fromTemplate: false);
+      id: lookupId,
+      value: BytesUtils.toHexString(bytes),
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("loookup-3", () {
@@ -67,10 +78,10 @@ void _test(PortableRegistry registry) {
             "free": {"type": "U128", 'lookup_id': 6, "value": null},
             "reserved": {"type": "U128", 'lookup_id': 6, "value": null},
             "frozen": {"type": "U128", 'lookup_id': 6, "value": null},
-            "flags": {"type": "U128", 'lookup_id': 6, "value": null}
-          }
-        }
-      }
+            "flags": {"type": "U128", 'lookup_id': 6, "value": null},
+          },
+        },
+      },
     };
     expect(template, typeTemplate.buildJsonTemplate());
     template = {
@@ -86,13 +97,16 @@ void _test(PortableRegistry registry) {
             "free": {"type": "U128", "value": 1},
             "reserved": {"type": "U128", "value": 2},
             "frozen": {"type": "U128", "value": 3},
-            "flags": {"type": "U128", "value": 4}
-          }
-        }
-      }
+            "flags": {"type": "U128", "value": 4},
+          },
+        },
+      },
     };
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     expect(value, {
       "nonce": 1,
       "consumers": 2,
@@ -102,24 +116,25 @@ void _test(PortableRegistry registry) {
         "free": BigInt.one,
         "reserved": BigInt.two,
         "frozen": BigInt.from(3),
-        "flags": BigInt.from(4)
-      }
+        "flags": BigInt.from(4),
+      },
     });
     final withoutTemplate = registry.getValue(
-        id: lookupId,
-        value: {
-          "nonce": 1,
-          "consumers": 2,
-          "providers": 3,
-          "sufficients": 4,
-          "data": {
-            "free": BigInt.one,
-            "reserved": BigInt.two,
-            "frozen": BigInt.from(3),
-            "flags": BigInt.from(4)
-          }
+      id: lookupId,
+      value: {
+        "nonce": 1,
+        "consumers": 2,
+        "providers": 3,
+        "sufficients": 4,
+        "data": {
+          "free": BigInt.one,
+          "reserved": BigInt.two,
+          "frozen": BigInt.from(3),
+          "flags": BigInt.from(4),
         },
-        fromTemplate: false);
+      },
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
 
@@ -132,59 +147,66 @@ void _test(PortableRegistry registry) {
           "type": "Map",
           "value": {
             "ref_time": {"type": "U64", "value": 1},
-            "proof_size": {"type": "U64", "value": 2}
-          }
+            "proof_size": {"type": "U64", "value": 2},
+          },
         },
         "operational": {
           "type": "Map",
           "value": {
             "ref_time": {"type": "U64", "value": 3},
-            "proof_size": {"type": "U64", "value": 4}
-          }
+            "proof_size": {"type": "U64", "value": 4},
+          },
         },
         "mandatory": {
           "type": "Map",
           "value": {
             "ref_time": {"type": "U64", "value": 5},
-            "proof_size": {"type": "U64", "value": 6}
-          }
-        }
-      }
+            "proof_size": {"type": "U64", "value": 6},
+          },
+        },
+      },
     };
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     expect(value, {
       "normal": {"ref_time": BigInt.one, "proof_size": BigInt.two},
       "operational": {"ref_time": BigInt.from(3), "proof_size": BigInt.from(4)},
-      "mandatory": {"ref_time": BigInt.from(5), "proof_size": BigInt.from(6)}
+      "mandatory": {"ref_time": BigInt.from(5), "proof_size": BigInt.from(6)},
     });
     final withoutTemplate = registry.getValue(
-        id: lookupId,
-        value: {
-          "normal": {"ref_time": BigInt.one, "proof_size": BigInt.two},
-          "operational": {
-            "ref_time": BigInt.from(3),
-            "proof_size": BigInt.from(4)
-          },
-          "mandatory": {
-            "ref_time": BigInt.from(5),
-            "proof_size": BigInt.from(6)
-          }
+      id: lookupId,
+      value: {
+        "normal": {"ref_time": BigInt.one, "proof_size": BigInt.two},
+        "operational": {
+          "ref_time": BigInt.from(3),
+          "proof_size": BigInt.from(4),
         },
-        fromTemplate: false);
+        "mandatory": {"ref_time": BigInt.from(5), "proof_size": BigInt.from(6)},
+      },
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("lookup-14", () {
     const int lookupId = 14;
     final Map<String, dynamic> template = {
       "type": "Vec<U8>",
-      "value": List<int>.filled(38, 12)
+      "value": List<int>.filled(38, 12),
     };
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     expect(value, List<int>.filled(38, 12));
     final withoutTemplate = registry.getValue(
-        id: lookupId, value: List<int>.filled(38, 12), fromTemplate: false);
+      id: lookupId,
+      value: List<int>.filled(38, 12),
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("lookup-17", () {
@@ -192,16 +214,20 @@ void _test(PortableRegistry registry) {
     final Map<String, dynamic> template = {
       "type": "Enum",
       "key": "RuntimeEnvironmentUpdated",
-      "value": null
+      "value": null,
     };
 
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     expect(value, {"RuntimeEnvironmentUpdated": null});
     final withoutTemplate = registry.getValue(
-        id: lookupId,
-        value: {"RuntimeEnvironmentUpdated": null},
-        fromTemplate: false);
+      id: lookupId,
+      value: {"RuntimeEnvironmentUpdated": null},
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("lookup-17_2", () {
@@ -213,13 +239,16 @@ void _test(PortableRegistry registry) {
         "type": "Tuple",
         "value": [
           {"type": "[U8;4]", "value": List<int>.filled(4, 5)},
-          {"type": "Vec<U8>", "value": List<int>.filled(25, 2)}
-        ]
-      }
+          {"type": "Vec<U8>", "value": List<int>.filled(25, 2)},
+        ],
+      },
     };
 
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = {
       "PreRuntime": [
         [5, 5, 5, 5],
@@ -248,13 +277,16 @@ void _test(PortableRegistry registry) {
           2,
           2,
           2,
-          2
-        ]
-      ]
+          2,
+        ],
+      ],
     };
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
 
@@ -264,18 +296,24 @@ void _test(PortableRegistry registry) {
       "type": "Enum",
       "key": "Other",
       "value": {
-        "value": [33, 33, 33, 33, 33, 33]
-      }
+        "value": [33, 33, 33, 33, 33, 33],
+      },
     };
 
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = {
-      "Other": [33, 33, 33, 33, 33, 33]
+      "Other": [33, 33, 33, 33, 33, 33],
     };
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("lookup-16", () {
@@ -283,24 +321,16 @@ void _test(PortableRegistry registry) {
     final Map<String, dynamic> template = {
       "type": "Vec<T>",
       "value": [
-        {
-          "type": "Enum",
-          "key": "RuntimeEnvironmentUpdated",
-          "value": null,
-        },
-        {
-          "type": "Enum",
-          "key": "RuntimeEnvironmentUpdated",
-          "value": null,
-        },
+        {"type": "Enum", "key": "RuntimeEnvironmentUpdated", "value": null},
+        {"type": "Enum", "key": "RuntimeEnvironmentUpdated", "value": null},
         {
           "type": "Enum",
           "key": "PreRuntime",
           "value": {
             "value": [
               {"value": List<int>.filled(4, 2)},
-              {"value": List<int>.filled(10, 2)}
-            ]
+              {"value": List<int>.filled(10, 2)},
+            ],
           },
         },
         {
@@ -308,27 +338,33 @@ void _test(PortableRegistry registry) {
           "key": "Other",
           "value": {"value": List<int>.filled(10, 2)},
         },
-      ]
+      ],
     };
 
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = [
       {"RuntimeEnvironmentUpdated": null},
       {"RuntimeEnvironmentUpdated": null},
       {
         "PreRuntime": [
           [2, 2, 2, 2],
-          [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-        ]
+          [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+        ],
       },
       {
-        "Other": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-      }
+        "Other": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+      },
     ];
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("lookup-15", () {
@@ -340,19 +376,15 @@ void _test(PortableRegistry registry) {
           "type": "Vec<DigestItem>",
           "value": [
             {"type": "Enum", "key": "RuntimeEnvironmentUpdated", "value": null},
-            {
-              "type": "Enum",
-              "key": "RuntimeEnvironmentUpdated",
-              "value": null,
-            },
+            {"type": "Enum", "key": "RuntimeEnvironmentUpdated", "value": null},
             {
               "type": "Enum",
               "key": "PreRuntime",
               "value": {
                 "value": [
                   {"value": List<int>.filled(4, 2)},
-                  {"value": List<int>.filled(10, 2)}
-                ]
+                  {"value": List<int>.filled(10, 2)},
+                ],
               },
             },
             {
@@ -360,13 +392,16 @@ void _test(PortableRegistry registry) {
               "key": "Other",
               "value": {"value": List<int>.filled(10, 2)},
             },
-          ]
-        }
-      }
+          ],
+        },
+      },
     };
 
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = {
       "logs": [
         {"RuntimeEnvironmentUpdated": null},
@@ -374,17 +409,20 @@ void _test(PortableRegistry registry) {
         {
           "PreRuntime": [
             [2, 2, 2, 2],
-            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-          ]
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+          ],
         },
         {
-          "Other": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-        }
-      ]
+          "Other": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+        },
+      ],
     };
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
 
@@ -400,35 +438,33 @@ void _test(PortableRegistry registry) {
             "type": "Map",
             "value": {
               "ref_time": {"type": "U64", "value": 12},
-              "proof_size": {"type": "U64", "value": 13}
-            }
+              "proof_size": {"type": "U64", "value": 13},
+            },
           },
-          "class": {
-            "type": "Enum",
-            "key": "Normal",
-            "value": null,
-          },
-          "pays_fee": {
-            "type": "Enum",
-            "key": "Yes",
-            "value": null,
-          }
-        }
+          "class": {"type": "Enum", "key": "Normal", "value": null},
+          "pays_fee": {"type": "Enum", "key": "Yes", "value": null},
+        },
       },
     };
 
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = {
       "ExtrinsicSuccess": {
         "weight": {"ref_time": BigInt.from(12), "proof_size": BigInt.from(13)},
         "class": {"Normal": null},
-        "pays_fee": {"Yes": null}
-      }
+        "pays_fee": {"Yes": null},
+      },
     };
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("lookup-23", () {
@@ -440,37 +476,43 @@ void _test(PortableRegistry registry) {
           "type": "Map",
           "value": {
             "ref_time": {"type": "U64", "value": BigInt.from(123123123)},
-            "proof_size": {"type": "U64", "value": 123123123123}
-          }
+            "proof_size": {"type": "U64", "value": 123123123123},
+          },
         },
         "class": {
           "type": "Enum",
           "key": "Operational",
           "value": null,
-          "variants": {"Normal": null, "Operational": null, "Mandatory": null}
+          "variants": {"Normal": null, "Operational": null, "Mandatory": null},
         },
         "pays_fee": {
           "type": "Enum",
           "key": "No",
           "value": null,
-          "variants": {"Yes": null, "No": null}
-        }
-      }
+          "variants": {"Yes": null, "No": null},
+        },
+      },
     };
 
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = {
       "weight": {
         "ref_time": BigInt.from(123123123),
-        "proof_size": BigInt.from(123123123123)
+        "proof_size": BigInt.from(123123123123),
       },
       "class": {"Operational": null},
-      "pays_fee": {"No": null}
+      "pays_fee": {"No": null},
     };
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
 
@@ -487,12 +529,15 @@ void _test(PortableRegistry registry) {
             "key": "Id",
             "value": {"type": "[U8;32]", "value": List<int>.filled(32, 0)},
           },
-          "index": {"type": "U32", "value": 11111}
-        }
+          "index": {"type": "U32", "value": 11111},
+        },
       },
     };
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = {
       "transfer": {
         "new": {
@@ -528,15 +573,18 @@ void _test(PortableRegistry registry) {
             0,
             0,
             0,
-            0
-          ]
+            0,
+          ],
         },
-        "index": 11111
-      }
+        "index": 11111,
+      },
     };
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
 
@@ -546,11 +594,14 @@ void _test(PortableRegistry registry) {
       "type": "Tuple",
       "value": [
         {"type": "[U8;32]", "value": List<int>.filled(32, 12)},
-        {"type": "U64", "value": BigInt.from(123123)}
-      ]
+        {"type": "U64", "value": BigInt.from(123123)},
+      ],
     };
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = [
       [
         12,
@@ -584,13 +635,16 @@ void _test(PortableRegistry registry) {
         12,
         12,
         12,
-        12
+        12,
       ],
-      BigInt.from(123123)
+      BigInt.from(123123),
     ];
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
   test("loookup-200", () {
@@ -641,13 +695,16 @@ void _test(PortableRegistry registry) {
             "BlakeTwo256": {"type": "[U8;32]", "value": null},
             "Sha256": {"type": "[U8;32]", "value": null},
             "Keccak256": {"type": "[U8;32]", "value": null},
-            "ShaThree256": {"type": "[U8;32]", "value": null}
-          }
-        }
-      ]
+            "ShaThree256": {"type": "[U8;32]", "value": null},
+          },
+        },
+      ],
     };
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = [
       [
         1,
@@ -681,7 +738,7 @@ void _test(PortableRegistry registry) {
         1,
         1,
         1,
-        1
+        1,
       ],
       {
         "Keccak256": [
@@ -716,13 +773,16 @@ void _test(PortableRegistry registry) {
           2,
           2,
           2,
-          2
-        ]
-      }
+          2,
+        ],
+      },
     ];
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
 
@@ -730,14 +790,20 @@ void _test(PortableRegistry registry) {
     const lookupId = 57;
     final Map<String, dynamic> template = {
       "key": "Some",
-      "value": {"value": List<int>.filled(32, 12)}
+      "value": {"value": List<int>.filled(32, 12)},
     };
-    final value =
-        registry.getValue(id: lookupId, value: template, fromTemplate: true);
+    final value = registry.getValue(
+      id: lookupId,
+      value: template,
+      fromTemplate: true,
+    );
     final result = {"Some": List<int>.filled(32, 12)};
     expect(value, result);
-    final withoutTemplate =
-        registry.getValue(id: lookupId, value: result, fromTemplate: false);
+    final withoutTemplate = registry.getValue(
+      id: lookupId,
+      value: result,
+      fromTemplate: false,
+    );
     expect(value, withoutTemplate);
   });
 }

@@ -37,32 +37,39 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
 
   /// Allows users to add custom types to the metadata.
   final CustomMetadata15 custom;
-  MetadataV16(
-      {required this.lookup,
-      required List<PalletMetadataV16> pallets,
-      required this.extrinsic,
-      required List<RuntimeApiMetadataV16> apis,
-      required this.outerEnums,
-      required this.custom})
-      : pallets = Map.fromEntries(pallets.map(
-            (e) => MapEntry<int, PalletMetadataV16>(e.index, e))).immutable,
-        apis = apis.immutable;
+  MetadataV16({
+    required this.lookup,
+    required List<PalletMetadataV16> pallets,
+    required this.extrinsic,
+    required List<RuntimeApiMetadataV16> apis,
+    required this.outerEnums,
+    required this.custom,
+  }) : pallets =
+           Map.fromEntries(
+             pallets.map((e) => MapEntry<int, PalletMetadataV16>(e.index, e)),
+           ).immutable,
+       apis = apis.immutable;
   MetadataV16.deserializeJson(Map<String, dynamic> json)
-      : lookup = PortableRegistryV14.deserializeJson(json["lookup"]),
-        pallets = Map.fromEntries((json["pallets"] as List).map((e) {
-          final decode = PalletMetadataV16.deserializeJson(e);
-          return MapEntry(decode.index, decode);
-        })).immutable,
-        extrinsic = ExtrinsicMetadataV16.deserializeJson(json["extrinsic"]),
-        apis = (json["apis"] as List)
-            .map((e) => RuntimeApiMetadataV16.deserializeJson(e))
-            .toImutableList,
-        outerEnums = OuterEnums15.deserializeJson(json["outerEnums"]),
-        custom = CustomMetadata15.deserializeJson(json["custom"]);
+    : lookup = PortableRegistryV14.deserializeJson(json["lookup"]),
+      pallets =
+          Map.fromEntries(
+            (json["pallets"] as List).map((e) {
+              final decode = PalletMetadataV16.deserializeJson(e);
+              return MapEntry(decode.index, decode);
+            }),
+          ).immutable,
+      extrinsic = ExtrinsicMetadataV16.deserializeJson(json["extrinsic"]),
+      apis =
+          (json["apis"] as List)
+              .map((e) => RuntimeApiMetadataV16.deserializeJson(e))
+              .toImutableList,
+      outerEnums = OuterEnums15.deserializeJson(json["outerEnums"]),
+      custom = CustomMetadata15.deserializeJson(json["custom"]);
   factory MetadataV16.fromBytes(List<int> bytes, {String? property}) {
-    final decode = SubstrateMetadataLayouts.metadataV16(property: property)
-        .deserialize(bytes)
-        .value;
+    final decode =
+        SubstrateMetadataLayouts.metadataV16(
+          property: property,
+        ).deserialize(bytes).value;
     return MetadataV16.deserializeJson(decode);
   }
 
@@ -79,7 +86,7 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
       "extrinsic": extrinsic.serializeJson(),
       "outerEnums": outerEnums.serializeJson(),
       "apis": apis.map((e) => e.serializeJson()).toList(),
-      "custom": custom.serializeJson()
+      "custom": custom.serializeJson(),
     };
   }
 
@@ -97,25 +104,40 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
   RuntimeApiMetadataV16 _getRuntimeApi(String apiName) {
     final api = apis.firstWhere(
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
-      orElse: () => throw MetadataException("Api does not eixst.",
-          details: {"apis": getRuntimeApis().join(", ")}),
+      orElse:
+          () =>
+              throw MetadataException(
+                "Api does not eixst.",
+                details: {"apis": getRuntimeApis().join(", ")},
+              ),
     );
     return api;
   }
 
   RuntimeApiMethodMetadataV16 _getRuntimeMethod(
-      String apiName, String methodName) {
+    String apiName,
+    String methodName,
+  ) {
     final api = apis.firstWhere(
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
-      orElse: () => throw MetadataException("Api does not eixst.",
-          details: {"apis": getRuntimeApis().join(", ")}),
+      orElse:
+          () =>
+              throw MetadataException(
+                "Api does not eixst.",
+                details: {"apis": getRuntimeApis().join(", ")},
+              ),
     );
     final method = api.methods.firstWhere(
       (element) => element.name.toLowerCase() == methodName.toLowerCase(),
-      orElse: () => throw MetadataException("Method does not eixst.", details: {
-        "Api": api.name,
-        "Methods": api.methods.map((e) => e.name).join(", "),
-      }),
+      orElse:
+          () =>
+              throw MetadataException(
+                "Method does not eixst.",
+                details: {
+                  "Api": api.name,
+                  "Methods": api.methods.map((e) => e.name).join(", "),
+                },
+              ),
     );
     return method;
   }
@@ -124,8 +146,12 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
   List<String> getRuntimeApiMethods(String apiName) {
     final api = apis.firstWhere(
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
-      orElse: () => throw MetadataException("Api does not eixst.",
-          details: {"apis": getRuntimeApis().join(", ")}),
+      orElse:
+          () =>
+              throw MetadataException(
+                "Api does not eixst.",
+                details: {"apis": getRuntimeApis().join(", ")},
+              ),
     );
     return api.methods.map((e) => e.name).toList();
   }
@@ -156,7 +182,8 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
         _getRuntimeMethod(apiName, methodName);
       } else {
         return apis.any(
-            (element) => element.name.toLowerCase() == apiName.toLowerCase());
+          (element) => element.name.toLowerCase() == apiName.toLowerCase(),
+        );
       }
       return true;
     } on MetadataException {
@@ -169,24 +196,24 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
     final List<TransactionExtrinsicInfo> extrinsics = [];
     for (final i in extrinsic.versions) {
       final extrinsic = TransactionExtrinsicInfo(
-          version: i,
-          callType: null,
-          addressType: this.extrinsic.addressType,
-          signatureType: this.extrinsic.signatureType,
-          extrinsic: [
-            ...this
-                .extrinsic
-                .transactionExtensions
-                .map((e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier))
-          ],
-          payloadExtrinsic: [
-            ...this
-                .extrinsic
-                .transactionExtensions
-                .map((e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier)),
-            ...this.extrinsic.transactionExtensions.map(
-                (e) => ExtrinsicTypeInfo(id: e.implicit, name: e.identifier))
-          ]);
+        version: i,
+        callType: null,
+        addressType: this.extrinsic.addressType,
+        signatureType: this.extrinsic.signatureType,
+        extrinsic: [
+          ...this.extrinsic.transactionExtensions.map(
+            (e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier),
+          ),
+        ],
+        payloadExtrinsic: [
+          ...this.extrinsic.transactionExtensions.map(
+            (e) => ExtrinsicTypeInfo(id: e.type, name: e.identifier),
+          ),
+          ...this.extrinsic.transactionExtensions.map(
+            (e) => ExtrinsicTypeInfo(id: e.implicit, name: e.identifier),
+          ),
+        ],
+      );
       extrinsics.add(extrinsic);
     }
     return extrinsics;

@@ -5,10 +5,11 @@ import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 /// https://polkadot.js.org/docs/substrate/rpc/#mmr
 class SubstrateRequestMMRGenerateProof
     extends SubstrateRequest<Map<String, dynamic>, Map<String, dynamic>> {
-  const SubstrateRequestMMRGenerateProof(
-      {required this.blockNumbers,
-      this.bestKnownBlockNumber,
-      this.atBlockHash});
+  const SubstrateRequestMMRGenerateProof({
+    required this.blockNumbers,
+    this.bestKnownBlockNumber,
+    this.atBlockHash,
+  });
   final List<int> blockNumbers;
   final int? bestKnownBlockNumber;
 

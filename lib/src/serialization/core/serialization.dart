@@ -13,8 +13,11 @@ mixin JsonSerialization {
 abstract class SubstrateSerialization<T> {
   const SubstrateSerialization();
 
-  static LayoutDecodeResult<T> deserialize<T>(
-      {required List<int> bytes, required Layout<T> layout, int offset = 0}) {
+  static LayoutDecodeResult<T> deserialize<T>({
+    required List<int> bytes,
+    required Layout<T> layout,
+    int offset = 0,
+  }) {
     final reader = LayoutByteReader(bytes);
     final decodeBytes = layout.decode(reader, offset: offset);
     return decodeBytes;
@@ -35,8 +38,11 @@ abstract class SubstrateSerialization<T> {
   T serializeJson({String? property});
 
   String toHex({String? prefix, bool lowerCase = true}) {
-    return BytesUtils.toHexString(serialize(),
-        lowerCase: lowerCase, prefix: prefix);
+    return BytesUtils.toHexString(
+      serialize(),
+      lowerCase: lowerCase,
+      prefix: prefix,
+    );
   }
 
   @override
@@ -50,7 +56,7 @@ class SubstrateVariantDecodeResult {
   String get variantName => result['key'];
   Map<String, dynamic> get value => result['value'];
   SubstrateVariantDecodeResult(Map<String, dynamic> result)
-      : result = result.immutable;
+    : result = result.immutable;
 
   @override
   String toString() {
@@ -62,21 +68,25 @@ abstract class SubstrateVariantSerialization
     extends SubstrateSerialization<Map<String, dynamic>> {
   const SubstrateVariantSerialization();
   static SubstrateVariantDecodeResult toVariantDecodeResult(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     if (json['key'] is! String || !json.containsKey('value')) {
       throw const DartSubstratePluginException(
-          'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.');
+        'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.',
+      );
     }
     return SubstrateVariantDecodeResult(json);
   }
 
-  static Map<String, dynamic> deserialize(
-      {required List<int> bytes,
-      required Layout<Map<String, dynamic>> layout}) {
+  static Map<String, dynamic> deserialize({
+    required List<int> bytes,
+    required Layout<Map<String, dynamic>> layout,
+  }) {
     final json = layout.deserialize(bytes).value;
     if (json['key'] is! String || !json.containsKey('value')) {
       throw const DartSubstratePluginException(
-          'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.');
+        'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.',
+      );
     }
     return json;
   }

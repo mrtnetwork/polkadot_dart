@@ -20,8 +20,10 @@ abstract mixin class XCMAssetId
     return xcm;
   }
 
-  factory XCMAssetId.fromJson(
-      {required Map<String, dynamic> json, required XCMVersion version}) {
+  factory XCMAssetId.fromJson({
+    required Map<String, dynamic> json,
+    required XCMVersion version,
+  }) {
     final xcm = switch (version) {
       XCMVersion.v2 => XCMV2AssetId.fromJson(json),
       XCMVersion.v3 => XCMV3AssetId.fromJson(json),
@@ -31,8 +33,10 @@ abstract mixin class XCMAssetId
     return xcm;
   }
 
-  static Layout<Map<String, dynamic>> layout_(XCMVersion version,
-      {String? property}) {
+  static Layout<Map<String, dynamic>> layout_(
+    XCMVersion version, {
+    String? property,
+  }) {
     return switch (version) {
       XCMVersion.v5 => XCMV5AssetId.layout_(property: property),
       XCMVersion.v4 => XCMV4AssetId.layout_(property: property),
@@ -66,7 +70,8 @@ abstract mixin class XCMAssetId
     final location = this.location;
     if (location == null) {
       throw DartSubstratePluginException(
-          "Unable to determine XCM location for asset ID (V3 Abstract).");
+        "Unable to determine XCM location for asset ID (V3 Abstract).",
+      );
     }
     return location;
   }
@@ -84,19 +89,20 @@ abstract mixin class XCMAssetId
 abstract mixin class XCMAssets<ASSET extends XCMAsset>
     implements SubstrateSerialization<Map<String, dynamic>>, XCMComponent {
   List<ASSET> get assets;
-  factory XCMAssets.fromAsset(
-      {required List<XCMAsset> assets, required XCMVersion version}) {
+  factory XCMAssets.fromAsset({
+    required List<XCMAsset> assets,
+    required XCMVersion version,
+  }) {
     return switch (version) {
       XCMVersion.v2 => XCMV2MultiAssets(assets: assets.cast()),
       XCMVersion.v3 => XCMV3MultiAssets(assets: assets.cast()),
       XCMVersion.v4 => XCMV4Assets(assets: assets.cast()),
       XCMVersion.v5 => XCMV5Assets(assets: assets.cast()),
-    }
-        .cast<XCMAssets<ASSET>>();
+    }.cast<XCMAssets<ASSET>>();
   }
 
   @override
-  List get variabels => [assets];
+  List get variables => [assets];
 
   @override
   T cast<T extends XCMComponent>() {
@@ -123,35 +129,51 @@ abstract mixin class XCMAsset
     return this as T;
   }
 
-  factory XCMAsset.fungible(
-      {required BigInt amount, required XCMMultiLocation location}) {
+  factory XCMAsset.fungible({
+    required BigInt amount,
+    required XCMMultiLocation location,
+  }) {
     return switch (location.version) {
       XCMVersion.v2 => XCMV2MultiAsset(
-          id: XCMV2AssetIdConcrete(location: location.cast()),
-          fun: XCMV2FungibilityFungible(units: amount)),
+        id: XCMV2AssetIdConcrete(location: location.cast()),
+        fun: XCMV2FungibilityFungible(units: amount),
+      ),
       XCMVersion.v3 => XCMV3MultiAsset(
-          id: XCMV3AssetIdConcrete(location: location.cast()),
-          fun: XCMV3FungibilityFungible(units: amount)),
+        id: XCMV3AssetIdConcrete(location: location.cast()),
+        fun: XCMV3FungibilityFungible(units: amount),
+      ),
       XCMVersion.v4 => XCMV4Asset(
-          id: XCMV4AssetId(location: location.cast()),
-          fun: XCMV4FungibilityFungible(units: amount)),
+        id: XCMV4AssetId(location: location.cast()),
+        fun: XCMV4FungibilityFungible(units: amount),
+      ),
       XCMVersion.v5 => XCMV5Asset(
-          id: XCMV5AssetId(location: location.cast()),
-          fun: XCMV5FungibilityFungible(units: amount)),
+        id: XCMV5AssetId(location: location.cast()),
+        fun: XCMV5FungibilityFungible(units: amount),
+      ),
     };
   }
 
-  factory XCMAsset.fungibleAsset(
-      {required BigInt amount, required XCMAssetId id}) {
+  factory XCMAsset.fungibleAsset({
+    required BigInt amount,
+    required XCMAssetId id,
+  }) {
     return switch (id.version) {
       XCMVersion.v2 => XCMV2MultiAsset(
-          id: id.cast(), fun: XCMV2FungibilityFungible(units: amount)),
+        id: id.cast(),
+        fun: XCMV2FungibilityFungible(units: amount),
+      ),
       XCMVersion.v3 => XCMV3MultiAsset(
-          id: id.cast(), fun: XCMV3FungibilityFungible(units: amount)),
-      XCMVersion.v4 =>
-        XCMV4Asset(id: id.cast(), fun: XCMV4FungibilityFungible(units: amount)),
-      XCMVersion.v5 =>
-        XCMV5Asset(id: id.cast(), fun: XCMV5FungibilityFungible(units: amount)),
+        id: id.cast(),
+        fun: XCMV3FungibilityFungible(units: amount),
+      ),
+      XCMVersion.v4 => XCMV4Asset(
+        id: id.cast(),
+        fun: XCMV4FungibilityFungible(units: amount),
+      ),
+      XCMVersion.v5 => XCMV5Asset(
+        id: id.cast(),
+        fun: XCMV5FungibilityFungible(units: amount),
+      ),
     };
   }
 
@@ -175,7 +197,7 @@ abstract mixin class XCMAsset
   Map<String, dynamic> toJson();
 
   @override
-  List get variabels => [id, fun, version];
+  List get variables => [id, fun, version];
 }
 
 enum XCMWildFungibilityType {
@@ -186,8 +208,10 @@ enum XCMWildFungibilityType {
 
   const XCMWildFungibilityType(this.type);
   static XCMWildFungibilityType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMWildFungibilityType fromType(String? type) {
@@ -235,7 +259,7 @@ abstract mixin class XCMWildFungibilityFungible implements XCMWildFungibility {
   @override
   XCMWildFungibilityType get type => XCMWildFungibilityType.fungible;
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMWildFungibilityNonFungible
@@ -257,7 +281,7 @@ abstract mixin class XCMWildFungibilityNonFungible
   @override
   XCMWildFungibilityType get type => XCMWildFungibilityType.nonFungible;
   @override
-  List get variabels => [type];
+  List get variables => [type];
   @override
   Map<String, dynamic> toJson() {
     return {type.type: null};
@@ -273,13 +297,17 @@ enum XCMWildAssetType {
   const XCMWildAssetType(this.type);
   final String type;
   static XCMWildAssetType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMWildAssetType fromType(String? type) {
-    return values.firstWhere((e) => e.type == type,
-        orElse: () => throw ItemNotFoundException(value: type));
+    return values.firstWhere(
+      (e) => e.type == type,
+      orElse: () => throw ItemNotFoundException(value: type),
+    );
   }
 }
 
@@ -295,85 +323,100 @@ abstract mixin class XCMWildMultiAsset
       XCMVersion.v2 => XCMV2WildMultiAssetAll(),
       XCMVersion.v3 => XCMV3WildMultiAssetAll(),
       XCMVersion.v4 => XCMV4WildAssetAll(),
-      XCMVersion.v5 => XCMV5WildAssetAll()
+      XCMVersion.v5 => XCMV5WildAssetAll(),
     };
   }
-  factory XCMWildMultiAsset.allOf(
-      {required XCMAssetId assetId,
-      required XCMWildFungibilityType fungibility}) {
+  factory XCMWildMultiAsset.allOf({
+    required XCMAssetId assetId,
+    required XCMWildFungibilityType fungibility,
+  }) {
     return switch (assetId.version) {
       XCMVersion.v2 => XCMV2WildMultiAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV2WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV2WildFungibilityNonFungible()
-          }),
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV2WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV2WildFungibilityNonFungible(),
+        },
+      ),
       XCMVersion.v3 => XCMV3WildMultiAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV3WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV3WildFungibilityNonFungible(),
-          }),
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV3WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV3WildFungibilityNonFungible(),
+        },
+      ),
       XCMVersion.v4 => XCMV4WildAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV4WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV4WildFungibilityNonFungible(),
-          }),
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV4WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV4WildFungibilityNonFungible(),
+        },
+      ),
       XCMVersion.v5 => XCMV5WildAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV5WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV5WildFungibilityNonFungible(),
-          })
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV5WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV5WildFungibilityNonFungible(),
+        },
+      ),
     };
   }
 
-  factory XCMWildMultiAsset.allCounted(
-      {required int count, required XCMVersion version}) {
+  factory XCMWildMultiAsset.allCounted({
+    required int count,
+    required XCMVersion version,
+  }) {
     return switch (version) {
-      XCMVersion.v2 => throw DartSubstratePluginException(
-          "Unsuported all counted wild assets by version 2."),
+      XCMVersion.v2 =>
+        throw DartSubstratePluginException(
+          "Unsuported all counted wild assets by version 2.",
+        ),
       XCMVersion.v3 => XCMV3WildMultiAssetAllCounted(count: count),
       XCMVersion.v4 => XCMV4WildAssetAllCounted(count: count),
-      XCMVersion.v5 => XCMV5WildAssetAllCounted(count: count)
+      XCMVersion.v5 => XCMV5WildAssetAllCounted(count: count),
     };
   }
-  factory XCMWildMultiAsset.allOfCounted(
-      {required XCMAssetId assetId,
-      required int count,
-      required XCMWildFungibilityType fungibility}) {
+  factory XCMWildMultiAsset.allOfCounted({
+    required XCMAssetId assetId,
+    required int count,
+    required XCMWildFungibilityType fungibility,
+  }) {
     return switch (assetId.version) {
-      XCMVersion.v2 => throw DartSubstratePluginException(
-          "Unsuported all of counted wild assets by version 2."),
+      XCMVersion.v2 =>
+        throw DartSubstratePluginException(
+          "Unsuported all of counted wild assets by version 2.",
+        ),
       XCMVersion.v3 => XCMV3WildMultiAssetAllOfCounted(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV3WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV3WildFungibilityNonFungible()
-          },
-          count: count),
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV3WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV3WildFungibilityNonFungible(),
+        },
+        count: count,
+      ),
       XCMVersion.v4 => XCMV4WildAssetAllOfCounted(
-          id: assetId.cast(),
-          count: count,
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV4WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV4WildFungibilityNonFungible()
-          }),
+        id: assetId.cast(),
+        count: count,
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV4WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV4WildFungibilityNonFungible(),
+        },
+      ),
       XCMVersion.v5 => XCMV5WildAssetAllOfCounted(
-          id: assetId.cast(),
-          count: count,
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV5WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV5WildFungibilityNonFungible()
-          })
+        id: assetId.cast(),
+        count: count,
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV5WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV5WildFungibilityNonFungible(),
+        },
+      ),
     };
   }
 
@@ -395,59 +438,64 @@ abstract mixin class XCMWildMultiAssetAll implements XCMWildMultiAsset {
   }
 
   @override
-  List get variabels => [type];
+  List get variables => [type];
 }
 
 abstract mixin class XCMWildMultiAssetAllOf implements XCMWildMultiAsset {
   XCMAssetId get id;
   XCMWildFungibility get fun;
 
-  factory XCMWildMultiAssetAllOf.fromAssetId(
-      {required XCMAssetId assetId,
-      required XCMWildFungibilityType fungibility}) {
+  factory XCMWildMultiAssetAllOf.fromAssetId({
+    required XCMAssetId assetId,
+    required XCMWildFungibilityType fungibility,
+  }) {
     return switch (assetId.version) {
       XCMVersion.v2 => XCMV2WildMultiAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV2WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV2WildFungibilityNonFungible()
-          }),
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV2WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV2WildFungibilityNonFungible(),
+        },
+      ),
       XCMVersion.v3 => XCMV3WildMultiAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV3WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV3WildFungibilityNonFungible(),
-          }),
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV3WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV3WildFungibilityNonFungible(),
+        },
+      ),
       XCMVersion.v4 => XCMV4WildAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV4WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV4WildFungibilityNonFungible(),
-          }),
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV4WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV4WildFungibilityNonFungible(),
+        },
+      ),
       XCMVersion.v5 => XCMV5WildAssetAllOf(
-          id: assetId.cast(),
-          fun: switch (fungibility) {
-            XCMWildFungibilityType.fungible => XCMV5WildFungibilityFungible(),
-            XCMWildFungibilityType.nonFungible =>
-              XCMV5WildFungibilityNonFungible(),
-          })
+        id: assetId.cast(),
+        fun: switch (fungibility) {
+          XCMWildFungibilityType.fungible => XCMV5WildFungibilityFungible(),
+          XCMWildFungibilityType.nonFungible =>
+            XCMV5WildFungibilityNonFungible(),
+        },
+      ),
     };
   }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"id": id.toJson(), "fun": fun.toJson()}
+      type.type: {"id": id.toJson(), "fun": fun.toJson()},
     };
   }
 
   @override
   XCMWildAssetType get type => XCMWildAssetType.allOf;
   @override
-  List get variabels => [type, id, fun];
+  List get variables => [type, id, fun];
 }
 
 abstract mixin class XCMWildMultiAssetAllCounted implements XCMWildMultiAsset {
@@ -460,7 +508,7 @@ abstract mixin class XCMWildMultiAssetAllCounted implements XCMWildMultiAsset {
   @override
   XCMWildAssetType get type => XCMWildAssetType.allCounted;
   @override
-  List get variabels => [type, count];
+  List get variables => [type, count];
 }
 
 abstract mixin class XCMWildMultiAssetAllOfCounted
@@ -472,14 +520,14 @@ abstract mixin class XCMWildMultiAssetAllOfCounted
   @override
   Map<String, dynamic> toJson() {
     return {
-      type.type: {"id": id.toJson(), "fun": fun.toJson(), "count": count}
+      type.type: {"id": id.toJson(), "fun": fun.toJson(), "count": count},
     };
   }
 
   @override
   XCMWildAssetType get type => XCMWildAssetType.allOfCounted;
   @override
-  List get variabels => [type, id, fun, count];
+  List get variables => [type, id, fun, count];
 }
 
 enum XCMMultiAssetFilterType {
@@ -489,8 +537,10 @@ enum XCMMultiAssetFilterType {
   final String type;
   const XCMMultiAssetFilterType(this.type);
   static XCMMultiAssetFilterType fromName(String? name) {
-    return values.firstWhere((e) => e.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   static XCMMultiAssetFilterType fromType(String? type) {
@@ -510,7 +560,7 @@ abstract mixin class XCMMultiAssetFilter
       XCMVersion.v2 => XCMV2MultiAssetFilterDefinite(assets: assets.cast()),
       XCMVersion.v3 => XCMV3MultiAssetFilterDefinite(assets: assets.cast()),
       XCMVersion.v4 => XCMV4AssetFilterDefinite(assets: assets.cast()),
-      XCMVersion.v5 => XCMV5AssetFilterDefinite(assets: assets.cast())
+      XCMVersion.v5 => XCMV5AssetFilterDefinite(assets: assets.cast()),
     };
   }
   factory XCMMultiAssetFilter.wild(XCMWildMultiAsset asset) {
@@ -518,7 +568,7 @@ abstract mixin class XCMMultiAssetFilter
       XCMVersion.v2 => XCMV2MultiAssetFilterWild(asset: asset.cast()),
       XCMVersion.v3 => XCMV3MultiAssetFilterWild(asset: asset.cast()),
       XCMVersion.v4 => XCMV4AssetFilterWild(asset: asset.cast()),
-      XCMVersion.v5 => XCMV5AssetFilterWild(asset: asset.cast())
+      XCMVersion.v5 => XCMV5AssetFilterWild(asset: asset.cast()),
     };
   }
   @override
@@ -548,7 +598,7 @@ abstract mixin class XCMMultiAssetFilterDefinite
   }
 
   @override
-  List get variabels => [type, assets];
+  List get variables => [type, assets];
 }
 
 abstract mixin class XCMMultiAssetFilterWild implements XCMMultiAssetFilter {
@@ -562,5 +612,5 @@ abstract mixin class XCMMultiAssetFilterWild implements XCMMultiAssetFilter {
   }
 
   @override
-  List get variabels => [type, asset];
+  List get variables => [type, asset];
 }

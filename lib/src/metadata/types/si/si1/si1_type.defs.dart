@@ -15,22 +15,30 @@ import 'si1_type_def_variant.dart';
 class Si1TypeDefsIndexesConst {
   final String name;
   const Si1TypeDefsIndexesConst._(this.name);
-  static const Si1TypeDefsIndexesConst composite =
-      Si1TypeDefsIndexesConst._('Composite');
-  static const Si1TypeDefsIndexesConst variant =
-      Si1TypeDefsIndexesConst._('Variant');
-  static const Si1TypeDefsIndexesConst sequence =
-      Si1TypeDefsIndexesConst._('Sequence');
-  static const Si1TypeDefsIndexesConst array =
-      Si1TypeDefsIndexesConst._('Array');
-  static const Si1TypeDefsIndexesConst tuple =
-      Si1TypeDefsIndexesConst._('Tuple');
-  static const Si1TypeDefsIndexesConst primitive =
-      Si1TypeDefsIndexesConst._('Primitive');
-  static const Si1TypeDefsIndexesConst compact =
-      Si1TypeDefsIndexesConst._('Compact');
-  static const Si1TypeDefsIndexesConst bitSequence =
-      Si1TypeDefsIndexesConst._('BitSequence');
+  static const Si1TypeDefsIndexesConst composite = Si1TypeDefsIndexesConst._(
+    'Composite',
+  );
+  static const Si1TypeDefsIndexesConst variant = Si1TypeDefsIndexesConst._(
+    'Variant',
+  );
+  static const Si1TypeDefsIndexesConst sequence = Si1TypeDefsIndexesConst._(
+    'Sequence',
+  );
+  static const Si1TypeDefsIndexesConst array = Si1TypeDefsIndexesConst._(
+    'Array',
+  );
+  static const Si1TypeDefsIndexesConst tuple = Si1TypeDefsIndexesConst._(
+    'Tuple',
+  );
+  static const Si1TypeDefsIndexesConst primitive = Si1TypeDefsIndexesConst._(
+    'Primitive',
+  );
+  static const Si1TypeDefsIndexesConst compact = Si1TypeDefsIndexesConst._(
+    'Compact',
+  );
+  static const Si1TypeDefsIndexesConst bitSequence = Si1TypeDefsIndexesConst._(
+    'BitSequence',
+  );
   static const Si1TypeDefsIndexesConst historicMetaCompat =
       Si1TypeDefsIndexesConst._('HistoricMetaCompat');
   static const List<Si1TypeDefsIndexesConst> values = [
@@ -42,12 +50,14 @@ class Si1TypeDefsIndexesConst {
     primitive,
     compact,
     bitSequence,
-    historicMetaCompat
+    historicMetaCompat,
   ];
 
   static Si1TypeDefsIndexesConst fromValue(String? name) {
-    return values.firstWhere((element) => element.name == name,
-        orElse: () => throw ItemNotFoundException(value: name));
+    return values.firstWhere(
+      (element) => element.name == name,
+      orElse: () => throw ItemNotFoundException(value: name),
+    );
   }
 
   bool get isPrimitive => this == primitive;
@@ -79,34 +89,41 @@ abstract class Si1TypeDef<T> extends ScaleTypeDef<T> {
     switch (key) {
       case Si1TypeDefsIndexesConst.composite:
         def = Si1TypeDefComposite.deserializeJson(
-            json.valueEnsureAsMap<String, dynamic>(key.name));
+          json.valueEnsureAsMap<String, dynamic>(key.name),
+        );
         break;
       case Si1TypeDefsIndexesConst.variant:
         def = Si1TypeDefVariant.deserializeJson(
-            json.valueEnsureAsMap<String, dynamic>(key.name));
+          json.valueEnsureAsMap<String, dynamic>(key.name),
+        );
         break;
       case Si1TypeDefsIndexesConst.array:
         def = Si1TypeDefArray.deserializeJson(
-            json.valueEnsureAsMap<String, dynamic>(key.name));
+          json.valueEnsureAsMap<String, dynamic>(key.name),
+        );
         break;
       case Si1TypeDefsIndexesConst.tuple:
         def = Si1TypeDefTuple(json.valueEnsureAsList<int>(key.name));
         break;
       case Si1TypeDefsIndexesConst.primitive:
         def = Si1TypeDefPrimitive.deserializeJson(
-            json.valueEnsureAsMap<String, dynamic>(key.name));
+          json.valueEnsureAsMap<String, dynamic>(key.name),
+        );
         break;
       case Si1TypeDefsIndexesConst.sequence:
         def = Si1TypeDefSequence.deserializeJson(
-            json.valueEnsureAsMap<String, dynamic>(key.name));
+          json.valueEnsureAsMap<String, dynamic>(key.name),
+        );
         break;
       case Si1TypeDefsIndexesConst.compact:
         def = Si1TypeDefCompact.deserializeJson(
-            json.valueEnsureAsMap<String, dynamic>(key.name));
+          json.valueEnsureAsMap<String, dynamic>(key.name),
+        );
         break;
       case Si1TypeDefsIndexesConst.bitSequence:
         def = Si1TypeDefBitSequence.deserializeJson(
-            json.valueEnsureAsMap<String, dynamic>(key.name));
+          json.valueEnsureAsMap<String, dynamic>(key.name),
+        );
         break;
       default:
         def = Si1TypeDefHistoricMetaCompat(json.valueAs(key.name));
