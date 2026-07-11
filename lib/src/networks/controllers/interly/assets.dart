@@ -45,41 +45,41 @@ enum InterlayAssetType {
 }
 
 class InterlayAssetConst {
-  static final BaseInterlayAsset intr = InterlayAssetToken(
+  static const BaseInterlayAsset intr = InterlayAssetToken(
     token: InterlayAssetTokenType.intr,
     identifier: {
-      InterlayAssetType.token.type: {InterlayAssetTokenType.intr.type: null},
+      "Token": {"INTR": null},
     },
   );
 
-  static final BaseInterlayAsset dot = InterlayAssetToken(
+  static const BaseInterlayAsset dot = InterlayAssetToken(
     token: InterlayAssetTokenType.dot,
     identifier: {
-      InterlayAssetType.token.type: {InterlayAssetTokenType.dot.type: null},
+      "Token": {"DOT": null},
     },
   );
-  static final BaseInterlayAsset iBTC = InterlayAssetToken(
+  static const BaseInterlayAsset iBTC = InterlayAssetToken(
     token: InterlayAssetTokenType.iBTC,
     identifier: {
-      InterlayAssetType.token.type: {InterlayAssetTokenType.iBTC.type: null},
+      "Token": {"IBTC": null},
     },
   );
-  static final BaseInterlayAsset ksm = InterlayAssetToken(
+  static const BaseInterlayAsset ksm = InterlayAssetToken(
     token: InterlayAssetTokenType.ksm,
     identifier: {
-      InterlayAssetType.token.type: {InterlayAssetTokenType.ksm.type: null},
+      "Token": {"KSM": null},
     },
   );
-  static final BaseInterlayAsset kbtc = InterlayAssetToken(
+  static const BaseInterlayAsset kbtc = InterlayAssetToken(
     token: InterlayAssetTokenType.kBTC,
     identifier: {
-      InterlayAssetType.token.type: {InterlayAssetTokenType.kBTC.type: null},
+      "Token": {"KBTC": null},
     },
   );
-  static final BaseInterlayAsset kint = InterlayAssetToken(
+  static const BaseInterlayAsset kint = InterlayAssetToken(
     token: InterlayAssetTokenType.kINT,
     identifier: {
-      InterlayAssetType.token.type: {InterlayAssetTokenType.kINT.type: null},
+      "Token": {"KINT": null},
     },
   );
 }

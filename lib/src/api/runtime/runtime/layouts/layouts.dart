@@ -1,4 +1,3 @@
-import 'package:blockchain_utils/bip/address/eth_addr.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/runtime/runtime.dart';
 import 'package:polkadot_dart/src/api/runtime/runtime/ethereum_rpc_apis.dart';

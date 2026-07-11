@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:blockchain_utils/utils/binary/utils.dart';
 import 'package:blockchain_utils/utils/equatable/equatable.dart';
@@ -509,7 +509,7 @@ abstract mixin class XCMNetworkIdNamed implements XCMNetworkId {
   List get variables => [type];
 }
 
-extension NetworkComparable on XCMNetworkId? {
+extension ExtNetworkComparable on XCMNetworkId? {
   int compareNullable<T extends Comparable>(XCMNetworkId? other) {
     if (this == null && other == null) return 0;
     if (this == null) return -1;

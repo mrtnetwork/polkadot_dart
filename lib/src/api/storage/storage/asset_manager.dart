@@ -2,7 +2,8 @@ import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageAssetManagerMethods {
   assetIdType("AssetIdType"),
@@ -23,7 +24,7 @@ class SubstrateStorageAssetManager extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   assetIdTypeEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -49,7 +50,7 @@ class SubstrateStorageAssetManager extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   assetIdLocationEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -75,7 +76,7 @@ class SubstrateStorageAssetManager extends SubstrateStorageApi {
   Future<QueryStorageFullResponse<List<Map<String, dynamic>>>>
   supportedFeePaymentAssets({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = await api.getStorageRequest(
       request: GetStorageRequest<
@@ -100,7 +101,7 @@ class SubstrateStorageAssetManager extends SubstrateStorageApi {
 
   Future<List<QueryStorageFullResponse<BigInt>>> assetTypeUnitsPerSecond({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -126,7 +127,7 @@ class SubstrateStorageAssetManager extends SubstrateStorageApi {
 
   Future<List<QueryStorageFullResponse<BigInt>>> unitsPerSecondEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<

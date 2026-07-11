@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:test/test.dart';
 
 import '../metadata/metadata_acala_v15.dart';

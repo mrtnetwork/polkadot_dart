@@ -6,19 +6,22 @@ import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
 import 'package:polkadot_dart/src/networks/types/types.dart';
-import 'package:polkadot_dart/src/provider/methods/methods.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 /// Function type for fetching cached assets.
 typedef ONFETCHCACHEDASSET<T extends BaseSubstrateNetworkAsset> =
     Future<List<T>> Function();
 typedef ONREQUESTPROVIDER =
-    Future<SubstrateProvider> Function(BaseSubstrateNetwork network);
+    Future<IProvider<IServiceProvider, SubstrateRequestDetails>> Function(
+      BaseSubstrateNetwork network,
+    );
 
 /// Base parameters for Substrate network controllers.
 abstract mixin class SubstrateNetworkControllerParams {
   /// Loads a provider for the given network.
-  Future<SubstrateProvider> loadProvider(BaseSubstrateNetwork network);
+  Future<IProvider<IServiceProvider, SubstrateRequestDetails>> loadProvider(
+    BaseSubstrateNetwork network,
+  );
 
   /// Loads metadata for the given network.
   Future<MetadataWithProvider> loadMetadata(BaseSubstrateNetwork network);
@@ -63,7 +66,7 @@ class SubstrateNetworkApiDefaultParams
            DefaultSubstrateCachedAssetStorage(interval: Duration.zero);
 
   Future<SubstrateMetadata?> _getRuntimeMetadata(
-    SubstrateProvider provider,
+    IProvider<IServiceProvider, SubstrateRequestDetails> provider,
   ) async {
     try {
       final metadata = await provider.request(
@@ -76,7 +79,7 @@ class SubstrateNetworkApiDefaultParams
   }
 
   Future<SubstrateMetadata?> _getMetadataApiAtVersion({
-    required SubstrateProvider provider,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> provider,
     required int version,
   }) async {
     try {
@@ -92,7 +95,7 @@ class SubstrateNetworkApiDefaultParams
   }
 
   Future<MetadataApi> _getMetadataApi(
-    SubstrateProvider provider,
+    IProvider<IServiceProvider, SubstrateRequestDetails> provider,
     BaseSubstrateNetwork network,
   ) async {
     SubstrateMetadata<dynamic>? metadata;
@@ -110,8 +113,9 @@ class SubstrateNetworkApiDefaultParams
     throw const DartSubstratePluginException("Unsuported network metadata.");
   }
 
-  Future<SubstrateProvider?> _checkProviderStatus(
-    SubstrateProvider provider,
+  Future<IProvider<IServiceProvider, SubstrateRequestDetails>?>
+  _checkProviderStatus(
+    IProvider<IServiceProvider, SubstrateRequestDetails> provider,
     String genesis,
   ) async {
     final blockHash = await provider.request(
@@ -130,7 +134,8 @@ class SubstrateNetworkApiDefaultParams
     return _lock.run(() async {
       final provider = _cachedProvider[network];
       if (provider != null) return provider;
-      SubstrateProvider? activeProvider = await loadProvider(network);
+      IProvider<IServiceProvider, SubstrateRequestDetails>? activeProvider =
+          await loadProvider(network);
       activeProvider = await _checkProviderStatus(
         activeProvider,
         network.genesis,
@@ -151,7 +156,9 @@ class SubstrateNetworkApiDefaultParams
   }
 
   @override
-  Future<SubstrateProvider> loadProvider(BaseSubstrateNetwork network) async {
+  Future<IProvider<IServiceProvider, SubstrateRequestDetails>> loadProvider(
+    BaseSubstrateNetwork network,
+  ) async {
     return onRequestProvider(network);
   }
 

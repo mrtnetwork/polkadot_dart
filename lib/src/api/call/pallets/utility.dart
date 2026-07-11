@@ -1,5 +1,7 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/substrate.dart';
+import 'package:polkadot_dart/src/api/call/call.dart';
+import 'package:polkadot_dart/src/api/models/models.dart';
+import 'package:polkadot_dart/src/metadata/metadata.dart';
 
 enum UtilityCallPalletMethod implements SubstrateCallPalletMethod {
   batch("batch", 0),

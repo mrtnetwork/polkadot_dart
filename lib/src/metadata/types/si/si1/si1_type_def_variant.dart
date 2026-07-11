@@ -89,9 +89,9 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
           throw MetadataException(
             "The provided map for enum must contain exactly one key",
             details: {
-              "value": value,
-              "lookup_id": self,
-              "from_template": fromTemplate,
+              "value": value?.toString(),
+              "lookup_id": self.toString(),
+              "from_template": fromTemplate.toString(),
             },
           );
         }

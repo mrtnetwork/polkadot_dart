@@ -287,7 +287,7 @@ class ZeitgeistNetworkController
         "Invalid ${network.networkName} asset.",
         details: {
           "expected": "ZeitgeistNetworkAsset",
-          "asset": asset.runtimeType,
+          "asset": asset.runtimeType.toString(),
         },
       );
     }

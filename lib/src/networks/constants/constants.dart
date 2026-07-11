@@ -4,7 +4,7 @@ import 'package:polkadot_dart/src/networks/types/types.dart';
 
 class SubstrateNetworkControllerConstants {
   static const XCMVersion latestXCMVersion = XCMVersion.v5;
-  static final XCMVersionedLocationV3 relayLocation = XCMVersionedLocationV3(
+  static XCMVersionedLocationV3 get relayLocation => XCMVersionedLocationV3(
     location: XCMV3MultiLocation(parents: 1, interior: XCMV3JunctionsHere()),
   );
   static const List<XCMVersion> defaultNetworksXCMSupportedVersion = [

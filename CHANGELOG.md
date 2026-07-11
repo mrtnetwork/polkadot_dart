@@ -1,3 +1,8 @@
+## 5.3.0
+
+- Updated dependencies.
+- Updated BaseSubstrateAddress to inherit from IAddress provided by blockchain_utils.
+
 ## 5.2.0
   - Update dependencies.
   - Minimum required Dart SDK version updated to 3.7.

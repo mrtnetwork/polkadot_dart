@@ -45,7 +45,7 @@ class EvmDefaultParams extends SubstrateEvmNetworkControllerParams {
               .request(const SubstrateRequestRpcMethods());
           final methods = rpcMethods.methods;
           if (methods.contains(EthereumMethods.call.value)) {
-            _provider = EthereumProvider(provider.provider.rpc);
+            _provider = EthereumProvider(provider.provider.service);
           }
           _rpcMethods = methods;
         });
@@ -64,7 +64,7 @@ class EvmDefaultParams extends SubstrateEvmNetworkControllerParams {
     final result = await SubstrateQuickRuntimeApi.ethereumRuntimeRPCApis.call(
         api: provider.metadata.api,
         rpc: provider.provider,
-        from: SubstrateAddressUtils.zeroAddress,
+        from: SubstrateEthereumAddress.zero,
         to: SubstrateEthereumAddress(contract.address),
         inputs: func.encode(params ?? []),
         gasLmit: BigInt.one);

@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 import 'package:polkadot_dart/src/models/modesl.dart';
 

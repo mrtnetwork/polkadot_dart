@@ -3,15 +3,15 @@ import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 
-typedef ONSTORAGERESPONEBYTES<T extends Object?> =
+typedef CbOnStorageResponseBytes<T extends Object?> =
     T Function(List<int> response, StorageKey storageKey);
-typedef ONSTORAGERESPONEJSON<T extends Object?, JSON extends Object> =
+typedef CbOnStorageResponseJson<T extends Object?, JSON extends Object> =
     T Function(JSON response, List<int> bytes, StorageKey storageKey);
-typedef ONSTORAGERESPONENULL<T extends Object?> =
+typedef CbOnStorageResponseNull<T extends Object?> =
     T Function(StorageKey storageKey);
-typedef DECODERESPONSE = Object? Function();
-typedef ENCODEINPUT = List<int> Function(Object? input);
-typedef ENCODEINPUTS = List<int>? Function(int index, ENCODEINPUT onEncode);
+typedef CbDecodeResponse = Object? Function();
+typedef CbEncodeInput = List<int> Function(Object? input);
+typedef CbEncodeInputs = List<int>? Function(int index, CbEncodeInput onEncode);
 
 class QueryStorageResult<T extends Object?> {
   final StorageKey storageKey;
@@ -33,8 +33,8 @@ class StorageChangeStateResponse {
               throw MetadataException(
                 "Invalid StorageChangeState response. response must be list with two string object",
                 details: {
-                  "length": e.length,
-                  "value": e,
+                  "length": e.length.toString(),
+                  "value": e.toString(),
                   "storage_key": e.isEmpty ? null : e[0],
                 },
               );
@@ -64,7 +64,7 @@ class QueryStorageRequestBlock {
                   throw MetadataException(
                     "An identifier does not exist.",
                     details: {
-                      "identifier": identifier,
+                      "identifier": identifier.toString(),
                       "identifiers": request
                           .map((e) => e.request.identifier)
                           .join(", "),
@@ -86,10 +86,10 @@ class QueryStorageResponse<T> {
 }
 
 abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
-  final ONSTORAGERESPONEBYTES<RESPONSE>? onBytesResponse;
-  final ONSTORAGERESPONEJSON<RESPONSE, JSON>? onJsonResponse;
-  final ENCODEINPUTS? onEncodeInputs;
-  final ONSTORAGERESPONENULL<RESPONSE>? onNullResponse;
+  final CbOnStorageResponseBytes<RESPONSE>? onBytesResponse;
+  final CbOnStorageResponseJson<RESPONSE, JSON>? onJsonResponse;
+  final CbEncodeInputs? onEncodeInputs;
+  final CbOnStorageResponseNull<RESPONSE>? onNullResponse;
   const StorageRequest({
     required this.onBytesResponse,
     required this.onJsonResponse,
@@ -98,7 +98,7 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
   });
 
   RESPONSE toResponse({
-    required DECODERESPONSE decode,
+    required CbDecodeResponse decode,
     required List<int>? bytes,
     required StorageKey storageKey,
   }) {
@@ -130,7 +130,7 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
       } catch (_) {
         throw DartSubstratePluginException(
           'Unexpected response type.',
-          details: {"excpected": "$JSON", "value": json.runtimeType},
+          details: {"excpected": "$JSON", "value": json.runtimeType.toString()},
         );
       }
       return onJsonResponse(data, bytes, storageKey);
@@ -141,7 +141,10 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
     } catch (_) {
       throw DartSubstratePluginException(
         'Unexpected response type.',
-        details: {"excpected": "$RESPONSE", "value": json.runtimeType},
+        details: {
+          "excpected": "$RESPONSE",
+          "value": json.runtimeType.toString(),
+        },
       );
     }
     return data;
@@ -204,8 +207,8 @@ class GetStorageEntriesRequest<RESPONSE extends Object?, JSON extends Object>
     Object? inputs,
     String? startKey,
     String? storageKey,
-    ONSTORAGERESPONEBYTES<RESPONSE>? onBytesResponse,
-    ONSTORAGERESPONEJSON<RESPONSE, JSON>? onJsonResponse,
+    CbOnStorageResponseBytes<RESPONSE>? onBytesResponse,
+    CbOnStorageResponseJson<RESPONSE, JSON>? onJsonResponse,
   }) {
     assert(count > 0, "invalid paged request count");
     assert(
@@ -279,7 +282,10 @@ class QueryStorageResponses<T extends Object?> {
     } catch (_) {
       throw DartSubstratePluginException(
         'Unexpected response type.',
-        details: {"excpected": "$RESPONSE", "value": result.runtimeType},
+        details: {
+          "excpected": "$RESPONSE",
+          "value": result.runtimeType.toString(),
+        },
       );
     }
     return QueryStorageResult<RESPONSE>(
@@ -351,7 +357,9 @@ class StorageKey {
     if (result == null) {
       throw DartSubstratePluginException(
         "Failed to cast input as BigInt.",
-        details: {"input": inputs.elementAt(index).input.runtimeType},
+        details: {
+          "input": inputs.elementAt(index).input.runtimeType.toString(),
+        },
       );
     }
     return result;
@@ -363,7 +371,7 @@ class StorageKey {
     if (result is! T) {
       throw DartSubstratePluginException(
         "Failed to cast input.",
-        details: {"excepted": "$T", "input": result.runtimeType},
+        details: {"excepted": "$T", "input": result.runtimeType.toString()},
       );
     }
     return result;
@@ -378,7 +386,9 @@ class StorageKey {
     if (result == null) {
       throw DartSubstratePluginException(
         "Failed to cast input as Int.",
-        details: {"input": inputs.elementAt(index).input.runtimeType},
+        details: {
+          "input": inputs.elementAt(index).input.runtimeType.toString(),
+        },
       );
     }
     return result;
@@ -402,7 +412,7 @@ class StorageKey {
     } catch (_) {}
     throw DartSubstratePluginException(
       "Failed to cast input as ${Map<K, V>}.",
-      details: {"input": inputs.elementAt(index).input.runtimeType},
+      details: {"input": inputs.elementAt(index).input.runtimeType.toString()},
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
+import 'package:blockchain_utils/service/service.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateRuntimeApiAssetConversionMethods
@@ -18,7 +19,7 @@ class SubstrateRuntimeApiAssetConversion extends SubstrateRuntimeApi {
   Future<BigInt?> _quotePriceExactTokensForTokens({
     required QuotePriceParams params,
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required SubstrateRuntimeApiAssetConversionMethods method,
   }) async {
     final result = await callRuntimeApiInternal<Map<String, dynamic>>(
@@ -38,7 +39,7 @@ class SubstrateRuntimeApiAssetConversion extends SubstrateRuntimeApi {
   Future<BigInt?> quotePriceExactTokensForTokens({
     required QuotePriceParams params,
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     return _quotePriceExactTokensForTokens(
       params: params,
@@ -53,7 +54,7 @@ class SubstrateRuntimeApiAssetConversion extends SubstrateRuntimeApi {
   Future<BigInt?> quotePriceTokensForExactTokens({
     required QuotePriceParams params,
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     return _quotePriceExactTokensForTokens(
       params: params,

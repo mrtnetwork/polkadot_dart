@@ -131,10 +131,10 @@ class SubstrateWebsocketService extends WebSocketService
   final Duration defaultTimeOut;
 
   @override
-  Future<BaseServiceResponse<T>> doRequest<T>(SubstrateRequestDetails params,
+  Future<BaseServiceResponse> doRequest(SubstrateRequestDetails params,
       {Duration? timeout}) async {
     final SocketRequestCompleter message =
-        SocketRequestCompleter(params.body()!, params.requestID);
+        SocketRequestCompleter(params.encodeBody()!, params.requestID);
     final r = await addMessage(message, timeout ?? defaultTimeOut);
     return params.toResponse(r);
   }

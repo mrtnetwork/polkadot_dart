@@ -2,6 +2,7 @@ import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
 
 enum SubstrateRuntimeApiDryRunMethods implements SubstrateRuntimeApiMethods {
   dryRunCall("dry_run_call"),
@@ -14,12 +15,12 @@ enum SubstrateRuntimeApiDryRunMethods implements SubstrateRuntimeApiMethods {
 
 /// safexcmversion
 class SubstrateRuntimeApiDryRun extends SubstrateRuntimeApi {
-  SubstrateRuntimeApiDryRun();
+  const SubstrateRuntimeApiDryRun();
   Future<SubstrateDispatchResult<CallDryRunEffects>> dryRunCall({
     required BaseSubstrateAddress owner,
     required List<int> callBytes,
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     XCMMultiLocation? xcmLocation,
     required XCMVersion version,
   }) async {
@@ -64,7 +65,7 @@ class SubstrateRuntimeApiDryRun extends SubstrateRuntimeApi {
     required XCMVersionedLocation originlocation,
     required XCMVersionedXCM xcm,
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     const method = SubstrateRuntimeApiDryRunMethods.dryRunXcm;
     final result = await callRuntimeApiInternal<Map<String, dynamic>>(

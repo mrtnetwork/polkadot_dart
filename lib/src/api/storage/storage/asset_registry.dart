@@ -3,7 +3,8 @@ import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageAssetRegistryMethods {
   assetIdLocation("AssetIdLocation"),
@@ -34,7 +35,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   assetIdToLocationEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -59,7 +60,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
 
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>> assetsEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -85,7 +86,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<(ASSETIDS, T?)>>
   assets<ASSETIDS extends Object, T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required List<ASSETIDS> assetIds,
   }) async {
     final locations = api.queryStreamStorageAtBlock<(ASSETIDS, T?), T>(
@@ -111,7 +112,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   bannedAssetsEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -137,7 +138,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   locationToCurrencyIdsEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -164,7 +165,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   assetLocationsEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -190,7 +191,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   assetMetadataMapEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -215,7 +216,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
 
   Future<List<QueryStorageFullResponse<BigInt>>> assetIdsEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -240,7 +241,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
 
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>> metadataEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -266,7 +267,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<(ASSETIDS, T?)>>
   metadata<ASSETIDS extends Object, T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required List<ASSETIDS> assetIds,
   }) async {
     final locations = api.queryStreamStorageAtBlock<(ASSETIDS, T?), T>(
@@ -289,9 +290,11 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }
 
-  Future<List<QueryStorageFullResponse<T>>> locationToAssetIdEntries<
-    T extends Object
-  >({required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<List<QueryStorageFullResponse<T>>>
+  locationToAssetIdEntries<T extends Object>({
+    required MetadataApi api,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<QueryStorageFullResponse<T>, T>(
         palletNameOrIndex: this.api.name,
@@ -310,9 +313,11 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
     return result.expand((e) => e.results).map((e) => e.result).toList();
   }
 
-  Future<List<QueryStorageFullResponse<T>>> locationAssetsEntries<
-    T extends Object
-  >({required MetadataApi api, required SubstrateProvider rpc}) async {
+  Future<List<QueryStorageFullResponse<T>>>
+  locationAssetsEntries<T extends Object>({
+    required MetadataApi api,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
+  }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<QueryStorageFullResponse<T>, T>(
         palletNameOrIndex: this.api.name,
@@ -334,7 +339,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   assetMetadatasEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -360,7 +365,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   currencyMetadatasEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -386,7 +391,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   currencyIdToLocationsEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -412,7 +417,7 @@ class SubstrateStorageAssetRegistry extends SubstrateStorageApi {
 
   Future<List<QueryStorageFullResponse<String>>> erc20IdToAddressEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<

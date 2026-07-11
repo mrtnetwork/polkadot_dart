@@ -12,12 +12,14 @@ class SubstrateHttpService with SubstrateServiceProvider {
   final Client client;
   final Duration defaultTimeOut;
   @override
-  Future<BaseServiceResponse<T>> doRequest<T>(SubstrateRequestDetails params,
+  Future<BaseServiceResponse> doRequest(SubstrateRequestDetails params,
       {Duration? timeout}) async {
     final response = await client
-        .post(params.toUri(url), headers: params.headers, body: params.body())
+        .post(params.encodeUrl(url),
+            headers: params.headers, body: params.encodeBody())
         .timeout(timeout ?? defaultTimeOut);
-    return params.toResponse(response.bodyBytes, response.statusCode);
+    return params.toResponse(response.bodyBytes,
+        statusCode: response.statusCode);
   }
 }
 

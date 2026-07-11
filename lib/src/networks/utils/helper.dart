@@ -1,5 +1,11 @@
-import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/substrate.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/utils/utils.dart';
+import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
+import 'package:polkadot_dart/src/api/models/models/types.dart';
+import 'package:polkadot_dart/src/api/runtime/runtime/runtime_api.dart';
+import 'package:polkadot_dart/src/api/storage/storage.dart';
+import 'package:polkadot_dart/src/models/xcm/core/location.dart';
+import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
 
 /// Internal helper for querying network assets, asset locations, fees, and related info.
 /// Methods in this class are mostly for internal use and rely on knowledge of network structures.
@@ -819,7 +825,6 @@ abstract mixin class SubstrateNetworkControllerAssetQueryHelper {
     } catch (_) {}
     throw CastFailedException(
       message: "Failed to cast asset id as $IDENTIFIER.",
-      details: {"ids": ids},
     );
   }
 }

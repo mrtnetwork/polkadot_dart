@@ -1,10 +1,14 @@
-import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/substrate.dart';
+import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
+import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
+import 'package:polkadot_dart/src/models/xcm/core/xcm.dart';
+import 'package:polkadot_dart/src/models/xcm/v2/types.dart';
+import 'package:polkadot_dart/src/serialization/serialization.dart';
 
 abstract class XCMV2WeightLimit extends SubstrateVariantSerialization
     with WeightLimit, Equality {

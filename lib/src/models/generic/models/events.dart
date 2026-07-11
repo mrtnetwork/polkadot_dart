@@ -3,7 +3,7 @@ import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/utils/json/extension/json.dart';
 import 'package:polkadot_dart/src/models/generic/models/module_error.dart';
 
-typedef ONEVENTDISPATCHERROR =
+typedef CbOnEventDispatchErr =
     Map<String, dynamic>? Function(ModuleError error);
 
 class SubstrateEventConst {
@@ -71,7 +71,7 @@ class SubstrateEvent {
   /// Creates a `SubstrateEvent` from JSON and optionally handles dispatch errors.
   factory SubstrateEvent.fromJson(
     Map<String, dynamic> json, {
-    ONEVENTDISPATCHERROR? onDispatchError,
+    CbOnEventDispatchErr? onDispatchError,
   }) {
     Map<String, dynamic> event = json;
     if (json.containsKey("event")) {
@@ -133,7 +133,7 @@ class SubstrateEvent {
       throw CastFailedException(
         message: "Failed to cast event input.",
         value: input,
-        details: {"expected": "$T", "input": input.runtimeType},
+        details: {"expected": "$T", "input": input.runtimeType.toString()},
       );
     }
   }

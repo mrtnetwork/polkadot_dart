@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
@@ -329,7 +329,7 @@ class MetadataTypeInfoNone extends MetadataTypeInfo {
   }
 
   @override
-  bool get isPromitive => throw UnimplementedError();
+  bool get isPromitive => false;
 
   @override
   MetadataTypes get typeName => MetadataTypes.none;

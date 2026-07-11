@@ -1,4 +1,3 @@
-import 'package:blockchain_utils/bip/address/eth_addr.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
@@ -9,25 +8,61 @@ import 'address_utils.dart';
 import 'ss58_constant.dart';
 
 enum SubstrateAddressType {
-  ethereum(EthAddrConst.addrLenBytes),
-  substrate(SubstrateAddressUtils.addressBytesLength);
+  ethereum(0),
+  substrate(1);
 
-  final int lengthInBytes;
-  const SubstrateAddressType(this.lengthInBytes);
-
+  const SubstrateAddressType(this.value);
+  final int value;
   bool get isEthereum => this == ethereum;
   bool get isSubstrate => this == substrate;
+  int get lengthInBytes {
+    return switch (this) {
+      ethereum => EthAddrConst.addrLenBytes,
+      substrate => SubstrateAddressUtils.addressBytesLength,
+    };
+  }
+
+  static SubstrateAddressType fromValue(int? value) {
+    return values.firstWhere(
+      (e) => e.value == value,
+      orElse: () => throw ItemNotFoundException(name: "SubstrateAddressType"),
+    );
+  }
 }
 
-abstract class BaseSubstrateAddress {
+abstract class BaseSubstrateAddress
+    with Equality, CborTagSerializable
+    implements IAddress {
   SubstrateAddressType get type;
 
+  @override
   final String address;
 
   /// hexadecimal version of address
   final String rawAddress;
 
   const BaseSubstrateAddress._(this.address, this.rawAddress);
+
+  factory BaseSubstrateAddress.deserializeIAddress({
+    List<int>? bytes,
+    CborObject? object,
+  }) {
+    final values = CborTagSerializable.decodeTaggedValue(
+      identifier: BlockchainNetwork.substrateAndRelated.identifier,
+      cborBytes: bytes,
+      cborObject: object,
+    );
+    final type = SubstrateAddressType.fromValue(values.rawValueAt(0));
+    return switch (type) {
+      SubstrateAddressType.ethereum => SubstrateEthereumAddress.fromBytes(
+        values.rawValueAt(1),
+      ),
+      SubstrateAddressType.substrate => SubstrateAddress.fromBytes(
+        values.rawValueAt(1),
+        ss58Format: values.rawValueAt(2),
+      ),
+    };
+  }
 
   /// Converts the address to a list of bytes.
   List<int> toBytes();
@@ -98,6 +133,22 @@ abstract class BaseSubstrateAddress {
     }
     return this as T;
   }
+
+  @override
+  List<dynamic> get variables => [address];
+
+  @override
+  BlockchainNetwork get blockchainNetwork =>
+      BlockchainNetwork.substrateAndRelated;
+
+  @override
+  List<int> encodeAsIAddress() {
+    return toCbor().encode();
+  }
+
+  @override
+  SerializationIdentifier get serializationIdentifier =>
+      blockchainNetwork.identifier;
 }
 
 /// Represents a Substrate blockchain address with various factory constructors
@@ -227,8 +278,8 @@ class SubstrateAddress extends BaseSubstrateAddress {
       throw DartSubstratePluginException(
         "Invalid address length.",
         details: {
-          "expected": SubstrateAddressUtils.addressBytesLength,
-          "length": bytes.length,
+          "expected": SubstrateAddressUtils.addressBytesLength.toString(),
+          "length": bytes.length.toString(),
         },
       );
     }
@@ -278,21 +329,25 @@ class SubstrateAddress extends BaseSubstrateAddress {
   }
 
   @override
-  operator ==(other) {
-    if (other is! SubstrateAddress) return false;
-    return other.address == address && other.ss58Format == ss58Format;
-  }
-
-  @override
-  int get hashCode => address.hashCode ^ ss58Format.hashCode;
-
-  @override
   String toString() {
     return address;
   }
 
   @override
   SubstrateAddressType get type => SubstrateAddressType.substrate;
+
+  @override
+  List<dynamic> get variables => [address, type, ss58Format];
+
+  @override
+  List<CborObject?> get serializationItems => [
+    type.value.toCbor(),
+    CborBytesValue(toBytes()),
+    ss58Format.toCbor(),
+  ];
+
+  @override
+  String get viewType => "Substrate";
 }
 
 /// Represents a Substrate blockchain address with various factory constructors
@@ -304,6 +359,11 @@ class SubstrateEthereumAddress extends BaseSubstrateAddress {
 
   /// Private constructor for initializing a SubstrateEthereumAddress.
   const SubstrateEthereumAddress._(super.address, super.rawAddress) : super._();
+
+  static const SubstrateEthereumAddress zero = SubstrateEthereumAddress._(
+    "0x0000000000000000000000000000000000000000",
+    "0x0000000000000000000000000000000000000000",
+  );
 
   factory SubstrateEthereumAddress.fromPublicKey(List<int> bytes) {
     try {
@@ -367,17 +427,19 @@ class SubstrateEthereumAddress extends BaseSubstrateAddress {
   }
 
   @override
-  operator ==(other) {
-    if (identical(this, other)) return true;
-    if (other is! SubstrateEthereumAddress) return false;
-    return other.address == address;
-  }
-
-  @override
-  int get hashCode => address.hashCode;
-
-  @override
   String toString() {
     return address;
   }
+
+  @override
+  List<dynamic> get variables => [address, type];
+
+  @override
+  List<CborObject?> get serializationItems => [
+    type.value.toCbor(),
+    CborBytesValue(toBytes()),
+  ];
+
+  @override
+  String get viewType => "Ethereum";
 }

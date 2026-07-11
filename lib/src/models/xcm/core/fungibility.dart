@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/layout/constant/constant.dart';
 import 'package:blockchain_utils/layout/core/core/core.dart';
 import 'package:blockchain_utils/layout/core/types/lazy_union.dart';

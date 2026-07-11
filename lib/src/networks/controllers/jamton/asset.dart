@@ -24,9 +24,9 @@ enum JamtonAssetType {
 }
 
 class JamtonAsstConst {
-  static final BaseJamtonAsset jamtom = JamtonAssetNative(
+  static const BaseJamtonAsset jamtom = JamtonAssetNative(
     id: 0,
-    identifier: {JamtonAssetType.native.type: 0},
+    identifier: {"Native": 0},
   );
 }
 

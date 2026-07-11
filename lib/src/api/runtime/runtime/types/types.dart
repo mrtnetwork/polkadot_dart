@@ -7,11 +7,10 @@ import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/generic/models/module_error.dart';
 import 'package:polkadot_dart/src/models/modesl.dart';
-import 'package:polkadot_dart/src/provider/methods/methods.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateRuntimeApis {
-  xcmPaymentApi("XcmPaymentApi", "6ff52ee858e6c5bd", [1]),
+  xcmPaymentApi("XcmPaymentApi", "6ff52ee858e6c5bd", [1, 2]),
   ethereumRuntimeRPCApi("EthereumRuntimeRPCApi", "582211f65bb14b89", [6]),
   dryRunApi("DryRunApi", "91b1c8b16328eb92", [1, 2]),
   assetConversionApi("AssetConversionApi", "8a8047a53a8277ec", [1]);
@@ -30,7 +29,7 @@ abstract class SubstrateRuntimeApiMethods {
   abstract final String method;
 }
 
-typedef ONRUNTIMECALL<T extends Object?> = Future<T> Function(bool useApi);
+typedef CbOnRuntimeCall<T extends Object?> = Future<T> Function(bool useApi);
 
 abstract class SubstrateRuntimeApi {
   const SubstrateRuntimeApi();
@@ -58,8 +57,9 @@ abstract class SubstrateRuntimeApi {
       this.api.name,
       methodName: method.method,
     );
-    if (exists) return true;
+    if (!exists) return false;
     final runtime = api.runtimeVersion();
+
     final runtimeApi = runtime.apis.firstWhereNullable(
       (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
     );
@@ -74,7 +74,7 @@ abstract class SubstrateRuntimeApi {
       (e) =>
           api.metadata.runtimeMethodExists(this.api.name, methodName: e.method),
     );
-    if (exists) return true;
+    if (!exists) return false;
     final runtime = api.runtimeVersion();
     final runtimeApi = runtime.apis.firstWhereNullable(
       (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
@@ -85,19 +85,18 @@ abstract class SubstrateRuntimeApi {
   Future<T> callRuntimeApiInternal<T extends Object?>({
     required SubstrateRuntimeApiMethods method,
     required MetadataApi api,
-    required SubstrateProvider provider,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> provider,
     List<Object?> params = const [],
   }) async {
-    // final exists = api.metadata
-    //     .runtimeMethodExists(this.api.name, methodName: method.method);
-    // if (exists) {
-    //   return await api.runtimeCall<T>(
-    //       apiName: this.api.name,
-    //       methodName: method.method,
-    //       params: params,
-    //       rpc: provider,
-    //       fromTemplate: false);
-    // }
+    if (methodsExists(methods: [method], api: api)) {
+      return await api.runtimeCall<T>(
+        apiName: this.api.name,
+        methodName: method.method,
+        params: params,
+        rpc: provider,
+        fromTemplate: false,
+      );
+    }
     final types = SubstrateRuntimeApiConstants.apis[method.method];
     if (types == null) {
       throw DartSubstratePluginException(
@@ -121,7 +120,7 @@ abstract class SubstrateRuntimeApi {
         details: {
           "api": this.api.name,
           "method": method.method,
-          "version": runtimeApi.version,
+          "version": runtimeApi.version.toString(),
         },
       );
     }
@@ -179,7 +178,7 @@ abstract class DispatchResultWithPostInfo {
   const DispatchResultWithPostInfo({required this.type});
   factory DispatchResultWithPostInfo.fromJson(
     Map<String, dynamic> json, {
-    ONEVENTDISPATCHERROR? onParseModuleError,
+    CbOnEventDispatchErr? onParseModuleError,
   }) {
     final type = DispatchResultType.fromJson(json);
     return switch (type) {
@@ -348,7 +347,7 @@ class DispatchResultWithPostInfoErr extends DispatchResultWithPostInfo {
 
   factory DispatchResultWithPostInfoErr.fromJson(
     Map<String, dynamic> json, {
-    ONEVENTDISPATCHERROR? onParseModuleError,
+    CbOnEventDispatchErr? onParseModuleError,
   }) {
     final Map<String, dynamic> postInfo = json["post_info"];
     final Map<String, dynamic>? actualWeight = MetadataUtils.parseOptional(
@@ -392,7 +391,7 @@ class CallDryRunEffects {
   });
   factory CallDryRunEffects.fromJson(
     Map<String, dynamic> json, {
-    ONEVENTDISPATCHERROR? onParseModuleError,
+    CbOnEventDispatchErr? onParseModuleError,
   }) {
     final Map<String, dynamic>? localXcm = MetadataUtils.parseOptional(
       json["local_xcm"],
@@ -467,7 +466,7 @@ abstract class OutcomeResult {
   const OutcomeResult({required this.type});
   factory OutcomeResult.fromJson(
     Map<String, dynamic> json, {
-    ONEVENTDISPATCHERROR? onParseModuleError,
+    CbOnEventDispatchErr? onParseModuleError,
   }) {
     final type = OutcomeType.fromJson(json);
     return switch (type) {
@@ -564,7 +563,7 @@ class XcmDryRunEffects {
   });
   factory XcmDryRunEffects.fromJson(
     Map<String, dynamic> json, {
-    ONEVENTDISPATCHERROR? onParseModuleError,
+    CbOnEventDispatchErr? onParseModuleError,
   }) {
     return XcmDryRunEffects(
       events: SubstrateGroupEvents(
@@ -607,7 +606,7 @@ class XcmDryRunEffects {
   }
 }
 
-typedef ONDISPATCHSUCCESS<OK, RESULT extends Object?> =
+typedef CbOnDispatchSuccess<OK, RESULT extends Object?> =
     OK Function(RESULT result);
 
 abstract class SubstrateDispatchResult<OK extends Object?> {
@@ -625,7 +624,7 @@ abstract class SubstrateDispatchResult<OK extends Object?> {
 
   static Layout buildDispatchLayout({
     required MetadataApi metadata,
-    required LayoutFunc onOk,
+    required CbLayoutFunc onOk,
   }) {
     final id = metadata.typeByPathTail("Result");
     if (id == null) throw DartSubstratePluginException("message");
@@ -662,7 +661,7 @@ abstract class SubstrateDispatchResult<OK extends Object?> {
   static SubstrateDispatchResult<OK> fromJson<
     OK extends Object?,
     RESULT extends Object?
-  >(Map<String, dynamic> json, ONDISPATCHSUCCESS<OK, RESULT> onOk) {
+  >(Map<String, dynamic> json, CbOnDispatchSuccess<OK, RESULT> onOk) {
     final type = DispatchResultType.fromJson(json);
 
     return switch (type) {
@@ -1022,12 +1021,11 @@ class SubstrateDryRunCllOriginOrigins extends BaseSubstrateDryRunCllOrigin {
   }
 }
 
-typedef ONSUBSTRATERUNTIMELAYOUTBUILDER =
-    Layout Function(MetadataApi api, int version);
+typedef CbOnBuildLayout = Layout Function(MetadataApi api, int version);
 
 class SubstrateRuntimeApiLayoutBuilder {
-  final ONSUBSTRATERUNTIMELAYOUTBUILDER inputBuilder;
-  final ONSUBSTRATERUNTIMELAYOUTBUILDER outputBuilder;
+  final CbOnBuildLayout inputBuilder;
+  final CbOnBuildLayout outputBuilder;
   const SubstrateRuntimeApiLayoutBuilder({
     required this.outputBuilder,
     required this.inputBuilder,

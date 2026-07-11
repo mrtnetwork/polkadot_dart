@@ -214,7 +214,7 @@ class MetadataApi with MetadataApiInterface {
     Object? value,
 
     /// encode input from callback
-    ENCODEINPUTS? onEncodeInputs,
+    CbEncodeInputs? onEncodeInputs,
 
     /// only encode part of keys
     bool partial = false,
@@ -504,8 +504,8 @@ class MetadataApi with MetadataApiInterface {
         "Invalid params length.",
         details: {
           "method": method,
-          "expected": params.length,
-          "length": inputs.length,
+          "expected": params.length.toString(),
+          "length": inputs.length.toString(),
         },
       );
     }

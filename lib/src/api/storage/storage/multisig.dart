@@ -1,4 +1,7 @@
-import 'package:polkadot_dart/src/substrate.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
+import 'package:polkadot_dart/src/api/api.dart';
+import 'package:polkadot_dart/src/provider/core/core.dart';
 
 enum SubstrateStorageMultisigMethods {
   multisigs("Multisigs");
@@ -14,7 +17,7 @@ class SubstrateStorageMultisig extends SubstrateStorageApi {
   SubstrateStorageApis get api => SubstrateStorageApis.multisig;
   Future<SubstrateMultisig?> multisigs({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required BaseSubstrateAddress address,
     required List<int> callHashTx,
   }) async {
@@ -33,7 +36,7 @@ class SubstrateStorageMultisig extends SubstrateStorageApi {
 
   Future<List<SubstrateMultisigWithCallhash>> multisigsEntires({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required BaseSubstrateAddress address,
   }) async {
     final entires = api.getStreamStorageEntries(

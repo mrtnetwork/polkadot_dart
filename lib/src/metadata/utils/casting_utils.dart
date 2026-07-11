@@ -20,11 +20,11 @@ class MetadataCastingUtils {
         throw MetadataException(
           "Incorrect Array length.",
           details: {
-            "expected": length,
-            "length": isList.length,
-            "lookup_id": lookupId,
-            "type": type?.name,
-            "value": value.runtimeType,
+            "expected": length.toString(),
+            "length": isList.length.toString(),
+            "lookup_id": lookupId.toString(),
+            "type": type?.name.toString(),
+            "value": value.runtimeType.toString(),
           },
         );
       }
@@ -35,8 +35,8 @@ class MetadataCastingUtils {
       "Invalid list provided",
       details: {
         "type": type?.name,
-        "lookup_id": lookupId,
-        "value": value.runtimeType,
+        "lookup_id": lookupId?.toString(),
+        "value": value.runtimeType.toString(),
       },
     );
   }
@@ -94,10 +94,10 @@ class MetadataCastingUtils {
       throw MetadataException(
         "Invalid value provided.",
         details: {
-          "value": value,
+          "value": value?.toString(),
           "type": primitive?.name ?? type.name,
-          "lookup_id": id,
-          "from_template": fromTemplate,
+          "lookup_id": id.toString(),
+          "from_template": fromTemplate.toString(),
         },
       );
     }
@@ -137,7 +137,11 @@ class MetadataCastingUtils {
     if (map == null) {
       throw MetadataException(
         "Invalid Map value.",
-        details: {"property": property, "type": type, "value": value},
+        details: {
+          "property": property,
+          "type": type,
+          "value": value?.toString(),
+        },
       );
     }
     return map;
@@ -154,7 +158,11 @@ class MetadataCastingUtils {
     }
     throw MetadataException(
       "Invalid data provided for encoding. Template value should be map and contains 'value' ",
-      details: {"value": value, "type": type.name, "lookup": id},
+      details: {
+        "value": value?.toString(),
+        "type": type.name,
+        "lookup": id.toString(),
+      },
     );
   }
 
@@ -164,7 +172,7 @@ class MetadataCastingUtils {
     }
     throw MetadataException(
       "Invalid Template value for variant. Template must be a map and contains key key with variant name",
-      details: {"property": property, "type": type, "value": value},
+      details: {"property": property, "type": type, "value": value?.toString()},
     );
   }
 
@@ -252,7 +260,11 @@ class MetadataCastingUtils {
     if (castValue == null || length != null && castValue.length != length) {
       throw MetadataException(
         "Invalid List value.",
-        details: {"value": value, "type": typneName, "length": length},
+        details: {
+          "value": value?.toString(),
+          "type": typneName,
+          "length": length.toString(),
+        },
       );
     }
     return castValue;
@@ -263,7 +275,7 @@ class MetadataCastingUtils {
     if (toBytes != null) return toBytes;
     throw MetadataException(
       "Invalid bytes value.",
-      details: {"value": value, "type": type, "property": property},
+      details: {"value": value?.toString(), "type": type, "property": property},
     );
   }
 
@@ -304,7 +316,11 @@ class MetadataCastingUtils {
     }
     throw MetadataException(
       "Invalid value for type Bigint",
-      details: {"sign": sign, "bitLength": bitLength, "property": property},
+      details: {
+        "sign": sign.toString(),
+        "bitLength": bitLength.toString(),
+        "property": property,
+      },
     );
   }
 
@@ -321,10 +337,10 @@ class MetadataCastingUtils {
     throw MetadataException(
       "Invalid value for type int",
       details: {
-        "sign": sign,
-        "bitLength": bitLength,
+        "sign": sign.toString(),
+        "bitLength": bitLength.toString(),
         "property": property,
-        "value": value,
+        "value": value?.toString(),
       },
     );
   }
@@ -382,7 +398,7 @@ class MetadataCastingUtils {
     }
     throw DartSubstratePluginException(
       "Invalid integer provided for U8.",
-      details: {"value": value, "max": max},
+      details: {"value": value.toString(), "max": max?.toString()},
     );
   }
 
@@ -402,7 +418,10 @@ class MetadataCastingUtils {
     }
     throw DartSubstratePluginException(
       "Invalid bytes length.",
-      details: {"length": bytes.length, "expected": except},
+      details: {
+        "length": bytes.length.toString(),
+        "expected": except?.toString(),
+      },
     );
   }
 }

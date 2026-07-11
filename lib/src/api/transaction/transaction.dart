@@ -1,11 +1,22 @@
 import 'dart:async';
 
 import 'package:blockchain_utils/blockchain_utils.dart';
+import 'package:polkadot_dart/src/address/address.dart';
+import 'package:polkadot_dart/src/api/call/call.dart';
+import 'package:polkadot_dart/src/api/helper/event_helper.dart';
+import 'package:polkadot_dart/src/api/models/models.dart';
+import 'package:polkadot_dart/src/api/runtime/runtime.dart';
+import 'package:polkadot_dart/src/api/storage/storage/api.dart';
+import 'package:polkadot_dart/src/api/transaction/exception.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/keypair/core/signer.dart';
-import 'package:polkadot_dart/src/substrate.dart';
+import 'package:polkadot_dart/src/metadata/metadata.dart';
+import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/networks/types/types/transaction.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
-typedef ONLOOKUPBLOCKEVENT<T extends Object> =
+typedef CbOnBlockEvent<T extends Object> =
     T? Function(
       String blockHash,
       int blockId,
@@ -479,7 +490,7 @@ final class SubstrateTransactionBuilder {
   static Future<_LookupBlock<T>> _lockupBlockEvents<T extends Object>({
     required int blockId,
     required MetadataWithProvider provider,
-    required ONLOOKUPBLOCKEVENT<T> onBlockEvents,
+    required CbOnBlockEvent<T> onBlockEvents,
     required _LookupBlock<T> blockData,
   }) async {
     int? finalizeBlock = blockData.finalizeBlock;
@@ -534,7 +545,7 @@ final class SubstrateTransactionBuilder {
     Duration requestTimeout = const Duration(milliseconds: 200),
     required int blockId,
     required MetadataWithProvider provider,
-    required ONLOOKUPBLOCKEVENT<T> onBlockEvents,
+    required CbOnBlockEvent<T> onBlockEvents,
     int Function()? onLookupMoreBlock,
     int maxRetryEachBlock = 20,
     int blockCount = 50,
@@ -583,7 +594,7 @@ final class SubstrateTransactionBuilder {
             }
             await Future.delayed(requestTimeout);
           }
-        } on DartSubstratePluginException catch (e) {
+        } on BaseDartSubstratePluginException catch (e) {
           if (e == SubstrateLookupBlockExceptionConst.blockNotFound) {
             retry--;
             if (retry <= 0) {

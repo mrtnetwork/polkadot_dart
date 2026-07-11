@@ -5,7 +5,8 @@ import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageFungiblesMethods {
   asset("asset"),
@@ -23,7 +24,7 @@ class SubstrateStorageFungibles extends SubstrateStorageApi {
   SubstrateStorageApis get api => SubstrateStorageApis.fungibles;
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>> assetEnteries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -49,7 +50,7 @@ class SubstrateStorageFungibles extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   metadataEnteries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -74,7 +75,7 @@ class SubstrateStorageFungibles extends SubstrateStorageApi {
 
   Future<List<(XCMVersionedLocation, Map<String, dynamic>?)>> metadata({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required List<XCMVersionedLocation> locations,
   }) async {
     final query = api
@@ -108,7 +109,7 @@ class SubstrateStorageFungibles extends SubstrateStorageApi {
 
   Future<List<(XCMVersionedLocation, Map<String, dynamic>?)>> assets({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required List<XCMVersionedLocation> locations,
   }) async {
     final query = api
@@ -145,7 +146,7 @@ class SubstrateStorageFungibles extends SubstrateStorageApi {
   >
   account({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required BaseSubstrateAddress address,
     required List<XCMVersionedLocation> locations,
   }) async {

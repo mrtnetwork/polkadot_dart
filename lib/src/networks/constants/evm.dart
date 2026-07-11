@@ -9,14 +9,13 @@ class SubstratemEVMNetworkUtils {
     if (response.length != length) {
       throw DartSubstratePluginException(
         "ABI function returned unexpected number of items.",
-        details: {"response": response},
       );
     }
   }
 
   static final nameAbi = EvmFunctionAbi<String?>(
     name: "name",
-    abi: {
+    abi: const {
       "constant": true,
       "inputs": [],
       "name": "name",
@@ -41,7 +40,7 @@ class SubstratemEVMNetworkUtils {
 
   static final symbolAbi = EvmFunctionAbi<String>(
     name: "symbol",
-    abi: {
+    abi: const {
       "constant": true,
       "inputs": [],
       "name": "symbol",
@@ -66,7 +65,7 @@ class SubstratemEVMNetworkUtils {
 
   static final decimalsAbi = EvmFunctionAbi<int>(
     name: "decimals",
-    abi: {
+    abi: const {
       "constant": true,
       "inputs": [],
       "name": "decimals",
@@ -91,7 +90,7 @@ class SubstratemEVMNetworkUtils {
 
   static final balanceOfAbi = EvmFunctionAbi<BigInt>(
     name: "balanceOf",
-    abi: {
+    abi: const {
       "constant": true,
       "inputs": [
         {"name": "account", "type": "address"},

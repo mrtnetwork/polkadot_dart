@@ -4,7 +4,8 @@ import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageFungibleMethods {
   balance("balance");
@@ -21,7 +22,7 @@ class SubstrateStorageFungible extends SubstrateStorageApi {
   Future<List<(T, QueryStorageFullResponse<BigInt>)>>
   balance<T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required BaseSubstrateAddress address,
     required List<T> assetsIdentifier,
   }) async {

@@ -67,7 +67,10 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
       if (!pallets.containsKey(index)) {
         throw MetadataException(
           "Pallet does not exist.",
-          details: {"index": index, "pallets": getPalletIndexes().join(", ")},
+          details: {
+            "index": index.toString(),
+            "pallets": getPalletIndexes().join(", "),
+          },
         );
       }
       return index;
@@ -353,50 +356,15 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     return variants.map((e) => e.name).toList();
   }
 
-  List<String> getRuntimeApis() {
-    if (!MetadataConstant.supportRuntimeApi.contains(version)) {
-      throw MetadataException(
-        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
-      );
-    }
-    throw UnimplementedError();
-  }
+  List<String> getRuntimeApis();
 
-  List<String> getRuntimeApiMethods(String apiName) {
-    if (!MetadataConstant.supportRuntimeApi.contains(version)) {
-      throw MetadataException(
-        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
-      );
-    }
-    throw UnimplementedError();
-  }
+  List<String> getRuntimeApiMethods(String apiName);
 
-  String generateRuntimeApiMethod(String apiName, String methodName) {
-    if (!MetadataConstant.supportRuntimeApi.contains(version)) {
-      throw MetadataException(
-        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
-      );
-    }
-    throw UnimplementedError();
-  }
+  String generateRuntimeApiMethod(String apiName, String methodName);
 
-  List<int> getRutimeApiInputLookupIds(String apiName, String methodName) {
-    if (!MetadataConstant.supportRuntimeApi.contains(version)) {
-      throw MetadataException(
-        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
-      );
-    }
-    throw UnimplementedError();
-  }
+  List<int> getRutimeApiInputLookupIds(String apiName, String methodName);
 
-  int getRutimeOutputLookupId(String apiName, String methodName) {
-    if (!MetadataConstant.supportRuntimeApi.contains(version)) {
-      throw MetadataException(
-        "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
-      );
-    }
-    throw UnimplementedError();
-  }
+  int getRutimeOutputLookupId(String apiName, String methodName);
 
   List<String> getPaths(int lookupid) {
     return registry.scaleType(lookupid).path;

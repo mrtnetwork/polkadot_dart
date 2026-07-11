@@ -6,7 +6,7 @@ import 'package:polkadot_dart/src/api/runtime/runtime/xcm_payment_api.dart';
 class SubstrateQuickRuntimeApi {
   static const SubstrateRuntimeApiXCMPayment xcmPayment =
       SubstrateRuntimeApiXCMPayment();
-  static final SubstrateRuntimeApiDryRun dryRun = SubstrateRuntimeApiDryRun();
+  static const SubstrateRuntimeApiDryRun dryRun = SubstrateRuntimeApiDryRun();
   static const SubstrateRuntimeApiAssetConversion assetConversion =
       SubstrateRuntimeApiAssetConversion();
   static const SubstrateRuntimeApiEthereumRuntimeRPCApis

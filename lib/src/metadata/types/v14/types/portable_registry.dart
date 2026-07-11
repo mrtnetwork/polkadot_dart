@@ -90,7 +90,7 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
     if (lookup == null) {
       throw MetadataException(
         "lookup does not exist.",
-        details: {"id": id, "ids": types.keys.join(", ")},
+        details: {"id": id.toString(), "ids": types.keys.join(", ")},
       );
     }
     return lookup;

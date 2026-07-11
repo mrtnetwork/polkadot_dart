@@ -12,13 +12,13 @@ const String _rpcJsonStorageChangesKey = "changes";
 const String _rpcJsonBlockKey = "block";
 
 /// Extension to assist with querying storage based on metadata
-extension QueryHelper on MetadataApi {
+extension ExtQueryHelper on MetadataApi {
   // /// Function to generate storage key based on pallet name/index, method name, value, and template
 
   @Deprecated("Use `getStorageRequest` instead.")
   Future<QueryStorageResponse<T>> getStorage<T>({
     required QueryStorageRequest<T> request,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required bool fromTemplate,
     String? atBlockHash,
   }) async {
@@ -45,7 +45,7 @@ extension QueryHelper on MetadataApi {
   @Deprecated("Use `queryStorageAtBlock` instead.")
   Future<QueryStorageRequestBlock> queryStorageAt({
     required List<QueryStorageRequest> requestes,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required bool fromTemplate,
     String? atBlockHash,
   }) async {
@@ -61,7 +61,7 @@ extension QueryHelper on MetadataApi {
   @Deprecated("Use `queryStorageFromBlock` instead.")
   Future<List<QueryStorageRequestBlock>> queryStorage<T>({
     required List<QueryStorageRequest> requestes,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required String fromBlock,
     required bool fromTemplate,
     String? toBlock,
@@ -78,7 +78,7 @@ extension QueryHelper on MetadataApi {
   @Deprecated("")
   Future<List<QueryStorageRequestBlock>> _queryStorage<T>({
     required List<QueryStorageRequest> requestes,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required bool fromTemplate,
     String? fromBlock,
     String? atBlockHash,
@@ -137,7 +137,7 @@ extension QueryHelper on MetadataApi {
   Future<RESPONSE>
   getStorageRequest<RESPONSE extends Object?, DECODEDRESPONSE extends Object>({
     required GetStorageRequest<RESPONSE, DECODEDRESPONSE> request,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     bool fromTemplate = false,
     String? atBlockHash,
   }) async {
@@ -169,7 +169,7 @@ extension QueryHelper on MetadataApi {
   Future<QueryStorageResponses<RESPONSE>>
   queryStorageAtBlock<RESPONSE extends Object?, JSON extends Object>({
     required List<GetStorageRequest<RESPONSE, JSON>> requestes,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     bool fromTemplate = false,
     String? atBlockHash,
   }) async {
@@ -185,7 +185,7 @@ extension QueryHelper on MetadataApi {
 
   Future<List<QueryStorageResponses>> queryStorageFromBlock<T>({
     required List<GetStorageRequest> requestes,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required String fromBlock,
     required bool fromTemplate,
     String? toBlock,
@@ -205,9 +205,9 @@ extension QueryHelper on MetadataApi {
     required String palletName,
     required String methodName,
     required StorageKey storageKey,
-    ONSTORAGERESPONEBYTES<RESPONSE>? onBytesResponse,
-    ONSTORAGERESPONEJSON<RESPONSE, DECODEDRESPONSE>? onJsonResponse,
-    required ONSTORAGERESPONENULL<RESPONSE>? onNullResponse,
+    CbOnStorageResponseBytes<RESPONSE>? onBytesResponse,
+    CbOnStorageResponseJson<RESPONSE, DECODEDRESPONSE>? onJsonResponse,
+    required CbOnStorageResponseNull<RESPONSE>? onNullResponse,
   }) {
     final RESPONSE response = () {
       if (bytes == null) {
@@ -249,7 +249,7 @@ extension QueryHelper on MetadataApi {
             'Unexpected response type.',
             details: {
               "excpected": "$DECODEDRESPONSE",
-              "value": json.runtimeType,
+              "value": json.runtimeType.toString(),
             },
           );
         }
@@ -262,7 +262,10 @@ extension QueryHelper on MetadataApi {
       } catch (_) {
         throw DartSubstratePluginException(
           'Unexpected response type.',
-          details: {"excpected": "$RESPONSE", "value": json.runtimeType},
+          details: {
+            "excpected": "$RESPONSE",
+            "value": json.runtimeType.toString(),
+          },
         );
       }
       return data;
@@ -276,7 +279,7 @@ extension QueryHelper on MetadataApi {
   Future<List<QueryStorageResponses<RESPONSE>>>
   _query<RESPONSE extends Object?, JSON extends Object>({
     required List<GetStorageRequest<RESPONSE, JSON>> requestes,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required bool fromTemplate,
     String? fromBlock,
     String? atBlockHash,
@@ -338,7 +341,7 @@ extension QueryHelper on MetadataApi {
   }
 
   Future<FrameSupportDispatchPerDispatchClass> queryBlockWeight(
-    SubstrateProvider rpc, {
+    IProvider<IServiceProvider, SubstrateRequestDetails> rpc, {
     String? atBlockHash,
   }) async {
     final storageKey = generateStorageKey(
@@ -364,7 +367,7 @@ extension QueryHelper on MetadataApi {
   Future<List<StorageKey>> getPagesStorageKeys({
     required String palletNameOrIndex,
     required String methodName,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     String? storageKey,
     Object? inputs,
     int count = 1000,
@@ -407,7 +410,7 @@ extension QueryHelper on MetadataApi {
   Stream<List<StorageKey>> getStreamPagesStorageKeys({
     required String palletNameOrIndex,
     required String methodName,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     int count = 1000,
     String? atBlockHash,
     String? startKey,
@@ -447,7 +450,7 @@ extension QueryHelper on MetadataApi {
   Future<QueryStorageResponses<RESPONSE>>
   getStorageEntries<RESPONSE extends Object?, DECODEDRESPONSE extends Object>({
     required GetStorageEntriesRequest<RESPONSE, DECODEDRESPONSE> request,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     String? atBlockHash,
   }) async {
     final storageKeys = await getPagesStorageKeys(
@@ -514,7 +517,7 @@ extension QueryHelper on MetadataApi {
     DECODEDRESPONSE extends Object
   >({
     required GetStreamStorageEntriesRequest<RESPONSE, DECODEDRESPONSE> request,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     String? atBlockHash,
   }) async* {
     int total = 0;
@@ -563,7 +566,7 @@ extension QueryHelper on MetadataApi {
   Stream<QueryStorageResponses<RESPONSE>>
   queryStreamStorageAtBlock<RESPONSE extends Object?, JSON extends Object>({
     required Stream<List<GetStorageRequest<RESPONSE, JSON>>> requestes,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     bool fromTemplate = false,
     String? atBlockHash,
   }) async* {

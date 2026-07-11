@@ -3,7 +3,8 @@ import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
 import 'package:polkadot_dart/src/models/modesl.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageXCMTransactorMethods {
   destinationAssetFeePerSecond("DestinationAssetFeePerSecond");
@@ -20,7 +21,7 @@ class SubstrateStorageXCMTransactor extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<BigInt>>>
   destinationAssetFeePerSecondEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -49,7 +50,7 @@ class SubstrateStorageXCMTransactor extends SubstrateStorageApi {
   Future<List<(XCMMultiLocation, BigInt?)>>
   destinationAssetFeePerSecond<T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required List<XCMMultiLocation> ids,
   }) async {
     final query = api

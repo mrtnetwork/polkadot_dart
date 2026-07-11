@@ -1,6 +1,10 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/polkadot_dart.dart';
+import 'package:polkadot_dart/src/address/address.dart';
+import 'package:polkadot_dart/src/api/api.dart';
+import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/networks/networks.dart';
 
 /// Utility class for Substrate network operations, mainly for XCM and location handling.
 class SubstrateNetworkControllerUtils {
@@ -568,7 +572,14 @@ class SubstrateNetworkControllerUtils {
         }
         return null;
       },
-      methods: ["Deposited", "Minted", "Log", "Issued", "ItemCreated"],
+      methods: [
+        "Deposited",
+        "Minted",
+        "Log",
+        "Issued",
+        "ItemCreated",
+        "Deposit",
+      ],
       catchError: true,
     );
   }

@@ -29,8 +29,8 @@ enum ZeitgeistAssetType {
 
 class ZeitgeistAsstConst {
   static const int ztgDecimals = 10;
-  static final BaseZeitgeistAsset ztg = ZeitgeistAssetZtg(
-    identifier: {ZeitgeistAssetType.ztg.type: null},
+  static const BaseZeitgeistAsset ztg = ZeitgeistAssetZtg(
+    identifier: {"Ztg": null},
   );
 }
 

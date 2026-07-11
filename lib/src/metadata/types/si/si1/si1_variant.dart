@@ -113,7 +113,7 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
       if (value != null) {
         throw MetadataException(
           "Value must be null for a variant without fields.",
-          details: {"value": value, "variant": name},
+          details: {"value": value.toString(), "variant": name.toString()},
         );
       }
       return null;

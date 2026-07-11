@@ -1,12 +1,13 @@
+import 'package:blockchain_utils/service/service.dart';
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/models/models/storage.dart';
 import 'package:polkadot_dart/src/models/generic/models/events.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
-extension EventHelper on MetadataApi {
+extension ExtEventHelper on MetadataApi {
   Future<QueryStorageResult<T>> getEvents<T>(
-    SubstrateProvider rpc, {
+    IProvider<IServiceProvider, SubstrateRequestDetails> rpc, {
     String? palletIdOrIndex,
     String? atBlockHash,
   }) async {
@@ -39,7 +40,7 @@ extension EventHelper on MetadataApi {
   }
 
   Future<List<SubstrateEvent>> getSystemEvents(
-    SubstrateProvider rpc, {
+    IProvider<IServiceProvider, SubstrateRequestDetails> rpc, {
     String? palletIdOrIndex,
     String? atBlockHash,
   }) async {

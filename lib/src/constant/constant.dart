@@ -13,5 +13,5 @@ class SubstrateConstant {
   static const int bitSigned = 128;
   static const int bitUnsigned = 0;
   static const int defaultMortalLength = 55;
-  static final BigInt maxWeightRefTime = BinaryOps.maxU64;
+  static BigInt get maxWeightRefTime => BinaryOps.maxU64;
 }

@@ -3,7 +3,8 @@ import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageXCMWeightTraderMethods {
   supportedAssets("SupportedAssets");
@@ -19,7 +20,7 @@ class SubstrateStorageXCMWeightTrader extends SubstrateStorageApi {
   SubstrateStorageApis get api => SubstrateStorageApis.xcmWeightTrader;
   Future<List<QueryStorageFullResponse<(bool, BigInt)>>> supportedAssets({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<

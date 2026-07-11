@@ -105,7 +105,7 @@ class VersionedMetadata<T extends SubstrateMetadata>
       throw MetadataException(
         "metadata does not supported by API",
         details: {
-          "version": version,
+          "version": version.toString(),
           "api_support_versions": MetadataConstant.supportedMetadataVersion
               .join(", "),
         },

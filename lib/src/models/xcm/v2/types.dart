@@ -804,7 +804,7 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
       _ =>
         throw DartSubstratePluginException(
           "Unsuported junction by version 2.",
-          details: {"type": junction.type},
+          details: {"type": junction.type.toString()},
         ),
     };
   }

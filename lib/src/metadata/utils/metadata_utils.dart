@@ -2,12 +2,12 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 
-typedef ONPARSEOPTIONAL<T extends Object, V extends Object> = T Function(V v);
+typedef CbOnParseOption<T extends Object, V extends Object> = T Function(V v);
 
 class MetadataUtils {
   static T? parseOptional<T extends Object, V extends Object>(
     Object? json, {
-    ONPARSEOPTIONAL<T, V>? parse,
+    CbOnParseOption<T, V>? parse,
   }) {
     if (json == null) return null;
     try {
@@ -24,7 +24,7 @@ class MetadataUtils {
     } catch (_) {
       throw MetadataException(
         "Unexpected optionial type.",
-        details: {"expected": "$T", "value": json.runtimeType},
+        details: {"expected": "$T", "value": json.runtimeType.toString()},
       );
     }
   }
@@ -34,7 +34,7 @@ class MetadataUtils {
     return {"Some": json};
   }
 
-  static Layout optionalLayout<T>(LayoutFunc onSome, {String? property}) {
+  static Layout optionalLayout<T>(CbLayoutFunc onSome, {String? property}) {
     return LayoutConst.lazyEnum(
       [
         LazyVariantModel(
@@ -76,7 +76,11 @@ class MetadataUtils {
     if (list.length != len) {
       throw MetadataException(
         "Invalid list len.",
-        details: {"expected": len, "length": list.length, "info": info},
+        details: {
+          "expected": len.toString(),
+          "length": list.length.toString(),
+          "info": info,
+        },
       );
     }
   }
@@ -112,10 +116,7 @@ class MetadataUtils {
     }
   }
 
-  static bool validateOptionBytes(
-    List<int> bytes, {
-    Map<String, dynamic> infos = const {},
-  }) {
+  static bool validateOptionBytes(List<int> bytes) {
     try {
       final decode = LayoutConst.u8().deserialize(bytes.sublist(0, 1)).value;
       if (decode == 0 || decode == 1) {
@@ -125,7 +126,7 @@ class MetadataUtils {
     } catch (e) {}
     throw MetadataException(
       "Invalid Metadata option bytes.",
-      details: {"expected": "0, 1", ...infos},
+      details: {"expected": "0, 1"},
     );
   }
 
@@ -156,7 +157,7 @@ class MetadataUtils {
     if (queryBytes.length < _queryMethodPrefixLength) {
       throw MetadataException(
         "Invalid query bytes. Query bytes must be at least $_queryMethodPrefixLength bytes",
-        details: {"length": queryBytes.length},
+        details: {"length": queryBytes.length.toString()},
       );
     }
 
@@ -164,7 +165,10 @@ class MetadataUtils {
     if (!BytesUtils.bytesEqual(queryBytes, prefixHash)) {
       throw MetadataException(
         "Invalid query bytes. Query bytes does not related to this storage",
-        details: {"exceptedPrefix": prefixHash, "prefix": queryPrefix},
+        details: {
+          "exceptedPrefix": BytesUtils.toHexString(prefixHash),
+          "prefix": BytesUtils.toHexString(queryPrefix),
+        },
       );
     }
     return queryBytes.sublist(_queryMethodPrefixLength);

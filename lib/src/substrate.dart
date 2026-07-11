@@ -7,3 +7,4 @@ export 'models/modesl.dart';
 export 'networks/networks.dart';
 export 'provider/provider.dart';
 export 'serialization/serialization.dart';
+export 'exception/exception.dart';

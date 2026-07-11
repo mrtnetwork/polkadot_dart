@@ -4,7 +4,8 @@ import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageAssetsMethods {
   asset("Asset"),
@@ -22,7 +23,7 @@ class SubstrateStorageAssets extends SubstrateStorageApi {
   SubstrateStorageApis get api => SubstrateStorageApis.assets;
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>> assetEnteries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -47,7 +48,7 @@ class SubstrateStorageAssets extends SubstrateStorageApi {
 
   Future<List<(T, Map<String, dynamic>?)>> assets<T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required List<T> ids,
   }) async {
     final query = api
@@ -80,7 +81,7 @@ class SubstrateStorageAssets extends SubstrateStorageApi {
 
   Future<List<(T, Map<String, dynamic>?)>> metadata<T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required List<T> ids,
   }) async {
     final query = api
@@ -114,7 +115,7 @@ class SubstrateStorageAssets extends SubstrateStorageApi {
   Future<List<QueryStorageFullResponse<Map<String, dynamic>>>>
   metadataEnteries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -140,7 +141,7 @@ class SubstrateStorageAssets extends SubstrateStorageApi {
   Future<List<(T, QueryStorageFullResponse<Map<String, dynamic>>)>>
   account<T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required BaseSubstrateAddress address,
     required List<T> assetsIdentifier,
   }) async {

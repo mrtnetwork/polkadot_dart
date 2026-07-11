@@ -55,93 +55,90 @@ enum AcalaAssetType {
 }
 
 class AcalaAsstConst {
-  static final BaseAcalaAsset tap = AcalaAssetToken(
+  static const BaseAcalaAsset tap = AcalaAssetToken(
     token: AcalaAssetTokenType.tap,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.tap.type: null},
+      "Token": {"TAP": null},
     },
   );
-  static final BaseAcalaAsset lksm = AcalaAssetToken(
+  static const BaseAcalaAsset lksm = AcalaAssetToken(
     token: AcalaAssetTokenType.lksm,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.lksm.type: null},
+      "Token": {"LKSM": null},
     },
   );
-  static final BaseAcalaAsset kint = AcalaAssetToken(
+  static const BaseAcalaAsset kint = AcalaAssetToken(
     token: AcalaAssetTokenType.kint,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.kint.type: null},
+      "Token": {"KINT": null},
     },
   );
-  static final BaseAcalaAsset kusd = AcalaAssetToken(
+  static const BaseAcalaAsset kusd = AcalaAssetToken(
     token: AcalaAssetTokenType.kusd,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.kusd.type: null},
+      "Token": {"KUSD": null},
     },
   );
-  static final BaseAcalaAsset kbtc = AcalaAssetToken(
+  static const BaseAcalaAsset kbtc = AcalaAssetToken(
     token: AcalaAssetTokenType.kbtc,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.kbtc.type: null},
+      "Token": {"KBTC": null},
     },
   );
-  static final BaseAcalaAsset tai = AcalaAssetToken(
+  static const BaseAcalaAsset tai = AcalaAssetToken(
     token: AcalaAssetTokenType.tai,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.tai.type: null},
+      "Token": {"TAI": null},
     },
   );
-  static final BaseAcalaAsset ausd = AcalaAssetToken(
+  static const BaseAcalaAsset ausd = AcalaAssetToken(
     token: AcalaAssetTokenType.ausd,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.ausd.type: null},
+      "Token": {"AUSD": null},
     },
   );
-  static final BaseAcalaAsset lDot = AcalaAssetToken(
+  static const BaseAcalaAsset lDot = AcalaAssetToken(
     token: AcalaAssetTokenType.ldot,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.ldot.type: null},
+      "Token": {"LDOT": null},
     },
   );
-  static final BaseAcalaAsset dot = AcalaAssetToken(
+  static const BaseAcalaAsset dot = AcalaAssetToken(
     token: AcalaAssetTokenType.dot,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.dot.type: null},
+      "Token": {"DOT": null},
     },
   );
-  static final BaseAcalaAsset aca = AcalaAssetToken(
+  static const BaseAcalaAsset aca = AcalaAssetToken(
     token: AcalaAssetTokenType.aca,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.aca.type: null},
+      "Token": {"ACA": null},
     },
   );
-  static final BaseAcalaAsset vskSm = AcalaAssetToken(
+  static const BaseAcalaAsset vskSm = AcalaAssetToken(
     token: AcalaAssetTokenType.vskSm,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.vskSm.type: null},
+      "Token": {"VSKSM": null},
     },
   );
-  static final BaseAcalaAsset pha = AcalaAssetToken(
+  static const BaseAcalaAsset pha = AcalaAssetToken(
     token: AcalaAssetTokenType.pha,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.pha.type: null},
+      "Token": {"PHA": null},
     },
   );
-  static final BaseAcalaAsset ksm = AcalaAssetToken(
+  static const BaseAcalaAsset ksm = AcalaAssetToken(
     token: AcalaAssetTokenType.ksm,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.ksm.type: null},
+      "Token": {"KSM": null},
     },
   );
-  static final BaseAcalaAsset bnc = AcalaAssetToken(
+  static const BaseAcalaAsset bnc = AcalaAssetToken(
     token: AcalaAssetTokenType.bnc,
     identifier: {
-      AcalaAssetType.token.type: {AcalaAssetTokenType.bnc.type: null},
+      "Token": {"BNC": null},
     },
   );
-  // static final Map<String, dynamic> acaIdentifier = {
-  //   AcalaAssetType.token.type: {AcalaAssetTokenType.aca.type: null}
-  // };
 }
 
 abstract class BaseAcalaAsset {

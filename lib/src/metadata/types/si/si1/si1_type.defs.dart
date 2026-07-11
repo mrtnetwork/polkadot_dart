@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/utils/json/extension/json.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_historic_meta_compat.dart';

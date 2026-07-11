@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/substrate.dart';
+import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
+import 'package:polkadot_dart/src/api/api.dart';
 
 enum SubstrateStorageApis {
   system("System"),

@@ -1,5 +1,5 @@
 import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/exception/exception/exception.dart';
+import 'package:blockchain_utils/exception/exceptions.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';

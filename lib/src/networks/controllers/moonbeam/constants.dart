@@ -2,9 +2,9 @@ class MoonbeamNetworkControllerConst {
   static const int erc20BrdigePalletIndex = 110;
   static const int moonbaseErc20BrdigePalletIndex = 3;
   static const List<int> moonbeamAssetIdPrefix = [0xff, 0xff, 0xff, 0xff];
-  static final BigInt moonbaseChainId = BigInt.from(1287);
-  static final BigInt moonbeamChainId = BigInt.from(1284);
-  static final BigInt moonRiverChainId = BigInt.from(1285);
+  static BigInt get moonbaseChainId => BigInt.from(1287);
+  static BigInt get moonbeamChainId => BigInt.from(1284);
+  static BigInt get moonRiverChainId => BigInt.from(1285);
   static List<Map<String, dynamic>> defaultAssets(BigInt chainId) {
     if (chainId == moonbaseChainId) {
       return _moonBaseAssets;

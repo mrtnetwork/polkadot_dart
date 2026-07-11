@@ -1,5 +1,4 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/utils/numbers/utils/bigint_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/api/runtime/runtime/ethereum_runtime_rpcs/types.dart';
@@ -23,7 +22,7 @@ class SubstrateRuntimeApiEthereumRuntimeRPCApis extends SubstrateRuntimeApi {
 
   Future<SubstrateDispatchResult<EthereumRuntimeRpcsApiCall>> call({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required SubstrateEthereumAddress from,
     required SubstrateEthereumAddress to,
     required List<int> inputs,

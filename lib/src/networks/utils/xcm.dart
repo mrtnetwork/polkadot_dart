@@ -129,7 +129,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       throw DartSubstratePluginException(
         "Failed to calculate XCM execution weight.",
         details: {
-          "error": queryXcmWeight.cast<SubstrateDispatchResultError>().error,
+          "error":
+              queryXcmWeight.cast<SubstrateDispatchResultError>().error.name,
         },
       );
     }
@@ -143,10 +144,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     if (!fee.type.isOk) {
       throw DartSubstratePluginException(
         "Failed to calculate XCM fee for given weight.",
-        details: {
-          "error": fee.cast<SubstrateDispatchResultError>().error.type,
-          "weight": weight.toJson(),
-        },
+        details: {"error": fee.cast<SubstrateDispatchResultError>().error.type},
       );
     }
     return fee.ok!;
@@ -394,7 +392,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       _ =>
         throw DartSubstratePluginException(
           "Invalid teleport asset method.",
-          details: {"method": method},
+          details: {"method": method.toString()},
         ),
     };
   }
@@ -469,7 +467,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       _ =>
         throw DartSubstratePluginException(
           "Invalid reserve transfer assets method.",
-          details: {"method": method},
+          details: {"method": method.name},
         ),
     };
   }
@@ -571,6 +569,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     required BaseSubstrateNetworkAsset nativeAsset,
     required XCMVersionedXCM xcm,
     required XCMVersionedLocation destination,
+    required XCMAssetId deleliveryFeeAsset,
     BaseSubstrateNetworkAsset? fee,
   }) async {
     if (!SubstrateQuickRuntimeApi.xcmPayment.methodExists(
@@ -585,6 +584,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           xcm: xcm,
           api: metadata.metadata.api,
           rpc: metadata.provider,
+          asset: deleliveryFeeAsset.asVersioned(),
         );
     final assets = localDeliveryFees.ok?.assets.assets;
     if (assets == null || assets.isEmpty) {
@@ -727,6 +727,9 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
             nativeAsset: localProvider.defaultNativeAsset,
             xcm: xcm,
             destination: i.$1,
+            deleliveryFeeAsset: origin.relayAsset
+                .getAssetId(version: xcmVersion, reserveNetwork: origin)
+                .asVersion(xcmVersion),
           );
           localDeliveryFees.add(fee);
         }
@@ -845,6 +848,10 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
               metadata: metadata,
               network: location,
               nativeAsset: controller.defaultNativeAsset,
+              deleliveryFeeAsset: origin.relayAsset.getAssetId(
+                version: location.defaultXcmVersion,
+                reserveNetwork: origin,
+              ),
               xcm: xcm,
               destination: i.$1,
               fee: fees,

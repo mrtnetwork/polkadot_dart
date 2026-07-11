@@ -41,8 +41,8 @@ enum CentrifugeAssetType {
 }
 
 class CentrifugeAsstConst {
-  static final BaseCentrifugeAsset cfg = CentrifugeAssetNative(
-    identifier: {CentrifugeAssetType.native.type: null},
+  static const BaseCentrifugeAsset cfg = CentrifugeAssetNative(
+    identifier: {"Native": null},
   );
 }
 

@@ -3,7 +3,8 @@ import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageXCMPalletMethods {
   safeXcmVersion("SafeXcmVersion");
@@ -17,7 +18,7 @@ class SubstrateStorageXCMPallet extends SubstrateStorageApi {
   const SubstrateStorageXCMPallet();
   Future<XCMVersion> safeXCMVersion({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     return api.getStorageRequest(
       rpc: rpc,

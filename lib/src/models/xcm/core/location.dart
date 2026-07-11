@@ -221,7 +221,7 @@ abstract class XCMMultiLocation
   }
 }
 
-extension XCMMultiLocationComparable on XCMMultiLocation? {
+extension ExtXCMMultiLocationComparable on XCMMultiLocation? {
   int compareNullable<T extends Comparable>(XCMMultiLocation? other) {
     if (this == null && other == null) return 0;
     if (this == null) return -1;

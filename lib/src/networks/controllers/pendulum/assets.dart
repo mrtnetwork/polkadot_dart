@@ -42,8 +42,8 @@ enum PendulumAssetType {
 }
 
 class PendulumAsstConst {
-  static final BasePendulumAsset cfg = PendulumAssetNative(
-    identifier: {PendulumAssetType.native.type: null},
+  static const BasePendulumAsset cfg = PendulumAssetNative(
+    identifier: {"Native": null},
   );
 }
 

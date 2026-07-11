@@ -1,4 +1,3 @@
-import 'package:blockchain_utils/bip/address/eth_addr.dart';
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/ss58_constant.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
@@ -30,14 +29,8 @@ class _MultiSigAddressConst {
 /// creation of multi-signature addresses and sorting addresses.
 class SubstrateAddressUtils {
   static const int addressBytesLength = 32;
-  // static const int ehtereumAddressBytesLength = 20;
   static const int minMultisigThreshold = 1;
   static const int defaultMaxMultisigSignatories = 100;
-
-  static final SubstrateEthereumAddress zeroAddress =
-      SubstrateEthereumAddress.fromBytes(
-        List<int>.filled(EthAddrConst.addrLenBytes, 0),
-      );
 
   /// Creates a multi-signature address from a list of Substrate addresses.
   ///
@@ -64,7 +57,10 @@ class SubstrateAddressUtils {
         addresses.length > maxSignatories) {
       throw DartSubstratePluginException(
         "Threshold or number of addresses is out of range.",
-        details: {"threshold": threshold, "addressesLength": addresses.length},
+        details: {
+          "threshold": threshold.toString(),
+          "addressesLength": addresses.length.toString(),
+        },
       );
     }
 

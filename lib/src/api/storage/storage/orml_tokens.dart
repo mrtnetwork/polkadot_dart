@@ -5,7 +5,8 @@ import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
 import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/provider/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
+import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageOrmlTokensMethods {
   totalIssuance("TotalIssuance"),
@@ -22,7 +23,7 @@ class SubstrateStorageOrmlTokens extends SubstrateStorageApi {
   SubstrateStorageApis get api => SubstrateStorageApis.ormlTokens;
   Future<List<QueryStorageFullResponse<BigInt>>> totalIssuanceEntries({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
   }) async {
     final locations = api.getStreamStorageEntries(
       request: GetStreamStorageEntriesRequest<
@@ -47,7 +48,7 @@ class SubstrateStorageOrmlTokens extends SubstrateStorageApi {
 
   Future<List<(R, T?)>> accounts<R extends Object, T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required BaseSubstrateAddress address,
     required List<R> assetIds,
   }) async {
@@ -75,7 +76,7 @@ class SubstrateStorageOrmlTokens extends SubstrateStorageApi {
 
   Future<List<QueryStorageFullResponse<T>>> accountsEntries<T extends Object>({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required BaseSubstrateAddress address,
   }) async {
     final addressBytes = address.toBytes().asImmutableBytes;
@@ -99,7 +100,7 @@ class SubstrateStorageOrmlTokens extends SubstrateStorageApi {
                   "Failed to cast storage response.",
                   details: {
                     "excpected": "$T",
-                    "response": response.runtimeType,
+                    "response": response.runtimeType.toString(),
                   },
                 );
               }

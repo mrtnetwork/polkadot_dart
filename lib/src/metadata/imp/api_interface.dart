@@ -107,7 +107,7 @@ abstract mixin class MetadataApiInterface {
     required String methodName,
     required bool fromTemplate,
     required Object? value,
-    ENCODEINPUTS? onEncodeInputs,
+    CbEncodeInputs? onEncodeInputs,
   });
 
   /// Generates an event storage key.

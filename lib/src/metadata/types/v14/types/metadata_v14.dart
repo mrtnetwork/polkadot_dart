@@ -2,6 +2,7 @@ import 'package:blockchain_utils/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
+import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
@@ -103,5 +104,40 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
   @override
   bool runtimeMethodExists(String apiName, {String? methodName}) {
     return false;
+  }
+
+  @override
+  List<String> getRuntimeApis() {
+    throw MetadataException(
+      "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+    );
+  }
+
+  @override
+  List<String> getRuntimeApiMethods(String apiName) {
+    throw MetadataException(
+      "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+    );
+  }
+
+  @override
+  String generateRuntimeApiMethod(String apiName, String methodName) {
+    throw MetadataException(
+      "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+    );
+  }
+
+  @override
+  List<int> getRutimeApiInputLookupIds(String apiName, String methodName) {
+    throw MetadataException(
+      "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+    );
+  }
+
+  @override
+  int getRutimeOutputLookupId(String apiName, String methodName) {
+    throw MetadataException(
+      "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
+    );
   }
 }

@@ -1,7 +1,19 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/substrate.dart';
+
+import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
+import 'package:polkadot_dart/src/models/xcm/core/body.dart';
+import 'package:polkadot_dart/src/models/xcm/core/fungibility.dart';
+import 'package:polkadot_dart/src/models/xcm/core/junction.dart';
+import 'package:polkadot_dart/src/models/xcm/core/location.dart';
+import 'package:polkadot_dart/src/models/xcm/core/network_id.dart';
+import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
+import 'package:polkadot_dart/src/models/xcm/v2/types.dart';
+import 'package:polkadot_dart/src/models/xcm/v4/types.dart';
+import 'package:polkadot_dart/src/models/xcm/v5/types.dart';
+import 'package:polkadot_dart/src/serialization/serialization.dart';
 
 abstract class XCMV3NetworkId extends SubstrateVariantSerialization
     with XCMNetworkId, Equality {

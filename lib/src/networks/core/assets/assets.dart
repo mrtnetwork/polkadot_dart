@@ -104,7 +104,10 @@ abstract class BaseSubstrateNetworkAsset {
     if (identifier is! T) {
       throw DartSubstratePluginException(
         "Mismatch asset identifier.",
-        details: {"expected": "$T", "identifier": identifier.runtimeType},
+        details: {
+          "expected": "$T",
+          "identifier": identifier.runtimeType.toString(),
+        },
       );
     }
     return identifier as T;
@@ -118,7 +121,10 @@ abstract class BaseSubstrateNetworkAsset {
     if (xTokenTransferId is! T) {
       throw DartSubstratePluginException(
         "Mismatch asset identifier.",
-        details: {"expected": "$T", "identifier": xTokenTransferId.runtimeType},
+        details: {
+          "expected": "$T",
+          "identifier": xTokenTransferId.runtimeType.toString(),
+        },
       );
     }
     return xTokenTransferId as T;

@@ -1,35 +1,122 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 
-/// Represents the details of an Ethereum JSON-RPC request.
 class SubstrateRequestDetails extends BaseServiceRequestParams {
+  final String method;
   const SubstrateRequestDetails({
     required super.requestID,
-    required super.type,
+    super.path,
+    required super.responseEncoding,
     required super.headers,
+    super.successStatusCodes,
+    super.errorStatusCodes,
+    required super.requestMethod,
+    super.bodyBytes,
+    super.bodyString,
     required this.method,
-    required this.jsonBody,
-  });
-
-  /// The Ethereum method name for the request.
-  final String method;
-
-  /// The JSON-formatted string containing the request parameters.
-  final Map<String, dynamic> jsonBody;
+  }) : super(network: BlockchainNetwork.substrateAndRelated);
+  factory SubstrateRequestDetails.deserialize({
+    List<int>? bytes,
+    CborObject? obj,
+  }) {
+    final values = CborTagSerializable.decodeTaggedValue(
+      identifier: BlockchainNetwork.substrateAndRelated.identifier,
+      cborBytes: bytes,
+      cborObject: obj,
+    );
+    return SubstrateRequestDetails(
+      headers: values
+          .mapAt<CborStringValue, CborStringValue>(0)
+          .map((k, v) => MapEntry(k.value, v.value)),
+      requestMethod: RequestMethod.fromValue(values.rawValueAt(1)),
+      responseEncoding: ServiceReponseEncoding.fromValue(values.rawValueAt(2)),
+      successStatusCodes:
+          values
+              .listAt<CborIntValue>(3)
+              .map((e) => e.value)
+              .toList()
+              .emptyAsNull,
+      errorStatusCodes:
+          values
+              .listAt<CborIntValue>(4)
+              .map((e) => e.value)
+              .toList()
+              .emptyAsNull,
+      bodyBytes: values.rawValueAt(5),
+      bodyString: values.rawValueAt(6),
+      path: values.rawValueAt(7),
+      requestID: values.rawValueAt(8),
+      method: values.rawValueAt(9),
+    );
+  }
+  SubstrateRequestDetails copyWith({
+    int? requestID,
+    String? path,
+    RequestMethod? requestMethod,
+    Map<String, String>? headers,
+    List<int>? bodyBytes,
+    String? bodyString,
+    ServiceReponseEncoding? responseEncoding,
+    List<int>? errorStatusCodes,
+    List<int>? successStatusCodes,
+    String? method,
+  }) {
+    return SubstrateRequestDetails(
+      requestID: requestID ?? this.requestID,
+      headers: headers ?? this.headers,
+      path: path ?? this.path,
+      responseEncoding: responseEncoding ?? this.responseEncoding,
+      requestMethod: requestMethod ?? this.requestMethod,
+      bodyString: bodyString ?? this.bodyString,
+      errorStatusCodes: errorStatusCodes ?? this.errorStatusCodes,
+      bodyBytes: bodyBytes ?? this.bodyBytes,
+      successStatusCodes: successStatusCodes ?? this.successStatusCodes,
+      method: method ?? this.method,
+    );
+  }
 
   @override
-  List<int>? body() {
-    return StringUtils.encode(StringUtils.fromJson(jsonBody));
+  List<int>? encodeBody({ServiceProtocol protocol = ServiceProtocol.http}) {
+    assert(!protocol.isGrpc, "Unsupported protocol.");
+    return super.encodeBody(protocol: protocol);
+  }
+
+  @override
+  Uri encodeUrl(String uri) {
+    return Uri.parse(uri);
   }
 
   @override
   Map<String, dynamic> toJson() {
-    return {"method": method, "body": jsonBody, "type": type.name};
+    return {
+      "method": method,
+      "body": bodyString ?? BytesUtils.tryToHexString(bodyBytes),
+      "type": requestMethod.name,
+    };
   }
 
   @override
-  Uri toUri(String uri) {
-    return Uri.parse(uri);
-  }
+  SerializationIdentifier get serializationIdentifier =>
+      BlockchainNetwork.substrateAndRelated.identifier;
+
+  @override
+  List<CborObject?> get serializationItems => [
+    CborMapValue.definite(
+      headers.map((k, v) => MapEntry(CborStringValue(k), CborStringValue(v))),
+    ),
+    requestMethod.value.toCbor(),
+    responseEncoding.value.toCbor(),
+    CborTagSerializable.listFromDynamic(
+      successStatusCodes?.map((e) => CborIntValue(e)).toList() ?? [],
+    ),
+    CborTagSerializable.listFromDynamic(
+      errorStatusCodes?.map((e) => CborIntValue(e)).toList() ?? [],
+    ),
+    bodyBytes?.toCborBytes(),
+    bodyString?.toCbor(),
+    path?.toCbor(),
+    requestID.toCbor(),
+    method.toCbor(),
+  ];
 }
 
 /// An abstract class representing Ethereum JSON-RPC requests with generic response types.
@@ -39,7 +126,7 @@ abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
   const SubstrateRequest();
 
   @override
-  RequestServiceType get requestType => RequestServiceType.post;
+  RequestMethod get requestMethod => RequestMethod.post;
 
   /// JSON-RPC method name.
   abstract final String rpcMethod;
@@ -67,10 +154,6 @@ abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
   SubstrateRequestDetails buildRequest(int requestId) {
     List<dynamic> inJson = toJson();
     inJson.removeWhere((v) => v == null);
-    inJson =
-        inJson.map((e) {
-          return e;
-        }).toList();
     final Map<String, dynamic> params = {
       "jsonrpc": "2.0",
       "method": rpcMethod,
@@ -79,10 +162,11 @@ abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
     };
     return SubstrateRequestDetails(
       requestID: requestId,
-      jsonBody: params,
-      method: rpcMethod,
-      type: requestType,
+      bodyString: StringUtils.fromJson(params),
+      requestMethod: requestMethod,
       headers: ServiceConst.defaultPostHeaders,
+      responseEncoding: ServiceReponseEncoding.map,
+      method: rpcMethod,
     );
   }
 

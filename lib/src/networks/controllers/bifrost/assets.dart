@@ -77,10 +77,10 @@ enum BifrostAssetType {
 }
 
 class BifrostAsstConst {
-  static final BaseBifrostAsset bnc = BifrostAssetNative(
+  static const BaseBifrostAsset bnc = BifrostAssetNative(
     token: BifrostAssetNativeType.bnc,
     identifier: {
-      BifrostAssetType.native.type: {BifrostAssetNativeType.bnc.type: null},
+      "Native": {"BNC": null},
     },
   );
 }

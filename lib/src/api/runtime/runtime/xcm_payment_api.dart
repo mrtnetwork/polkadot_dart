@@ -1,5 +1,6 @@
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:blockchain_utils/service/service.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateRuntimeApiXCMPaymentMethods
@@ -21,7 +22,7 @@ class SubstrateRuntimeApiXCMPayment extends SubstrateRuntimeApi {
   Future<SubstrateDispatchResult<XCMVersionedAssetIds>>
   queryAcceptablePaymentAsset({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required XCMVersion version,
   }) async {
     final result = await callRuntimeApiInternal<Map<String, dynamic>>(
@@ -43,7 +44,7 @@ class SubstrateRuntimeApiXCMPayment extends SubstrateRuntimeApi {
 
   Future<XCMVersionedAssetIds> tryQueryAcceptablePaymentAsset({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required XCMVersion version,
   }) async {
     if (!methodExists(
@@ -62,7 +63,7 @@ class SubstrateRuntimeApiXCMPayment extends SubstrateRuntimeApi {
 
   Future<SubstrateDispatchResult<SubstrateWeightV2>> queryXcmWeight({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required XCMVersionedXCM xcm,
   }) async {
     final result = await callRuntimeApiInternal<Map<String, dynamic>>(
@@ -79,7 +80,7 @@ class SubstrateRuntimeApiXCMPayment extends SubstrateRuntimeApi {
 
   Future<SubstrateDispatchResult<BigInt>> queryWeightToAssetFee({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required SubstrateWeightV2 weight,
     required XCMVersionedAssetId asset,
   }) async {
@@ -97,15 +98,21 @@ class SubstrateRuntimeApiXCMPayment extends SubstrateRuntimeApi {
 
   Future<SubstrateDispatchResult<XCMVersionedAssets>> queryDeliveryFees({
     required MetadataApi api,
-    required SubstrateProvider rpc,
+    required IProvider<IServiceProvider, SubstrateRequestDetails> rpc,
     required XCMVersionedLocation destination,
     required XCMVersionedXCM xcm,
+    required XCMVersionedAssetId asset,
   }) async {
+    final apiVerson = getApiVersion(api);
     final result = await callRuntimeApiInternal<Map<String, dynamic>>(
       method: SubstrateRuntimeApiXCMPaymentMethods.queryDeliveryFees,
       api: api,
       provider: rpc,
-      params: [destination.toJson(), xcm.toJson()],
+      params: [
+        destination.toJson(),
+        xcm.toJson(),
+        if (apiVerson > 1) asset.toJson(),
+      ],
     );
     return SubstrateDispatchResult.fromJson<
       XCMVersionedAssets,

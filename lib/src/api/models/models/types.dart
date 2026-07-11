@@ -2,6 +2,7 @@ import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/extrinsic/dynamic/extrinsic.dart';
 import 'package:polkadot_dart/src/api/extrinsic/utils/utils.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
+import 'package:blockchain_utils/service/service.dart';
 
 class MetadataWithExtrinsic {
   final MetadataApi api;
@@ -16,7 +17,7 @@ class MetadataWithExtrinsic {
 }
 
 class MetadataWithProvider {
-  final SubstrateProvider provider;
+  final IProvider<IServiceProvider, SubstrateRequestDetails> provider;
   final MetadataWithExtrinsic metadata;
   const MetadataWithProvider({required this.provider, required this.metadata});
 }

@@ -2,9 +2,9 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:blockchain_utils/layout/byte/byte_handler.dart';
 
 class SubstrateBitSequenceLayout extends Layout<List<int>> {
-  const SubstrateBitSequenceLayout({String? property})
+  SubstrateBitSequenceLayout({String? property})
     : super(-1, property: property);
-  static final _lengthCodec = LayoutConst.compactIntU48();
+  final _lengthCodec = LayoutConst.compactIntU48();
 
   @override
   SubstrateBitSequenceLayout clone({String? newProperty}) {
