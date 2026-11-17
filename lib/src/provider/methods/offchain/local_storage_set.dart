@@ -22,9 +22,9 @@ class SubstrateRequestOffChainLocalStorageSet
   }
 
   @override
-  Null onResonse(Null result) {
+  Null onResponse(Null result) {
     return null;
   }
 }
 
-//localStorageGet(kind: StorageKind, key: Bytes): Option<Bytes>
+//localStorageGet(kind: StorageKind, key: BuBytes): Option<BuBytes>

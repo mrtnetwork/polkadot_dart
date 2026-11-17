@@ -1,5 +1,6 @@
-export 'types/depecrated_info.dart';
 export 'types/deprecation_status.dart';
+export 'types/variant_deprecation_info.dart';
+export 'types/enum_deprecation_info.dart';
 export 'types/extrinsic_metadata_v16.dart';
 export 'types/metadata_v16.dart';
 export 'types/pallet_assosiate_type_metadata.dart';
@@ -8,5 +9,9 @@ export 'types/pallet_constant_v16.dart';
 export 'types/pallet_error_v16.dart';
 export 'types/pallet_event_v16.dart';
 export 'types/pallet_metadata_v16.dart';
+export 'types/pallet_view_function_metadata.dart';
 export 'types/runtime_api_metadata_v16.dart';
+export 'types/runtime_api_method_metadata_v16.dart';
+export 'types/storage_entry_v16.dart';
+export 'types/storage_metadata_v16.dart';
 export 'types/transaction_extension_metadata.dart';

@@ -1,8 +1,8 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/v14.dart';
 
-import 'storage_entery_v16.dart';
+import 'storage_entry_v16.dart';
 
 class PalletStorageMetadataV16
     extends PalletStorageMetadata<StorageEntryMetadataV16> {

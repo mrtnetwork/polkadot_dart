@@ -1,6 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/utils/json/extension/json.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/generic/models/module_error.dart';
 
 typedef CbOnEventDispatchErr =
@@ -77,8 +75,18 @@ class SubstrateEvent {
     if (json.containsKey("event")) {
       event = json.valueEnsureAsMap<String, dynamic>("event");
     }
+    if (event.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid event json: missing pallet key.",
+      );
+    }
     final pallet = event.keys.first;
     event = event.valueEnsureAsMap<String, dynamic>(pallet);
+    if (event.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid event json: missing method key for pallet $pallet.",
+      );
+    }
     final method = event.keys.first;
     final Object? input = event[method];
     Map<String, dynamic>? description;
@@ -130,9 +138,8 @@ class SubstrateEvent {
     try {
       return JsonParser.valueAs<T>(input);
     } catch (_) {
-      throw CastFailedException(
-        message: "Failed to cast event input.",
-        value: input,
+      throw BuError(DefaultErrorType.castFailed,
+        "Failed to cast event input.",
         details: {"expected": "$T", "input": input.runtimeType.toString()},
       );
     }

@@ -1,20 +1,20 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/pallet_call_metadata_v14.dart';
 
-import 'depecrated_info.dart';
+import 'enum_deprecation_info.dart';
 
 class PalletCallMetadataV16 extends PalletCallMetadata {
   @override
   final int type;
-  final MetadataDeprecationInfo deprecationInfo;
+  final EnumDeprecationInfo deprecationInfo;
   const PalletCallMetadataV16({
     required this.type,
     required this.deprecationInfo,
   });
   PalletCallMetadataV16.deserializeJson(Map<String, dynamic> json)
     : type = json["type"],
-      deprecationInfo = MetadataDeprecationInfo.deserializeJson(
+      deprecationInfo = EnumDeprecationInfo.deserializeJson(
         json["deprecation_info"],
       );
 
@@ -25,9 +25,6 @@ class PalletCallMetadataV16 extends PalletCallMetadata {
 
   @override
   Map<String, dynamic> serializeJson({String? property}) {
-    return {
-      "type": type,
-      "deprecation_info": deprecationInfo.serializeJsonVariant(),
-    };
+    return {"type": type, "deprecation_info": deprecationInfo.serializeJson()};
   }
 }

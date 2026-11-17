@@ -134,7 +134,7 @@ abstract class BaseJamtonNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
     required super.chargeAssetTxPayment,
   });
 
@@ -171,7 +171,7 @@ class JamtonNetworkAsset extends BaseJamtonNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.currencies,
+         executionPallet: SubstrateMetadataPallet.currencies,
        );
   factory JamtonNetworkAsset.fromJson(Map<String, dynamic> json) {
     return JamtonNetworkAsset(
@@ -227,7 +227,7 @@ class JamtonNetworkNativeAsset extends BaseJamtonNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.balances,
+         executionPallet: SubstrateMetadataPallet.balances,
        );
   factory JamtonNetworkNativeAsset.fromJson(Map<String, dynamic> json) {
     return JamtonNetworkNativeAsset(

@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
@@ -28,12 +29,12 @@ class Si1Type extends SubstrateSerialization<Map<String, dynamic>> {
        docs = List<String>.unmodifiable(docs),
        path = List<String>.unmodifiable(path);
   Si1Type.deserializeJson(Map<String, dynamic> json)
-    : path = json["path"],
+    : path = json.valueAs<List<String>>("path"),
       params =
           (json["params"] as List)
               .map((e) => Si1TypeParameter.deserializeJson(e))
               .toList(),
-      docs = json["docs"],
+      docs = json.valueAs<List<String>>("docs"),
       def = Si1TypeDef.deserializeJson(json["def"]);
 
   @override

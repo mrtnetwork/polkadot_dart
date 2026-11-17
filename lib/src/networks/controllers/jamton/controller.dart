@@ -198,8 +198,8 @@ class JamtonNetworkController
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -213,7 +213,7 @@ class JamtonNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
       onControllerRequest: onControllerRequest,
     );
   }

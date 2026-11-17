@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_type.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.dart';

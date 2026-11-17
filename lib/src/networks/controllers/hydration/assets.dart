@@ -126,6 +126,11 @@ class HydrationAssetTypePoolShare extends BaseHydrationAssetType {
   }) : super(type: HydrationAssetType.poolShare);
   factory HydrationAssetTypePoolShare.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList<int>(HydrationAssetType.poolShare.type);
+    if (data.length < 2) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid pool share asset: expected 2 elements, received ${data.length}.",
+      );
+    }
     return HydrationAssetTypePoolShare(
       assetA: data[0],
       assetB: data[1],
@@ -209,7 +214,7 @@ abstract class BaseHydrationNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseHydrationNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -230,7 +235,7 @@ class HydrationNetworkAsset extends BaseHydrationNetworkAsset {
          isSpendable: asset.type.type.isSpendable,
          name: asset.name,
          symbol: asset.symbol,
-         excutionPallet: SubtrateMetadataPallet.tokens,
+         executionPallet: SubstrateMetadataPallet.tokens,
        );
 
   factory HydrationNetworkAsset.fromJson(Map<String, dynamic> json) {
@@ -263,7 +268,7 @@ class HydrationNetworkAsset extends BaseHydrationNetworkAsset {
   bool get hasMetadata => symbol != null && decimals != null;
 
   @override
-  SubtrateMetadataPallet get excutionPallet => SubtrateMetadataPallet.tokens;
+  SubstrateMetadataPallet get executionPallet => SubstrateMetadataPallet.tokens;
 
   @override
   bool identifierEqual(Object? identifier) {
@@ -281,7 +286,7 @@ class HydrationNetworkNativeAsset extends BaseHydrationNetworkAsset {
     required super.symbol,
     super.minBalance,
   }) : super(
-         excutionPallet: SubtrateMetadataPallet.balances,
+         executionPallet: SubstrateMetadataPallet.balances,
          isFeeToken: true,
          isSpendable: true,
        );

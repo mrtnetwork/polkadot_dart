@@ -1,8 +1,9 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
+
 
 enum ForeignAssetsCallPalletMethod
     implements SubstrateCallPalletTransferMethod {
@@ -23,7 +24,11 @@ enum ForeignAssetsCallPalletMethod
   factory ForeignAssetsCallPalletMethod.fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown ForeignAssetsCallPalletMethod value "$method".',
+              ),
     );
   }
 }
@@ -35,7 +40,7 @@ abstract class ForeignAssetsCallPallet
   @override
   final ForeignAssetsCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class ForeignAssetsCallPalletTransfer extends ForeignAssetsCallPallet {
@@ -47,11 +52,11 @@ class ForeignAssetsCallPalletTransfer extends ForeignAssetsCallPallet {
     required this.id,
     required this.target,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.foreignAssets,
+    super.pallet = SubstrateMetadataPallet.foreignAssets,
   }) : super(type: ForeignAssetsCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -89,10 +94,10 @@ class ForeignAssetsCallPalletTransferKeepAlive extends ForeignAssetsCallPallet {
     required this.id,
     required this.target,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.foreignAssets,
+    super.pallet = SubstrateMetadataPallet.foreignAssets,
   }) : super(type: ForeignAssetsCallPalletMethod.transferKeepAlive);
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -136,7 +141,7 @@ class ForeignAssetsCallPalletTransferAll extends ForeignAssetsCallPallet {
     required this.id,
     required this.dest,
     required this.keepAlive,
-    super.pallet = SubtrateMetadataPallet.foreignAssets,
+    super.pallet = SubstrateMetadataPallet.foreignAssets,
   }) : super(type: ForeignAssetsCallPalletMethod.transferAll);
 
   @override
@@ -144,7 +149,7 @@ class ForeignAssetsCallPalletTransferAll extends ForeignAssetsCallPallet {
       ForeignAssetsCallPalletMethod.transferAll;
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

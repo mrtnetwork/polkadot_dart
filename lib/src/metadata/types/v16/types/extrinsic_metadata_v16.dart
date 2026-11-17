@@ -1,5 +1,6 @@
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
+import 'package:blockchain_utils/utils/numbers/numbers.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_metadata.dart';
 
@@ -11,6 +12,9 @@ class ExtrinsicMetadataV16 extends ExtrinsicMetadata {
 
   /// The type of the address that signs the extrinsic
   final int addressType;
+
+  /// The type of the outermost Call enum.
+  final int callType;
 
   /// The type of the extrinsic's signature.
   final int signatureType;
@@ -24,6 +28,7 @@ class ExtrinsicMetadataV16 extends ExtrinsicMetadata {
   final List<TransactionExtensionMetadata> transactionExtensions;
   ExtrinsicMetadataV16({
     required this.addressType,
+    required this.callType,
     required List<int> versions,
     required this.signatureType,
     required List<TransactionExtensionMetadata> transactionExtensions,
@@ -43,12 +48,13 @@ class ExtrinsicMetadataV16 extends ExtrinsicMetadata {
         ),
       ),
       addressType = json["addressType"],
+      callType = json["callType"],
       signatureType = json["signatureType"],
       transactionExtensionsByVersion =
           (json["transaction_extensions_by_version"] as Map)
               .map(
                 (k, v) => MapEntry<int, List<int>>(
-                  k,
+                  k is int ? k : IntUtils.parse(k),
                   (v as List).cast<int>().immutable,
                 ),
               )
@@ -65,6 +71,7 @@ class ExtrinsicMetadataV16 extends ExtrinsicMetadata {
     return {
       "versions": versions,
       "addressType": addressType,
+      "callType": callType,
       "signatureType": signatureType,
       "transaction_extensions":
           transactionExtensions.map((e) => e.serializeJson()).toList(),

@@ -18,7 +18,7 @@ class SubstrateRequestSystemSyncState
   }
 
   @override
-  SyncStateResponse onResonse(Map<String, dynamic> result) {
+  SyncStateResponse onResponse(Map<String, dynamic> result) {
     return SyncStateResponse.fromJson(result);
   }
 }

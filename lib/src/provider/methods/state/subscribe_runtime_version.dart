@@ -18,7 +18,7 @@ class SubstrateRequestStateSubscribeRuntimeVersion
   }
 
   @override
-  RuntimeVersion onResonse(Map<String, dynamic> result) {
+  RuntimeVersion onResponse(Map<String, dynamic> result) {
     return RuntimeVersion.fromJson(result);
   }
 }

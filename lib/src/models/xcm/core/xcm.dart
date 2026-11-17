@@ -1,5 +1,4 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
 import 'package:polkadot_dart/src/models/xcm/core/junction.dart';
@@ -16,7 +15,11 @@ abstract mixin class XCMComponent implements Equality {
   XCMVersion get version;
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -32,14 +35,24 @@ enum XCMWeightLimitType {
   static XCMWeightLimitType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMWeightLimitType name "$name".',
+              ),
     );
   }
 
   static XCMWeightLimitType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMWeightLimitType type "$type".',
+              ),
     );
   }
 }
@@ -51,7 +64,11 @@ abstract mixin class WeightLimit
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -119,21 +136,36 @@ enum XCMInstructionType {
   static XCMInstructionType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMInstructionType type "$type".',
+              ),
     );
   }
 
   static XCMInstructionType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMInstructionType name "$name".',
+              ),
     );
   }
 
   static XCMInstructionType fromIndex(int index) {
     return values.firstWhere(
       (e) => e.variantIndex == index,
-      orElse: () => throw ItemNotFoundException(value: index),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMInstructionType index "$index".',
+              ),
     );
   }
 }
@@ -146,7 +178,11 @@ abstract mixin class XCMInstruction
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -181,7 +217,11 @@ abstract mixin class XCM<CALL extends XCMInstruction>
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -191,8 +231,8 @@ class XCMPalletInfo extends SubstrateSerialization<Map<String, dynamic>>
     with Equality {
   static const int maxPalletNameLen = 48;
   final int index;
-  final List<int> name;
-  final List<int> moduleName;
+  final BuBytes name;
+  final BuBytes moduleName;
   final int major;
   final int minor;
   final int patch;
@@ -416,7 +456,7 @@ abstract mixin class XCMTransferReserveAsset implements XCMInstruction {
 }
 
 abstract mixin class XCMTransact implements XCMInstruction {
-  List<int> get call;
+  BuBytes get call;
 
   @override
   XCMInstructionType get type => XCMInstructionType.transact;
@@ -866,7 +906,7 @@ abstract mixin class XCMExpectTransactStatus implements XCMInstruction {
 }
 
 abstract mixin class XCMQueryPallet implements XCMInstruction {
-  List<int> get moduleName;
+  BuBytes get moduleName;
   @override
   XCMInstructionType get type => XCMInstructionType.queryPallet;
 }
@@ -998,8 +1038,9 @@ abstract mixin class XCMSetFeesMode implements XCMInstruction {
   }) {
     return switch (version) {
       XCMVersion.v2 =>
-        throw DartSubstratePluginException(
-          "Unsupported xcm instraction by version 2.",
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported XCM instruction by version 2.",
           details: {"type": XCMInstructionType.setFeesMode.type},
         ),
       XCMVersion.v3 => XCMV3SetFeesMode(jitWithdraw: jitWithdraw),
@@ -1019,7 +1060,7 @@ abstract mixin class XCMSetFeesMode implements XCMInstruction {
 }
 
 abstract mixin class XCMSetTopic implements XCMInstruction {
-  List<int> get topic;
+  BuBytes get topic;
 
   @override
   XCMInstructionType get type => XCMInstructionType.setTopic;
@@ -1108,8 +1149,8 @@ abstract mixin class XCMSetHints implements XCMInstruction {
 
 abstract mixin class XCMExpectPallet implements XCMInstruction {
   int get index;
-  List<int> get name;
-  List<int> get moduleName;
+  BuBytes get name;
+  BuBytes get moduleName;
   int get crateMajor;
   int get minCrateMinor;
 

@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 
 class RPCRuntimeLayouts {
   static StructLayout feeDetails({String? property}) {

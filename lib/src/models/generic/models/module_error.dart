@@ -2,9 +2,10 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 
 class ModuleError {
   final int index;
-  final List<int> error;
+  final BuBytes error;
 
-  const ModuleError({required this.error, required this.index});
+  ModuleError({required List<int> error, required this.index})
+    : error = error.asImmutableBytes;
   factory ModuleError.fromJson(Map<String, dynamic> json) {
     return ModuleError(
       error: BytesUtils.fromHexString(json["error"]),

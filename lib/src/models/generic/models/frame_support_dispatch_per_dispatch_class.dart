@@ -1,8 +1,8 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/models/generic/models/weight.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
-/// frame_support, dispatch, PerDispatchClas
+/// frame_support dispatch PerDispatchClass weights.
 class FrameSupportDispatchPerDispatchClass
     extends SubstrateSerialization<Map<String, dynamic>> {
   final SubstrateWeightV2 normal;

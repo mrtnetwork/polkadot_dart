@@ -1,7 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/signer/substrate/signers/substrate_sr25519.dart';
 import 'package:polkadot_dart/src/address/address.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/models/generic/models/signature.dart';
 
@@ -11,10 +9,10 @@ import 'public_key.dart';
 class SubstratePrivateKey
     extends BaseSubstratePrivateKey<SubstrateAddress, SubstratePublicKey> {
   /// The underlying Substrate instance.
-  final Substrate _substrate;
+  final Substrate substrate;
 
   /// Constructs a [SubstratePrivateKey] instance from a Substrate object.
-  const SubstratePrivateKey._(this._substrate, this.algorithm);
+  const SubstratePrivateKey._(this.substrate, this.algorithm);
 
   /// Generates a [SubstratePrivateKey] from a seed.
   factory SubstratePrivateKey.fromSeed({
@@ -60,14 +58,14 @@ class SubstratePrivateKey
 
   /// Derives a new private key from the current one using the provided [path].
   SubstratePrivateKey derive(String path) {
-    final derive = _substrate.derivePath(path);
+    final derive = substrate.derivePath(path);
     return SubstratePrivateKey._(derive, algorithm);
   }
 
   /// Converts the private key to bytes.
   @override
-  List<int> toBytes() {
-    return List<int>.from(_substrate.priveKey.raw);
+  SecretBytes toBytes() {
+    return substrate.priveKey.toBytes();
   }
 
   /// Converts the private key to hexadecimal string.
@@ -84,7 +82,7 @@ class SubstratePrivateKey
   @override
   SubstratePublicKey toPublicKey() {
     return SubstratePublicKey.fromBytes(
-      pubkeyBytes: _substrate.publicKey.compressed,
+      pubkeyBytes: substrate.publicKey.toBytes(),
       algorithm: algorithm,
     );
   }
@@ -97,15 +95,27 @@ class SubstratePrivateKey
 
   /// Signs a given digest using the private key.
   @override
-  List<int> sign(List<int> digest) {
-    final signer = SubstrateSigner.fromSubstrate(_substrate);
-    return signer.signConst(digest);
+  BuBytes sign(List<int> digest) {
+    return substrate.priveKey.toBytes().useValue((k) {
+      final signer = SubstrateSigner.fromBytes(k, substrate.type);
+      try {
+        return signer.sign(digest).encoded;
+      } finally {
+        signer.dispose();
+      }
+    }, zero: true);
   }
 
   /// Signs a given message using VRF (Verifiable Random Function) and the private key.
   List<int> vrfSign(List<int> message, {List<int>? context, List<int>? extra}) {
-    final signer = SubstrateSigner.fromSubstrate(_substrate);
-    return signer.vrfSign(message, context: context, extra: extra);
+    return substrate.priveKey.toBytes().useValue((k) {
+      final signer = SubstrateSigner.fromBytes(k, substrate.type);
+      try {
+        return signer.vrfSign(message, context: context, extra: extra).encoded;
+      } finally {
+        signer.dispose();
+      }
+    }, zero: true);
   }
 
   /// Verifies a given message and signature using the public key derived from the private key.
@@ -155,8 +165,8 @@ class SubstratePrivateKey
         substrateSignature = SubstrateSr25519Signature(signature);
         break;
       default:
-        throw DartSubstratePluginException(
-          "Invalid algorithm.",
+        throw BuError(DefaultErrorType.invalidArgument, 
+          "Invalid algorithm ${algorithm.name}: expected ed25519, sr25519 or ecdsa.",
           details: {"algorithm": algorithm.name},
         );
     }
@@ -166,5 +176,10 @@ class SubstratePrivateKey
   @override
   String toString() {
     return "publicKey: ${toPublicKey().toHex()}";
+  }
+
+  @override
+  void dispose() {
+    substrate.dispose();
   }
 }

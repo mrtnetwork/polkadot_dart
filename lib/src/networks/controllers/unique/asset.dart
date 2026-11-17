@@ -11,7 +11,7 @@ abstract class BaseUniqueNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseUniqueNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -31,7 +31,7 @@ class UniqueNetworkAsset extends BaseUniqueNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.erc20XcmBridge);
+  }) : super(executionPallet: SubstrateMetadataPallet.erc20XcmBridge);
   UniqueNetworkAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
       assetId = json.valueAs("asset_id"),
@@ -67,7 +67,7 @@ class UniqueNetworkNativeAsset extends BaseUniqueNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
   UniqueNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
       super.fromJson();

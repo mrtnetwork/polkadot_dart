@@ -187,7 +187,7 @@ class MantaNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -201,7 +201,7 @@ class MantaNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -219,7 +219,7 @@ class MantaNetworkController
       provider: provider,
       network: network,
       useTypeAndThen: false,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }

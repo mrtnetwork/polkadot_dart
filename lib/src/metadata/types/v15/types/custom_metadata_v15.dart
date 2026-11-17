@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/types/custom_value_metadata_v15.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';

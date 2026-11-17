@@ -186,8 +186,8 @@ class AjunaNetworkController
       network: network,
       pallet:
           isNatveAsset
-              ? SubtrateMetadataPallet.xTokens
-              : SubtrateMetadataPallet.polkadotXcm,
+              ? SubstrateMetadataPallet.xTokens
+              : SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -223,8 +223,8 @@ class AjunaNetworkController
       network: network,
       pallet:
           isNatveAsset
-              ? SubtrateMetadataPallet.xTokens
-              : SubtrateMetadataPallet.polkadotXcm,
+              ? SubstrateMetadataPallet.xTokens
+              : SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

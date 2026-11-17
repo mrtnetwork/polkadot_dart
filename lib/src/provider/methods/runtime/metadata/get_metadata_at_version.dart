@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/layout/constant/constant.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/types/types.dart';
@@ -26,7 +26,7 @@ class SubstrateRequestRuntimeMetadataGetMetadataAtVersion
   }
 
   @override
-  VersionedMetadata<SubstrateMetadata>? onResonse(String result) {
+  VersionedMetadata<SubstrateMetadata>? onResponse(String result) {
     final toBytes = BytesUtils.fromHexString(result);
     final decode =
         LayoutConst.optional(LayoutConst.bytes()).deserialize(toBytes).value;

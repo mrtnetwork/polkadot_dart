@@ -1,7 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/constants/constants.dart';
 import 'package:polkadot_dart/src/networks/controllers/acala/asset.dart';
@@ -225,7 +224,7 @@ class ZeitgeistNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -252,7 +251,7 @@ class ZeitgeistNetworkController
       provider: provider,
       network: network,
       useTypeAndThen: false,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }
@@ -283,7 +282,7 @@ class ZeitgeistNetworkController
     }
 
     if (asset is! ZeitgeistNetworkAsset) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid ${network.networkName} asset.",
         details: {
           "expected": "ZeitgeistNetworkAsset",
@@ -295,7 +294,7 @@ class ZeitgeistNetworkController
     final asBase = asset.metadata?.additional?.allowAsBaseAsset ?? false;
     final amount = params.amount;
     if (amount == null) {
-      throw DartSubstratePluginException("Amount required for transfer asset.");
+      throw BuError(DefaultErrorType.invalidArgument, "Amount required for transfer asset.");
     }
     if (decimals == null || !asBase) return super.assetTransfer(params: params);
     final cAmount = AmountConverterUtils.convertDecimals(

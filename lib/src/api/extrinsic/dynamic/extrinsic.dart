@@ -1,32 +1,26 @@
-import 'package:blockchain_utils/bip/ecc/curve/elliptic_curve_types.dart';
-import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/utils/binary/bytes_tracker.dart'
-    show DynamicByteTracker;
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/extrinsic/utils/utils.dart';
 import 'package:polkadot_dart/src/api/extrinsic/v4/generic_extrinsic_payload.dart';
 import 'package:polkadot_dart/src/api/models/models/transaction.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 
 class SubstrateNetworkCryptoInfo {
   final SubstrateChainType type;
-  final List<SubstrateKeyAlgorithm> cryptoAlgoritms;
+  final List<SubstrateKeyAlgorithm> cryptoAlgorithms;
   final SubstrateSignatureEncodingType signaturePalletType;
   final SubstrateAddressEncodingType addressPalletType;
   SubstrateNetworkCryptoInfo({
     required this.type,
-    required List<SubstrateKeyAlgorithm> cryptoAlgoritms,
+    required List<SubstrateKeyAlgorithm> cryptoAlgorithms,
     required this.signaturePalletType,
     required this.addressPalletType,
-  }) : cryptoAlgoritms = cryptoAlgoritms.immutable;
+  }) : cryptoAlgorithms = cryptoAlgorithms.immutable;
 }
 
 class ExtrinsicLookupField {
@@ -54,94 +48,104 @@ class ExtrinsicLookupField {
        extrinsicPayloadValidators = extrinsicPayloadValidators.immutable;
 
   /// encode signature with current signature template.
-  List<int> encodeSignature({
-    EllipticCurveTypes? algorithm,
+  BuBytes encodeSignature({
+    CryptoKeyType? algorithm,
     List<int>? signature,
     List<int>? encodedSignature,
     required MetadataApi metadata,
   }) {
     if (encodedSignature != null) {
-      return encodedSignature;
+      return encodedSignature.asImmutableBytes;
     }
     if (signature == null) {
-      throw DartSubstratePluginException("Signature missing.");
+      throw BuError(DefaultErrorType.invalidArgument, "Signature missing.");
     }
     final type = extrinsicInfo.signatureType;
     if (type == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Missing extrinsic signature lookup id.",
       );
     }
     switch (crypto.signaturePalletType) {
       case SubstrateSignatureEncodingType.signature:
-        return metadata.metadata.encodeLookup(
-          id: type,
-          value: signature,
-          fromTemplate: false,
-        );
+        return metadata.metadata
+            .encodeLookup(id: type, value: signature, fromTemplate: false)
+            .asImmutableBytes;
       default:
         if (algorithm == null) {
-          throw DartSubstratePluginException(
+          throw BuError(DefaultErrorType.invalidArgument, 
             "Signature algorithm missing for encode signature.",
           );
         }
-        return metadata.metadata.encodeLookup(
-          id: type,
-          value: ExtrinsicBuilderUtils.buildMultiSignatureTemplate(
-            algorithm: algorithm,
-            signature: signature,
-          ),
-          fromTemplate: false,
-        );
+        return metadata.metadata
+            .encodeLookup(
+              id: type,
+              value: ExtrinsicBuilderUtils.buildMultiSignatureTemplate(
+                algorithm: algorithm,
+                signature: signature,
+              ),
+              fromTemplate: false,
+            )
+            .asImmutableBytes;
     }
   }
 
   /// encode address with current address template.
-  List<int> encodeSigner({
+  BuBytes encodeSigner({
     required BaseSubstrateAddress address,
     required MetadataApi metadata,
   }) {
     final type = extrinsicInfo.addressType;
     if (type == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Missing extrinsic address lookup id.",
       );
     }
     switch (crypto.addressPalletType) {
       case SubstrateAddressEncodingType.ethereum:
       case SubstrateAddressEncodingType.key32:
-        return metadata.metadata.encodeLookup(
-          id: type,
-          value: address.toBytes(),
-          fromTemplate: false,
-        );
+        return metadata.metadata
+            .encodeLookup(
+              id: type,
+              value: address.toBytes(),
+              fromTemplate: false,
+            )
+            .asImmutableBytes;
       default:
-        return metadata.metadata.encodeLookup(
-          id: type,
-          value: {"Id": address.toBytes()},
-          fromTemplate: false,
-        );
+        return metadata.metadata
+            .encodeLookup(
+              id: type,
+              value: {"Id": address.toBytes()},
+              fromTemplate: false,
+            )
+            .asImmutableBytes;
     }
   }
 
   /// decode signature with current signature template.
-  List<int> decodeSignature({
+  BuBytes decodeSignature({
     required List<int> serializedSignature,
     required MetadataApi metadata,
   }) {
     final type = extrinsicInfo.signatureType;
     if (type == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Missing extrinsic signature lookup id.",
       );
     }
     switch (crypto.signaturePalletType) {
       case SubstrateSignatureEncodingType.signature:
-        return metadata.metadata.decodeLookup(type, serializedSignature);
-      default:
-        return ExtrinsicBuilderUtils.getSignaturePart(
-          metadata.metadata.decodeLookup(type, serializedSignature),
+        final List<int> decoded = metadata.metadata.decodeLookup(
+          type,
+          serializedSignature,
         );
+        return decoded.asImmutableBytes;
+      default:
+        final Map<String, dynamic> decodedSig = metadata.metadata.decodeLookup(
+          type,
+          serializedSignature,
+        );
+        return ExtrinsicBuilderUtils.getSignaturePart(decodedSig);
     }
   }
 
@@ -170,7 +174,11 @@ enum SubstrateChainType {
   static SubstrateChainType fromValue(int? value) {
     return values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown SubstrateChainType value "$value".',
+              ),
     );
   }
 }
@@ -211,7 +219,11 @@ enum SubstrateAddressEncodingType {
   static SubstrateAddressEncodingType fromValue(int? value) {
     return values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown SubstrateAddressEncodingType value "$value".',
+              ),
     );
   }
 }
@@ -233,7 +245,11 @@ enum SubstrateSignatureEncodingType {
   static SubstrateSignatureEncodingType fromValue(int? value) {
     return values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown SubstrateSignatureEncodingType value "$value".',
+              ),
     );
   }
 }
@@ -256,13 +272,13 @@ abstract class BaseDynamicExtrinsicBuilder {
   int get transactionVersion;
 
   /// Genesis block hash bytes.
-  List<int> get genesis;
+  BuBytes get genesis;
 
   /// Mortality block hash bytes.
-  List<int> get mortality;
+  BuBytes get mortality;
 
   /// Optional metadata hash reference.
-  List<int>? get metadataHash;
+  BuBytes? get metadataHash;
 
   /// Optional mode flag for encoding variations.
   int? get mode;
@@ -271,43 +287,43 @@ abstract class BaseDynamicExtrinsicBuilder {
   BigInt? get tip;
 
   /// Optional encoded bytes for asset-based fee payment.
-  List<int>? get chargeAssetTxPaymentBytes;
+  BuBytes? get chargeAssetTxPaymentBytes;
 
   /// Optional asset used to pay transaction fee.
   Object? get chargeAssetTxPayment;
 
   /// Encodes transaction era.
-  List<int> encodeEra(MetadataApi metadata);
+  BuBytes encodeEra(MetadataApi metadata);
 
   /// Encodes account nonce.
-  List<int> encodeNonce(MetadataApi metadata);
+  BuBytes encodeNonce(MetadataApi metadata);
 
   /// Encodes transaction tip.
-  List<int> encodeTip(MetadataApi metadata);
+  BuBytes encodeTip(MetadataApi metadata);
 
   /// Encodes fee payment asset ID (if applicable).
-  List<int> encodeAssetId(MetadataApi metadata);
+  BuBytes encodeAssetId(MetadataApi metadata);
 
   /// Encodes runtime spec version.
-  List<int> encodeSpecVersion(MetadataApi metadata);
+  BuBytes encodeSpecVersion(MetadataApi metadata);
 
   /// Encodes transaction version.
-  List<int> encodeTxVersion(MetadataApi metadata);
+  BuBytes encodeTxVersion(MetadataApi metadata);
 
   /// Encodes full extrinsic with signature and method bytes.
-  List<int> encodeExtrinsic(MetadataApi metadata);
+  BuBytes encodeExtrinsic(MetadataApi metadata);
 
   /// Encodes unsigned extrinsic payload.
-  List<int> encodeExtrinsicPayload(MetadataApi metadata);
+  BuBytes encodeExtrinsicPayload(MetadataApi metadata);
 
   /// Encodes unsigned extrinsic payload (for signing).
-  List<int> encodeSignExtrinsicPayload({
+  BuBytes encodeSignExtrinsicPayload({
     required MetadataApi metadata,
     required List<int> callBytes,
   });
 
   /// Creates signed extrinsic.
-  List<int> createExtrinsic({
+  BuBytes createExtrinsic({
     List<int>? signature,
     List<int>? encodedSignature,
     SubstrateKeyAlgorithm? algorithm,
@@ -315,7 +331,7 @@ abstract class BaseDynamicExtrinsicBuilder {
     required BaseSubstrateAddress owner,
   });
 
-  /// Creates final extrinsic. ready for excution
+  /// Creates the final extrinsic, ready for execution.
   SubstrateSubmitableTransaction createFinalExtrinsic({
     required List<int> callBytes,
     List<int>? signature,
@@ -339,17 +355,17 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
   @override
   final int transactionVersion;
   @override
-  final List<int> genesis;
+  final BuBytes genesis;
   @override
-  final List<int> mortality;
+  final BuBytes mortality;
   @override
-  final List<int>? metadataHash;
+  final BuBytes? metadataHash;
   @override
   final int? mode;
   @override
   final BigInt? tip;
   @override
-  final List<int>? chargeAssetTxPaymentBytes;
+  final BuBytes? chargeAssetTxPaymentBytes;
   @override
   final Object? chargeAssetTxPayment;
 
@@ -362,12 +378,14 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
     required List<int> mortality,
     required this.metadataFields,
     this.chargeAssetTxPayment,
-    this.metadataHash,
+    List<int>? metadataHash,
     this.mode,
     this.tip,
-    this.chargeAssetTxPaymentBytes,
+    List<int>? chargeAssetTxPaymentBytes,
   }) : genesis = genesis.asImmutableBytes,
-       mortality = mortality.asImmutableBytes;
+       mortality = mortality.asImmutableBytes,
+       metadataHash = metadataHash?.asImmutableBytes,
+       chargeAssetTxPaymentBytes = chargeAssetTxPaymentBytes?.asImmutableBytes;
   factory DynamicExtrinsicBuilder({
     required ExtrinsicLookupField metadataFields,
     required MortalEra era,
@@ -386,7 +404,7 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
     final immutableGenesis = genesis.asImmutableBytes;
     final immutableMortality = mortality.asImmutableBytes;
     if (chargeAssetTxPaymentBytes != null && chargeAssetTxPayment != null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Only one payment configuration should be provided `chargeAssetTxPaymentBytes` or `chargeAssetTxPayment`.",
       );
     }
@@ -425,19 +443,19 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
     required int lookupId,
     required Object? input,
     required MetadataApi metadata,
-    required DynamicByteTracker buffer,
+    required BuBytes buffer,
   }) {
     final encode = metadata.encodeLookup(
       id: lookupId,
       value: input,
       fromTemplate: false,
     );
-    buffer.add(encode);
+    buffer.addAll(encode);
   }
 
   /// Encodes transaction era.
   @override
-  List<int> encodeEra(MetadataApi metadata) {
+  BuBytes encodeEra(MetadataApi metadata) {
     final fields = metadataFields.extrinsicPayloadValidators;
     int? typeId;
     for (final i in fields) {
@@ -450,14 +468,18 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       }
     }
     if (typeId == null) {
-      throw DartSubstratePluginException("Extrinsic era type not found.");
+      throw BuError(DefaultErrorType.notFound, 
+        "Extrinsic era type not found: no Era/CheckMortality extension.",
+      );
     }
-    return metadata.encodeLookup(id: typeId, value: era, fromTemplate: false);
+    return metadata
+        .encodeLookup(id: typeId, value: era, fromTemplate: false)
+        .asImmutableBytes;
   }
 
   /// Encodes account nonce.
   @override
-  List<int> encodeNonce(MetadataApi metadata) {
+  BuBytes encodeNonce(MetadataApi metadata) {
     final fields = metadataFields.extrinsicPayloadValidators;
     int? typeId;
     for (final i in fields) {
@@ -467,14 +489,18 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw DartSubstratePluginException("Extrinsic nonce type not found.");
+      throw BuError(DefaultErrorType.notFound, 
+        "Extrinsic nonce type not found: no T::Nonce/CheckNonce/nonce extension.",
+      );
     }
-    return metadata.encodeLookup(id: typeId, value: nonce, fromTemplate: false);
+    return metadata
+        .encodeLookup(id: typeId, value: nonce, fromTemplate: false)
+        .asImmutableBytes;
   }
 
   /// Encodes transaction tip.
   @override
-  List<int> encodeTip(MetadataApi metadata) {
+  BuBytes encodeTip(MetadataApi metadata) {
     final fields = metadataFields.extrinsicPayloadValidators;
     int? typeId;
     for (final i in fields) {
@@ -482,14 +508,18 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw DartSubstratePluginException("Extrinsic tip type not found.");
+      throw BuError(DefaultErrorType.notFound, 
+        "Extrinsic tip type not found: no tip extension.",
+      );
     }
-    return metadata.encodeLookup(id: typeId, value: nonce, fromTemplate: false);
+    return metadata
+        .encodeLookup(id: typeId, value: nonce, fromTemplate: false)
+        .asImmutableBytes;
   }
 
   /// Encodes runtime spec version
   @override
-  List<int> encodeSpecVersion(MetadataApi metadata) {
+  BuBytes encodeSpecVersion(MetadataApi metadata) {
     final fields = metadataFields.extrinsicPayloadValidators;
     int? typeId;
     for (final i in fields) {
@@ -497,20 +527,18 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw DartSubstratePluginException(
-        "Extrinsic spec version type not found.",
+      throw BuError(DefaultErrorType.notFound, 
+        "Extrinsic spec version type not found: no CheckSpecVersion extension.",
       );
     }
-    return metadata.encodeLookup(
-      id: typeId,
-      value: specVersion,
-      fromTemplate: false,
-    );
+    return metadata
+        .encodeLookup(id: typeId, value: specVersion, fromTemplate: false)
+        .asImmutableBytes;
   }
 
   /// Encodes fee payment asset ID (if applicable).
   @override
-  List<int> encodeAssetId(MetadataApi metadata) {
+  BuBytes encodeAssetId(MetadataApi metadata) {
     final fields = metadataFields.extrinsicPayloadValidators;
     int? typeId;
     for (final i in fields) {
@@ -518,31 +546,35 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw DartSubstratePluginException(
-        "Extrinsic spec version type not found.",
+      throw BuError(DefaultErrorType.notFound, 
+        "Extrinsic asset id type not found: no asset_id extension.",
       );
     }
     if (chargeAssetTxPaymentBytes != null) {
-      return metadata.encodeLookup(
-        id: typeId,
-        value: LookupRawParam(bytes: chargeAssetTxPaymentBytes!),
-        fromTemplate: false,
-      );
+      return metadata
+          .encodeLookup(
+            id: typeId,
+            value: LookupRawParam(bytes: chargeAssetTxPaymentBytes!),
+            fromTemplate: false,
+          )
+          .asImmutableBytes;
     } else {
       Object chargeAssetTxPayment = MetadataUtils.toOptionalJson(
         this.chargeAssetTxPayment,
       );
-      return metadata.encodeLookup(
-        id: typeId,
-        value: chargeAssetTxPayment,
-        fromTemplate: false,
-      );
+      return metadata
+          .encodeLookup(
+            id: typeId,
+            value: chargeAssetTxPayment,
+            fromTemplate: false,
+          )
+          .asImmutableBytes;
     }
   }
 
   /// Encodes transaction version.
   @override
-  List<int> encodeTxVersion(MetadataApi metadata) {
+  BuBytes encodeTxVersion(MetadataApi metadata) {
     final fields = metadataFields.extrinsicPayloadValidators;
     int? typeId;
     for (final i in fields) {
@@ -550,22 +582,24 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw DartSubstratePluginException(
-        "Extrinsic transaction version type not found.",
+      throw BuError(DefaultErrorType.notFound, 
+        "Extrinsic transaction version type not found: no CheckTxVersion extension.",
       );
     }
-    return metadata.encodeLookup(
-      id: typeId,
-      value: transactionVersion,
-      fromTemplate: false,
-    );
+    return metadata
+        .encodeLookup(
+          id: typeId,
+          value: transactionVersion,
+          fromTemplate: false,
+        )
+        .asImmutableBytes;
   }
 
-  List<int> _encode({
+  BuBytes _encode({
     required List<MetadataTypeInfo<dynamic>> fields,
     required MetadataApi metadata,
   }) {
-    final buffer = DynamicByteTracker();
+    final buffer = BuBytes.empty();
     for (final i in fields) {
       final names = i.getTypeNames();
       if (names.isEmpty) continue;
@@ -672,7 +706,7 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
               break;
             case "CheckMetadataHash":
               if (metadataHash != null) {
-                buffer.add(metadataHash!);
+                buffer.addAll(metadataHash!);
               } else {
                 _encodeField(
                   lookupId: typeId,
@@ -705,25 +739,25 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
 
               break;
             default:
-              throw DartSubstratePluginException(
+              throw BuError(DefaultErrorType.invalidArgument, 
                 "Unknown extrinsic field name.",
                 details: {"name": n},
               );
           }
         } catch (e) {
-          throw DartSubstratePluginException(
+          throw BuError(DefaultErrorType.invalidArgument, 
             'Failed to encode extrinsic field.',
             details: {"name": n, "error": e.toString()},
           );
         }
       }
     }
-    return buffer.toBytes();
+    return buffer;
   }
 
   /// Encodes full extrinsic without address and signature.
   @override
-  List<int> encodeExtrinsic(MetadataApi metadata) {
+  BuBytes encodeExtrinsic(MetadataApi metadata) {
     return _encode(
       fields: metadataFields.extrinsicValidators,
       metadata: metadata,
@@ -732,7 +766,7 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
 
   /// Encodes unsigned extrinsic payload
   @override
-  List<int> encodeExtrinsicPayload(MetadataApi metadata) {
+  BuBytes encodeExtrinsicPayload(MetadataApi metadata) {
     return _encode(
       fields: metadataFields.extrinsicPayloadValidators,
       metadata: metadata,
@@ -741,35 +775,35 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
 
   /// Encodes unsigned extrinsic payload (for signing)
   @override
-  List<int> encodeSignExtrinsicPayload({
+  BuBytes encodeSignExtrinsicPayload({
     required MetadataApi metadata,
     required List<int> callBytes,
   }) {
     final extrinsic = encodeExtrinsicPayload(metadata);
     final payload = [...callBytes, ...extrinsic];
     if (payload.length > TransactionPalyloadConst.requiredHashDigestLength) {
-      return QuickCrypto.blake2b256Hash(payload);
+      return QuickCrypto.blake2b256Hash(payload).asImmutableBytes;
     }
-    return payload;
+    return payload.asImmutableBytes;
   }
 
   /// Encodes full extrinsic with signature and method bytes.
   @override
-  List<int> createExtrinsic({
+  BuBytes createExtrinsic({
     List<int>? signature,
     List<int>? encodedSignature,
     SubstrateKeyAlgorithm? algorithm,
     required MetadataApi api,
     required BaseSubstrateAddress owner,
   }) {
-    final buffer = DynamicByteTracker();
+    final buffer = BuBytes.empty();
     final encodedAddress = metadataFields.encodeSigner(
       address: owner,
       metadata: api,
     );
-    buffer.add(encodedAddress);
+    buffer.addAll(encodedAddress);
     if (signature != null || encodedSignature != null) {
-      buffer.add(
+      buffer.addAll(
         metadataFields.encodeSignature(
           algorithm: algorithm?.curve,
           signature: signature,
@@ -778,9 +812,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
         ),
       );
     }
-    buffer.add(encodeExtrinsic(api));
-    final encodeBytes = buffer.toBytes().asImmutableBytes;
-    return encodeBytes;
+    buffer.addAll(encodeExtrinsic(api));
+    return buffer;
   }
 
   @override

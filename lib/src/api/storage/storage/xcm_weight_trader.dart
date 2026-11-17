@@ -1,9 +1,8 @@
 import 'package:polkadot_dart/src/api/core/api.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:blockchain_utils/service/service.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageXCMWeightTraderMethods {
@@ -38,7 +37,7 @@ class SubstrateStorageXCMWeightTrader extends SubstrateStorageApi {
               response: (response.elementAt(0), response.elementAt(1)),
             );
           } catch (_) {
-            throw DartSubstratePluginException(
+            throw BuError(DefaultErrorType.invalidArgument, 
               "Unxpected xcmWeightTrader supported assets response",
             );
           }

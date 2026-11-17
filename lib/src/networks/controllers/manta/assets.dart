@@ -26,7 +26,7 @@ abstract class BaseMantaNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseMantaNetworkAsset.fromJson(super.json) : super.fromJson();
 
@@ -63,7 +63,7 @@ class MantaNetworkAsset extends BaseMantaNetworkAsset {
          decimals: metadata?.decimals,
          isSpendable:
              asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
-         excutionPallet: SubtrateMetadataPallet.assets,
+         executionPallet: SubstrateMetadataPallet.assets,
          minBalance: asset.asset.minBalance,
          name: metadata?.name,
          symbol: metadata?.symbol,
@@ -102,7 +102,7 @@ class MantaNetworkNativeAsset extends BaseMantaNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
 
   MantaNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),

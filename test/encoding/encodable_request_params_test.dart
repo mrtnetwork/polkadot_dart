@@ -1,8 +1,9 @@
-import 'package:blockchain_utils/networks/types/network.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:test/test.dart';
 
-void main() {
+import '../utils.dart';
+void encodableRequestParamsTest() {
   test('encodable provider params', () {
     final param = SubstrateRequestGrandpaProveFinality(2);
     final request = param.buildRequest(0);
@@ -17,3 +18,8 @@ void main() {
     expect(deserialize.requestMethod, request.requestMethod);
   });
 }
+
+void main() {
+  PolkadotDartUtilsTestApi.runTest(encodableRequestParamsTest, "Encodable Request Params");
+}
+

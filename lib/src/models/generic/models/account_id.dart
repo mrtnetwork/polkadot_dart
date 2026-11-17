@@ -1,14 +1,14 @@
+import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/constant/constant.dart';
 import 'package:polkadot_dart/src/models/generic/models/fixed_bytes.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 abstract class SubstrateBaseAccountId<T> extends SubstrateSerialization<T> {
   String get name;
-  List<int> accountBytes();
+  BuBytes accountBytes();
 }
 
 class SubstrateAccount32 extends ScaleFixedBytes
@@ -22,8 +22,8 @@ class SubstrateAccount32 extends ScaleFixedBytes
   String get name => GenericConstants.address32IndexKey;
 
   @override
-  List<int> accountBytes() {
-    return bytes.clone();
+  BuBytes accountBytes() {
+    return bytes.clone().asImmutableBytes;
   }
 }
 
@@ -38,14 +38,14 @@ class SubstrateAccount20 extends ScaleFixedBytes
   @override
   String get name => GenericConstants.address20IndexKey;
   @override
-  List<int> accountBytes() {
-    return bytes.clone();
+  BuBytes accountBytes() {
+    return bytes.clone().asImmutableBytes;
   }
 }
 
 /// It's an account ID (pubkey).
 class SubstrateAccountId extends SubstrateAccount32 {
-  List<int> get publicKey => bytes;
+  BuBytes get publicKey => bytes;
   SubstrateAccountId(super.publicKey);
   SubstrateAccountId.deserializeJson(super.bytes);
   @override
@@ -68,8 +68,8 @@ class SubstrateAccountIndex extends SubstrateBaseAccountId<int> {
   }
 
   @override
-  List<int> accountBytes() {
-    throw DartSubstratePluginException(
+  BuBytes accountBytes() {
+    throw BuError(DefaultErrorType.invalidArgument, 
       "Cannot access account bytes from account index.",
     );
   }
@@ -81,7 +81,7 @@ class SubstrateAccountIndex extends SubstrateBaseAccountId<int> {
 }
 
 class SubstrateAccountRaw extends SubstrateBaseAccountId<List<int>> {
-  final List<int> bytes;
+  final BuBytes bytes;
   SubstrateAccountRaw(List<int> bytes) : bytes = bytes.asImmutableBytes;
 
   @override
@@ -97,12 +97,12 @@ class SubstrateAccountRaw extends SubstrateBaseAccountId<List<int>> {
   }
 
   @override
-  List<int> accountBytes() {
-    return bytes.clone();
+  BuBytes accountBytes() {
+    return bytes.clone().asImmutableBytes;
   }
 
   @override
-  List<int> serializeJson({String? property}) {
+  BuBytes serializeJson({String? property}) {
     return bytes;
   }
 }

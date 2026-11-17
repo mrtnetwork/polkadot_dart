@@ -1,5 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 import 'package:polkadot_dart/src/api/runtime/runtime/runtime_api.dart';
@@ -823,8 +822,6 @@ abstract mixin class SubstrateNetworkControllerAssetQueryHelper {
     try {
       return ids.map((e) => JsonParser.valueAs<IDENTIFIER>(e)).toList();
     } catch (_) {}
-    throw CastFailedException(
-      message: "Failed to cast asset id as $IDENTIFIER.",
-    );
+    throw BuError(DefaultErrorType.notFound, "Failed to cast asset id as $IDENTIFIER.");
   }
 }

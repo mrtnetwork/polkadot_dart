@@ -18,7 +18,7 @@ class SubstrateRequestChainSubscribeAllHeads
   }
 
   @override
-  SubstrateHeaderResponse onResonse(Map<String, dynamic> result) {
+  SubstrateHeaderResponse onResponse(Map<String, dynamic> result) {
     return SubstrateHeaderResponse.fromJson(result);
   }
 }

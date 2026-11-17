@@ -78,7 +78,7 @@ class CentrifugeAssetNative extends BaseCentrifugeAsset {
 
 class CentrifugeAssetTranche extends BaseCentrifugeAsset {
   final BigInt index;
-  final List<int> id;
+  final BuBytes id;
   CentrifugeAssetTranche({
     required List<int> id,
     required BigInt index,
@@ -96,6 +96,11 @@ class CentrifugeAssetTranche extends BaseCentrifugeAsset {
        super(type: CentrifugeAssetType.tranche);
   factory CentrifugeAssetTranche.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(CentrifugeAssetType.tranche.type);
+    if (data.length < 2) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid tranche asset: expected 2 elements, received ${data.length}.",
+      );
+    }
     List<int> id;
     if (data[1] is List) {
       id = data[1];
@@ -313,7 +318,7 @@ abstract class BaseCentrifugeNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseCentrifugeNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -337,7 +342,7 @@ class CentrifugeNetworkAsset extends BaseCentrifugeNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.tokens,
+         executionPallet: SubstrateMetadataPallet.tokens,
        );
 
   factory CentrifugeNetworkAsset.fromJson(Map<String, dynamic> json) {
@@ -392,7 +397,7 @@ class CentrifugeNetworkNativeAsset extends BaseCentrifugeNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.balances,
+         executionPallet: SubstrateMetadataPallet.balances,
        );
   factory CentrifugeNetworkNativeAsset.fromJson(Map<String, dynamic> json) {
     return CentrifugeNetworkNativeAsset(

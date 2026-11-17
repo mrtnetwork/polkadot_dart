@@ -21,7 +21,7 @@ class SubstrateRequestStateGetMetadata
   }
 
   @override
-  VersionedMetadata onResonse(String result) {
+  VersionedMetadata onResponse(String result) {
     final toBytes = BytesUtils.fromHexString(result);
     final versioned = VersionedMetadata.fromBytes(toBytes);
 

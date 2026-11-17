@@ -24,7 +24,7 @@ class SubstrateRequestStateGetChildReadProof
   }
 
   @override
-  List<String> onResonse(List result) {
+  List<String> onResponse(List result) {
     return result.cast();
   }
 }

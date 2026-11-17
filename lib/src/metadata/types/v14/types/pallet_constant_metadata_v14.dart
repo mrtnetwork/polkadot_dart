@@ -1,5 +1,4 @@
-import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
@@ -12,7 +11,7 @@ abstract class PalletConstantMetadata
   final int type;
 
   /// Value stored in the constant (SCALE encoded).
-  final List<int> value;
+  final BuBytes value;
 
   /// Documentation of the constant.
   final List<String> docs;

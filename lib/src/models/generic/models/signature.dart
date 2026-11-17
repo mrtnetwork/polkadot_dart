@@ -1,6 +1,7 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/encoding/layout/layout.dart';
+import 'package:blockchain_utils/helper/helper.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/constant/constant.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
@@ -60,10 +61,14 @@ class SubstrateMultiSignature
         SubstrateSr25519Signature(bytesValue),
       GenericConstants.multiSignatureEd25519IndexKey =>
         SubstrateED25519Signature(bytesValue),
-      GenericConstants.multiSignatureEcdsaIndexKey => SubstrateSr25519Signature(
+      GenericConstants.multiSignatureEcdsaIndexKey => SubstrateEcdsaSignature(
         bytesValue,
       ),
-      _ => throw DartSubstratePluginException("Unsuported signature type."),
+      _ =>
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported signature type.",
+          details: {"variant": variant.variantName},
+        ),
     };
     return SubstrateMultiSignature(signature);
   }
@@ -88,8 +93,8 @@ class SubstrateMultiSignature
   Layout<Map<String, dynamic>> layout({String? property}) =>
       layout_(property: property);
 
-  List<int> signatureBytes() {
-    return List<int>.from(signature.bytes);
+  BuBytes signatureBytes() {
+    return List<int>.from(signature.bytes).asImmutableBytes;
   }
 
   @override

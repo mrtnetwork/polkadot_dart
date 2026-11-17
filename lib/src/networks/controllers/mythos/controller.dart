@@ -60,7 +60,7 @@ class MythosNetworkController
         name: "Mythos",
         decimals: 18,
         symbol: "MYTH",
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
         version: network.defaultXcmVersion,
         parachain: network.paraId,
       );
@@ -85,7 +85,7 @@ class MythosNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -100,7 +100,7 @@ class MythosNetworkController
       provider: provider,
       network: network,
       onControllerRequest: onControllerRequest,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

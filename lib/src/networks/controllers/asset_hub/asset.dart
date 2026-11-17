@@ -6,6 +6,7 @@ import 'package:polkadot_dart/src/networks/core/core.dart';
 import 'package:polkadot_dart/src/networks/types/types/config.dart';
 import 'package:polkadot_dart/src/networks/utils/utils.dart';
 
+
 enum PolkadotAssetBalanceStatus {
   liquid('Liquid'),
   frozen('Frozen'),
@@ -178,7 +179,11 @@ enum BasePolkadotNetworkAssetsStatus {
     final status = json.keys.firstOrNull;
     return values.firstWhere(
       (e) => e.status == status,
-      orElse: () => throw ItemNotFoundException(value: status),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown BasePolkadotNetworkAssetsStatus value "$status".',
+              ),
     );
   }
 
@@ -287,7 +292,7 @@ abstract class BasePolkadotAssetHubAsset<ASSETID extends Object> {
   ASSETID get assetId;
   PolkadotAssetHubAssetInfo get asset;
   Map<String, dynamic> toJson();
-  SubtrateMetadataPallet get type;
+  SubstrateMetadataPallet get type;
   bool identifierEqual(Object? identifier);
   const BasePolkadotAssetHubAsset();
   factory BasePolkadotAssetHubAsset.fromJson(Map<String, dynamic> json) {
@@ -317,7 +322,7 @@ class PolkadotAssetHubAsset implements BasePolkadotAssetHubAsset<BigInt> {
   }
 
   @override
-  SubtrateMetadataPallet get type => SubtrateMetadataPallet.assets;
+  SubstrateMetadataPallet get type => SubstrateMetadataPallet.assets;
 
   @override
   bool identifierEqual(Object? identifier) {
@@ -330,7 +335,7 @@ class PolkadotAssetHubForeignAsset
   @override
   final PolkadotAssetHubAssetInfo asset;
   @override
-  SubtrateMetadataPallet get type => SubtrateMetadataPallet.foreignAssets;
+  SubstrateMetadataPallet get type => SubstrateMetadataPallet.foreignAssets;
   @override
   final XCMVersionedLocation assetId;
   PolkadotAssetHubForeignAsset.fromJson(
@@ -363,7 +368,7 @@ abstract class BasePolkadotAssetHubNetworkAsset
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
     required super.chargeAssetTxPayment,
   });
   BasePolkadotAssetHubNetworkAsset.fromJson(super.json) : super.fromJson();
@@ -393,7 +398,7 @@ class PolkadotAssetHubNetworkAsset extends BasePolkadotAssetHubNetworkAsset {
     required super.chargeAssetTxPayment,
   }) : super(
          decimals: metadata?.decimals,
-         excutionPallet: asset.type,
+         executionPallet: asset.type,
          minBalance: asset.asset.minBalance,
          name: metadata?.name,
          symbol: metadata?.symbol,
@@ -460,7 +465,7 @@ class PolkadotAssetHubNetworkNativeAsset
     required super.decimals,
     super.minBalance,
   }) : super(
-         excutionPallet: SubtrateMetadataPallet.balances,
+         executionPallet: SubstrateMetadataPallet.balances,
          chargeAssetTxPayment: true,
        );
   PolkadotAssetHubNetworkNativeAsset.fromJson(super.json)

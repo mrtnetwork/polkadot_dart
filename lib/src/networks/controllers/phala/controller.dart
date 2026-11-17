@@ -11,6 +11,7 @@ import 'package:polkadot_dart/src/networks/utils/helper.dart';
 import 'package:polkadot_dart/src/networks/utils/utils.dart';
 import 'package:polkadot_dart/src/networks/utils/xcm.dart';
 
+@Deprecated('Phala sunset its parachain (Nov 2025). Historical queries only.')
 class PhalaNetworkController
     extends
         BaseSubstrateNetworkController<
@@ -206,7 +207,7 @@ class PhalaNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTransfer,
+      pallet: SubstrateMetadataPallet.xTransfer,
     );
   }
 
@@ -224,7 +225,7 @@ class PhalaNetworkController
       provider: provider,
       network: network,
       useTypeAndThen: false,
-      defaultPallet: SubtrateMetadataPallet.xTransfer,
+      defaultPallet: SubstrateMetadataPallet.xTransfer,
       onControllerRequest: onControllerRequest,
     );
   }

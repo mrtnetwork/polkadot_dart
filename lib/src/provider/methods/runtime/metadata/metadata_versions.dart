@@ -1,5 +1,5 @@
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
-import 'package:blockchain_utils/layout/constant/constant.dart';
 import 'package:polkadot_dart/src/provider/core/core.dart';
 
 /// Returns the supported metadata versions.
@@ -18,7 +18,7 @@ class SubstrateRequestRuntimeMetadataGetVersions
   }
 
   @override
-  List<int> onResonse(String result) {
+  List<int> onResponse(String result) {
     final layput = LayoutConst.compactArray(LayoutConst.u32());
     return List<int>.from(
       layput.deserialize(BytesUtils.fromHexString(result)).value,

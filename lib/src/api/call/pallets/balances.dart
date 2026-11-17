@@ -1,7 +1,8 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
+
 
 enum BalancesCallPalletMethod implements SubstrateCallPalletTransferMethod {
   transferAllowDeath("transfer_allow_death", 0),
@@ -20,7 +21,11 @@ enum BalancesCallPalletMethod implements SubstrateCallPalletTransferMethod {
   factory BalancesCallPalletMethod.fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown BalancesCallPalletMethod value "$method".',
+              ),
     );
   }
 }
@@ -32,7 +37,7 @@ abstract class BalancesCallPallet
   @override
   final BalancesCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class BalancesCallPalletTransferAllowDeath extends BalancesCallPallet {
@@ -41,11 +46,11 @@ class BalancesCallPalletTransferAllowDeath extends BalancesCallPallet {
   const BalancesCallPalletTransferAllowDeath({
     required this.dest,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.balances,
+    super.pallet = SubstrateMetadataPallet.balances,
   }) : super(type: BalancesCallPalletMethod.transferAllowDeath);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -75,10 +80,10 @@ class BalancesCallPalletTransferKeepAlive extends BalancesCallPallet {
   const BalancesCallPalletTransferKeepAlive({
     required this.dest,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.balances,
+    super.pallet = SubstrateMetadataPallet.balances,
   }) : super(type: BalancesCallPalletMethod.transferKeepAlive);
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -109,11 +114,11 @@ class BalancesCallPalletTransferAll extends BalancesCallPallet {
   const BalancesCallPalletTransferAll({
     required this.dest,
     required this.keepAlive,
-    super.pallet = SubtrateMetadataPallet.balances,
+    super.pallet = SubstrateMetadataPallet.balances,
   }) : super(type: BalancesCallPalletMethod.transferAll);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

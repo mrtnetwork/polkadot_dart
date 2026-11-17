@@ -207,7 +207,7 @@ class BifrostNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -221,7 +221,7 @@ class BifrostNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
       useTypeAndThen: true,
       onControllerRequest: onControllerRequest,
     );
@@ -258,7 +258,7 @@ class BifrostKusamaNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -286,7 +286,7 @@ class BifrostKusamaNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
       onControllerRequest: onControllerRequest,
     );
   }

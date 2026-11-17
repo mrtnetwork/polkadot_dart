@@ -29,7 +29,11 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   http: ^1.1.0
-  blockchain_utils: ^7.1.0
+  blockchain_utils:
+    git:
+      url: https://github.com/mrtnetwork/blockchain_utils
+
+
   # blockchain_utils:
   #   path: ../../blockchain_utils
   web_socket_channel: ^2.4.0

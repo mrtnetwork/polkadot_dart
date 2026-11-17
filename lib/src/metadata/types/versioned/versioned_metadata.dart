@@ -1,18 +1,14 @@
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
-import 'package:polkadot_dart/src/metadata/types/generic/types/unsuported_metadata.dart';
+import 'package:polkadot_dart/src/metadata/types/generic/types/unsupported_metadata.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v14/types/metadata_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/v15/v15.dart';
 import 'package:polkadot_dart/src/metadata/types/v16/v16.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
-
-// class VersionedMetadataChecker extends {}
 
 class VersionedMetadata<T extends SubstrateMetadata>
     extends SubstrateSerialization<Map<String, dynamic>> {
@@ -29,7 +25,9 @@ class VersionedMetadata<T extends SubstrateMetadata>
   }
   factory VersionedMetadata.fromBytes(List<int> bytes) {
     if (bytes.length < MetadataConstant.metadataMagicNumberAndVersionLength) {
-      throw const MetadataException("Invalid metadata bytes");
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid metadata bytes: length ${bytes.length}, expected at least ${MetadataConstant.metadataMagicNumberAndVersionLength}.",
+      );
     }
     final getNumber =
         SubstrateMetadataLayouts.metadataMagicAndVersion()
@@ -60,14 +58,14 @@ class VersionedMetadata<T extends SubstrateMetadata>
           metadata = MetadataV16.fromBytes(metadataBytes);
           break;
         default:
-          throw MetadataException(
-            "Unsuported metadata version.",
+          throw BuError(DefaultErrorType.unsupported, 
+            "Unsupported metadata version.",
             details: {"version": "$version"},
           );
       }
     }
     if (metadata is! T) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Incorrect metadata version.",
         details: {"expected": "$T", "version": "$version"},
       );
@@ -102,8 +100,8 @@ class VersionedMetadata<T extends SubstrateMetadata>
 
   MetadataApi toApi() {
     if (!supportedByApi) {
-      throw MetadataException(
-        "metadata does not supported by API",
+      throw BuError(DefaultErrorType.unsupported, 
+        "Metadata is not supported by API.",
         details: {
           "version": version.toString(),
           "api_support_versions": MetadataConstant.supportedMetadataVersion

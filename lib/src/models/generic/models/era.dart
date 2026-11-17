@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/casting_utils.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
@@ -22,7 +21,7 @@ class _EraUtils {
     return count;
   }
 
-  static List<int> blockNumberToEra(
+  static BuBytes blockNumberToEra(
     int blockNumber, {
     int period = SubstrateConstant.defaultMortalLength,
   }) {
@@ -34,15 +33,15 @@ class _EraUtils {
         math.min(15, math.max(1, getTrailingZeros(calPeriod) - 1)) +
         ((phase ~/ (math.max(calPeriod >> 12, 1)) << 4));
     final toBytes = [encoded & BinaryOps.mask8, encoded >> 8];
-    return toBytes;
+    return toBytes.asImmutableBytes;
   }
 
-  static List<int> encodeEraPhase({required int phase, required int period}) {
+  static BuBytes encodeEraPhase({required int phase, required int period}) {
     final encoded =
         math.min(15, math.max(1, getTrailingZeros(period) - 1)) +
         ((phase ~/ (math.max(period >> 12, 1)) << 4));
     final toBytes = [encoded & BinaryOps.mask8, encoded >> 8];
-    return toBytes;
+    return toBytes.asImmutableBytes;
   }
 }
 
@@ -52,11 +51,11 @@ abstract class SubstrateBaseEra
   factory SubstrateBaseEra.deserializeJson(Map<String, dynamic> json) {
     final key = json.keys.firstOrNull;
     if (key == _SubstrateEraConst.immortal) return ImmortalEra();
-    final eraIndex = int.tryParse(
+    final eraIndex = IntUtils.tryParse(
       key?.replaceFirst(_SubstrateEraConst.mortal, '') ?? '',
     );
     if (eraIndex == null || eraIndex > 255 || eraIndex < 0) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid provided era json.",
         details: {"value": key},
       );

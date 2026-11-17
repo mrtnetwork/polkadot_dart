@@ -1,8 +1,9 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
+
 
 enum FungiblesCallPalletMethod implements SubstrateCallPalletTransferMethod {
   transfer("transfer", 8),
@@ -22,7 +23,11 @@ enum FungiblesCallPalletMethod implements SubstrateCallPalletTransferMethod {
   factory FungiblesCallPalletMethod.fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown FungiblesCallPalletMethod value "$method".',
+              ),
     );
   }
 }
@@ -34,7 +39,7 @@ abstract class FungiblesCallPallet
   @override
   final FungiblesCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class FungiblesCallPalletTransfer extends FungiblesCallPallet {
@@ -46,11 +51,11 @@ class FungiblesCallPalletTransfer extends FungiblesCallPallet {
     required this.id,
     required this.target,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.fungibles,
+    super.pallet = SubstrateMetadataPallet.fungibles,
   }) : super(type: FungiblesCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -87,10 +92,10 @@ class FungiblesCallPalletTransferKeepAlive extends FungiblesCallPallet {
     required this.id,
     required this.target,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.fungibles,
+    super.pallet = SubstrateMetadataPallet.fungibles,
   }) : super(type: FungiblesCallPalletMethod.transferKeepAlive);
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -128,14 +133,14 @@ class FungiblesCallPalletTransferAll extends FungiblesCallPallet {
     required this.id,
     required this.dest,
     required this.keepAlive,
-    super.pallet = SubtrateMetadataPallet.fungibles,
+    super.pallet = SubstrateMetadataPallet.fungibles,
   }) : super(type: FungiblesCallPalletMethod.transferAll);
 
   @override
   FungiblesCallPalletMethod get type => FungiblesCallPalletMethod.transferAll;
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

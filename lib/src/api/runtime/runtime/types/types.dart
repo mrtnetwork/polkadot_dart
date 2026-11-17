@@ -2,11 +2,9 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/api/runtime/runtime/layouts/layouts.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/models/generic/models/module_error.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateRuntimeApis {
@@ -41,7 +39,8 @@ abstract class SubstrateRuntimeApi {
           (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
           orElse:
               () =>
-                  throw DartSubstratePluginException(
+                  throw BuError(
+                    DefaultErrorType.invalidState,
                     "Runtime api not available.",
                     details: {"api": this.api.name},
                   ),
@@ -99,7 +98,8 @@ abstract class SubstrateRuntimeApi {
     }
     final types = SubstrateRuntimeApiConstants.apis[method.method];
     if (types == null) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.invalidState,
         "Runtime api not available.",
         details: {"api": this.api.name},
       );
@@ -109,13 +109,15 @@ abstract class SubstrateRuntimeApi {
       (e) => StringUtils.hexEqual(e.apiId, this.api.hash),
       orElse:
           () =>
-              throw DartSubstratePluginException(
+              throw BuError(
+                DefaultErrorType.invalidState,
                 "Runtime api not available.",
                 details: {"api": this.api.name},
               ),
     );
     if (!this.api.versions.contains(runtimeApi.version)) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.unsupported,
         "Unsupported runtime api version.",
         details: {
           "api": this.api.name,
@@ -144,6 +146,7 @@ abstract class SubstrateRuntimeApi {
 
 class _DryRunResultUtils {
   static List<String> getExecutionResultErrorParts(Map<String, dynamic> error) {
+    if (error.isEmpty) return [];
     List<String> errors = [error.keys.first];
     final val = error.values.first;
     if (val is Map<String, dynamic>) {
@@ -165,7 +168,8 @@ enum DispatchResultType {
       (e) => e.method == json?.keys.firstOrNull,
       orElse:
           () =>
-              throw DartSubstratePluginException(
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 "Invalid DispatchResult json.",
               ),
     );
@@ -197,25 +201,28 @@ abstract class DispatchResultWithPostInfo {
   }) {
     final id = metadata.typeByPathTail("Result");
     if (id == null) {
-      throw DartSubstratePluginException(
-        "Failed to build dispatch result layout. type not found.",
+      throw BuError(
+        DefaultErrorType.notFound,
+        'Failed to build dispatch result layout: type with path tail "Result" not found.',
       );
     }
-    final varinatins = metadata.getTypeDefination<Si1TypeDefVariant>(id);
-    final errr = varinatins.variants.firstWhere(
+    final variants = metadata.getTypeDefination<Si1TypeDefVariant>(id);
+    final err = variants.variants.firstWhere(
       (e) => e.name == "Err",
       orElse:
           () =>
-              throw DartSubstratePluginException(
-                "Failed to build dispatch result layout. type not found.",
+              throw BuError(
+                DefaultErrorType.notFound,
+                'Failed to build dispatch result layout: Err variant not found in lookup $id.',
               ),
     );
-    final oK = varinatins.variants.firstWhere(
+    final ok = variants.variants.firstWhere(
       (e) => e.name == "Ok",
       orElse:
           () =>
-              throw DartSubstratePluginException(
-                "Failed to build dispatch result layout. type not found.",
+              throw BuError(
+                DefaultErrorType.notFound,
+                'Failed to build dispatch result layout: Ok variant not found in lookup $id.',
               ),
     );
     return LayoutConst.lazyEnum(
@@ -224,8 +231,8 @@ abstract class DispatchResultWithPostInfo {
           layout:
               ({property}) =>
                   DispatchResultWithPostInfoOk.layout(property: property),
-          property: oK.name,
-          index: oK.index,
+          property: ok.name,
+          index: ok.index,
         ),
         LazyVariantModel(
           layout:
@@ -233,8 +240,8 @@ abstract class DispatchResultWithPostInfo {
                 metadata: metadata,
                 property: property,
               ),
-          property: errr.name,
-          index: errr.index,
+          property: err.name,
+          index: err.index,
         ),
       ],
       useKeyAndValue: false,
@@ -245,7 +252,11 @@ abstract class DispatchResultWithPostInfo {
 
   T cast<T extends DispatchResultWithPostInfo>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -455,7 +466,11 @@ enum OutcomeType {
     return values.firstWhere(
       (e) => e.method == json?.keys.firstOrNull,
       orElse:
-          () => throw DartSubstratePluginException("Invalid OutcomeType json."),
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                "Invalid OutcomeType json.",
+              ),
     );
   }
 }
@@ -479,7 +494,11 @@ abstract class OutcomeResult {
   }
   T cast<T extends OutcomeResult>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -615,7 +634,11 @@ abstract class SubstrateDispatchResult<OK extends Object?> {
   const SubstrateDispatchResult({required this.type, required this.result});
   T cast<T extends SubstrateDispatchResult>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -627,32 +650,39 @@ abstract class SubstrateDispatchResult<OK extends Object?> {
     required CbLayoutFunc onOk,
   }) {
     final id = metadata.typeByPathTail("Result");
-    if (id == null) throw DartSubstratePluginException("message");
-    final varinatins = metadata.getTypeDefination<Si1TypeDefVariant>(id);
-    final errr = varinatins.variants.firstWhere(
+    if (id == null) {
+      throw BuError(
+        DefaultErrorType.notFound,
+        'Failed to build dispatch layout: type with path tail "Result" not found.',
+      );
+    }
+    final variants = metadata.getTypeDefination<Si1TypeDefVariant>(id);
+    final err = variants.variants.firstWhere(
       (e) => e.name == "Err",
       orElse:
           () =>
-              throw DartSubstratePluginException(
-                "Failed to build dispatch result layout. type not found.",
+              throw BuError(
+                DefaultErrorType.notFound,
+                'Failed to build dispatch result layout: Err variant not found in lookup $id.',
               ),
     );
-    final oK = varinatins.variants.firstWhere(
+    final ok = variants.variants.firstWhere(
       (e) => e.name == "Ok",
       orElse:
           () =>
-              throw DartSubstratePluginException(
-                "Failed to build dispatch result layout. type not found.",
+              throw BuError(
+                DefaultErrorType.notFound,
+                'Failed to build dispatch result layout: Ok variant not found in lookup $id.',
               ),
     );
     return LayoutConst.lazyEnum([
-      LazyVariantModel(layout: onOk, property: oK.name, index: oK.index),
+      LazyVariantModel(layout: onOk, property: ok.name, index: ok.index),
       LazyVariantModel(
         layout:
             ({property}) =>
                 SubstrateDispatchResultError.layout(property: property),
-        property: errr.name,
-        index: errr.index,
+        property: err.name,
+        index: err.index,
       ),
     ], useKeyAndValue: false);
     // LazyVariantModel(layout: layout, property: property, index: index)
@@ -774,7 +804,12 @@ enum SubstrateDryRunCllOriginType {
   static SubstrateDryRunCllOriginType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateDryRunCllOriginType type "$type".',
+              ),
     );
   }
 }
@@ -790,7 +825,12 @@ enum SubstrateDryRunCllOriginSystemType {
   static SubstrateDryRunCllOriginSystemType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateDryRunCllOriginSystemType type "$type".',
+              ),
     );
   }
 }
@@ -860,7 +900,12 @@ enum SubstrateDryRunCllOriginPolkadotXcmType {
   static SubstrateDryRunCllOriginPolkadotXcmType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateDryRunCllOriginPolkadotXcmType type "$type".',
+              ),
     );
   }
 }
@@ -902,7 +947,12 @@ enum SubstrateDryRunCllOriginCumulusXcmType {
   static SubstrateDryRunCllOriginCumulusXcmType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateDryRunCllOriginCumulusXcmType type "$type".',
+              ),
     );
   }
 }
@@ -970,7 +1020,12 @@ enum SubstrateDryRunCallOriginType {
   static SubstrateDryRunCallOriginType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateDryRunCallOriginType type "$type".',
+              ),
     );
   }
 }

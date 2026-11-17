@@ -1,11 +1,10 @@
-import 'package:blockchain_utils/layout/constant/constant.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/provider/core/core/base.dart';
 import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 import 'package:polkadot_dart/src/provider/models/runtime/query_fee_info.dart';
 
-/// Returns the metadata at a given version
-/// https://polkadot.js.org/docs/substrate/runtime/#metadata
+/// Returns inclusion fee details for call bytes (TransactionPaymentCallApi `query_call_fee_details`).
 class SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallFeeDetails
     extends SubstrateRequest<String, QueryFeeDetails> {
   const SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallFeeDetails({
@@ -40,7 +39,7 @@ class SubstrateRequestRuntimeTransactionPaymentCallApiQueryCallFeeDetails
   }
 
   @override
-  QueryFeeDetails onResonse(String result) {
+  QueryFeeDetails onResponse(String result) {
     return QueryFeeDetails.deserialize(BytesUtils.fromHexString(result));
   }
 }

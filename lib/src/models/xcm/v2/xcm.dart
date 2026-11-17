@@ -1,8 +1,8 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/helper/helper.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
 import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
@@ -358,13 +358,18 @@ abstract class XCMInstructionV2 extends SubstrateVariantSerialization
         XCMV2SubscribeVersion.deserializeJson(decode.value),
       XCMInstructionType.unsubscribeVersion => XCMV2UnsubscribeVersion(),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 2.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 2.",
           details: {"type": type.type},
         ),
     };
   }
   factory XCMInstructionV2.fromJson(Map<String, dynamic> json) {
+    if (json.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid XCM instruction json: missing type key.",
+      );
+    }
     final type = XCMInstructionType.fromType(json.keys.first);
     return switch (type) {
       XCMInstructionType.withdrawAsset => XCMV2WithdrawAsset.fromJson(json),
@@ -409,8 +414,8 @@ abstract class XCMInstructionV2 extends SubstrateVariantSerialization
       ),
       XCMInstructionType.unsubscribeVersion => XCMV2UnsubscribeVersion(),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 2.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 2.",
           details: {"type": type.name},
         ),
     };
@@ -736,14 +741,22 @@ enum XCMV2OriginKindType {
   static XCMV2OriginKindType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2OriginKindType type "$type".',
+              ),
     );
   }
 
   static XCMV2OriginKindType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2OriginKindType name "$name".',
+              ),
     );
   }
 }
@@ -878,7 +891,7 @@ class XCMV2Transact extends XCMInstructionV2 with XCMTransact {
   final XCMV2OriginKind originKind;
   final BigInt requireWeightAtMost;
   @override
-  final List<int> call;
+  final BuBytes call;
 
   XCMV2Transact({
     required this.originKind,
@@ -1911,14 +1924,22 @@ enum XCMV2ResponseType {
   static XCMV2ResponseType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2ResponseType type "$type".',
+              ),
     );
   }
 
   static XCMV2ResponseType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2ResponseType name "$name".',
+              ),
     );
   }
 }
@@ -1958,14 +1979,22 @@ enum XCMV2ErrorType {
   static XCMV2ErrorType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2ErrorType type "$type".',
+              ),
     );
   }
 
   static XCMV2ErrorType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2ErrorType name "$name".',
+              ),
     );
   }
 }

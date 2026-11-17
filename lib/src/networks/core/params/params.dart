@@ -1,8 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
 import 'package:polkadot_dart/src/networks/types/types.dart';
@@ -73,7 +71,7 @@ class SubstrateNetworkApiDefaultParams
         const SubstrateRequestRuntimeMetadataGetMetadata(),
       );
       return metadata?.metadata;
-    } on MetadataException {
+    } on BuError {
       return null;
     }
   }
@@ -87,8 +85,6 @@ class SubstrateNetworkApiDefaultParams
         SubstrateRequestRuntimeMetadataGetMetadataAtVersion(version),
       );
       return metadata?.metadata;
-    } on MetadataException {
-      return null;
     } on RPCError {
       return null;
     }
@@ -109,8 +105,10 @@ class SubstrateNetworkApiDefaultParams
       final api = MetadataApi(metadata as LatestMetadataInterface);
       return api;
     }
-
-    throw const DartSubstratePluginException("Unsuported network metadata.");
+    throw BuError(
+      DefaultErrorType.unsupported,
+      "Unsupported network metadata: unable to fetch runtime metadata.",
+    );
   }
 
   Future<IProvider<IServiceProvider, SubstrateRequestDetails>?>
@@ -141,7 +139,8 @@ class SubstrateNetworkApiDefaultParams
         network.genesis,
       );
       if (activeProvider == null) {
-        throw const DartSubstratePluginException(
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid provider: returned genesis hash does not match the network.",
         );
       }

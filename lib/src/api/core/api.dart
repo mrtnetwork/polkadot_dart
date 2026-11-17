@@ -1,10 +1,6 @@
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/models/models/storage.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
@@ -60,7 +56,7 @@ class MetadataApi with MetadataApiInterface {
 
   /// Encodes a call for a pallet
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required String palletNameOrIndex,
     required Object? value,
     bool fromTemplate = false,
@@ -70,21 +66,22 @@ class MetadataApi with MetadataApiInterface {
       value: value,
       fromTemplate: fromTemplate,
     );
-    return [metadata.getPalletIndex(palletNameOrIndex), ...toBytes];
+    return [
+      metadata.getPalletIndex(palletNameOrIndex),
+      ...toBytes,
+    ].asImmutableBytes;
   }
 
   /// Encodes a value using a lookup ID
   @override
-  List<int> encodeLookup({
+  BuBytes encodeLookup({
     required int id,
     required Object? value,
     required bool fromTemplate,
   }) {
-    return metadata.encodeLookup(
-      id: id,
-      value: value,
-      fromTemplate: fromTemplate,
-    );
+    return metadata
+        .encodeLookup(id: id, value: value, fromTemplate: fromTemplate)
+        .asImmutableBytes;
   }
 
   /// Decodes bytes using a lookup ID
@@ -101,7 +98,7 @@ class MetadataApi with MetadataApiInterface {
     LookupDecodeParams params = const LookupDecodeParams(),
   }) {
     if (bytes.isEmpty) {
-      throw const DartSubstratePluginException("Invalid encoded call bytes.");
+      throw BuError(DefaultErrorType.invalidArgument, "Invalid encoded call bytes.");
     }
     final palletIndex = bytes[0];
     final palletName = getPalletNameByIndex(palletIndex);
@@ -167,14 +164,14 @@ class MetadataApi with MetadataApiInterface {
 
   /// Encodes storage input for a pallet method
   @override
-  List<int> encodeStorageInput({
+  BuBytes encodeStorageInput({
     required String palletNameOrIndex,
     required String methodName,
     required Object? value,
     required bool fromTemplate,
   }) {
     final lookupId = metadata.getStorageInputId(palletNameOrIndex, methodName);
-    if (lookupId == null) return [];
+    if (lookupId == null) return <int>[].asImmutableBytes;
     return encodeLookup(id: lookupId, value: value, fromTemplate: fromTemplate);
   }
 
@@ -234,8 +231,8 @@ class MetadataApi with MetadataApiInterface {
     if (hashers.length > 1) {
       final lookup = metadata.getLookup(lookupId);
       if (lookup.typeName != Si1TypeDefsIndexesConst.tuple) {
-        throw const DartSubstratePluginException(
-          "Invalid lookup type. method with mutliple argruments must be tuple",
+        throw BuError(DefaultErrorType.invalidArgument, 
+          "Invalid lookup type. Method with multiple arguments must be tuple.",
         );
       }
       final List<int> lookupIds = (lookup.def as TypeDefTuple).values;
@@ -331,17 +328,38 @@ class MetadataApi with MetadataApiInterface {
     if (lookupId == null) {
       return StorageKey(prefix: prefixHash, inputs: [], key: storageKey);
     }
-    List<int> keyBytes = BytesUtils.fromHexString(
-      storageKey,
-    ).sublist(prefixHash.keyBytes.length);
+    List<int> keyBytes;
+
+    try {
+      keyBytes = BytesUtils.fromHexString(storageKey);
+    } catch (_) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid storage key: not valid hex.",
+        details: {"key": storageKey},
+      );
+    }
+    if (keyBytes.length < prefixHash.keyBytes.length ||
+        !BytesUtils.bytesEqual(
+          keyBytes.sublist(0, prefixHash.keyBytes.length),
+          prefixHash.keyBytes,
+        )) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid storage key: missing storage prefix.",
+        details: {
+          "key": storageKey,
+          "prefix": BytesUtils.toHexString(prefixHash.keyBytes),
+        },
+      );
+    }
+    keyBytes = keyBytes.sublist(prefixHash.keyBytes.length);
     final hashers = metadata.getStorageHasher(palletNameOrIndex, methodName);
     List<StorageKeyInput> inputs = [];
 
     final lookup = metadata.getLookup(lookupId);
     if (hashers.length > 1) {
       if (lookup.typeName != Si1TypeDefsIndexesConst.tuple) {
-        throw const DartSubstratePluginException(
-          "Invalid lookup type. method with mutliple argruments must be tuple",
+        throw BuError(DefaultErrorType.invalidArgument, 
+          "Invalid lookup type. Method with multiple arguments must be tuple.",
         );
       }
       final List<int> lookupIds = (lookup.def as TypeDefTuple).values;
@@ -369,14 +387,18 @@ class MetadataApi with MetadataApiInterface {
     } else {
       final hasher = hashers.elementAtOrNull(0);
       if (hasher?.isConcat ?? true) {
-        final input = decodeLookup(
-          lookupId,
-          keyBytes.sublist(hasher?.hashLength ?? 0),
-        );
+        final hashLength = hasher?.hashLength ?? 0;
+        if (keyBytes.length < hashLength) {
+          throw BuError(DefaultErrorType.invalidArgument, 
+            "Invalid storage key: shorter than hasher length $hashLength.",
+            details: {"key": storageKey},
+          );
+        }
+        final input = decodeLookup(lookupId, keyBytes.sublist(hashLength));
         inputs.add(
           StorageKeyInput(
             input: input,
-            encodedInput: keyBytes.sublist(hasher?.hashLength ?? 0),
+            encodedInput: keyBytes.sublist(hashLength),
           ),
         );
       } else {
@@ -491,7 +513,7 @@ class MetadataApi with MetadataApiInterface {
 
   /// encode runtime method inputs
   @override
-  List<int> encodeRuntimeApiInputs({
+  BuBytes encodeRuntimeApiInputs({
     required String apiName,
     required String methodName,
     required List<Object?> params,
@@ -500,7 +522,7 @@ class MetadataApi with MetadataApiInterface {
     final method = generateRuntimeApiMethod(apiName, methodName);
     final inputs = getRuntimeApiInputLookupIds(apiName, methodName);
     if (inputs.length != params.length) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid params length.",
         details: {
           "method": method,
@@ -518,7 +540,7 @@ class MetadataApi with MetadataApiInterface {
       );
       encodedParams = [...encodedParams, ...encode];
     }
-    return encodedParams;
+    return encodedParams.asImmutableBytes;
   }
 
   /// decode runtime api method output
@@ -620,7 +642,7 @@ class MetadataApi with MetadataApiInterface {
       property: property,
     );
     if (layout == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.notFound, 
         "Type layout not found.",
         details: {"name": name},
       );
@@ -640,7 +662,7 @@ class MetadataApi with MetadataApiInterface {
       property: property,
     );
     if (layout == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.notFound, 
         "Path tail layout not found.",
         details: {"name": name},
       );

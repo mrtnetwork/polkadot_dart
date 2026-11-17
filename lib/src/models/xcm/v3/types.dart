@@ -2,7 +2,6 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
 import 'package:polkadot_dart/src/models/xcm/core/body.dart';
 import 'package:polkadot_dart/src/models/xcm/core/fungibility.dart';
@@ -33,8 +32,8 @@ abstract class XCMV3NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadotBulletIn => XCMV3PolkadotBulletIn.fromJson(json),
       XCMNetworkIdType.westend => XCMV3Westend.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network id by version 3.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network id by version 3.",
           details: {"type": type.name},
         ),
     };
@@ -63,8 +62,8 @@ abstract class XCMV3NetworkId extends SubstrateVariantSerialization
         XCMV3PolkadotBulletIn.deserializeJson(decode.value),
       XCMNetworkIdType.westend => XCMV3Westend.deserializeJson(decode.value),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network id by version 3.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network id by version 3.",
           details: {"type": type.name},
         ),
     };
@@ -96,8 +95,8 @@ abstract class XCMV3NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.bitcoinCore => XCMV3BitcoinCore(),
       XCMNetworkIdType.polkadotBulletIn => XCMV3PolkadotBulletIn(),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network type by version 3.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network type by version 3.",
           details: {"type": type.name},
         ),
     };
@@ -185,7 +184,7 @@ abstract class XCMV3NetworkId extends SubstrateVariantSerialization
 
 class XCMV3ByGenesis extends XCMV3NetworkId with XCMNetworkIdByGenesis {
   @override
-  final List<int> genesis;
+  final BuBytes genesis;
   XCMV3ByGenesis({required List<int> genesis})
     : genesis =
           genesis
@@ -215,7 +214,7 @@ class XCMV3ByGenesis extends XCMV3NetworkId with XCMNetworkIdByGenesis {
 
 class XCMV3ByFork extends XCMV3NetworkId with XCMNetworkIdByFork {
   @override
-  final List<int> blockHash;
+  final BuBytes blockHash;
   @override
   final BigInt blockNumber;
 
@@ -406,8 +405,8 @@ abstract class XCMV3BodyId extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported body id by version 3.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported body id by version 3.",
           details: {"type": type.name},
         ),
     };
@@ -427,8 +426,8 @@ abstract class XCMV3BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV3BodyIdAdministration.fromJson(json),
       XCMBodyIdType.treasury => XCMV3BodyIdTreasury.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported body id by version 3.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported body id by version 3.",
           details: {"type": type.name},
         ),
     };
@@ -452,8 +451,8 @@ abstract class XCMV3BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV3BodyIdAdministration(),
       XCMBodyIdType.treasury => XCMV3BodyIdTreasury(),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported body id by version 3.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported body id by version 3.",
           details: {"type": type.name},
         ),
     };
@@ -532,7 +531,7 @@ abstract class XCMV3BodyId extends SubstrateVariantSerialization
 
 class XCMV3BodyIdMoniker extends XCMV3BodyId with XCMBodyIdMoniker {
   @override
-  final List<int> moniker;
+  final BuBytes moniker;
   XCMV3BodyIdMoniker({required List<int> moniker})
     : moniker =
           moniker
@@ -1120,7 +1119,7 @@ class XCMV3JunctionAccountId32 extends XCMV3Junction
   @override
   final XCMV3NetworkId? network;
   @override
-  final List<int> id;
+  final BuBytes id;
   XCMV3JunctionAccountId32({this.network, required List<int> id})
     : id =
           id
@@ -1217,7 +1216,7 @@ class XCMV3JunctionAccountKey20 extends XCMV3Junction
   @override
   final XCMV3NetworkId? network;
   @override
-  final List<int> key;
+  final BuBytes key;
   XCMV3JunctionAccountKey20({this.network, required List<int> key})
     : key =
           key
@@ -1310,7 +1309,7 @@ class XCMV3JunctionGeneralKey extends XCMV3Junction with XCMJunctionGeneralKey {
   @override
   final int length;
   @override
-  final List<int> data;
+  final BuBytes data;
   factory XCMV3JunctionGeneralKey({
     required int length,
     required List<int> data,
@@ -1318,7 +1317,7 @@ class XCMV3JunctionGeneralKey extends XCMV3Junction with XCMJunctionGeneralKey {
     if (data.length < length ||
         length > SubstrateConstant.accountIdLengthInBytes ||
         data.length > SubstrateConstant.accountIdLengthInBytes) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid V3 Junction GeneralKey bytes.",
       );
     }
@@ -1675,6 +1674,11 @@ class XCMV3JunctionsX1 extends XCMV3Junctions {
 
   @override
   Map<String, dynamic> toJson() {
+    if (junctions.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid X1 junctions: expected exactly one junction.",
+      );
+    }
     return {type.type: junctions.first.toJson()};
   }
 }
@@ -1903,7 +1907,7 @@ class XCMV3AssetInstanceIndex extends XCMV3AssetInstance
 class XCMV3AssetInstanceArray4 extends XCMV3AssetInstance
     with XCMAssetInstanceArray4 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV3AssetInstanceArray4({required List<int> datum})
     : datum =
           datum
@@ -1928,7 +1932,7 @@ class XCMV3AssetInstanceArray4 extends XCMV3AssetInstance
 class XCMV3AssetInstanceArray8 extends XCMV3AssetInstance
     with XCMAssetInstanceArray8 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV3AssetInstanceArray8({required List<int> datum})
     : datum =
           datum
@@ -1953,7 +1957,7 @@ class XCMV3AssetInstanceArray8 extends XCMV3AssetInstance
 class XCMV3AssetInstanceArray16 extends XCMV3AssetInstance
     with XCMAssetInstanceArray16 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV3AssetInstanceArray16({required List<int> datum})
     : datum =
           datum
@@ -1978,7 +1982,7 @@ class XCMV3AssetInstanceArray16 extends XCMV3AssetInstance
 class XCMV3AssetInstanceArray32 extends XCMV3AssetInstance
     with XCMAssetInstanceArray32 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV3AssetInstanceArray32({required List<int> datum})
     : datum =
           datum
@@ -2261,21 +2265,29 @@ class XCMV3MultiLocation extends XCMMultiLocation with Equality {
 
 enum XCMV3AssetIdType {
   concrete("Concrete"),
-  abtract("Abtract");
+  abstract("Abstract");
 
   final String type;
   const XCMV3AssetIdType(this.type);
   static XCMV3AssetIdType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3AssetIdType name "$name".',
+              ),
     );
   }
 
   static XCMV3AssetIdType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3AssetIdType type "$type".',
+              ),
     );
   }
 }
@@ -2299,7 +2311,7 @@ abstract class XCMV3AssetId extends SubstrateVariantSerialization
       XCMV3AssetIdType.concrete => XCMV3AssetIdConcrete.deserializeJson(
         decode.value,
       ),
-      XCMV3AssetIdType.abtract => XCMV3AssetIdAbstract.deserializeJson(
+      XCMV3AssetIdType.abstract => XCMV3AssetIdAbstract.deserializeJson(
         decode.value,
       ),
     };
@@ -2308,7 +2320,7 @@ abstract class XCMV3AssetId extends SubstrateVariantSerialization
     return switch (id) {
       final XCMV3AssetId assetId => assetId,
       final XCMV2AssetId assetId => switch (assetId.type) {
-        XCMV2AssetIdType.abtract => XCMV3AssetIdAbstract(
+        XCMV2AssetIdType.abstract => XCMV3AssetIdAbstract(
           id: assetId.cast<XCMV2AssetIdAbstract>().id,
         ),
         XCMV2AssetIdType.concrete => XCMV3AssetIdConcrete(
@@ -2323,7 +2335,7 @@ abstract class XCMV3AssetId extends SubstrateVariantSerialization
       final XCMV5AssetId assetId => XCMV3AssetIdConcrete(
         location: assetId.location.asVersion(XCMVersion.v3),
       ),
-      _ => throw DartSubstratePluginException("Unknow asset id."),
+      _ => throw BuError(DefaultErrorType.notFound, 'Unknown asset id.'),
     };
   }
 
@@ -2331,7 +2343,7 @@ abstract class XCMV3AssetId extends SubstrateVariantSerialization
     final type = XCMV3AssetIdType.fromType(json.keys.firstOrNull);
     return switch (type) {
       XCMV3AssetIdType.concrete => XCMV3AssetIdConcrete.fromJson(json),
-      XCMV3AssetIdType.abtract => XCMV3AssetIdAbstract.fromJson(json),
+      XCMV3AssetIdType.abstract => XCMV3AssetIdAbstract.fromJson(json),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -2345,7 +2357,7 @@ abstract class XCMV3AssetId extends SubstrateVariantSerialization
       LazyVariantModel(
         layout:
             ({property}) => XCMV3AssetIdAbstract.layout_(property: property),
-        property: XCMV3AssetIdType.abtract.name,
+        property: XCMV3AssetIdType.abstract.name,
         index: 1,
       ),
     ], property: property);
@@ -2408,7 +2420,7 @@ class XCMV3AssetIdConcrete extends XCMV3AssetId {
 }
 
 class XCMV3AssetIdAbstract extends XCMV3AssetId {
-  final List<int> id;
+  final BuBytes id;
   XCMV3AssetIdAbstract({required List<int> id})
     : id =
           id
@@ -2419,10 +2431,10 @@ class XCMV3AssetIdAbstract extends XCMV3AssetId {
                 reason: "Invalid id bytes length.",
               )
               .asImmutableBytes,
-      super(type: XCMV3AssetIdType.abtract);
+      super(type: XCMV3AssetIdType.abstract);
   factory XCMV3AssetIdAbstract.fromJson(Map<String, dynamic> json) {
     return XCMV3AssetIdAbstract(
-      id: json.valueAsBytes(XCMV3AssetIdType.abtract.type),
+      id: json.valueAsBytes(XCMV3AssetIdType.abstract.type),
     );
   }
   factory XCMV3AssetIdAbstract.deserializeJson(Map<String, dynamic> json) {

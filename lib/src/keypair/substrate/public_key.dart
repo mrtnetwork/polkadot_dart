@@ -34,8 +34,8 @@ class SubstratePublicKey extends BaseSubstratePublicKey<SubstrateAddress> {
 
   /// Converts the public key to bytes.
   @override
-  List<int> toBytes() {
-    return List<int>.from(_substrate.publicKey.compressed);
+  BuBytes toBytes() {
+    return _substrate.publicKey.toBytes();
   }
 
   /// Converts the public key to hexadecimal string.

@@ -180,7 +180,7 @@ class EnergyWebXNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -206,7 +206,7 @@ class EnergyWebXNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

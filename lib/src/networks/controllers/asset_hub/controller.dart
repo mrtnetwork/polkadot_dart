@@ -64,7 +64,7 @@ abstract class BaseAssetHubNetworkController<
     final version = network.defaultXcmVersion;
     final pallet = XCMJunctionPalletInstance.fromVersion(
       index: provider.metadata.api.getPalletIndexByName(
-        SubtrateMetadataPallet.assets.name,
+        SubstrateMetadataPallet.assets.name,
       ),
       version: version,
     );
@@ -292,14 +292,14 @@ class PolkadotAssetHubNetworkController
       );
     }
     final bool isForeignAsset =
-        params.assets[0].asset.excutionPallet ==
-        SubtrateMetadataPallet.foreignAssets;
+        params.assets[0].asset.executionPallet ==
+        SubstrateMetadataPallet.foreignAssets;
     return SubstrateNetworkControllerXCMTransferBuilder.createXCMTransfer(
       params: params,
       provider: provider,
       network: network,
       method: isForeignAsset ? XCMCallPalletMethod.transferAssets : null,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -314,7 +314,7 @@ class PolkadotAssetHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }
@@ -360,7 +360,7 @@ class KusamaAssetHubNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -375,7 +375,7 @@ class KusamaAssetHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -390,7 +390,7 @@ class KusamaAssetHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }
@@ -436,7 +436,7 @@ class WestendAssetHubNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -451,7 +451,7 @@ class WestendAssetHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -466,7 +466,7 @@ class WestendAssetHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }
@@ -513,7 +513,7 @@ class WestendPenpalNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -541,7 +541,7 @@ class WestendPenpalNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
       onControllerRequest: onControllerRequest,
     );
   }
@@ -588,7 +588,7 @@ class PaseoAssetHubNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -603,7 +603,7 @@ class PaseoAssetHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -618,7 +618,7 @@ class PaseoAssetHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
+
 
 enum XCMTransferTypeType implements SubstrateCallPalletXCMTransferMethod {
   teleport("Teleport", 0),
@@ -18,14 +19,22 @@ enum XCMTransferTypeType implements SubstrateCallPalletXCMTransferMethod {
   static XCMTransferTypeType fromMethod(String? type) {
     return values.firstWhere(
       (e) => e.method == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMTransferTypeType method "$type".',
+              ),
     );
   }
 
   static XCMTransferTypeType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMTransferTypeType name "$name".',
+              ),
     );
   }
 }
@@ -217,14 +226,22 @@ enum XCMCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   static XCMCallPalletMethod fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMCallPalletMethod name "$name".',
+              ),
     );
   }
 
   static XCMCallPalletMethod fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMCallPalletMethod method "$method".',
+              ),
     );
   }
 }
@@ -235,7 +252,7 @@ abstract class XCMCallPallet extends SubstrateVariantSerialization
   @override
   final XCMCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
   const XCMCallPallet({required this.type, required this.pallet});
   factory XCMCallPallet.deserialize(List<int> bytes) {
     final decode = SubstrateVariantSerialization.deserialize(
@@ -342,7 +359,7 @@ abstract class XCMCallPallet extends SubstrateVariantSerialization
   String get variantName => type.name;
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -360,7 +377,7 @@ class XCMCallPalletSend extends XCMCallPallet {
   const XCMCallPalletSend({
     required this.dest,
     required this.message,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.send);
   factory XCMCallPalletSend.deserialize(List<int> bytes) {
     final decode = SubstrateSerialization.deserialize(
@@ -429,7 +446,7 @@ class XCMCallPalletTeleportAssets extends XCMCallPallet {
     required this.beneficiary,
     required this.assets,
     required this.feeAssetItem,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.teleportAssets);
   factory XCMCallPalletTeleportAssets.deserialize(List<int> bytes) {
     final decode = SubstrateSerialization.deserialize(
@@ -511,7 +528,7 @@ class XCMCallPalletReserveTransferAssets extends XCMCallPallet {
     required this.beneficiary,
     required this.assets,
     required this.feeAssetItem,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.reserveTransferAssets);
   factory XCMCallPalletReserveTransferAssets.deserialize(List<int> bytes) {
     final decode = SubstrateSerialization.deserialize(
@@ -599,7 +616,7 @@ class XCMCallPalletLimitedReserveTransferAssets extends XCMCallPallet {
     required this.feeAssetItem,
     required this.version,
     required this.weightLimit,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.limitedReserveTransferAssets);
   factory XCMCallPalletLimitedReserveTransferAssets.deserialize(
     List<int> bytes,
@@ -716,7 +733,7 @@ class XCMCallPalletLimitedTeleportAssets extends XCMCallPallet {
     required this.feeAssetItem,
     required this.version,
     required this.weightLimit,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.limitedTeleportAssets);
   factory XCMCallPalletLimitedTeleportAssets.deserialize(List<int> bytes) {
     final decode = SubstrateSerialization.deserialize(
@@ -829,7 +846,7 @@ class XCMCallPalletTransferAssets extends XCMCallPallet {
     required this.feeAssetItem,
     required this.version,
     required this.weightLimit,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.transferAssets);
   factory XCMCallPalletTransferAssets.deserialize(List<int> bytes) {
     final decode = SubstrateSerialization.deserialize(
@@ -929,12 +946,13 @@ class XCMCallPalletTransferAssets extends XCMCallPallet {
 class XCMCallPalletClaimAssets extends XCMCallPallet {
   final XCMVersionedAssets assets;
   final XCMVersionedLocation beneficiary;
+
   @override
-  XCMMultiLocation get destination => throw UnimplementedError();
+  XCMMultiLocation get destination => beneficiary.location;
   const XCMCallPalletClaimAssets({
     required this.beneficiary,
     required this.assets,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.claimAssets);
   factory XCMCallPalletClaimAssets.deserialize(List<int> bytes) {
     final decode = SubstrateSerialization.deserialize(
@@ -1011,7 +1029,7 @@ class XCMCallPalletTransferAssetsUsingTypeAndThen extends XCMCallPallet {
     required this.customXcmOnDest,
     required this.version,
     required this.weightLimit,
-    super.pallet = SubtrateMetadataPallet.polkadotXcm,
+    super.pallet = SubstrateMetadataPallet.polkadotXcm,
   }) : super(type: XCMCallPalletMethod.transferAssetsUsingTypeAndThen);
   factory XCMCallPalletTransferAssetsUsingTypeAndThen.deserialize(
     List<int> bytes,

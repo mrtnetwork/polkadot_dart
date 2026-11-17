@@ -2,8 +2,7 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/api/runtime/runtime/ethereum_runtime_rpcs/types.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 import 'package:polkadot_dart/src/networks/constants/evm.dart';
 import 'package:polkadot_dart/src/networks/networks.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
@@ -77,15 +76,16 @@ class SubstrateXCMTransferEncodedParams<
 }
 
 /// Status of an XCM dry-run simulation.
+///
 enum SubstrateTransactionXCMDryRunStatus {
   /// The network supports XCM but dry-run is not supported.
-  unsuportedDryRun,
+  unsupportedDryRun,
 
   /// The network is not supported by the plugin API.
-  unsuportedNetwork,
+  unsupportedNetwork,
 
-  /// The network supports dry-run but xcm payment api is not supported.
-  unsuportedXcmPaymentApi,
+  /// The network supports dry-run but the XCM payment API is not supported.
+  unsupportedXcmPaymentApi,
 
   /// Dry-run completed successfully.
   complete;
@@ -106,7 +106,7 @@ class SubstrateTransactionXCMDryRunResult {
 
   /// Delivery fees for multi-chain XCM execution when the current network
   /// is a reserve chain and XCM passes through intermediate chains.
-  final List<QueryDeleveriesFeeWithAmount> deleveriesFee;
+  final List<QueryDeliveriesFeeWithAmount> deliveriesFee;
 
   /// The network used in the dry-run.
   /// Null if the network is not supported by the plugin API.
@@ -120,7 +120,7 @@ class SubstrateTransactionXCMDryRunResult {
     this.weightToFee,
     required this.network,
     required this.status,
-    required this.deleveriesFee,
+    required this.deliveriesFee,
   });
 
   /// Creates a dry-run result for unsupported networks or dry-run.
@@ -130,12 +130,12 @@ class SubstrateTransactionXCMDryRunResult {
   }) {
     return SubstrateTransactionXCMDryRunResult._(
       network: network,
-      deleveriesFee: [],
+      deliveriesFee: [],
       status:
           status ??
           (network == null
-              ? SubstrateTransactionXCMDryRunStatus.unsuportedNetwork
-              : SubstrateTransactionXCMDryRunStatus.unsuportedDryRun),
+              ? SubstrateTransactionXCMDryRunStatus.unsupportedNetwork
+              : SubstrateTransactionXCMDryRunStatus.unsupportedDryRun),
     );
   }
 
@@ -145,12 +145,12 @@ class SubstrateTransactionXCMDryRunResult {
     required SubstrateDispatchResult<BigInt>? weightToFee,
     required BaseSubstrateNetwork network,
     required SubstrateTransactionXCMDryRunStatus status,
-    required List<QueryDeleveriesFeeWithAmount> deleveriesFee,
+    required List<QueryDeliveriesFeeWithAmount> deliveriesFee,
   }) {
     return SubstrateTransactionXCMDryRunResult._(
       xcmDryRun: xcmDryRun,
       weightToFee: weightToFee,
-      deleveriesFee: deleveriesFee,
+      deliveriesFee: deliveriesFee,
       network: network,
       status: status,
     );
@@ -162,7 +162,7 @@ class SubstrateTransactionXCMDryRunResult {
       "xcm_dry_run": xcmDryRun?.toJson(),
       "weight_to_fee": weightToFee?.toJson(),
       "status": status.name,
-      "deleveries": deleveriesFee.map((e) => e.toJson()).toList(),
+      "deliveries": deliveriesFee.map((e) => e.toJson()).toList(),
       "network": network?.networkName,
     };
   }
@@ -174,7 +174,7 @@ class SubstrateTransactionXCMSimulateResult {
   final SubstrateDispatchResult<CallDryRunEffects> dryRun;
 
   /// Estimated delivery fees for local execution of the XCM transaction.
-  final List<QueryDeleveriesFeeWithAmount> localDeliveryFees;
+  final List<QueryDeliveriesFeeWithAmount> localDeliveryFees;
 
   /// Dry-run results for any external XCM calls that will be forwarded
   /// to other networks during this transaction.
@@ -223,7 +223,7 @@ class SubstrateLocalTransferAssetParams extends SubstrateTransferParams {
   /// Transfer method (e.g., "transfer", "transfer_all", "transfer_keep_alive").
   final String? method;
 
-  /// Whether to use keep-alive variant; conflicts with [method] throw exception.
+  /// Whether to use keep-alive variant; conflicts with [method] and will throw an exception.
   final bool? keepAlive;
 
   /// Creates parameters for a local transfer.
@@ -276,7 +276,7 @@ class SubstrateXCMTransferAsset {
   XCMMultiLocation getLocation(XCMVersion xcmVersion) {
     final foreignLocation = asset.location?.location;
     if (foreignLocation == null) {
-      throw DartSubstratePluginException("Missing asset location");
+      throw BuError(DefaultErrorType.invalidArgument, "Missing asset location");
     }
     return foreignLocation.asVersion(xcmVersion);
   }
@@ -422,7 +422,7 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
 
   /// Creates a validated instance of [SubstrateXCMTransferParams].
   ///
-  /// Throws a [DartSubstratePluginException] if:
+  /// Throws a [BuError] if:
   ///  - No assets are provided.
   ///  - The fee index is out of range.
   ///  - Any asset lacks a valid location.
@@ -448,20 +448,22 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
     int? feeIndex,
   }) {
     if (assets.isEmpty) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "At least one asset required for transfer.",
       );
     }
     if (feeIndex != null &&
         (feeIndex.isNegative || feeIndex >= assets.length)) {
-      throw DartSubstratePluginException("Fee index out of range.");
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Fee index out of range: index $feeIndex, ${assets.length} assets.",
+      );
     }
     feeIndex ??= assets.indexWhere((e) => e.asset.isFeeToken);
     if (feeIndex.isNegative) feeIndex = 0;
     List<XCMMultiLocation> locations = [];
     for (final i in assets) {
       if (!i.hasLocation()) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Asset location is missing.",
           details: {"asset": i.asset.name ?? i.asset.symbol},
         );
@@ -474,12 +476,12 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
       );
     }
     if (locations.toSet().length != locations.length) {
-      throw DartSubstratePluginException(
-        "Duplicate asset not allowed. multiple assets share the same location.",
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Duplicate asset not allowed. Multiple assets share the same location.",
       );
     }
     if (locations.any((e) => e.isExternalLocation())) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.unsupported, 
         "External asset transfers are not supported in this version.",
       );
     }
@@ -487,7 +489,7 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
     final parents = locations.map((e) => e.parents).toSet();
     final paras = locations.map((e) => e.getParachain()?.id).toSet();
     if (parents.length != 1 || paras.length != 1) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "All assets in a transfer must share the same reserve location.",
       );
     }
@@ -524,18 +526,18 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
   }) : locations = locations.immutable;
 }
 
-class QueryDeleveriesFeeWithAmount {
+class QueryDeliveriesFeeWithAmount {
   final SubstrateDispatchResult<XCMVersionedAssets>? result;
-  final List<QueryDeleveriesFeeAmount> amounts;
-  const QueryDeleveriesFeeWithAmount._({this.result, this.amounts = const []});
-  factory QueryDeleveriesFeeWithAmount.unsuportedApi() {
-    return QueryDeleveriesFeeWithAmount._();
+  final List<QueryDeliveriesFeeAmount> amounts;
+  const QueryDeliveriesFeeWithAmount._({this.result, this.amounts = const []});
+  factory QueryDeliveriesFeeWithAmount.unsupportedApi() {
+    return QueryDeliveriesFeeWithAmount._();
   }
-  factory QueryDeleveriesFeeWithAmount({
+  factory QueryDeliveriesFeeWithAmount({
     required SubstrateDispatchResult<XCMVersionedAssets> result,
-    List<QueryDeleveriesFeeAmount> amounts = const [],
+    List<QueryDeliveriesFeeAmount> amounts = const [],
   }) {
-    return QueryDeleveriesFeeWithAmount._(result: result, amounts: amounts);
+    return QueryDeliveriesFeeWithAmount._(result: result, amounts: amounts);
   }
   Map<String, dynamic> toJson() {
     return {"result": result?.toJson()};
@@ -544,10 +546,10 @@ class QueryDeleveriesFeeWithAmount {
   bool get isSuccess => result?.success ?? false;
 }
 
-class QueryDeleveriesFeeAmount {
+class QueryDeliveriesFeeAmount {
   final BigInt amount;
   final BaseSubstrateNetworkAsset? asset;
-  const QueryDeleveriesFeeAmount({required this.amount, required this.asset});
+  const QueryDeliveriesFeeAmount({required this.amount, required this.asset});
 
   Map<String, dynamic> toJson() {
     return {"amount": amount, "asset": asset?.toJson()};
@@ -631,29 +633,29 @@ abstract class SubstrateAggregateMessageOrigin {
   }
 }
 
-enum SustrateUmpQueueIdType {
+enum SubstrateUmpQueueIdType {
   para("Para"),
   unknown("Unknown");
 
   final String type;
-  const SustrateUmpQueueIdType(this.type);
-  static SustrateUmpQueueIdType fromType(Map<String, dynamic>? json) {
+  const SubstrateUmpQueueIdType(this.type);
+  static SubstrateUmpQueueIdType fromType(Map<String, dynamic>? json) {
     final type = json?.keys.firstOrNull;
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => SustrateUmpQueueIdType.unknown,
+      orElse: () => SubstrateUmpQueueIdType.unknown,
     );
   }
 }
 
-abstract class SustrateUmpQueueId {
-  final SustrateUmpQueueIdType type;
-  const SustrateUmpQueueId({required this.type});
-  factory SustrateUmpQueueId.fromJson(Map<String, dynamic> json) {
-    final type = SustrateUmpQueueIdType.fromType(json);
+abstract class SubstrateUmpQueueId {
+  final SubstrateUmpQueueIdType type;
+  const SubstrateUmpQueueId({required this.type});
+  factory SubstrateUmpQueueId.fromJson(Map<String, dynamic> json) {
+    final type = SubstrateUmpQueueIdType.fromType(json);
     return switch (type) {
-      SustrateUmpQueueIdType.para => SustrateUmpQueueIdPara.fromJson(json),
-      SustrateUmpQueueIdType.unknown => SustrateUmpQueueIdUnknown.fromJson(
+      SubstrateUmpQueueIdType.para => SubstrateUmpQueueIdPara.fromJson(json),
+      SubstrateUmpQueueIdType.unknown => SubstrateUmpQueueIdUnknown.fromJson(
         json,
       ),
     };
@@ -662,13 +664,13 @@ abstract class SustrateUmpQueueId {
   XCMMultiLocation? get originLocation => null;
 }
 
-class SustrateUmpQueueIdPara extends SustrateUmpQueueId {
+class SubstrateUmpQueueIdPara extends SubstrateUmpQueueId {
   final int id;
-  SustrateUmpQueueIdPara({required this.id})
-    : super(type: SustrateUmpQueueIdType.para);
-  factory SustrateUmpQueueIdPara.fromJson(Map<String, dynamic> json) {
-    return SustrateUmpQueueIdPara(
-      id: json.valueAs(SustrateUmpQueueIdType.para.type),
+  SubstrateUmpQueueIdPara({required this.id})
+    : super(type: SubstrateUmpQueueIdType.para);
+  factory SubstrateUmpQueueIdPara.fromJson(Map<String, dynamic> json) {
+    return SubstrateUmpQueueIdPara(
+      id: json.valueAs(SubstrateUmpQueueIdType.para.type),
     );
   }
   @override
@@ -692,12 +694,12 @@ class SustrateUmpQueueIdPara extends SustrateUmpQueueId {
   );
 }
 
-class SustrateUmpQueueIdUnknown extends SustrateUmpQueueId {
+class SubstrateUmpQueueIdUnknown extends SubstrateUmpQueueId {
   final Map<String, dynamic> data;
-  const SustrateUmpQueueIdUnknown({required this.data})
-    : super(type: SustrateUmpQueueIdType.para);
-  factory SustrateUmpQueueIdUnknown.fromJson(Map<String, dynamic> json) {
-    return SustrateUmpQueueIdUnknown(data: json);
+  const SubstrateUmpQueueIdUnknown({required this.data})
+    : super(type: SubstrateUmpQueueIdType.para);
+  factory SubstrateUmpQueueIdUnknown.fromJson(Map<String, dynamic> json) {
+    return SubstrateUmpQueueIdUnknown(data: json);
   }
   @override
   Map<String, dynamic> toJson() {
@@ -775,14 +777,14 @@ class SubstrateAggregateMessageOriginSibling
 
 class SubstrateAggregateMessageOriginUmp
     extends SubstrateAggregateMessageOrigin {
-  final SustrateUmpQueueId ump;
+  final SubstrateUmpQueueId ump;
   SubstrateAggregateMessageOriginUmp({required this.ump})
     : super(type: SubstrateAggregateMessageOriginType.ump);
   factory SubstrateAggregateMessageOriginUmp.fromJson(
     Map<String, dynamic> json,
   ) {
     return SubstrateAggregateMessageOriginUmp(
-      ump: SustrateUmpQueueId.fromJson(
+      ump: SubstrateUmpQueueId.fromJson(
         json.valueAs(SubstrateAggregateMessageOriginType.ump.type),
       ),
     );
@@ -1151,7 +1153,7 @@ class SubstrateCommonItemCreatedEvent implements SubstrateAssetDepositEvent {
         address: address,
       );
     } catch (_) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid Substrate Common ItemCreated event object.",
       );
     }
@@ -1190,7 +1192,7 @@ class SubstrateEthereumEvmLogEvent implements SubstrateAssetDepositEvent {
         signature != null &&
         StringUtils.hexEqual(
           signature,
-          SubstratemEVMNetworkUtils.erc20TransferSignature,
+          SubstrateEVMNetworkUtils.erc20TransferSignature,
         )) {
       address =
           SubstrateAddressUtils.tryDecodeFromSolidityAddress(

@@ -1,7 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/ss58_constant.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 
 class _MultiSigAddressConst {
@@ -38,7 +37,7 @@ class SubstrateAddressUtils {
   /// [threshold] is the required number of signatures to approve a transaction.
   /// [ss58Format] is the SS58 format identifier for the resulting address.
   ///
-  /// Throws a [DartSubstratePluginException] if the addresses have different SS58 formats,
+  /// Throws a [BuError] if the addresses have different SS58 formats,
   /// if the threshold is invalid, or if the addresses list is empty.
   static BaseSubstrateAddress createMultiSigAddress({
     required List<BaseSubstrateAddress> addresses,
@@ -47,7 +46,8 @@ class SubstrateAddressUtils {
     int maxSignatories = defaultMaxMultisigSignatories,
   }) {
     if (maxSignatories <= 0 || maxSignatories > BinaryOps.mask16) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "MaxSignatories must be greater than 0 and not exceed ${BinaryOps.mask16}.",
       );
     }
@@ -55,7 +55,8 @@ class SubstrateAddressUtils {
     if (threshold <= 0 ||
         threshold > addresses.length ||
         addresses.length > maxSignatories) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Threshold or number of addresses is out of range.",
         details: {
           "threshold": threshold.toString(),
@@ -65,7 +66,10 @@ class SubstrateAddressUtils {
     }
 
     if (addresses.any((e) => e.type != SubstrateAddressType.substrate)) {
-      throw DartSubstratePluginException("Unsuported address type.");
+      throw BuError(
+        DefaultErrorType.unsupported,
+        "Unsupported address type: multisig requires substrate addresses.",
+      );
     }
     // Convert addresses to bytes and sort them
     final List<List<int>> addressBytes = List<List<int>>.unmodifiable(
@@ -116,7 +120,7 @@ class SubstrateAddressUtils {
     );
   }
 
-  static List<int> createMultisigStorageKey({
+  static BuBytes createMultisigStorageKey({
     required SubstrateAddress multiSigAddress,
     required List<int> callTxHashMulti,
   }) {
@@ -135,7 +139,7 @@ class SubstrateAddressUtils {
       ...multiSigAddress.toBytes(),
       ...multisigCallHash,
       ...txHash,
-    ];
+    ].asImmutableBytes;
   }
 
   static SubstrateEthereumAddress? tryDecodeFromSolidityAddress(

@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:test/test.dart';
 import 'v14_metadata_hex.dart';
@@ -6,11 +6,18 @@ import 'v12_metadata_hex.dart';
 import 'v15_metadata_hex.dart';
 import 'v16_metadata_hex.dart';
 
-void main() {
+import '../utils.dart';
+void metadataTest() {
+  blockchainUtils.setDartApi();
   group("Metadata", () {
     _encodeDecode();
   });
 }
+
+void main() {
+  PolkadotDartUtilsTestApi.runTest(metadataTest, "Metadata");
+}
+
 
 void _encodeDecode() {
   test("V16 Encode and Decode", () {
@@ -43,7 +50,7 @@ void _encodeDecode() {
     expect(metadata.version, 14);
     expect(metadata.supportedByApi, true);
   });
-  test("V12-Unsuported Encode and Decode", () {
+  test("V12-Unsupported Encode and Decode", () {
     final metadataBytesV12 = BytesUtils.fromHexString(metadataV12);
     final VersionedMetadata<UnsupportedMetadata> metadata =
         VersionedMetadata.fromBytes(metadataBytesV12);

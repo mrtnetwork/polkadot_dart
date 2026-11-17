@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:example/examples/networks/helpers.dart';
@@ -201,7 +200,7 @@ void main() async {
         isPartDestinationFee = true;
       }
 
-      for (final dv in i.deleveriesFee) {
+      for (final dv in i.deliveriesFee) {
         for (final amount in dv.amounts) {
           assert(amount.asset == fee,
               "Unexpected destination delivery fee asset '${amount.asset?.symbol}' on '${i.network?.networkName}', expected '${fee.symbol}'. The network may not support asset conversion.");

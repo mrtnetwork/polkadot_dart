@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/models/models/storage.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
@@ -218,9 +217,9 @@ extension ExtQueryHelper on MetadataApi {
           return null as RESPONSE;
         }
 
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           'Unexpected response type.',
-          details: {"excpected": "$RESPONSE", "value": 'Null'},
+          details: {"expected": "$RESPONSE", "value": 'Null'},
         );
       }
       if (onBytesResponse != null) {
@@ -234,9 +233,9 @@ extension ExtQueryHelper on MetadataApi {
 
       if (json == null) {
         if (null is RESPONSE) return null as RESPONSE;
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           'Unexpected response type.',
-          details: {"excpected": "$RESPONSE", "value": 'Null'},
+          details: {"expected": "$RESPONSE", "value": 'Null'},
         );
       }
       // final onJsonResponse = this.onJsonResponse;
@@ -245,10 +244,10 @@ extension ExtQueryHelper on MetadataApi {
         try {
           data = json as DECODEDRESPONSE;
         } catch (_) {
-          throw DartSubstratePluginException(
+          throw BuError(DefaultErrorType.invalidArgument, 
             'Unexpected response type.',
             details: {
-              "excpected": "$DECODEDRESPONSE",
+              "expected": "$DECODEDRESPONSE",
               "value": json.runtimeType.toString(),
             },
           );
@@ -260,10 +259,10 @@ extension ExtQueryHelper on MetadataApi {
       try {
         data = json as RESPONSE;
       } catch (_) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           'Unexpected response type.',
           details: {
-            "excpected": "$RESPONSE",
+            "expected": "$RESPONSE",
             "value": json.runtimeType.toString(),
           },
         );
@@ -526,7 +525,11 @@ extension ExtQueryHelper on MetadataApi {
       final max = request.total;
       if (max == null) return request.count;
       final r = max - total;
-      assert(r > 0);
+      if (r <= 0) {
+        throw BuError(DefaultErrorType.invalidArgument, 
+          "Invalid paged storage query: fetched total exceeds requested maximum.",
+        );
+      }
       if (r < request.count) return r.abs();
       return request.count;
     }

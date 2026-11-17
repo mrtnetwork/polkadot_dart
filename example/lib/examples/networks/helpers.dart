@@ -1,7 +1,3 @@
-// SubstrateProvider createLocalProvider(int ip) =>
-//     SubstrateProvider(SubstrateWebsocketService(url: "ws://localhost:$ip"));
-// ignore_for_file: avoid_print
-
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:example/examples/websocket_rpc_example.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
@@ -25,9 +21,9 @@ BaseSubstratePrivateKey createOwnerKeyPair(BaseSubstrateNetwork network,
       .account(0)
       .change(Bip44Changes.chainExt)
       .addressIndex(addressIndex);
-  final keyBytes = wallet.privateKey.raw;
+  final keyBytes = wallet.privateKey.toBytes();
   if (network.chainType == SubstrateChainType.ethereum) {
-    return SubstrateEthereumPrivateKey.fromBytes(wallet.privateKey.raw);
+    return SubstrateEthereumPrivateKey.fromBytes(wallet.privateKey.toBytes());
   }
   return SubstratePrivateKey.fromPrivateKey(
       keyBytes: keyBytes, algorithm: SubstrateKeyAlgorithm.ed25519);

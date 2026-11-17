@@ -1,7 +1,6 @@
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
-import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entery_type_v14.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entry_type_v14.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 import 'entry_modifier_v14.dart';
@@ -11,7 +10,7 @@ class StorageEntryMetadataV14
   final String name;
   final StorageEntryModifierV14 modifier;
   final StorageEntryTypeV14 type;
-  final List<int> fallback;
+  final BuBytes fallback;
   final List<String> docs;
 
   bool get isPlain => type.typeName == StorageEntryTypeV14IndexKeys.plain;
@@ -27,13 +26,13 @@ class StorageEntryMetadataV14
     required this.type,
     required List<int> fallback,
     required List<String> docs,
-  }) : fallback = BytesUtils.toBytes(fallback, unmodifiable: true),
+  }) : fallback = fallback.asImmutableBytes,
        docs = List<String>.unmodifiable(docs);
   StorageEntryMetadataV14.deserializeJson(Map<String, dynamic> json)
     : name = json["name"],
       modifier = StorageEntryModifierV14.deserializeJson(json["modifier"]),
       type = StorageEntryTypeV14.deserializeJson(json["type"]),
-      fallback = BytesUtils.toBytes(json["fallback"], unmodifiable: true),
+      fallback = (json["fallback"] as List).cast<int>().asImmutableBytes,
       docs = List<String>.unmodifiable(json["docs"]);
 
   @override

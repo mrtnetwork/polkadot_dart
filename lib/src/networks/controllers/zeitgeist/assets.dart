@@ -169,7 +169,7 @@ class ZeitgeistAssetPoolShare extends BaseZeitgeistAsset {
 }
 
 class ZeitgeistAssetCombinatorialToken extends BaseZeitgeistAsset {
-  final List<int> token;
+  final BuBytes token;
   ZeitgeistAssetCombinatorialToken({
     required List<int> token,
     required super.identifier,
@@ -314,7 +314,7 @@ abstract class BaseZeitgeistNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseZeitgeistNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -336,7 +336,7 @@ class ZeitgeistNetworkAsset extends BaseZeitgeistNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.assetManager,
+         executionPallet: SubstrateMetadataPallet.assetManager,
        );
   ZeitgeistNetworkAsset.fromJson(super.json)
     : asset = BaseZeitgeistAsset.fromJson(json.valueAs("asset")),
@@ -377,7 +377,7 @@ class ZeitgeistNetworkNativeAsset extends BaseZeitgeistNetworkAsset {
   }) : super(
          isFeeToken: true,
          isSpendable: true,
-         excutionPallet: SubtrateMetadataPallet.balances,
+         executionPallet: SubstrateMetadataPallet.balances,
        );
   ZeitgeistNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),

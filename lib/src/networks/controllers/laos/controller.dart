@@ -92,7 +92,7 @@ class LaosNetworkController extends BaseLaosNetworkController<PolkadotNetwork> {
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -106,7 +106,7 @@ class LaosNetworkController extends BaseLaosNetworkController<PolkadotNetwork> {
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
       onControllerRequest: onControllerRequest,
     );
   }

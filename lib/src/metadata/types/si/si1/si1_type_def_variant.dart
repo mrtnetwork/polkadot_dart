@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/generic.dart';
@@ -86,7 +85,7 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
         final mapValue = MetadataCastingUtils.isMap<String, dynamic>(data);
 
         if (mapValue.length != 1) {
-          throw MetadataException(
+          throw BuError(DefaultErrorType.invalidArgument, 
             "The provided map for enum must contain exactly one key",
             details: {
               "value": value?.toString(),
@@ -103,7 +102,7 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
       (element) => element.name == key,
       orElse:
           () =>
-              throw MetadataException(
+              throw BuError(DefaultErrorType.notFound, 
                 "Unable to find the current enum variant $key.",
                 details: {
                   "key": key,

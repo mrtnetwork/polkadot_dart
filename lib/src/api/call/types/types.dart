@@ -1,8 +1,8 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 
-enum SubtrateMetadataPallet {
+enum SubstrateMetadataPallet {
   assets("Assets"),
   foreignAssets("ForeignAssets"),
   assetRegistry("AssetRegistry"),
@@ -26,20 +26,25 @@ enum SubtrateMetadataPallet {
   common("Common"),
   erc20XcmBridge("Erc20XcmBridge");
 
-  static SubtrateMetadataPallet fromName(String? name) {
+  static SubstrateMetadataPallet fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateMetadataPallet name "$name".',
+              ),
     );
   }
 
   final String name;
-  const SubtrateMetadataPallet(this.name);
+  const SubstrateMetadataPallet(this.name);
 }
 
 abstract mixin class SubstrateCallPallet {
-  SubtrateMetadataPallet get pallet;
-  List<int> encodeCall({
+  SubstrateMetadataPallet get pallet;
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -48,7 +53,11 @@ abstract mixin class SubstrateCallPallet {
 
   T cast<T extends SubstrateCallPallet>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }

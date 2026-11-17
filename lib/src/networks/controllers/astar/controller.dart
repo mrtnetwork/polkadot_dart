@@ -187,7 +187,7 @@ class AstarNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -220,7 +220,7 @@ class AstarNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 }
@@ -261,7 +261,7 @@ class ShidenNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -294,7 +294,7 @@ class ShidenNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 }

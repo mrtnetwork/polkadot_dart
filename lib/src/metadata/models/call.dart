@@ -1,10 +1,10 @@
-import 'package:blockchain_utils/helper/extensions/extensions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
 
 class LookupRawParam {
-  final List<int> bytes;
-  LookupRawParam({required List<int> bytes}) : bytes = bytes.immutable;
+  final BuBytes bytes;
+  LookupRawParam({required List<int> bytes}) : bytes = bytes.asImmutableBytes;
 }
 
 class CallMethodInfo {

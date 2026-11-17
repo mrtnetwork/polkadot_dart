@@ -1,6 +1,5 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
@@ -111,9 +110,9 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
   }) {
     if (fields.isEmpty) {
       if (value != null) {
-        throw MetadataException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Value must be null for a variant without fields.",
-          details: {"value": value.toString(), "variant": name.toString()},
+          details: {"value": value.toString(), "variant": name},
         );
       }
       return null;

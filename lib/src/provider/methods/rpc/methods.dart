@@ -18,7 +18,7 @@ class SubstrateRequestRpcMethods
   }
 
   @override
-  RpcMethods onResonse(Map<String, dynamic> result) {
+  RpcMethods onResponse(Map<String, dynamic> result) {
     return RpcMethods.fromJson(result);
   }
 }

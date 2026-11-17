@@ -1,8 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
-import 'package:blockchain_utils/utils/equatable/equatable.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
 import 'package:polkadot_dart/src/models/xcm/core/xcm.dart';
 import 'package:polkadot_dart/src/models/xcm/v3/types.dart';
@@ -31,14 +27,24 @@ enum XCMNetworkIdType implements Comparable<XCMNetworkIdType> {
   static XCMNetworkIdType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMNetworkIdType name "$name".',
+              ),
     );
   }
 
   static XCMNetworkIdType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMNetworkIdType type "$type".',
+              ),
     );
   }
 
@@ -63,7 +69,11 @@ abstract mixin class XCMNetworkId
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -530,7 +540,8 @@ abstract class XCMVersionedNetworkId extends SubstrateVariantSerialization
       XCMVersion.v3 => XCMVersionedNetworkIdV3.deserializeJson(decode.value),
       XCMVersion.v4 => XCMVersionedNetworkIdV4.deserializeJson(decode.value),
       XCMVersion.v5 => XCMVersionedNetworkIdV5.deserializeJson(decode.value),
-      _ => throw DartSubstratePluginException("Unsuported xcm version."),
+      _ =>
+        throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version."),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {

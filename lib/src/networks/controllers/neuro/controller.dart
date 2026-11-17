@@ -174,7 +174,7 @@ class NeuroNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedReserveTransferAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -207,7 +207,7 @@ class NeuroNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

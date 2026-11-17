@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/controllers/asset_hub/asset.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
@@ -13,7 +12,7 @@ abstract class BaseIntegriteeNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseIntegriteeNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -35,7 +34,7 @@ class IntegriteeNetworkAsset extends BaseIntegriteeNetworkAsset {
          decimals: metadata?.decimals,
          isSpendable:
              asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
-         excutionPallet: SubtrateMetadataPallet.assets,
+         executionPallet: SubstrateMetadataPallet.assets,
          minBalance: asset.asset.minBalance,
          name: metadata?.name,
          symbol: metadata?.symbol,
@@ -82,7 +81,7 @@ class IntegriteeNetworkAsset extends BaseIntegriteeNetworkAsset {
 
   @override
   Object? get xTokenTransferId =>
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.unsupported, 
         "This asset does not support transfers via the XTokens pallet. ",
       );
 }
@@ -100,7 +99,7 @@ class IntegriteeNetworkNativeAsset extends BaseIntegriteeNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
   IntegriteeNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
       super.fromJson();

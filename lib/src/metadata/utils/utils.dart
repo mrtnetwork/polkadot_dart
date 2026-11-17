@@ -1,4 +1,5 @@
 import 'package:polkadot_dart/src/metadata/metadata.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 
 class MetadataTemplateBuilder {
   static String _getCompositeType(List<TypeTemlate> children) {
@@ -14,10 +15,11 @@ class MetadataTemplateBuilder {
   }
 
   static String _getArrayType(List<TypeTemlate> children, int? length) {
-    assert(
-      (children.isEmpty || children.length == 1) && length != null,
-      "Array types must accept one element",
-    );
+    if (!((children.isEmpty || children.length == 1) && length != null)) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Array types must accept exactly one element with a length.",
+      );
+    }
     if (children.isEmpty) return "[]";
     final child = children[0];
     if (child.isPrimitive) return "[${child.primitive!.type.name};$length]";
@@ -30,10 +32,11 @@ class MetadataTemplateBuilder {
   }
 
   static String _getSequanceType(TypeTemlate template) {
-    assert(
-      template.children.length == 1 && template.length == null,
-      "Array must have length 1",
-    );
+    if (!(template.children.length == 1 && template.length == null)) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Sequence type must have exactly one child and no length.",
+      );
+    }
     final child = template.children[0];
     if (child.isPrimitive) return "Vec<${child.primitive!.type.name}>";
     if (template.typeName != null) return template.typeName!;
@@ -60,7 +63,11 @@ class MetadataTemplateBuilder {
   }
 
   static Map<String, dynamic> _createVariantStruct(List<TypeTemlate> children) {
-    assert(children.isNotEmpty);
+    if (children.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Variant struct must have at least one child.",
+      );
+    }
     if (children.length == 1) {
       return buildJson(children[0]);
     }
@@ -97,7 +104,11 @@ class MetadataTemplateBuilder {
   static List<Map<String, dynamic>>? _createArrayAndSequanceValue(
     TypeTemlate template,
   ) {
-    assert(template.children.length == 1);
+    if (template.children.length != 1) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Array/sequence value must have exactly one child.",
+      );
+    }
     final child = template.children[0];
     if (child.isPrimitive) return null;
     return [buildJson(child)];
@@ -110,7 +121,11 @@ class MetadataTemplateBuilder {
   }
 
   static String _compactType(List<TypeTemlate> children) {
-    assert(children.length == 1);
+    if (children.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Compact type must have exactly one child.",
+      );
+    }
     return _correctType(children[0]);
   }
 
@@ -174,28 +189,34 @@ class MetadataTemplateBuilder {
   }
 
   static String _getArrayStringType(TypeTemlate template) {
-    assert(
-      (template.children.isEmpty || template.children.length == 1) &&
-          template.length != null,
-      "Array must have length 1",
-    );
+    if (!((template.children.isEmpty || template.children.length == 1) &&
+        template.length != null)) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Array must have at most one child and a length.",
+      );
+    }
     if (template.children.isEmpty) return "[;${template.length}]";
     final child = template.children[0];
     return "[${buildString(child)};${template.length}]";
   }
 
   static String _getSequanceStringType(TypeTemlate template) {
-    assert(
-      template.children.length == 1 && template.length == null,
-      "Array shuld be have children",
-    );
+    if (!(template.children.length == 1 && template.length == null)) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Sequence should have exactly one child and no length.",
+      );
+    }
     if (template.children.isEmpty) return "[]";
     final child = template.children[0];
     return "[${buildString(child)}]";
   }
 
   static String _compactStringType(TypeTemlate template) {
-    assert(template.children.length == 1);
+    if (template.children.length != 1) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Compact type must have exactly one child.",
+      );
+    }
     return buildString(template.children[0]);
   }
 

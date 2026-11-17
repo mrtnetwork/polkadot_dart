@@ -178,7 +178,7 @@ class CrustNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -204,7 +204,7 @@ class CrustNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 }

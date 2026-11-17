@@ -7,3 +7,5 @@ export 'v15/v15.dart';
 export 'v16/v16.dart';
 export 'versioned/versioned_metadata.dart';
 export 'versioned/pallet/metadata.dart';
+export 'versioned/extrinsic/extrinsic_metadata.dart';
+export 'versioned/extrinsic/signed_extension_metadata.dart';

@@ -1,10 +1,6 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/utils/string/string.dart';
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/call/call.dart';
 import 'package:polkadot_dart/src/api/extrinsic/dynamic/extrinsic.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/core/junction.dart';
 import 'package:polkadot_dart/src/models/xcm/core/location.dart';
 import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
@@ -24,7 +20,12 @@ enum SubstrateConsensusRole {
   static SubstrateConsensusRole fromValue(int? value) {
     return values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateConsensusRole value "$value".',
+              ),
     );
   }
 }
@@ -41,7 +42,12 @@ enum SubstrateRelaySystem {
   static SubstrateRelaySystem fromValue(int? value) {
     return values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateRelaySystem value "$value".',
+              ),
     );
   }
 
@@ -235,6 +241,9 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
   ),
 
+  // Retired Nov 2025: parachain sunset, PHA now an ERC-20 on Ethereum.
+  // Kept for historical state reads only.
+  @Deprecated('Phala sunset its parachain (Nov 2025). Historical queries only.')
   phala(
     networkName: "Phala",
     paraId: 2035,
@@ -322,6 +331,12 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
     xcmVersions:
         SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
   ),
+  // Retired Jul 2026: parachain halted, GLMR now an ERC-20 on Base.
+  // Kept for historical state reads only; XCM to Parachain(2004) is
+  // undeliverable.
+  @Deprecated(
+    'Moonbeam retired its Polkadot parachain (Jul 2026). Historical queries only.',
+  )
   moonbeam(
     networkName: "Moonbeam",
     paraId: 2004,
@@ -381,6 +396,15 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToThree,
     genesis:
         "0x4319cc49ee79495b57a1fec4d2bd43f59052dcc690276de566c2691d6df4f7b8",
+  ),
+  frequency(
+    networkName: "Frequency",
+    paraId: 2091,
+    ss58: 90,
+    xcmVersions:
+        SubstrateNetworkControllerConstants.xcmSupportedVersionTwoToFour,
+    genesis:
+        "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
   ),
   ajuna(
     networkName: "Ajuna",
@@ -463,7 +487,7 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
   XCMVersion findXcmVersion(BaseSubstrateNetwork? network) {
     if (network == null) {
       if (xcmVersions.contains(XCMVersion.v3)) return XCMVersion.v3;
-      throw DartSubstratePluginException("Unsupported xcm version");
+      throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
     }
     final versions = network.xcmVersions;
     for (final version in versions.reversed) {
@@ -471,7 +495,7 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         return version;
       }
     }
-    throw DartSubstratePluginException("Unsupported xcm version");
+    throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
   }
 
   @override
@@ -482,7 +506,7 @@ enum PolkadotNetwork implements BaseSubstrateNetwork {
         symbol: "DOT",
         parents: 1,
         version: defaultXcmVersion,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
 }
 
@@ -623,6 +647,11 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
     genesis:
         "0xcceae7f3b9947cdb67369c026ef78efa5f34a08fe5808d373c04421ecf4f1aaf",
   ),
+  // Sister chain of retired Moonbeam; unverified liveness. Treat as
+  // historical-queries-only until re-verified.
+  @Deprecated(
+    'Moonriver liveness unverified (Moonbeam retired Jul 2026). Historical queries only.',
+  )
   moonriver(
     networkName: "Moonriver",
     paraId: 2023,
@@ -704,7 +733,7 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
   XCMVersion findXcmVersion(BaseSubstrateNetwork? network) {
     if (network == null) {
       if (xcmVersions.contains(XCMVersion.v3)) return XCMVersion.v3;
-      throw DartSubstratePluginException("Unsupported xcm version");
+      throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
     }
     final versions = network.xcmVersions;
     for (final version in versions.reversed) {
@@ -712,7 +741,7 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
         return version;
       }
     }
-    throw DartSubstratePluginException("Unsupported xcm version");
+    throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
   }
 
   @override
@@ -724,7 +753,7 @@ enum KusamaNetwork implements BaseSubstrateNetwork {
         minBalance: BigInt.parse("333333333"),
         version: defaultXcmVersion,
         parents: 1,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
 }
 
@@ -872,7 +901,7 @@ enum WestendNetwork implements BaseSubstrateNetwork {
   XCMVersion findXcmVersion(BaseSubstrateNetwork? network) {
     if (network == null) {
       if (xcmVersions.contains(XCMVersion.v3)) return XCMVersion.v3;
-      throw DartSubstratePluginException("Unsupported xcm version");
+      throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
     }
     final versions = network.xcmVersions;
     for (final version in versions.reversed) {
@@ -880,7 +909,7 @@ enum WestendNetwork implements BaseSubstrateNetwork {
         return version;
       }
     }
-    throw DartSubstratePluginException("Unsupported xcm version");
+    throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
   }
 
   @override
@@ -892,7 +921,7 @@ enum WestendNetwork implements BaseSubstrateNetwork {
         minBalance: BigInt.parse("10000000000"),
         version: defaultXcmVersion,
         parents: 1,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
 }
 
@@ -1040,7 +1069,7 @@ enum PaseoNetwork implements BaseSubstrateNetwork {
   XCMVersion findXcmVersion(BaseSubstrateNetwork? network) {
     if (network == null) {
       if (xcmVersions.contains(XCMVersion.v3)) return XCMVersion.v3;
-      throw DartSubstratePluginException("Unsupported xcm version");
+      throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
     }
     final versions = network.xcmVersions;
     for (final version in versions.reversed) {
@@ -1048,7 +1077,7 @@ enum PaseoNetwork implements BaseSubstrateNetwork {
         return version;
       }
     }
-    throw DartSubstratePluginException("Unsupported xcm version");
+    throw BuError(DefaultErrorType.unsupported, "Unsupported XCM version");
   }
 
   @override
@@ -1060,6 +1089,6 @@ enum PaseoNetwork implements BaseSubstrateNetwork {
         minBalance: BigInt.parse("10000000000"),
         version: defaultXcmVersion,
         parents: 1,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
 }

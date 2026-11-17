@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 
 import 'package:example/examples/networks/helpers.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';

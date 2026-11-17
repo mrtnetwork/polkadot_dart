@@ -1,3 +1,8 @@
+## 6.0.0
+- Metadata V16 support.
+- Cryptography now routes through the `blockchain_utils` dual backend (pure Dart default, optional Rust FFI/WASM) with backend-parity test suites.
+- `BaseSubstrateAddress` now inherits `IAddress` from `blockchain_utils`.
+
 ## 5.3.0
 
 - Updated dependencies.

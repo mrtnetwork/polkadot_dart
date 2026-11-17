@@ -335,12 +335,12 @@ class EthereumRuntimeRpcsApiCallWeightInfo {
 class EthereumRuntimeRpcsApiCallLog {
   final SubstrateEthereumAddress address;
   final List<String> topics;
-  final List<int> data;
-  const EthereumRuntimeRpcsApiCallLog({
+  final BuBytes data;
+  EthereumRuntimeRpcsApiCallLog({
     required this.address,
     required this.topics,
-    required this.data,
-  });
+    required List<int> data,
+  }) : data = data.asImmutableBytes;
   factory EthereumRuntimeRpcsApiCallLog.fromJson(Map<String, dynamic> json) {
     return EthereumRuntimeRpcsApiCallLog(
       address: SubstrateEthereumAddress.fromBytes(json.valueAsBytes("address")),
@@ -360,17 +360,17 @@ class EthereumRuntimeRpcsApiCallLog {
 
 class EthereumRuntimeRpcsApiCall {
   final BaseEthereumRuntimeRpcsApiCallExitReason exitReason;
-  final List<int> value;
+  final BuBytes value;
   final EthereumRuntimeRpcsApiCallUsedGas usedGas;
   final EthereumRuntimeRpcsApiCallWeightInfo weightInfo;
   final List<EthereumRuntimeRpcsApiCallLog> logs;
-  const EthereumRuntimeRpcsApiCall({
+  EthereumRuntimeRpcsApiCall({
     required this.exitReason,
-    required this.value,
+    required List<int> value,
     required this.usedGas,
     required this.weightInfo,
     required this.logs,
-  });
+  }) : value = value.asImmutableBytes;
   Map<String, dynamic> toJson() {
     return {
       "exit_reason": exitReason.toJson(),

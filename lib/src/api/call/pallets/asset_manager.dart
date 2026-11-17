@@ -1,3 +1,4 @@
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
@@ -23,7 +24,7 @@ abstract class AssetManagerCallPallet
   @override
   final AssetManagerCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class AssetManagerCallPalletTransfer extends AssetManagerCallPallet {
@@ -35,7 +36,7 @@ class AssetManagerCallPalletTransfer extends AssetManagerCallPallet {
     required this.dest,
     required this.currencyId,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.assetManager,
+    super.pallet = SubstrateMetadataPallet.assetManager,
   }) : super(type: AssetManagerCallPalletMethod.transfer);
 
   @override
@@ -43,7 +44,7 @@ class AssetManagerCallPalletTransfer extends AssetManagerCallPallet {
       AssetManagerCallPalletMethod.transfer;
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -80,7 +81,7 @@ class AssetManagerCallPalletTransferNativeCurrency
   const AssetManagerCallPalletTransferNativeCurrency({
     required this.dest,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.assetManager,
+    super.pallet = SubstrateMetadataPallet.assetManager,
   }) : super(type: AssetManagerCallPalletMethod.transfernativeCurrency);
 
   @override
@@ -88,7 +89,7 @@ class AssetManagerCallPalletTransferNativeCurrency
       AssetManagerCallPalletMethod.transfernativeCurrency;
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

@@ -13,7 +13,7 @@ abstract class BaseKLITSpiritNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseKLITSpiritNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -32,7 +32,7 @@ class KLITSpiritnetNetworkAsset extends BaseKLITSpiritNetworkAsset {
     required super.isFeeToken,
   }) : super(
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.fungibles,
+         executionPallet: SubstrateMetadataPallet.fungibles,
          minBalance: asset.asset.minBalance,
          name: metadata?.name,
          symbol: metadata?.symbol,
@@ -89,7 +89,7 @@ class KLITSpiritnetNetworkNativeAsset extends BaseKLITSpiritNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
   KLITSpiritnetNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
       super.fromJson();

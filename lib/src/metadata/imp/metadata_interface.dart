@@ -1,15 +1,10 @@
-import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/utils/json/extension/json.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/storage_hasher.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/types.dart';
-import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/extrinsic_metadata.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 
 /// Interface providing methods for interacting with the latest metadata in the Substrate framework.
@@ -65,7 +60,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     int? index = int.tryParse(nameOrIndex);
     if (index != null) {
       if (!pallets.containsKey(index)) {
-        throw MetadataException(
+        throw BuError(
+          DefaultErrorType.notFound,
           "Pallet does not exist.",
           details: {
             "index": index.toString(),
@@ -80,7 +76,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
           pallets[element]!.name.toLowerCase() == nameOrIndex.toLowerCase(),
       orElse:
           () =>
-              throw MetadataException(
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Pallet does not exist.",
                 details: {
                   "name": nameOrIndex,
@@ -122,7 +119,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     final pallet = pallets[_toPalletIndex(nameOrIndex)];
     final error = pallet?.errors?.type;
     if (error == null) {
-      throw MetadataException(
+      throw BuError(
+        DefaultErrorType.notFound,
         "Error does not exist.",
         details: {"pallet": nameOrIndex},
       );
@@ -167,7 +165,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   int getCallLookupId(String nameOrIndex) {
     final pallet = getPallet(nameOrIndex);
     if (pallet.calls == null) {
-      throw MetadataException(
+      throw BuError(
+        DefaultErrorType.notFound,
         "Call does not exist.",
         details: {"pallet": pallet.name},
       );
@@ -179,7 +178,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   PalletStorageMetadata getStorage(String palletNameOrIndex) {
     final storage = getPallet(palletNameOrIndex);
     if (storage.storage == null) {
-      throw MetadataException(
+      throw BuError(
+        DefaultErrorType.notFound,
         "Storage does not exist.",
         details: {"pallet": storage.name},
       );
@@ -197,7 +197,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
       (e) => e.name.toLowerCase() == methodName.toLowerCase(),
       orElse:
           () =>
-              throw MetadataException(
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Storage method does not exist",
                 details: {
                   "pallet": palletNameOrIndex,
@@ -240,8 +241,9 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
   ) {
     final method = getStorageMethod(palletNameOrIndex, methodName).type;
     if (method is! StorageEntryTypeV14Map) {
-      throw const MetadataException(
-        "plain storage entery does not have hasher option",
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "plain storage entry does not have hasher option",
       );
     }
     return method.hashers.map((e) => e.option).toList();
@@ -257,7 +259,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
       (element) => element.name.toLowerCase() == constantName.toLowerCase(),
       orElse:
           () =>
-              throw DartSubstratePluginException(
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Constant does not exist.",
                 details: {
                   "name": constantName,
@@ -313,7 +316,8 @@ mixin LatestMetadataInterface<PALLET extends PalletMetadata> {
     );
     if (queryResponse == null && storage.modifier.isOptional) {
       if (null is T) return null as T;
-      throw MetadataException(
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Storage '$palletNameOrIndex.$methodName' is optional, but the provided response is null.",
       );
     }

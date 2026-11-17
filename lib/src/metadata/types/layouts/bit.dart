@@ -1,9 +1,7 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/layout/byte/byte_handler.dart';
 
 class SubstrateBitSequenceLayout extends Layout<List<int>> {
-  SubstrateBitSequenceLayout({String? property})
-    : super(-1, property: property);
+  SubstrateBitSequenceLayout({super.property}) : super(-1);
   final _lengthCodec = LayoutConst.compactIntU48();
 
   @override
@@ -24,7 +22,10 @@ class SubstrateBitSequenceLayout extends Layout<List<int>> {
     final decode = bytes.decodeScaleAsInteger(offset);
     final totalLength =
         decode.consumed + IntUtils.bitlengthInBytes(decode.value);
-    final result = bytes.sublist(offset + decode.consumed, offset + 2);
+    final result = bytes.sublist(
+      offset + decode.consumed,
+      offset + totalLength,
+    );
     return LayoutDecodeResult(consumed: totalLength, value: result);
   }
 

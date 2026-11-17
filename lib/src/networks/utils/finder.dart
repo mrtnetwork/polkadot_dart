@@ -1,6 +1,4 @@
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/networks/controllers/kilt_spiritnet/controller.dart';
-import 'package:polkadot_dart/src/networks/controllers/mythos/controller.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/networks/controllers/networks.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
 import 'package:polkadot_dart/src/networks/types/types.dart';
@@ -68,6 +66,9 @@ class SubstrateNetworkControllerFinder {
             params: params,
           ),
           PolkadotNetwork.xode => XodeNetworkController(params: params),
+          PolkadotNetwork.frequency => FrequencyNetworkController(
+            params: params,
+          ),
           KusamaNetwork.karura => KaruraNetworkController(params: params),
           KusamaNetwork.kusamaAssetHub => KusamaAssetHubNetworkController(
             params: params,
@@ -134,7 +135,7 @@ class SubstrateNetworkControllerFinder {
             params: params,
           ),
           _ =>
-            throw DartSubstratePluginException(
+            throw BuError(DefaultErrorType.notFound, 
               "Network controller not found for '${network.networkName}'.",
             ),
         }

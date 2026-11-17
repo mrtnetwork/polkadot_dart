@@ -1,6 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
@@ -53,7 +51,11 @@ abstract mixin class XCMAssetId
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -69,7 +71,8 @@ abstract mixin class XCMAssetId
   XCMMultiLocation getLocation() {
     final location = this.location;
     if (location == null) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.notFound,
         "Unable to determine XCM location for asset ID (V3 Abstract).",
       );
     }
@@ -107,7 +110,11 @@ abstract mixin class XCMAssets<ASSET extends XCMAsset>
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -124,7 +131,11 @@ abstract mixin class XCMAsset
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -210,14 +221,24 @@ enum XCMWildFungibilityType {
   static XCMWildFungibilityType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMWildFungibilityType name "$name".',
+              ),
     );
   }
 
   static XCMWildFungibilityType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMWildFungibilityType type "$type".',
+              ),
     );
   }
 }
@@ -230,7 +251,11 @@ abstract mixin class XCMWildFungibility
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -299,14 +324,24 @@ enum XCMWildAssetType {
   static XCMWildAssetType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMWildAssetType name "$name".',
+              ),
     );
   }
 
   static XCMWildAssetType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMWildAssetType type "$type".',
+              ),
     );
   }
 }
@@ -372,8 +407,9 @@ abstract mixin class XCMWildMultiAsset
   }) {
     return switch (version) {
       XCMVersion.v2 =>
-        throw DartSubstratePluginException(
-          "Unsuported all counted wild assets by version 2.",
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported all counted wild assets by version 2.",
         ),
       XCMVersion.v3 => XCMV3WildMultiAssetAllCounted(count: count),
       XCMVersion.v4 => XCMV4WildAssetAllCounted(count: count),
@@ -387,8 +423,9 @@ abstract mixin class XCMWildMultiAsset
   }) {
     return switch (assetId.version) {
       XCMVersion.v2 =>
-        throw DartSubstratePluginException(
-          "Unsuported all of counted wild assets by version 2.",
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported all of counted wild assets by version 2.",
         ),
       XCMVersion.v3 => XCMV3WildMultiAssetAllOfCounted(
         id: assetId.cast(),
@@ -423,7 +460,11 @@ abstract mixin class XCMWildMultiAsset
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -539,14 +580,24 @@ enum XCMMultiAssetFilterType {
   static XCMMultiAssetFilterType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMMultiAssetFilterType name "$name".',
+              ),
     );
   }
 
   static XCMMultiAssetFilterType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMMultiAssetFilterType type "$type".',
+              ),
     );
   }
 }
@@ -579,7 +630,11 @@ abstract mixin class XCMMultiAssetFilter
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }

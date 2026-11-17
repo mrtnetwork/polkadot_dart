@@ -1,7 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/signer.dart';
 
 enum SubstrateKeyAlgorithm {
@@ -15,18 +14,22 @@ enum SubstrateKeyAlgorithm {
   static SubstrateKeyAlgorithm fromValue(int? value) {
     return values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown SubstrateKeyAlgorithm value "$value".',
+              ),
     );
   }
 
   final String name;
   final int value;
-  EllipticCurveTypes get curve {
+  CryptoKeyType get curve {
     return switch (this) {
       SubstrateKeyAlgorithm.ecdsa ||
-      SubstrateKeyAlgorithm.ethereum => EllipticCurveTypes.secp256k1,
-      SubstrateKeyAlgorithm.ed25519 => EllipticCurveTypes.ed25519,
-      SubstrateKeyAlgorithm.sr25519 => EllipticCurveTypes.sr25519,
+      SubstrateKeyAlgorithm.ethereum => CryptoKeyType.secp256k1,
+      SubstrateKeyAlgorithm.ed25519 => CryptoKeyType.ed25519,
+      SubstrateKeyAlgorithm.sr25519 => CryptoKeyType.sr25519,
     };
   }
 
@@ -45,8 +48,8 @@ enum SubstrateKeyAlgorithm {
 
   SubstrateCoins get substrateCoinInfo {
     if (this == SubstrateKeyAlgorithm.ethereum) {
-      throw DartSubstratePluginException(
-        "Please use SubstrateEthereumPrivateKey or SubstrateEthereumPublickey for ethereum coin info.",
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Please use SubstrateEthereumPrivateKey or SubstrateEthereumPublicKey for Ethereum coin info.",
       );
     }
     return coinInfo as SubstrateCoins;
@@ -83,19 +86,19 @@ abstract class BaseSubstratePrivateKey<
   ADDRESS extends BaseSubstrateAddress,
   PUBLICKEY extends BaseSubstratePublicKey<ADDRESS>
 >
-    with SubstrateTransactionSigner {
+    with SubstrateTransactionSigner, SecretState {
   const BaseSubstratePrivateKey();
   @override
   abstract final SubstrateKeyAlgorithm algorithm;
 
   /// key bytes
-  List<int> toBytes();
+  SecretBytes toBytes();
 
   /// convert key to hex.
   String toHex({bool upperCase = false});
 
   /// sign
-  List<int> sign(List<int> digest);
+  BuBytes sign(List<int> digest);
 
   /// verify signature
   bool verify(List<int> message, List<int> signature);

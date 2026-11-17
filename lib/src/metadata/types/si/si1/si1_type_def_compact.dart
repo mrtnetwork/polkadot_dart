@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
@@ -36,7 +36,7 @@ class Si1TypeDefCompact extends Si1TypeDef<Map<String, dynamic>> {
     if (parent is TupleLayout) {
       return LayoutConst.compactIntU32(property: property);
     }
-    throw const LayoutException(
+    throw const BuError(DefaultErrorType.invalidArgument,
       "Somthing wrong. compact layout must be integer layout.",
     );
   }

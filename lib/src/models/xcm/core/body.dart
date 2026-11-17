@@ -1,6 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/core/xcm.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
@@ -23,14 +21,24 @@ enum XCMBodyIdType implements Comparable<XCMBodyIdType> {
   static XCMBodyIdType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMBodyIdType name "$name".',
+              ),
     );
   }
 
   static XCMBodyIdType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMBodyIdType type "$type".',
+              ),
     );
   }
 
@@ -55,7 +63,11 @@ abstract mixin class XCMBodyId
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -378,14 +390,24 @@ enum XCMBodyPartType implements Comparable<XCMBodyPartType> {
   static XCMBodyPartType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMBodyPartType name "$name".',
+              ),
     );
   }
 
   static XCMBodyPartType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMBodyPartType type "$type".',
+              ),
     );
   }
 
@@ -410,7 +432,11 @@ abstract mixin class XCMBodyPart
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }

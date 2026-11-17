@@ -1,6 +1,5 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
@@ -26,7 +25,7 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
   /// Returns the type template using the provided [registry].
   @override
   TypeTemlate typeTemplate(PortableRegistry registry, int id) {
-    throw MetadataException("Not implemented.");
+    throw BuError(DefaultErrorType.unsupported, "Not implemented.");
   }
 
   @override
@@ -36,12 +35,12 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
     required bool fromTemplate,
     required int self,
   }) {
-    throw MetadataException("Not implemented.");
+    throw BuError(DefaultErrorType.unsupported, "Not implemented.");
   }
 
   @override
   MetadataTypeInfo typeInfo(PortableRegistry registry, int id) {
-    throw MetadataException("Not implemented.");
+    throw BuError(DefaultErrorType.unsupported, "Not implemented.");
   }
 
   @override
@@ -60,6 +59,6 @@ class Si1TypeDefHistoricMetaCompat extends Si1TypeDef<String> {
     String? property,
     LookupDecodeParams? params,
   }) {
-    throw MetadataException("Not implemented.");
+    throw BuError(DefaultErrorType.unsupported, "Not implemented.");
   }
 }

@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/utils/amount/amount/amount.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 
 import 'json_rpc_example.dart';

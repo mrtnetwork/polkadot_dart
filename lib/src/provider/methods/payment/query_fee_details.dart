@@ -23,7 +23,7 @@ class SubstrateRequestPaymentQueryFeeDetails
   }
 
   @override
-  QueryFeeDetails onResonse(Map<String, dynamic> result) {
+  QueryFeeDetails onResponse(Map<String, dynamic> result) {
     return QueryFeeDetails.fromJson(result);
   }
 }

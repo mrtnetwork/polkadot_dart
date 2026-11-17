@@ -1,20 +1,25 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/substrate.dart';
 import 'package:test/test.dart';
 import '../metadata/v15_metadata_hex.dart';
 
+import '../utils.dart';
 extension _ToHex on List<int> {
   String toHex() => BytesUtils.toHexString(this);
 }
 
-void main() {
+void lookupTest() {
   final metadata =
       VersionedMetadata<MetadataV15>.fromBytes(
         BytesUtils.fromHexString(metadataV15),
       ).metadata;
   _test(metadata);
 }
+
+void main() {
+  PolkadotDartUtilsTestApi.runTest(lookupTest, "Lookup");
+}
+
 
 void _test(MetadataV15 api) {
   test("ID-1", () {
@@ -55,7 +60,7 @@ void _test(MetadataV15 api) {
     expect(decode, 1);
     expect(
       () => api.encodeLookup(id: lookupid, value: 257, fromTemplate: false),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
   test("ID-3", () {
@@ -132,7 +137,7 @@ void _test(MetadataV15 api) {
     expect(encodeSimple.toHex(), "01000000000000000000000000000000");
     expect(
       () => api.encodeLookup(id: lookupid, value: -1, fromTemplate: false),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
   test("ID-8", () {
@@ -161,7 +166,7 @@ void _test(MetadataV15 api) {
     expect(
       () =>
           api.encodeLookup(id: lookupid, value: "string", fromTemplate: false),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
   test("ID-9", () {
@@ -225,7 +230,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: true,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -242,7 +247,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: true,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
   test("ID-13", () {
@@ -289,7 +294,7 @@ void _test(MetadataV15 api) {
         value: List<int>.filled(33, 1),
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -297,7 +302,7 @@ void _test(MetadataV15 api) {
         value: BytesUtils.toHexString(List<int>.filled(33, 1)),
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
   test("ID-14", () {
@@ -344,7 +349,7 @@ void _test(MetadataV15 api) {
         value: List<int>.filled(33, 257),
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -352,7 +357,7 @@ void _test(MetadataV15 api) {
         value: BytesUtils.toHexString(List<int>.filled(33, 1)).substring(1),
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
   test("ID-15", () {
@@ -655,7 +660,7 @@ void _test(MetadataV15 api) {
         value: wrongTemplate,
         fromTemplate: true,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     wrongTemplate = createTemolate(
       from: List<int>.filled(32, 1).toHex(),
@@ -670,7 +675,7 @@ void _test(MetadataV15 api) {
         value: wrongTemplate,
         fromTemplate: true,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -734,7 +739,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -775,7 +780,7 @@ void _test(MetadataV15 api) {
         value: [1, 257],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -785,7 +790,7 @@ void _test(MetadataV15 api) {
         value: [1, 2, 3],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 

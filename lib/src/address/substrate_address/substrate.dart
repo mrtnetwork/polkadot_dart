@@ -1,5 +1,4 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/models/generic/models/account_id.dart';
 import 'package:polkadot_dart/src/models/generic/models/multi_address.dart';
@@ -25,7 +24,12 @@ enum SubstrateAddressType {
   static SubstrateAddressType fromValue(int? value) {
     return values.firstWhere(
       (e) => e.value == value,
-      orElse: () => throw ItemNotFoundException(name: "SubstrateAddressType"),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown SubstrateAddressType value "${"SubstrateAddressType"}".',
+              ),
     );
   }
 }
@@ -65,7 +69,7 @@ abstract class BaseSubstrateAddress
   }
 
   /// Converts the address to a list of bytes.
-  List<int> toBytes();
+  BuBytes toBytes();
 
   String toHex() => BytesUtils.toHexString(toBytes());
 
@@ -129,7 +133,11 @@ abstract class BaseSubstrateAddress
 
   T cast<T extends BaseSubstrateAddress>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -142,8 +150,8 @@ abstract class BaseSubstrateAddress
       BlockchainNetwork.substrateAndRelated;
 
   @override
-  List<int> encodeAsIAddress() {
-    return toCbor().encode();
+  BuBytes encodeAsIAddress() {
+    return toCbor().encode().asImmutableBytes;
   }
 
   @override
@@ -194,8 +202,9 @@ class SubstrateAddress extends BaseSubstrateAddress {
         publicKeyBytes,
       ),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported public key.",
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported public key.",
           details: {"algorithm": algorithm.name},
         ),
     };
@@ -275,7 +284,8 @@ class SubstrateAddress extends BaseSubstrateAddress {
     int ss58Format = SS58Const.genericSubstrate,
   }) {
     if (bytes.length != SubstrateAddressUtils.addressBytesLength) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid address length.",
         details: {
           "expected": SubstrateAddressUtils.addressBytesLength.toString(),
@@ -294,12 +304,12 @@ class SubstrateAddress extends BaseSubstrateAddress {
   ///
   /// Decodes the address using the current SS58 format.
   @override
-  List<int> toBytes() {
+  BuBytes toBytes() {
     final decode = SubstrateGenericAddrDecoder().decodeAddWithSS58(
       address,
       ss58Format: ss58Format,
     );
-    return decode.$1;
+    return decode.$1.asImmutableBytes;
   }
 
   /// Changes the address to a different SS58 format.
@@ -350,7 +360,7 @@ class SubstrateAddress extends BaseSubstrateAddress {
   String get viewType => "Substrate";
 }
 
-/// Represents a Substrate blockchain address with various factory constructors
+/// Represents a Substrate Ethereum (H160) address with factory constructors
 /// to initialize an address from different key types and functionalities to
 /// manipulate and encode/decode addresses.
 class SubstrateEthereumAddress extends BaseSubstrateAddress {
@@ -370,7 +380,8 @@ class SubstrateEthereumAddress extends BaseSubstrateAddress {
       final addr = EthAddrEncoder().encodeKey(bytes);
       return SubstrateEthereumAddress._(addr, StringUtils.normalizeHex(addr));
     } catch (e) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid ethereum public key bytes.",
         details: {
           "bytes": BytesUtils.tryToHexString(bytes),
@@ -389,7 +400,8 @@ class SubstrateEthereumAddress extends BaseSubstrateAddress {
         StringUtils.normalizeHex(checksumAddress),
       );
     } catch (e) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid ethereum address bytes.",
         details: {
           "addressBytes": BytesUtils.tryToHexString(addressBytes),
@@ -406,7 +418,8 @@ class SubstrateEthereumAddress extends BaseSubstrateAddress {
         StringUtils.normalizeHex(checksumAddress),
       );
     } catch (e) {
-      throw DartSubstratePluginException(
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid ethereum address.",
         details: {"address": address, "error": e.toString()},
       );
@@ -415,9 +428,9 @@ class SubstrateEthereumAddress extends BaseSubstrateAddress {
 
   /// Converts the address to a list of bytes.
   @override
-  List<int> toBytes() {
+  BuBytes toBytes() {
     final decode = EthAddrDecoder().decodeAddr(address);
-    return decode;
+    return decode.asImmutableBytes;
   }
 
   /// Converts the address to a SubstrateMultiAddress.

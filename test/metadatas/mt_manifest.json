@@ -1,0 +1,190 @@
+{
+  "mt_xode.json": {
+    "version": 14,
+    "network": "xode"
+  },
+  "mt_moonbeam.json": {
+    "version": 14,
+    "network": "mt_moonbeam.json"
+  },
+  "mt_laos_network.json": {
+    "version": 14,
+    "network": "mt_laos_network.json"
+  },
+  "mt_energy_web_x.json": {
+    "version": 14,
+    "network": "energywebx"
+  },
+  "mt_integritee_network_(polkadot).json": {
+    "version": 14,
+    "network": "mt_integritee_network_(polkadot).json"
+  },
+  "mt_darwinia2.json": {
+    "version": 14,
+    "network": "darwinia2"
+  },
+  "mt_neuroweb.json": {
+    "version": 14,
+    "network": "neuroweb"
+  },
+  "mt_ajuna.json": {
+    "version": 14,
+    "network": "mt_ajuna.json"
+  },
+  "mt_phala.json": {
+    "version": 14,
+    "network": "mt_phala.json"
+  },
+  "mt_crust.json": {
+    "version": 14,
+    "network": "mt_crust.json"
+  },
+  "mt_nodle_parachain.json": {
+    "version": 14,
+    "network": "mt_nodle_parachain.json"
+  },
+  "mt_mythos.json": {
+    "version": 14,
+    "network": "mythos"
+  },
+  "mt_jamton.json": {
+    "version": 14,
+    "network": "jamton"
+  },
+  "mt_unique.json": {
+    "version": 14,
+    "network": "unique"
+  },
+  "mt_darwinia2.hex": {
+    "version": 14,
+    "network": "darwinia2"
+  },
+  "mt_energy_web_x.hex": {
+    "version": 14,
+    "network": "energywebx"
+  },
+  "mt_jamton.hex": {
+    "version": 14,
+    "network": "jamton"
+  },
+  "mt_unique.hex": {
+    "version": 14,
+    "network": "unique"
+  },
+  "mt_xode.hex": {
+    "version": 14,
+    "network": "xode"
+  },
+  "mt_polkadot.hex": {
+    "version": 14,
+    "network": "polkadot"
+  },
+  "mt_polkadot.json": {
+    "version": 14,
+    "network": "polkadot"
+  },
+  "mt_polkadot_assethub.hex": {
+    "version": 14,
+    "network": "polkadot_assethub"
+  },
+  "mt_polkadot_assethub.json": {
+    "version": 14,
+    "network": "polkadot_assethub"
+  },
+  "mt_polkadot_bridgehub.hex": {
+    "version": 14,
+    "network": "polkadot_bridgehub"
+  },
+  "mt_polkadot_bridgehub.json": {
+    "version": 14,
+    "network": "polkadot_bridgehub"
+  },
+  "mt_polkadot_collectives.hex": {
+    "version": 14,
+    "network": "polkadot_collectives"
+  },
+  "mt_polkadot_collectives.json": {
+    "version": 14,
+    "network": "polkadot_collectives"
+  },
+  "mt_polkadot_people.hex": {
+    "version": 14,
+    "network": "polkadot_people"
+  },
+  "mt_polkadot_people.json": {
+    "version": 14,
+    "network": "polkadot_people"
+  },
+  "mt_polkadot_coretime.hex": {
+    "version": 14,
+    "network": "polkadot_coretime"
+  },
+  "mt_polkadot_coretime.json": {
+    "version": 14,
+    "network": "polkadot_coretime"
+  },
+  "mt_acala.hex": {
+    "version": 14,
+    "network": "acala"
+  },
+  "mt_acala.json": {
+    "version": 14,
+    "network": "acala"
+  },
+  "mt_hydration.hex": {
+    "version": 14,
+    "network": "hydration"
+  },
+  "mt_hydration.json": {
+    "version": 14,
+    "network": "hydration"
+  },
+  "mt_astar.hex": {
+    "version": 14,
+    "network": "astar"
+  },
+  "mt_astar.json": {
+    "version": 14,
+    "network": "astar"
+  },
+  "mt_bifrost.hex": {
+    "version": 14,
+    "network": "bifrost"
+  },
+  "mt_bifrost.json": {
+    "version": 14,
+    "network": "bifrost"
+  },
+  "mt_manta.hex": {
+    "version": 14,
+    "network": "manta"
+  },
+  "mt_manta.json": {
+    "version": 14,
+    "network": "manta"
+  },
+  "mt_pendulum.hex": {
+    "version": 14,
+    "network": "pendulum"
+  },
+  "mt_pendulum.json": {
+    "version": 14,
+    "network": "pendulum"
+  },
+  "mt_frequency.hex": {
+    "version": 14,
+    "network": "frequency"
+  },
+  "mt_frequency.json": {
+    "version": 14,
+    "network": "frequency"
+  },
+  "mt_neuroweb.hex": {
+    "version": 14,
+    "network": "neuroweb"
+  },
+  "mt_mythos.hex": {
+    "version": 14,
+    "network": "mythos"
+  }
+}

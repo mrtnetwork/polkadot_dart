@@ -1,6 +1,10 @@
 export 'types/types.dart';
 export 'core/portable_registry.dart';
 export 'core/metadata.dart';
+export 'core/portable_type.dart';
+export 'core/scale_versioned.dart';
+export 'core/storage_hasher.dart';
+export '../error/substrate_error.dart';
 export 'imp/api_interface.dart';
 export 'imp/metadata_interface.dart';
 export 'constant/constant.dart';

@@ -1,12 +1,10 @@
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/core/api.dart';
-
-import 'package:blockchain_utils/service/service.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 /// Extension to assist with runtime calls based on metadata
 extension ExtRuntimeCallHelper on MetadataApi {
-  Future<List<int>> runtimeCallBytes({
+  Future<BuBytes> runtimeCallBytes({
     required String apiName,
     required String methodName,
     required List<Object?> params,
@@ -26,7 +24,7 @@ extension ExtRuntimeCallHelper on MetadataApi {
       data: encodeInputs,
     );
     final response = await rpc.request(rpcMethod);
-    return response;
+    return (response as List<int>).asImmutableBytes;
   }
 
   Future<T> runtimeCall<T>({

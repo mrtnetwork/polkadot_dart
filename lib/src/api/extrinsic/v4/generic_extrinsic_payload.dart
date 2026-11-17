@@ -17,7 +17,7 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
   final SubstrateBlockHash blockHash;
   final SubstrateBaseEra era;
   final SubstrateBlockHash genesisHash;
-  final List<int> method;
+  final BuBytes method;
   final BigInt? tip;
   final int nonce;
   final int specVersion;
@@ -76,12 +76,12 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
   }
 
   /// the bytes must be sign
-  List<int> serialzeSign({String? property}) {
+  BuBytes serialzeSign({String? property}) {
     final digest = serialize(property: property);
     if (digest.length > TransactionPalyloadConst.requiredHashDigestLength) {
-      return QuickCrypto.blake2b256Hash(digest);
+      return QuickCrypto.blake2b256Hash(digest).asImmutableBytes;
     }
-    return digest;
+    return digest.asImmutableBytes;
   }
 
   Extrinsic toExtrinsic({
@@ -97,7 +97,7 @@ abstract class BaseTransactionPayload<ADDRESS extends BaseSubstrateAddress>
 
 class TransactionPayload extends BaseTransactionPayload<SubstrateAddress> {
   final int mode;
-  final List<int>? metadataHash;
+  final BuBytes? metadataHash;
 
   TransactionPayload({
     required super.blockHash,
@@ -158,7 +158,7 @@ class TransactionPayload extends BaseTransactionPayload<SubstrateAddress> {
 }
 
 class AssetTransactionPayload extends TransactionPayload {
-  final List<int>? asset;
+  final BuBytes? asset;
   AssetTransactionPayload({
     required super.blockHash,
     required super.era,
@@ -171,7 +171,7 @@ class AssetTransactionPayload extends TransactionPayload {
     super.tip,
     super.metadataHash,
     List<int>? asset,
-  }) : asset = asset?.immutable;
+  }) : asset = asset?.asImmutableBytes;
 
   static StructLayout layout_({String? property}) {
     return LayoutConst.struct([
@@ -233,7 +233,7 @@ class LegacyTransactionPayload
 class MoonbeamTransactionPayload
     extends BaseTransactionPayload<SubstrateEthereumAddress> {
   final int mode;
-  final List<int>? metadataHash;
+  final BuBytes? metadataHash;
 
   MoonbeamTransactionPayload({
     required super.blockHash,

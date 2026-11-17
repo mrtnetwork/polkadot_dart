@@ -1,6 +1,4 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:blockchain_utils/layout/byte/byte_handler.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 
 mixin JsonSerialization {
   Map<String, dynamic> toJson();
@@ -71,7 +69,7 @@ abstract class SubstrateVariantSerialization
     Map<String, dynamic> json,
   ) {
     if (json['key'] is! String || !json.containsKey('value')) {
-      throw const DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.',
       );
     }
@@ -84,7 +82,7 @@ abstract class SubstrateVariantSerialization
   }) {
     final json = layout.deserialize(bytes).value;
     if (json['key'] is! String || !json.containsKey('value')) {
-      throw const DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.',
       );
     }

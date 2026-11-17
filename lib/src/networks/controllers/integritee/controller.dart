@@ -193,8 +193,8 @@ class IntegriteeNetworkController
       network: network,
       pallet:
           isNative
-              ? SubtrateMetadataPallet.xTokens
-              : SubtrateMetadataPallet.polkadotXcm,
+              ? SubstrateMetadataPallet.xTokens
+              : SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -222,7 +222,7 @@ class IntegriteeNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
       onControllerRequest: onControllerRequest,
     );
   }

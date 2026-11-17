@@ -1,5 +1,5 @@
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 import 'package:blockchain_utils/service/service.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 

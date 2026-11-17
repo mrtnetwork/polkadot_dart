@@ -5,7 +5,7 @@ import 'package:polkadot_dart/src/api/storage/storage/assets_registry.dart';
 import 'package:polkadot_dart/src/api/storage/storage/evm_foreign_assets.dart';
 import 'package:polkadot_dart/src/api/storage/storage/foreign_assets.dart';
 import 'package:polkadot_dart/src/api/storage/storage/fungible.dart';
-import 'package:polkadot_dart/src/api/storage/storage/fungibless.dart';
+import 'package:polkadot_dart/src/api/storage/storage/fungibles.dart';
 import 'package:polkadot_dart/src/api/storage/storage/multisig.dart';
 import 'package:polkadot_dart/src/api/storage/storage/orml_asset_registry.dart';
 import 'package:polkadot_dart/src/api/storage/storage/orml_tokens.dart';

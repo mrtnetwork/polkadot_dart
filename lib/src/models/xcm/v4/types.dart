@@ -1,13 +1,11 @@
+import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/layout/constant/constant.dart';
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/layout/core/types/lazy_union.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/equatable/equatable.dart';
 import 'package:blockchain_utils/utils/json/json.dart';
 import 'package:blockchain_utils/utils/numbers/utils/bigint_utils.dart';
 import 'package:blockchain_utils/utils/numbers/utils/int_utils.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
 import 'package:polkadot_dart/src/models/xcm/core/fungibility.dart';
@@ -39,8 +37,8 @@ abstract class XCMV4NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadotBulletIn => XCMV4PolkadotBulletIn.fromJson(json),
       XCMNetworkIdType.westend => XCMV4Westend.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network id by version 4.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network id by version 4.",
           details: {"type": type.name},
         ),
     };
@@ -69,8 +67,8 @@ abstract class XCMV4NetworkId extends SubstrateVariantSerialization
         XCMV4PolkadotBulletIn.deserializeJson(decode.value),
       XCMNetworkIdType.westend => XCMV4Westend.deserializeJson(decode.value),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network id by version 4.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network id by version 4.",
           details: {"type": type.name},
         ),
     };
@@ -102,8 +100,8 @@ abstract class XCMV4NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.bitcoinCore => XCMV4BitcoinCore(),
       XCMNetworkIdType.polkadotBulletIn => XCMV4PolkadotBulletIn(),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network type by version 4.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network type by version 4.",
           details: {"type": type.name},
         ),
     };
@@ -190,7 +188,7 @@ abstract class XCMV4NetworkId extends SubstrateVariantSerialization
 
 class XCMV4ByGenesis extends XCMV4NetworkId with XCMNetworkIdByGenesis {
   @override
-  final List<int> genesis;
+  final BuBytes genesis;
   XCMV4ByGenesis({required List<int> genesis})
     : genesis =
           genesis
@@ -214,7 +212,7 @@ class XCMV4ByGenesis extends XCMV4NetworkId with XCMNetworkIdByGenesis {
 
 class XCMV4ByFork extends XCMV4NetworkId with XCMNetworkIdByFork {
   @override
-  final List<int> blockHash;
+  final BuBytes blockHash;
   @override
   final BigInt blockNumber;
   XCMV4ByFork({required List<int> blockHash, required BigInt blockNumber})
@@ -559,7 +557,7 @@ class XCMV4JunctionAccountId32 extends XCMV4Junction
   @override
   final XCMV4NetworkId? network;
   @override
-  final List<int> id;
+  final BuBytes id;
   XCMV4JunctionAccountId32({this.network, required List<int> id})
     : id =
           id
@@ -656,7 +654,7 @@ class XCMV4JunctionAccountKey20 extends XCMV4Junction
   @override
   final XCMV4NetworkId? network;
   @override
-  final List<int> key;
+  final BuBytes key;
   XCMV4JunctionAccountKey20({this.network, required List<int> key})
     : key =
           key
@@ -743,7 +741,7 @@ class XCMV4JunctionGeneralKey extends XCMV4Junction with XCMJunctionGeneralKey {
   @override
   final int length;
   @override
-  final List<int> data;
+  final BuBytes data;
   XCMV4JunctionGeneralKey._({required int length, required List<int> data})
     : length = length.asU8,
       data =
@@ -762,7 +760,7 @@ class XCMV4JunctionGeneralKey extends XCMV4Junction with XCMJunctionGeneralKey {
     if (data.length < length ||
         length > SubstrateConstant.accountIdLengthInBytes ||
         data.length > SubstrateConstant.accountIdLengthInBytes) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid V4 Junction GeneralKey bytes.",
       );
     }
@@ -1399,7 +1397,7 @@ class XCMV4AssetInstanceIndex extends XCMV4AssetInstance
 class XCMV4AssetInstanceArray4 extends XCMV4AssetInstance
     with XCMAssetInstanceArray4 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV4AssetInstanceArray4({required List<int> datum})
     : datum =
           datum
@@ -1424,7 +1422,7 @@ class XCMV4AssetInstanceArray4 extends XCMV4AssetInstance
 class XCMV4AssetInstanceArray8 extends XCMV4AssetInstance
     with XCMAssetInstanceArray8 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV4AssetInstanceArray8({required List<int> datum})
     : datum =
           datum
@@ -1449,7 +1447,7 @@ class XCMV4AssetInstanceArray8 extends XCMV4AssetInstance
 class XCMV4AssetInstanceArray16 extends XCMV4AssetInstance
     with XCMAssetInstanceArray16 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV4AssetInstanceArray16({required List<int> datum})
     : datum =
           datum
@@ -1474,7 +1472,7 @@ class XCMV4AssetInstanceArray16 extends XCMV4AssetInstance
 class XCMV4AssetInstanceArray32 extends XCMV4AssetInstance
     with XCMAssetInstanceArray32 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV4AssetInstanceArray32({required List<int> datum})
     : datum =
           datum
@@ -1736,9 +1734,9 @@ class XCMV4AssetId extends SubstrateSerialization<Map<String, dynamic>>
     return switch (id) {
       final XCMV4AssetId assetId => assetId,
       final XCMV2AssetId assetId => switch (assetId.type) {
-        XCMV2AssetIdType.abtract =>
-          throw DartSubstratePluginException(
-            "Unsuported AssetId v2 ${XCMV2AssetIdType.abtract.type} by version 4",
+        XCMV2AssetIdType.abstract =>
+          throw BuError(DefaultErrorType.unsupported, 
+            "Unsupported AssetId v2 ${XCMV2AssetIdType.abstract.type} by version 4",
           ),
         XCMV2AssetIdType.concrete => XCMV4AssetId(
           location: assetId.cast<XCMV2AssetIdConcrete>().location.asVersion(
@@ -1747,9 +1745,9 @@ class XCMV4AssetId extends SubstrateSerialization<Map<String, dynamic>>
         ),
       },
       final XCMV3AssetId assetId => switch (assetId.type) {
-        XCMV3AssetIdType.abtract =>
-          throw DartSubstratePluginException(
-            "Unsuported AssetId v3 ${XCMV3AssetIdType.abtract.type} by version 4",
+        XCMV3AssetIdType.abstract =>
+          throw BuError(DefaultErrorType.unsupported, 
+            "Unsupported AssetId v3 ${XCMV3AssetIdType.abstract.type} by version 4",
           ),
         XCMV3AssetIdType.concrete => XCMV4AssetId(
           location: assetId.cast<XCMV3AssetIdConcrete>().location.asVersion(
@@ -1760,7 +1758,7 @@ class XCMV4AssetId extends SubstrateSerialization<Map<String, dynamic>>
       final XCMV5AssetId assetId => XCMV4AssetId(
         location: assetId.location.asVersion(XCMVersion.v4),
       ),
-      _ => throw DartSubstratePluginException("Unknow asset id."),
+      _ => throw BuError(DefaultErrorType.notFound, 'Unknown asset id.'),
     };
   }
 

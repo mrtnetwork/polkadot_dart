@@ -1,6 +1,4 @@
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
@@ -36,7 +34,7 @@ abstract class ScaleTypeDef<T> extends SubstrateSerialization<T> {
 
   TYPE cast<TYPE extends ScaleTypeDef>() {
     if (this is! TYPE) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.castFailed, 
         "Type defination casting failed.",
         details: {"expected": "$Type", "type": typeName.name},
       );

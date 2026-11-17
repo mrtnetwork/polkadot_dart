@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
 import 'package:polkadot_dart/src/models/xcm/core/body.dart';
 import 'package:polkadot_dart/src/models/xcm/core/fungibility.dart';
@@ -25,8 +24,8 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadot => XCMV2Polkadot(),
       XCMNetworkIdType.kusama => XCMV2Kusama(),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network id by version 2.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network id by version 2.",
         ),
     };
   }
@@ -40,8 +39,8 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadot => XCMV2Polkadot.deserializeJson(decode.value),
       XCMNetworkIdType.kusama => XCMV2Kusama.deserializeJson(decode.value),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network id by version 2.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network id by version 2.",
         ),
     };
   }
@@ -53,8 +52,8 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadot => XCMV2Polkadot.fromJson(json),
       XCMNetworkIdType.kusama => XCMV2Kusama.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported network id by version 2.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported network id by version 2.",
         ),
     };
   }
@@ -107,7 +106,7 @@ class XCMV2Any extends XCMV2NetworkId with XCMNetworkIdAny {
 
 class XCMV2Named extends XCMV2NetworkId with XCMNetworkIdNamed {
   @override
-  final List<int> name;
+  final BuBytes name;
   XCMV2Named({required List<int> name})
     : name =
           name
@@ -172,7 +171,7 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw DartSubstratePluginException("Unsuported body id by version 2."),
+        throw BuError(DefaultErrorType.unsupported, "Unsupported body id by version 2."),
     };
   }
   factory XCMV2BodyId.fromJson(Map<String, dynamic> json) {
@@ -189,7 +188,7 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV2BodyIdAdministration.fromJson(json),
       XCMBodyIdType.treasury => XCMV2BodyIdTreasury.fromJson(json),
       _ =>
-        throw DartSubstratePluginException("Unsuported body id by version 2."),
+        throw BuError(DefaultErrorType.unsupported, "Unsupported body id by version 2."),
     };
   }
 
@@ -212,7 +211,7 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV2BodyIdAdministration(),
       XCMBodyIdType.treasury => XCMV2BodyIdTreasury(),
       _ =>
-        throw DartSubstratePluginException("Unsuported body id by version 2."),
+        throw BuError(DefaultErrorType.unsupported, "Unsupported body id by version 2."),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -285,7 +284,7 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
 
 class XCMV2BodyIdNamed extends XCMV2BodyId with XCMBodyIdNamed {
   @override
-  final List<int> name;
+  final BuBytes name;
   XCMV2BodyIdNamed({required List<int> name}) : name = name.asImmutableBytes;
 
   factory XCMV2BodyIdNamed.deserializeJson(Map<String, dynamic> json) {
@@ -667,7 +666,11 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
       XCMJunctionType.plurality => XCMV2JunctionPlurality.deserializeJson(
         decode.value,
       ),
-      _ => throw DartSubstratePluginException("Unsuported V2 Junction type."),
+      _ =>
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported V2 Junction type.",
+          details: {"type": decode.variantName},
+        ),
     };
   }
   factory XCMV2Junction.fromJson(Map<String, dynamic> json) {
@@ -686,7 +689,11 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
       XCMJunctionType.generalKey => XCMV2JunctionGeneralKey.fromJson(json),
       XCMJunctionType.onlyChild => XCMV2JunctionOnlyChild.fromJson(json),
       XCMJunctionType.plurality => XCMV2JunctionPlurality.fromJson(json),
-      _ => throw DartSubstratePluginException("Unsuported V2 Junction type."),
+      _ =>
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported V2 Junction type.",
+          details: {"type": type.name},
+        ),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -789,7 +796,12 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
       XCMJunctionType.generalKey => () {
         final account = junction as XCMJunctionGeneralKey;
         return XCMV2JunctionGeneralKey(
-          data: account.data.sublist(account.length),
+          data:
+              (account.length <= account.data.length
+                  ? account.data.sublist(0, account.length)
+                  : throw BuError(DefaultErrorType.invalidArgument, 
+                    "Invalid GeneralKey: length ${account.length} exceeds data length ${account.data.length}.",
+                  )),
           length: account.length,
         );
       }(),
@@ -802,9 +814,9 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
         );
       }(),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported junction by version 2.",
-          details: {"type": junction.type.toString()},
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported junction by version 2.",
+          details: {"type": junction.type.type},
         ),
     };
   }
@@ -855,7 +867,7 @@ class XCMV2JunctionAccountId32 extends XCMV2Junction
   @override
   final XCMV2NetworkId network;
   @override
-  final List<int> id;
+  final BuBytes id;
   XCMV2JunctionAccountId32({required this.network, required List<int> id})
     : id =
           id
@@ -958,7 +970,7 @@ class XCMV2JunctionAccountKey20 extends XCMV2Junction
   @override
   final XCMV2NetworkId network;
   @override
-  final List<int> key;
+  final BuBytes key;
   XCMV2JunctionAccountKey20({required this.network, required List<int> key})
     : key =
           key
@@ -1046,7 +1058,7 @@ class XCMV2JunctionGeneralIndex extends XCMV2Junction
 
 class XCMV2JunctionGeneralKey extends XCMV2Junction with XCMJunctionGeneralKey {
   @override
-  final List<int> data;
+  final BuBytes data;
   @override
   final int length;
   XCMV2JunctionGeneralKey({required List<int> data, required this.length})
@@ -1366,6 +1378,11 @@ class XCMV2JunctionsX1 extends XCMV2Junctions {
 
   @override
   Map<String, dynamic> toJson() {
+    if (junctions.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid X1 junctions: expected exactly one junction.",
+      );
+    }
     return {type.type: junctions.first.toJson()};
   }
 }
@@ -1594,7 +1611,7 @@ class XCMV2AssetInstanceIndex extends XCMV2AssetInstance
 class XCMV2AssetInstanceArray4 extends XCMV2AssetInstance
     with XCMAssetInstanceArray4 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV2AssetInstanceArray4({required List<int> datum})
     : datum =
           datum
@@ -1619,7 +1636,7 @@ class XCMV2AssetInstanceArray4 extends XCMV2AssetInstance
 class XCMV2AssetInstanceArray8 extends XCMV2AssetInstance
     with XCMAssetInstanceArray8 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV2AssetInstanceArray8({required List<int> datum})
     : datum =
           datum
@@ -1644,7 +1661,7 @@ class XCMV2AssetInstanceArray8 extends XCMV2AssetInstance
 class XCMV2AssetInstanceArray16 extends XCMV2AssetInstance
     with XCMAssetInstanceArray16 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV2AssetInstanceArray16({required List<int> datum})
     : datum =
           datum
@@ -1669,7 +1686,7 @@ class XCMV2AssetInstanceArray16 extends XCMV2AssetInstance
 class XCMV2AssetInstanceArray32 extends XCMV2AssetInstance
     with XCMAssetInstanceArray32 {
   @override
-  final List<int> datum;
+  final BuBytes datum;
   XCMV2AssetInstanceArray32({required List<int> datum})
     : datum =
           datum
@@ -1968,21 +1985,29 @@ class XCMV2MultiLocation extends XCMMultiLocation with Equality {
 
 enum XCMV2AssetIdType {
   concrete("Concrete"),
-  abtract("Abtract");
+  abstract("Abstract");
 
   final String type;
   const XCMV2AssetIdType(this.type);
   static XCMV2AssetIdType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2AssetIdType name "$name".',
+              ),
     );
   }
 
   static XCMV2AssetIdType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV2AssetIdType type "$type".',
+              ),
     );
   }
 }
@@ -1998,7 +2023,7 @@ abstract class XCMV2AssetId extends SubstrateVariantSerialization
       XCMV2AssetIdType.concrete => XCMV2AssetIdConcrete.deserializeJson(
         decode.value,
       ),
-      XCMV2AssetIdType.abtract => XCMV2AssetIdAbstract.deserializeJson(
+      XCMV2AssetIdType.abstract => XCMV2AssetIdAbstract.deserializeJson(
         decode.value,
       ),
     };
@@ -2007,14 +2032,14 @@ abstract class XCMV2AssetId extends SubstrateVariantSerialization
     final type = XCMV2AssetIdType.fromType(json.keys.firstOrNull);
     return switch (type) {
       XCMV2AssetIdType.concrete => XCMV2AssetIdConcrete.fromJson(json),
-      XCMV2AssetIdType.abtract => XCMV2AssetIdAbstract.fromJson(json),
+      XCMV2AssetIdType.abstract => XCMV2AssetIdAbstract.fromJson(json),
     };
   }
   factory XCMV2AssetId.from(XCMAssetId id) {
     return switch (id) {
       final XCMV2AssetId assetId => assetId,
       final XCMV3AssetId assetId => switch (assetId.type) {
-        XCMV3AssetIdType.abtract => XCMV2AssetIdAbstract(
+        XCMV3AssetIdType.abstract => XCMV2AssetIdAbstract(
           id: assetId.cast<XCMV3AssetIdAbstract>().id,
         ),
         XCMV3AssetIdType.concrete => XCMV2AssetIdConcrete(
@@ -2029,7 +2054,7 @@ abstract class XCMV2AssetId extends SubstrateVariantSerialization
       final XCMV5AssetId assetId => XCMV2AssetIdConcrete(
         location: assetId.location.asVersion(XCMVersion.v2),
       ),
-      _ => throw DartSubstratePluginException("Unknow asset id."),
+      _ => throw BuError(DefaultErrorType.notFound, 'Unknown asset id.'),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -2043,7 +2068,7 @@ abstract class XCMV2AssetId extends SubstrateVariantSerialization
       LazyVariantModel(
         layout:
             ({property}) => XCMV2AssetIdAbstract.layout_(property: property),
-        property: XCMV2AssetIdType.abtract.name,
+        property: XCMV2AssetIdType.abstract.name,
         index: 1,
       ),
     ], property: property);
@@ -2104,17 +2129,17 @@ class XCMV2AssetIdConcrete extends XCMV2AssetId {
 }
 
 class XCMV2AssetIdAbstract extends XCMV2AssetId {
-  final List<int> id;
+  final BuBytes id;
   XCMV2AssetIdAbstract({required List<int> id})
     : id = id.asImmutableBytes,
-      super(type: XCMV2AssetIdType.abtract);
+      super(type: XCMV2AssetIdType.abstract);
 
   factory XCMV2AssetIdAbstract.deserializeJson(Map<String, dynamic> json) {
     return XCMV2AssetIdAbstract(id: (json["id"] as List).cast());
   }
   factory XCMV2AssetIdAbstract.fromJson(Map<String, dynamic> json) {
     return XCMV2AssetIdAbstract(
-      id: json.valueAsBytes(XCMV2AssetIdType.abtract.type),
+      id: json.valueAsBytes(XCMV2AssetIdType.abstract.type),
     );
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -2241,7 +2266,7 @@ abstract class XCMV2WildMultiAsset extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.unsupported, 
           "Unsupported XCMWildAssetType by version 2.",
           details: {"type": type.name},
         ),
@@ -2253,7 +2278,7 @@ abstract class XCMV2WildMultiAsset extends SubstrateVariantSerialization
       XCMWildAssetType.all => XCMV2WildMultiAssetAll.fromJson(json),
       XCMWildAssetType.allOf => XCMV2WildMultiAssetAllOf.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.unsupported, 
           "Unsupported XCMWildAssetType by version 2.",
           details: {"type": type.name},
         ),

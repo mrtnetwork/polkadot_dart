@@ -2,10 +2,11 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/substrate.dart';
 import 'package:test/test.dart';
 
-void main() {
+import '../utils.dart';
+void addressTest() {
   test('IAddress encoding', () {
     final addr = SubstrateAddress.fromBytes(
-      QuickCrypto.generateRandom(32),
+      QuickCrypto.generateRandom(length: 32),
       ss58Format: SS58Const.acala,
     );
     expect(
@@ -15,7 +16,7 @@ void main() {
   });
   test('IAddress encoding', () {
     final addr = SubstrateEthereumAddress.fromBytes(
-      QuickCrypto.generateRandom(20),
+      QuickCrypto.generateRandom(length: 20),
     );
     expect(
       BaseSubstrateAddress.deserializeIAddress(bytes: addr.encodeAsIAddress()),
@@ -23,3 +24,8 @@ void main() {
     );
   });
 }
+
+void main() {
+  PolkadotDartUtilsTestApi.runTest(addressTest, "Address");
+}
+

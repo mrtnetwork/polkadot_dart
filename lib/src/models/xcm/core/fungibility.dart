@@ -1,8 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/constant/constant.dart';
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/layout/core/types/lazy_union.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/core/xcm.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
@@ -16,14 +12,24 @@ enum XCMFungibilityType implements Comparable<XCMFungibilityType> {
   static XCMFungibilityType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMFungibilityType name "$name".',
+              ),
     );
   }
 
   static XCMFungibilityType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMFungibilityType type "$type".',
+              ),
     );
   }
 
@@ -47,14 +53,24 @@ enum XCMAssetInstanceType implements Comparable<XCMAssetInstanceType> {
   static XCMAssetInstanceType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMAssetInstanceType name "$name".',
+              ),
     );
   }
 
   static XCMAssetInstanceType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMAssetInstanceType type "$type".',
+              ),
     );
   }
 
@@ -122,7 +138,11 @@ abstract mixin class XCMAssetInstance
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -367,7 +387,11 @@ abstract mixin class XCMFungibility
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }

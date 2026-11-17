@@ -183,8 +183,8 @@ class UniqueworkController extends BaseUniqueworkController<PolkadotNetwork> {
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -198,7 +198,7 @@ class UniqueworkController extends BaseUniqueworkController<PolkadotNetwork> {
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }

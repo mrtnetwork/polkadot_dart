@@ -1,10 +1,10 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/helper/helper.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/models/weight.dart';
 import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
 import 'package:polkadot_dart/src/models/xcm/core/xcm.dart';
@@ -528,8 +528,8 @@ abstract class XCMInstructionV3 extends SubstrateVariantSerialization
       XCMInstructionType.unpaidExecution =>
         XCMV3UnpaidExecution.deserializeJson(decode.value),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 3",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 3",
           details: {"type": type.name},
         ),
     };
@@ -601,8 +601,8 @@ abstract class XCMInstructionV3 extends SubstrateVariantSerialization
       XCMInstructionType.aliasOrigin => XCMV3AliasOrigin.fromJson(json),
       XCMInstructionType.unpaidExecution => XCMV3UnpaidExecution.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 3",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 3",
           details: {"type": type.name},
         ),
     };
@@ -939,14 +939,22 @@ enum XCMV3OriginKindType {
   static XCMV3OriginKindType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3OriginKindType type "$type".',
+              ),
     );
   }
 
   static XCMV3OriginKindType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3OriginKindType name "$name".',
+              ),
     );
   }
 }
@@ -1080,7 +1088,7 @@ class XCMV3Transact extends XCMInstructionV3 with XCMTransact {
   final XCMV3OriginKind originKind;
   final SubstrateWeightV2 requireWeightAtMost;
   @override
-  final List<int> call;
+  final BuBytes call;
 
   XCMV3Transact({
     required this.originKind,
@@ -2296,7 +2304,7 @@ class XCMV3ExpectTransactStatus extends XCMInstructionV3
 
 class XCMV3QueryPallet extends XCMInstructionV3 with XCMQueryPallet {
   @override
-  final List<int> moduleName;
+  final BuBytes moduleName;
   final XCMV3QueryResponseInfo responseInfo;
 
   XCMV3QueryPallet({required List<int> moduleName, required this.responseInfo})
@@ -2360,9 +2368,9 @@ class XCMV3ExpectPallet extends XCMInstructionV3 with XCMExpectPallet {
   @override
   final int index;
   @override
-  final List<int> name;
+  final BuBytes name;
   @override
-  final List<int> moduleName;
+  final BuBytes moduleName;
   @override
   final int crateMajor;
   @override
@@ -2807,7 +2815,7 @@ class XCMV3SetFeesMode extends XCMInstructionV3 with XCMSetFeesMode {
 
 class XCMV3SetTopic extends XCMInstructionV3 with XCMSetTopic {
   @override
-  final List<int> topic;
+  final BuBytes topic;
   XCMV3SetTopic({required List<int> topic})
     : topic =
           topic
@@ -2992,14 +3000,22 @@ enum XCMV3ErrorType {
   static XCMV3ErrorType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3ErrorType type "$type".',
+              ),
     );
   }
 
   static XCMV3ErrorType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3ErrorType name "$name".',
+              ),
     );
   }
 }
@@ -3814,14 +3830,22 @@ enum XCMV3ResponseType {
   static XCMV3ResponseType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3ResponseType type "$type".',
+              ),
     );
   }
 
   static XCMV3ResponseType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3ResponseType name "$name".',
+              ),
     );
   }
 }
@@ -3990,10 +4014,14 @@ class XCMV3ResponseExecutionResult extends XCMV3Response {
   final int? index;
   final XCMV3Error? error;
   XCMV3ResponseExecutionResult({int? index, this.error})
-    : index = index?.asU32,
-      assert(
-        (index == null && error == null) || (index != null && error != null),
+    : index = index?.asU32 {
+    if (!((index == null && error == null) ||
+        (index != null && error != null))) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid execution result: index and error must both be null (incomplete) or both set (complete).",
       );
+    }
+  }
 
   factory XCMV3ResponseExecutionResult.deserializeJson(
     Map<String, dynamic> json,
@@ -4170,14 +4198,22 @@ enum XCMV3MaybeErrorCodeType {
   static XCMV3MaybeErrorCodeType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3MaybeErrorCodeType type "$type".',
+              ),
     );
   }
 
   static XCMV3MaybeErrorCodeType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV3MaybeErrorCodeType name "$name".',
+              ),
     );
   }
 }
@@ -4270,7 +4306,7 @@ class XCMV3MaybeErrorCodeSuccess extends XCMV3MaybeErrorCode
 }
 
 class XCMV3MaybeErrorCodeError extends XCMV3MaybeErrorCode {
-  final List<int> error;
+  final BuBytes error;
   XCMV3MaybeErrorCodeError({required List<int> error})
     : error =
           error
@@ -4318,7 +4354,7 @@ class XCMV3MaybeErrorCodeError extends XCMV3MaybeErrorCode {
 }
 
 class XCMV3MaybeErrorCodeTruncatedError extends XCMV3MaybeErrorCode {
-  final List<int> error;
+  final BuBytes error;
   XCMV3MaybeErrorCodeTruncatedError({required List<int> error})
     : error =
           error

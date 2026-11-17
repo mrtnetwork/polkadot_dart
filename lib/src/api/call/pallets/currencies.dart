@@ -1,3 +1,4 @@
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
@@ -23,7 +24,7 @@ abstract class CurrenciesCallPallet
   @override
   final CurrenciesCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class CurrenciesCallPalletTransfer extends CurrenciesCallPallet {
@@ -35,14 +36,14 @@ class CurrenciesCallPalletTransfer extends CurrenciesCallPallet {
     required this.dest,
     required this.currencyId,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.currencies,
+    super.pallet = SubstrateMetadataPallet.currencies,
   }) : super(type: CurrenciesCallPalletMethod.transfer);
 
   @override
   CurrenciesCallPalletMethod get type => CurrenciesCallPalletMethod.transfer;
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -78,7 +79,7 @@ class CurrenciesCallPalletTransferNativeCurrency extends CurrenciesCallPallet {
   const CurrenciesCallPalletTransferNativeCurrency({
     required this.dest,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.currencies,
+    super.pallet = SubstrateMetadataPallet.currencies,
   }) : super(type: CurrenciesCallPalletMethod.transfernativeCurrency);
 
   @override
@@ -86,7 +87,7 @@ class CurrenciesCallPalletTransferNativeCurrency extends CurrenciesCallPallet {
       CurrenciesCallPalletMethod.transfernativeCurrency;
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

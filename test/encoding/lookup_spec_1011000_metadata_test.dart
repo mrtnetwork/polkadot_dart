@@ -1,21 +1,26 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/substrate.dart';
 import 'package:test/test.dart';
 
 import '../repository/westend_v14.dart';
 
+import '../utils.dart';
 extension _ToHex on List<int> {
   String toHex() => BytesUtils.toHexString(this);
 }
 
-void main() {
+void lookupSpec1011000MetadataTest() {
   final metadata =
       VersionedMetadata<MetadataV15>.fromBytes(
         BytesUtils.fromHexString(westendV15),
       ).metadata;
   _test(metadata);
 }
+
+void main() {
+  PolkadotDartUtilsTestApi.runTest(lookupSpec1011000MetadataTest, "Lookup Spec 1011000 Metadata");
+}
+
 
 void _test(MetadataV15 api) {
   test("ID-200", () {
@@ -81,7 +86,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -93,7 +98,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -170,7 +175,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
   test("ID-421", () {
@@ -459,7 +464,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -479,7 +484,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -546,7 +551,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: true,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -556,7 +561,7 @@ void _test(MetadataV15 api) {
         value: <int>[1, 2, 3, -1],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -640,7 +645,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -655,7 +660,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -728,7 +733,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -746,7 +751,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -801,7 +806,7 @@ void _test(MetadataV15 api) {
         ],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -811,7 +816,7 @@ void _test(MetadataV15 api) {
         value: [123, 123, 123, 123, 123],
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 
@@ -873,7 +878,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
     expect(
       () => api.encodeLookup(
@@ -888,7 +893,7 @@ void _test(MetadataV15 api) {
         },
         fromTemplate: false,
       ),
-      throwsA(isA<MetadataException>()),
+      throwsA(isA<BuError>()),
     );
   });
 }

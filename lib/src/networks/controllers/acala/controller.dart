@@ -271,8 +271,8 @@ class AcalaNetworkController
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -286,7 +286,7 @@ class AcalaNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }
@@ -466,8 +466,8 @@ class KaruraNetworkController
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -495,7 +495,7 @@ class KaruraNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }

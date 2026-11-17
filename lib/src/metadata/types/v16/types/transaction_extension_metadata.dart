@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/layout/core/core/core.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/extrinsic/signed_extension_metadata.dart';
 

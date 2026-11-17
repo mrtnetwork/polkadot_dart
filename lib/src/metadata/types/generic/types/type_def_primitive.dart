@@ -1,5 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 
 class PrimitiveTypes {
@@ -40,7 +39,7 @@ class PrimitiveTypes {
   static PrimitiveTypes fromValue(String? value) {
     return values.firstWhere(
       (element) => element.name == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse: () => throw BuError(DefaultErrorType.invalidArgument, 'Unknown primitive type "$value".'),
     );
   }
 

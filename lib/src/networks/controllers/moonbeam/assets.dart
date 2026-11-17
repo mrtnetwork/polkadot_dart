@@ -54,7 +54,7 @@ abstract class BaseMoonbeamNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseMoonbeamNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -75,7 +75,7 @@ class MoonbeamNetworkAsset extends BaseMoonbeamNetworkAsset {
   }) : super(
          decimals: asset.decimals,
          isSpendable: true,
-         excutionPallet: SubtrateMetadataPallet.erc20XcmBridge,
+         executionPallet: SubstrateMetadataPallet.erc20XcmBridge,
          minBalance: BigInt.zero,
          name: asset.name,
          symbol: asset.symbol,
@@ -111,7 +111,7 @@ class MoonbeamNetworkNativeAsset extends BaseMoonbeamNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
 
   MoonbeamNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),

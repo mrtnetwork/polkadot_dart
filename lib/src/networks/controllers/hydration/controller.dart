@@ -36,7 +36,10 @@ abstract class BaseHydrationNetworkController<
         await SubstrateNetworkControllerAssetQueryHelper.getAssetRegistryPalletAssetLocationsIdentifierBigInt(
           provider,
           network.defaultXcmVersion,
-          palletXCMVersion: XCMVersion.v3,
+          // Hydration runtime stores assetRegistry locations as XCM V4
+          // (junction arrays, e.g. {"X1": [...]}). Verified live 2026-11-04:
+          // 698/698 entries V4-shaped, V3 parse throws on X1.
+          palletXCMVersion: XCMVersion.v4,
         );
     final metadatas =
         await SubstrateNetworkControllerAssetQueryHelper.tryGetAssetRegistryPalletAssetMetadataMapIdentifierBigInt(
@@ -207,8 +210,8 @@ class HydrationNetworkController
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -222,7 +225,7 @@ class HydrationNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }
@@ -273,8 +276,8 @@ class BasiliskNetworkController
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -288,7 +291,7 @@ class BasiliskNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+      defaultPallet: SubstrateMetadataPallet.polkadotXcm,
       onControllerRequest: onControllerRequest,
     );
   }
@@ -339,8 +342,8 @@ class HydrationPaseoNetworkController
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -354,7 +357,7 @@ class HydrationPaseoNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }

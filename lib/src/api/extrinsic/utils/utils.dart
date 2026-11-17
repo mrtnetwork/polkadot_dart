@@ -1,10 +1,7 @@
-import 'package:blockchain_utils/bip/ecc/curve/elliptic_curve_types.dart';
-import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/utils/json/extension/json.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/extrinsic/dynamic/extrinsic.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 
@@ -35,8 +32,8 @@ class ExtrinsicBuilderUtils {
           e.signatureType != null,
       orElse:
           () =>
-              throw DartSubstratePluginException(
-                'Unsuported metadata extrinsic.',
+              throw BuError(DefaultErrorType.unsupported, 
+                'Unsupported metadata extrinsic.',
               ),
     );
     return buildExtrinsicFields(metadata, extrinsic);
@@ -49,12 +46,12 @@ class ExtrinsicBuilderUtils {
     List<MetadataTypeInfo> payloadTypes = [];
     List<MetadataTypeInfo> extrinsicTypes = [];
     if (extrinsic.addressType == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Failed to find metadata address type.",
       );
     }
     if (extrinsic.signatureType == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Failed to find metadata signature type.",
       );
     }
@@ -254,7 +251,7 @@ class ExtrinsicBuilderUtils {
     if (eth != null) {
       return SubstrateNetworkCryptoInfo(
         type: SubstrateChainType.ethereum,
-        cryptoAlgoritms: [SubstrateKeyAlgorithm.ethereum],
+        cryptoAlgorithms: [SubstrateKeyAlgorithm.ethereum],
         signaturePalletType: SubstrateSignatureEncodingType.signature,
         addressPalletType: SubstrateAddressEncodingType.ethereum,
       );
@@ -264,49 +261,56 @@ class ExtrinsicBuilderUtils {
       extrinsic: extrinsic,
     );
     if (addressType == null) {
-      throw DartSubstratePluginException('Unknown metadata address type.');
+      throw BuError(DefaultErrorType.invalidArgument, 
+        'Unknown metadata address type for extrinsic.',
+      );
     }
-    final cryptoAlgoritms = getMetadataCryptoAlgorithm(
+    final cryptoAlgorithms = getMetadataCryptoAlgorithm(
       metadata: metadata,
       extrinsic: extrinsic,
     );
-    if (cryptoAlgoritms == null || cryptoAlgoritms.isEmpty) {
-      throw DartSubstratePluginException('Unknow metadata crypto type.');
+    if (cryptoAlgorithms == null || cryptoAlgorithms.isEmpty) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        'Unknown metadata crypto type: no crypto algorithm found.',
+      );
     }
     return SubstrateNetworkCryptoInfo(
       type: SubstrateChainType.substrate,
-      cryptoAlgoritms: cryptoAlgoritms,
+      cryptoAlgorithms: cryptoAlgorithms,
       signaturePalletType: SubstrateSignatureEncodingType.substrate,
       addressPalletType: addressType,
     );
   }
 
   static Map<String, dynamic> buildMultiSignatureTemplate({
-    required EllipticCurveTypes algorithm,
+    required CryptoKeyType algorithm,
     required List<int> signature,
   }) {
     switch (algorithm) {
-      case EllipticCurveTypes.ed25519:
+      case CryptoKeyType.ed25519:
         return {"Ed25519": signature};
-      case EllipticCurveTypes.secp256k1:
+      case CryptoKeyType.secp256k1:
         return {"Ecdsa": signature};
-      case EllipticCurveTypes.sr25519:
+      case CryptoKeyType.sr25519:
         return {"Sr25519": signature};
       default:
-        throw DartSubstratePluginException("invalid substrate curve type");
+        throw BuError(DefaultErrorType.invalidArgument, "invalid substrate curve type");
     }
   }
 
-  static List<int> getSignaturePart(Map<String, dynamic> signature) {
+  static BuBytes getSignaturePart(Map<String, dynamic> signature) {
     try {
       if (signature.containsKey("Ed25519")) {
-        return signature.valueAsBytes("Ed25519");
+        final List<int> bytes = signature.valueAsBytes("Ed25519");
+        return bytes.asImmutableBytes;
       } else if (signature.containsKey("Ecdsa")) {
-        return signature.valueAsBytes("Ecdsa");
+        final List<int> bytes = signature.valueAsBytes("Ecdsa");
+        return bytes.asImmutableBytes;
       } else if (signature.containsKey("Sr25519")) {
-        return signature.valueAsBytes("Sr25519");
+        final List<int> bytes = signature.valueAsBytes("Sr25519");
+        return bytes.asImmutableBytes;
       }
     } catch (_) {}
-    throw DartSubstratePluginException("Failed to extract signature part.");
+    throw BuError(DefaultErrorType.invalidArgument, "Failed to extract signature part.");
   }
 }

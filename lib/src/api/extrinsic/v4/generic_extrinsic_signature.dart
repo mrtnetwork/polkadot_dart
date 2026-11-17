@@ -1,5 +1,4 @@
-import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/generic/models/era.dart';
 import 'package:polkadot_dart/src/models/generic/models/multi_address.dart';
 import 'package:polkadot_dart/src/models/generic/models/signature.dart';
@@ -96,7 +95,7 @@ class ExtrinsicSignature extends BaseExtrinsicSignature {
 }
 
 class AssetExtrinsicSignature extends ExtrinsicSignature {
-  final List<int>? asset;
+  final BuBytes? asset;
   AssetExtrinsicSignature({
     required super.signature,
     required super.address,
@@ -105,7 +104,7 @@ class AssetExtrinsicSignature extends ExtrinsicSignature {
     required super.nonce,
     super.mode = 0,
     List<int>? asset,
-  }) : asset = asset?.immutable;
+  }) : asset = asset?.asImmutableBytes;
   static StructLayout layout_({String? property}) {
     return LayoutConst.struct([
       SubstrateMultiAddress.layout_(property: "address"),

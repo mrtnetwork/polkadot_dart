@@ -181,7 +181,7 @@ class XodeNetworkController extends BaseXodeNetworkController<PolkadotNetwork> {
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 
@@ -207,7 +207,7 @@ class XodeNetworkController extends BaseXodeNetworkController<PolkadotNetwork> {
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

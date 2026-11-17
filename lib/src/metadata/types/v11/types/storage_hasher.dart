@@ -1,9 +1,5 @@
-import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/core/storage_hasher.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
@@ -54,7 +50,11 @@ class StorageHasherV11Options implements StorageHasher {
   static StorageHasherV11Options fromValue(String? value) {
     return values.firstWhere(
       (element) => element.name == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown StorageHasherV11Options value "$value".',
+              ),
     );
   }
 
@@ -77,8 +77,8 @@ class StorageHasherV11Options implements StorageHasher {
       case StorageHasherV11Options.twox64Concat:
         return [...QuickCrypto.twoX64(toBytes), ...toBytes];
       default:
-        throw MetadataException(
-          "Invalid Hasher option v11",
+        throw BuError(DefaultErrorType.invalidArgument, 
+          "Invalid hasher option for v11.",
           details: {"hasher": name},
         );
     }

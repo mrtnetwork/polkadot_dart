@@ -109,8 +109,8 @@ class PendulumStellarAssetNative extends BasePendulumAssetStellar {
 }
 
 class PendulumStellarAssetAlphaNum4 extends BasePendulumAssetStellar {
-  final List<int> issuer;
-  final List<int> code;
+  final BuBytes issuer;
+  final BuBytes code;
   PendulumStellarAssetAlphaNum4({
     required List<int> issuer,
     required List<int> code,
@@ -147,8 +147,8 @@ class PendulumStellarAssetAlphaNum4 extends BasePendulumAssetStellar {
 }
 
 class PendulumStellarAssetAlphaNum12 extends BasePendulumAssetStellar {
-  final List<int> issuer;
-  final List<int> code;
+  final BuBytes issuer;
+  final BuBytes code;
   PendulumStellarAssetAlphaNum12({
     required List<int> issuer,
     required List<int> code,
@@ -222,6 +222,11 @@ class PendulumAssetZenlinkLPToken extends BasePendulumAsset {
     final data = json.valueEnsureAsList<int>(
       PendulumAssetType.zenlinkLPToken.type,
     );
+    if (data.length < 4) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid zenlink LP token asset: expected 4 elements, received ${data.length}.",
+      );
+    }
     return PendulumAssetZenlinkLPToken(
       a: data[0],
       b: data[1],
@@ -373,7 +378,7 @@ abstract class BasePendulumNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BasePendulumNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -397,7 +402,7 @@ class PendulumNetworkAsset extends BasePendulumNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.currencies,
+         executionPallet: SubstrateMetadataPallet.currencies,
        );
   factory PendulumNetworkAsset.fromJson(Map<String, dynamic> json) {
     return PendulumNetworkAsset(
@@ -446,7 +451,7 @@ class PendulumNetworkNativeAsset extends BasePendulumNetworkAsset {
         name: metadata?.name,
         symbol: metadata?.symbol,
         decimals: metadata?.decimals,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
   factory PendulumNetworkNativeAsset.fromJson(Map<String, dynamic> json) {
     return PendulumNetworkNativeAsset(

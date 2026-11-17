@@ -1,10 +1,9 @@
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/models/generic/models/weight.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
-/// Returns the metadata at a given version
-/// https://polkadot.js.org/docs/substrate/runtime/#metadata
+/// Converts a weight to a fee in the given asset (XcmPaymentApi `query_weight_to_asset_fee`).
 class SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee
     extends SubstrateRequest<String, String> {
   const SubstrateRequestRuntimeXCMPaymentApiQueryWeightToAssetFee({

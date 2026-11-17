@@ -1,4 +1,5 @@
 export 'core/keypair.dart';
+export 'core/signer.dart';
 export 'substrate/private_key.dart';
 export 'substrate/public_key.dart';
 export 'ethereum/private_key.dart';

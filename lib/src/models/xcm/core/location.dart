@@ -1,5 +1,4 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/core/asset.dart';
 import 'package:polkadot_dart/src/models/xcm/core/junction.dart';
 import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
@@ -16,7 +15,11 @@ abstract class XCMMultiLocation
 
   T cast<T extends XCMMultiLocation>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -135,7 +138,11 @@ abstract class XCMMultiLocation
   XCMMultiLocation withParachain(int paraId) {
     if (parents != 0 ||
         interior.junctions.any((e) => e.type == XCMJunctionType.parachain)) {
-      throw DartSubstratePluginException("Failed to convert location.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Failed to convert location: already has parents or a parachain junction.",
+        details: {"parents": parents.toString()},
+      );
     }
     final para = XCMJunctionParaChain.fromVersion(id: paraId, version: version);
     final junctions = XCMJunctions.fromVersion(

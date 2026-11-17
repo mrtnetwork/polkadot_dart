@@ -1,5 +1,5 @@
 import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/versioned/pallet/metadata.dart';
 
@@ -9,6 +9,7 @@ import 'pallet_call_metadata_v16.dart';
 import 'pallet_constant_v16.dart';
 import 'pallet_error_v16.dart';
 import 'pallet_event_v16.dart';
+import 'pallet_view_function_metadata.dart';
 import 'storage_metadata_v16.dart';
 
 class PalletMetadataV16
@@ -35,6 +36,9 @@ class PalletMetadataV16
   /// Config's trait associated types.
   final List<PalletAssociatedTypeMetadata> associatedTypes;
 
+  /// Pallet view functions metadata.
+  final List<PalletViewFunctionMetadata> viewFunctions;
+
   /// Deprecation info
   final DeprecationStatus deprecationInfo;
   PalletMetadataV16.deserializeJson(super.json)
@@ -54,6 +58,10 @@ class PalletMetadataV16
           (json["associated_types"] as List)
               .map((e) => PalletAssociatedTypeMetadata.deserializeJson(e))
               .toImutableList,
+      viewFunctions =
+          (json["view_functions"] as List)
+              .map((e) => PalletViewFunctionMetadata.deserializeJson(e))
+              .toImutableList,
       events =
           json["events"] == null
               ? null
@@ -70,6 +78,7 @@ class PalletMetadataV16
     required super.name,
     required List<PalletConstantMetadataV16> constants,
     required List<PalletAssociatedTypeMetadata> associatedTypes,
+    required List<PalletViewFunctionMetadata> viewFunctions,
     required super.index,
     this.calls,
     this.errors,
@@ -78,7 +87,8 @@ class PalletMetadataV16
     required this.deprecationInfo,
     required List<String> super.docs,
   }) : constants = constants.immutable,
-       associatedTypes = associatedTypes.immutable;
+       associatedTypes = associatedTypes.immutable,
+       viewFunctions = viewFunctions.immutable;
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
@@ -92,6 +102,7 @@ class PalletMetadataV16
       "docs": docs ?? <String>[],
       "associated_types":
           associatedTypes.map((e) => e.serializeJson()).toList(),
+      "view_functions": viewFunctions.map((e) => e.serializeJson()).toList(),
       "deprecation_info": deprecationInfo.serializeJsonVariant(),
     };
   }

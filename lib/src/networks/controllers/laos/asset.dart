@@ -11,7 +11,7 @@ abstract class BaseLaosNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseLaosNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -29,7 +29,7 @@ class LaosnetNetworkNativeAsset extends BaseLaosNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
   LaosnetNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
       super.fromJson();

@@ -2,8 +2,7 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/api.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 import 'package:polkadot_dart/src/networks/networks.dart';
 
 /// Utility class for Substrate network operations, mainly for XCM and location handling.
@@ -44,7 +43,9 @@ class SubstrateNetworkControllerUtils {
       }
       if (CompareUtils.iterableIsEqual(
         a.interior.junctions,
-        b.interior.junctions.sublist(1),
+        b.interior.junctions.isEmpty
+            ? b.interior.junctions
+            : b.interior.junctions.sublist(1),
       )) {
         return true;
       }
@@ -56,7 +57,9 @@ class SubstrateNetworkControllerUtils {
       }
       if (CompareUtils.iterableIsEqual(
         b.interior.junctions,
-        a.interior.junctions.sublist(1),
+        a.interior.junctions.isEmpty
+            ? a.interior.junctions
+            : a.interior.junctions.sublist(1),
       )) {
         return true;
       }
@@ -91,14 +94,14 @@ class SubstrateNetworkControllerUtils {
     if (network != null) {
       final chainType = network.chainType;
       if (chainType.isEthereum != address.type.isEthereum) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Invalid ${network.networkName} address.",
         );
       }
       if (address is SubstrateAddress) {
         if (address.ss58Format != network.ss58) {
-          throw DartSubstratePluginException(
-            "Invalid ${network.networkName} address. Missmatch ssh58.",
+          throw BuError(DefaultErrorType.invalidAddress, 
+            "Invalid ${network.networkName} address: SS58 format mismatch (expected ${network.ss58}, received ${address.ss58Format}).",
             details: {"address": address.address},
           );
         }
@@ -116,7 +119,7 @@ class SubstrateNetworkControllerUtils {
     };
   }
 
-  /// Creates a XCMMultiLocation for a beneficiary address.
+  /// Creates an XCMMultiLocation for a beneficiary address.
   static XCMMultiLocation createBeneficiaryLocation({
     required BaseSubstrateAddress address,
     required XCMVersion version,
@@ -170,8 +173,8 @@ class SubstrateNetworkControllerUtils {
     }
     final paraId = reserveLocation.getParachain()?.id;
     if (paraId == null) {
-      throw DartSubstratePluginException(
-        "Invalid reserve location. Missing location para Id.",
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid reserve location: missing parachain ID junction.",
       );
     }
     if (location.hasParachain(paraId)) {
@@ -203,8 +206,8 @@ class SubstrateNetworkControllerUtils {
     required XCMVersion version,
   }) {
     if (reserveNetwork == null && reserveLocation == null) {
-      throw DartSubstratePluginException(
-        "Localize location required network or reserve location.",
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Localizing location requires a reserve network or reserve location.",
       );
     }
     return _localizeFor(
@@ -225,13 +228,13 @@ class SubstrateNetworkControllerUtils {
     BaseSubstrateAddress? address,
   }) {
     if (origin == null && originlocation == null) {
-      throw DartSubstratePluginException(
-        "origin network or location required for create destination location.",
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Origin network or location required for creating destination location.",
       );
     }
     if (destination == null && destinationLocation == null) {
-      throw DartSubstratePluginException(
-        "destination network or location required for create destination location.",
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Destination network or location required for creating destination location.",
       );
     }
     originlocation ??= origin!.location(version: version);
@@ -315,7 +318,9 @@ class SubstrateNetworkControllerUtils {
       return location;
     }
     if (location.getParachain() != null) {
-      throw DartSubstratePluginException("Invalid location.");
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid location: foreign location must not contain a parachain junction.",
+      );
     }
     return location.copyWith(
       parents: 1,
@@ -499,27 +504,27 @@ class SubstrateNetworkControllerUtils {
   static String? findSendXCMMessageId({
     required BaseSubstrateNetwork network,
     required SubstrateGroupEvents events,
-    required SubtrateMetadataPallet transferPallet,
+    required SubstrateMetadataPallet transferPallet,
   }) {
     /// XcmpQueue
     return events.firstWhereOrNull(
       (event) {
-        final pallet = SubtrateMetadataPallet.fromName(event.pallet);
+        final pallet = SubstrateMetadataPallet.fromName(event.pallet);
         switch (pallet) {
-          case SubtrateMetadataPallet.xcmPallet:
-          case SubtrateMetadataPallet.polkadotXcm:
+          case SubstrateMetadataPallet.xcmPallet:
+          case SubstrateMetadataPallet.polkadotXcm:
             final data = event.tryInputAs<Map<String, dynamic>>();
             return data?.valueAsString("message_id");
-          case SubtrateMetadataPallet.xcmpQueue:
+          case SubstrateMetadataPallet.xcmpQueue:
             return event.tryInputAs<String>();
           default:
             return null;
         }
       },
       pallets: [
-        SubtrateMetadataPallet.xcmPallet.name,
-        SubtrateMetadataPallet.polkadotXcm.name,
-        SubtrateMetadataPallet.xcmpQueue.name,
+        SubstrateMetadataPallet.xcmPallet.name,
+        SubstrateMetadataPallet.polkadotXcm.name,
+        SubstrateMetadataPallet.xcmpQueue.name,
       ],
     );
   }
@@ -532,36 +537,36 @@ class SubstrateNetworkControllerUtils {
     final String account = params.params.destinationAddress.toHex();
     return events.where(
       (event) {
-        final pallet = SubtrateMetadataPallet.fromName(event.pallet);
+        final pallet = SubstrateMetadataPallet.fromName(event.pallet);
         final deposit = switch (pallet) {
-          SubtrateMetadataPallet.assets =>
+          SubstrateMetadataPallet.assets =>
             SubstrateAssetsDepositedEvent.fromJson(
               event.inputAs<Map<String, dynamic>>(),
             ),
-          SubtrateMetadataPallet.tokens =>
+          SubstrateMetadataPallet.tokens =>
             SubstrateTokensDepositedEvent.fromJson(
               event.inputAs<Map<String, dynamic>>(),
             ),
-          SubtrateMetadataPallet.xTransfer =>
+          SubstrateMetadataPallet.xTransfer =>
             SubstrateXTransferDepositedEvent.fromJson(
               event.inputAs<Map<String, dynamic>>(),
             ),
-          SubtrateMetadataPallet.currencies =>
+          SubstrateMetadataPallet.currencies =>
             SubstrateCurrenciesDepositedEvent.fromJson(
               event.inputAs<Map<String, dynamic>>(),
             ),
-          SubtrateMetadataPallet.balances =>
+          SubstrateMetadataPallet.balances =>
             SubstrateBalancesMintedEvent.fromJson(
               event.inputAs<Map<String, dynamic>>(),
             ),
-          SubtrateMetadataPallet.foreignAssets =>
+          SubstrateMetadataPallet.foreignAssets =>
             SubstrateForeignAssetsDepositedEvent.fromJson(
               event.inputAs<Map<String, dynamic>>(),
             ),
-          SubtrateMetadataPallet.evm => SubstrateEthereumEvmLogEvent.fromJson(
+          SubstrateMetadataPallet.evm => SubstrateEthereumEvmLogEvent.fromJson(
             event.inputAs<Map<String, dynamic>>(),
           ),
-          SubtrateMetadataPallet.common =>
+          SubstrateMetadataPallet.common =>
             SubstrateCommonItemCreatedEvent.itemCreated(event.inputAs<List>()),
           _ => null,
         };

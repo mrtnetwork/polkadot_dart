@@ -190,8 +190,8 @@ class KILTSpiritnetNetworkController
       network: network,
       pallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -205,7 +205,7 @@ class KILTSpiritnetNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }

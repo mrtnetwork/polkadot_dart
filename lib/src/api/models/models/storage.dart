@@ -1,7 +1,4 @@
-import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/utils/utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 
 typedef CbOnStorageResponseBytes<T extends Object?> =
     T Function(List<int> response, StorageKey storageKey);
@@ -30,11 +27,11 @@ class StorageChangeStateResponse {
         Map<String, String?>.fromEntries(
           changes.map((e) {
             if (e.length != 2 || e[0] == null) {
-              throw MetadataException(
-                "Invalid StorageChangeState response. response must be list with two string object",
+              throw BuError(DefaultErrorType.invalidArgument, 
+                "Invalid StorageChangeState response. Response must be a list of two string objects.",
                 details: {
                   "length": e.length.toString(),
-                  "value": e.toString(),
+                  "value": e.join(", "),
                   "storage_key": e.isEmpty ? null : e[0],
                 },
               );
@@ -43,10 +40,10 @@ class StorageChangeStateResponse {
           }),
         ),
       );
-  List<int>? getValue(String key) {
+  BuBytes? getValue(String key) {
     final val = changes[key];
     if (val == null) return null;
-    return BytesUtils.fromHexString(val);
+    return BytesUtils.fromHexString(val).asImmutableBytes;
   }
 }
 
@@ -61,7 +58,7 @@ class QueryStorageRequestBlock {
           (element) => element.request.identifier == identifier,
           orElse:
               () =>
-                  throw MetadataException(
+                  throw BuError(DefaultErrorType.notFound, 
                     "An identifier does not exist.",
                     details: {
                       "identifier": identifier.toString(),
@@ -107,9 +104,9 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
       if (onNullResponse != null) {
         return onNullResponse!(storageKey);
       }
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         'Unexpected response type.',
-        details: {"excpected": "$RESPONSE", "value": 'Null'},
+        details: {"expected": "$RESPONSE", "value": 'Null'},
       );
     }
     final onBytesResponse = this.onBytesResponse;
@@ -117,9 +114,9 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
     final json = decode();
     if (json == null) {
       if (null is RESPONSE) return null as RESPONSE;
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         'Unexpected response type.',
-        details: {"excpected": "$RESPONSE", "value": 'Null'},
+        details: {"expected": "$RESPONSE", "value": 'Null'},
       );
     }
     final onJsonResponse = this.onJsonResponse;
@@ -128,9 +125,9 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
       try {
         data = JsonParser.valueAs<JSON>(json);
       } catch (_) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           'Unexpected response type.',
-          details: {"excpected": "$JSON", "value": json.runtimeType.toString()},
+          details: {"expected": "$JSON", "value": json.runtimeType.toString()},
         );
       }
       return onJsonResponse(data, bytes, storageKey);
@@ -139,10 +136,10 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
     try {
       data = JsonParser.valueAs<RESPONSE>(json);
     } catch (_) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         'Unexpected response type.',
         details: {
-          "excpected": "$RESPONSE",
+          "expected": "$RESPONSE",
           "value": json.runtimeType.toString(),
         },
       );
@@ -210,13 +207,18 @@ class GetStorageEntriesRequest<RESPONSE extends Object?, JSON extends Object>
     CbOnStorageResponseBytes<RESPONSE>? onBytesResponse,
     CbOnStorageResponseJson<RESPONSE, JSON>? onJsonResponse,
   }) {
-    assert(count > 0, "invalid paged request count");
-    assert(
-      (storageKey == null && inputs == null) ||
-          (storageKey != null && inputs == null) ||
-          (storageKey == null && inputs != null),
-      "use input or storageKey for create or query from key or leaves them null for generate from pallet and method name",
-    );
+    if (count <= 0) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid paged request count: must be greater than zero.",
+      );
+    }
+    if (!((storageKey == null && inputs == null) ||
+        (storageKey != null && inputs == null) ||
+        (storageKey == null && inputs != null))) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid paged request: provide either inputs or storageKey (not both) to build the key, or neither to generate it from pallet and method name.",
+      );
+    }
     return GetStorageEntriesRequest._(
       palletNameOrIndex: palletNameOrIndex,
       methodName: methodName,
@@ -272,7 +274,9 @@ class QueryStorageResponses<T extends Object?> {
     int index,
   ) {
     if (index >= results.length) {
-      throw DartSubstratePluginException('Index out of reange.');
+      throw BuError(DefaultErrorType.invalidArgument, 
+        'Index out of range: index $index, ${results.length} results.',
+      );
     }
     final query = results.elementAt(index);
     final result = query.result;
@@ -280,10 +284,10 @@ class QueryStorageResponses<T extends Object?> {
     try {
       response = result as RESPONSE;
     } catch (_) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         'Unexpected response type.',
         details: {
-          "excpected": "$RESPONSE",
+          "expected": "$RESPONSE",
           "value": result.runtimeType.toString(),
         },
       );
@@ -314,14 +318,14 @@ class QueryStorageRequest<T> {
 
 /// the storage key of storage method without inputs
 class MethodStorageKey {
-  final List<int> keyBytes;
+  final BuBytes keyBytes;
   late String keyHex = BytesUtils.toHexString(keyBytes, prefix: "0x");
   MethodStorageKey({required List<int> keyBytes})
-    : keyBytes = keyBytes.immutable;
+    : keyBytes = keyBytes.asImmutableBytes;
 }
 
 class StorageKeyInput {
-  final List<int>? encodedInput;
+  final BuBytes? encodedInput;
 
   final Object? input;
   StorageKeyInput({List<int>? encodedInput, this.input})
@@ -344,7 +348,9 @@ class StorageKey {
 
   void _checkIndex(int index) {
     if (index >= inputs.length) {
-      throw DartSubstratePluginException("Invalid input index.");
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid storage input index $index: only ${inputs.length} inputs.",
+      );
     }
   }
 
@@ -355,7 +361,7 @@ class StorageKey {
       allowHex: false,
     );
     if (result == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Failed to cast input as BigInt.",
         details: {
           "input": inputs.elementAt(index).input.runtimeType.toString(),
@@ -369,9 +375,9 @@ class StorageKey {
     _checkIndex(index);
     final result = inputs.elementAt(index).input;
     if (result is! T) {
-      throw DartSubstratePluginException(
-        "Failed to cast input.",
-        details: {"excepted": "$T", "input": result.runtimeType.toString()},
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Failed to cast storage input $index as $T.",
+        details: {"expected": "$T", "input": result.runtimeType.toString()},
       );
     }
     return result;
@@ -384,7 +390,7 @@ class StorageKey {
       allowHex: false,
     );
     if (result == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Failed to cast input as Int.",
         details: {
           "input": inputs.elementAt(index).input.runtimeType.toString(),
@@ -394,11 +400,13 @@ class StorageKey {
     return result;
   }
 
-  List<int> encodedInput(int index) {
+  BuBytes encodedInput(int index) {
     _checkIndex(index);
     final result = inputs.elementAt(index).encodedInput;
     if (result == null) {
-      throw DartSubstratePluginException("Missing encoded input.");
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Missing encoded storage input $index.",
+      );
     }
     return result;
   }
@@ -410,8 +418,8 @@ class StorageKey {
     try {
       return Map<K, V>.from(input as Map);
     } catch (_) {}
-    throw DartSubstratePluginException(
-      "Failed to cast input as ${Map<K, V>}.",
+    throw BuError(DefaultErrorType.invalidArgument, 
+      "Failed to cast storage input $index as Map<$K, $V>.",
       details: {"input": inputs.elementAt(index).input.runtimeType.toString()},
     );
   }
@@ -422,13 +430,13 @@ class QueryStorageFullResponse<T extends Object?> {
   final StorageKey storageKey;
 
   /// response bytes
-  final List<int>? responseBytes;
+  final BuBytes? responseBytes;
 
   /// decoded response.
   final T response;
-  const QueryStorageFullResponse({
+  QueryStorageFullResponse({
     required this.storageKey,
-    required this.responseBytes,
+    required List<int>? responseBytes,
     required this.response,
-  });
+  }) : responseBytes = responseBytes?.asImmutableBytes;
 }

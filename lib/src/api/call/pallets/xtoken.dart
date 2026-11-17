@@ -1,7 +1,8 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
+
 
 enum XTokenCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   transfer("transfer", 0),
@@ -38,14 +39,22 @@ enum XTokenCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   static XTokenCallPalletMethod fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XTokenCallPalletMethod name "$name".',
+              ),
     );
   }
 
   static XTokenCallPalletMethod fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XTokenCallPalletMethod method "$method".',
+              ),
     );
   }
 }
@@ -57,7 +66,7 @@ abstract class XTokenCallPallet
   @override
   final XTokenCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class XTokenCallPalletTransfer extends XTokenCallPallet {
@@ -73,11 +82,11 @@ class XTokenCallPalletTransfer extends XTokenCallPallet {
     required this.amount,
     required this.dest,
     required this.destWeightLimit,
-    super.pallet = SubtrateMetadataPallet.xTokens,
+    super.pallet = SubstrateMetadataPallet.xTokens,
   }) : super(type: XTokenCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -112,11 +121,11 @@ class XTokenCallPalletTransferMultiAsset extends XTokenCallPallet {
     required this.asset,
     required this.dest,
     required this.destWeightLimit,
-    super.pallet = SubtrateMetadataPallet.xTokens,
+    super.pallet = SubstrateMetadataPallet.xTokens,
   }) : super(type: XTokenCallPalletMethod.transferMultiasset);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -154,11 +163,11 @@ class XTokenCallPalletTransferWithFee extends XTokenCallPallet {
     required this.dest,
     required this.destWeightLimit,
     required this.fee,
-    super.pallet = SubtrateMetadataPallet.xTokens,
+    super.pallet = SubstrateMetadataPallet.xTokens,
   }) : super(type: XTokenCallPalletMethod.transferWithFee);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -195,11 +204,11 @@ class XTokenCallPalletTransferMultiAssetWithFee extends XTokenCallPallet {
     required this.dest,
     required this.destWeightLimit,
     required this.fee,
-    super.pallet = SubtrateMetadataPallet.xTokens,
+    super.pallet = SubstrateMetadataPallet.xTokens,
   }) : super(type: XTokenCallPalletMethod.transferMultiassetWithFee);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -244,11 +253,11 @@ class XTokenCallPalletTransferMulticurrencies extends XTokenCallPallet {
     required this.dest,
     required this.destWeightLimit,
     required this.feeItem,
-    super.pallet = SubtrateMetadataPallet.xTokens,
+    super.pallet = SubstrateMetadataPallet.xTokens,
   }) : super(type: XTokenCallPalletMethod.transferMulticurrencies);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -284,11 +293,11 @@ class XTokenCallPalletTransferMultiAssets extends XTokenCallPallet {
     required this.dest,
     required this.destWeightLimit,
     required this.feeItem,
-    super.pallet = SubtrateMetadataPallet.xTokens,
+    super.pallet = SubstrateMetadataPallet.xTokens,
   }) : super(type: XTokenCallPalletMethod.transferMultiassets);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

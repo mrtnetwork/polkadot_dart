@@ -19,7 +19,7 @@ class SubstrateRequestChainGetBlock
   }
 
   @override
-  SubstrateGetBlockResponse onResonse(Map<String, dynamic> result) {
+  SubstrateGetBlockResponse onResponse(Map<String, dynamic> result) {
     return SubstrateGetBlockResponse.fromJson(result);
   }
 }

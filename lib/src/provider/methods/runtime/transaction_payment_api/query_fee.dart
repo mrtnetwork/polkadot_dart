@@ -1,11 +1,10 @@
-import 'package:blockchain_utils/layout/constant/constant.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/provider/core/core/base.dart';
 import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 import 'package:polkadot_dart/src/provider/models/runtime/query_info.dart';
 
-/// Returns the metadata at a given version
-/// https://polkadot.js.org/docs/substrate/runtime/#metadata
+/// Returns fee details for an extrinsic (TransactionPaymentApi `query_info`).
 class SubstrateRequestRuntimeTransactionPaymentApiQueryInfo
     extends SubstrateRequest<String, QueryFeeInfo> {
   const SubstrateRequestRuntimeTransactionPaymentApiQueryInfo({
@@ -13,11 +12,11 @@ class SubstrateRequestRuntimeTransactionPaymentApiQueryInfo
     this.atBlockHash,
   });
   factory SubstrateRequestRuntimeTransactionPaymentApiQueryInfo.fromExtrinsic({
-    required List<int> exirceBytes,
+    required List<int> extrinsicBytes,
     String? atBlockHash,
   }) {
-    final length = LayoutConst.u32().serialize(exirceBytes.length);
-    final data = [...exirceBytes, ...length];
+    final length = LayoutConst.u32().serialize(extrinsicBytes.length);
+    final data = [...extrinsicBytes, ...length];
     return SubstrateRequestRuntimeTransactionPaymentApiQueryInfo(
       data: BytesUtils.toHexString(data, prefix: "0x"),
       atBlockHash: atBlockHash,
@@ -36,7 +35,7 @@ class SubstrateRequestRuntimeTransactionPaymentApiQueryInfo
   }
 
   @override
-  QueryFeeInfo onResonse(String result) {
+  QueryFeeInfo onResponse(String result) {
     return QueryFeeInfo.deserialize(BytesUtils.fromHexString(result));
   }
 }

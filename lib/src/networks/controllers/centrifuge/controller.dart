@@ -187,7 +187,7 @@ class CentrifugeNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -201,7 +201,7 @@ class CentrifugeNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -218,7 +218,7 @@ class CentrifugeNetworkController
       params: params,
       provider: provider,
       network: network,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       useTypeAndThen: false,
       onControllerRequest: onControllerRequest,
     );

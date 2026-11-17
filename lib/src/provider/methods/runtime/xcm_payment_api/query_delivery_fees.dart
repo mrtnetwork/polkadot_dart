@@ -1,7 +1,6 @@
 import 'package:polkadot_dart/src/provider/core/core.dart';
 
-/// Returns the metadata at a given version
-/// https://polkadot.js.org/docs/substrate/runtime/#metadata
+/// Returns delivery fees for an XCM message (XcmPaymentApi `query_delivery_fees`).
 class SubstrateRequestRuntimeXCMPaymentApiQueryDeliveryFees
     extends SubstrateRequest<String, String> {
   const SubstrateRequestRuntimeXCMPaymentApiQueryDeliveryFees({

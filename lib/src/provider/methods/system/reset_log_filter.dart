@@ -17,7 +17,7 @@ class SubstrateRequestSystemResetLogFilter
   }
 
   @override
-  Null onResonse(Null result) {
+  Null onResponse(Null result) {
     return null;
   }
 }

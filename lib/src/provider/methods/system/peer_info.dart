@@ -18,7 +18,7 @@ class SubstrateRequestSystemPeers
   }
 
   @override
-  List<PeerInfo> onResonse(List<Map<String, dynamic>> result) {
+  List<PeerInfo> onResponse(List<Map<String, dynamic>> result) {
     return result.map((e) => PeerInfo.fromJson(e)).toList();
   }
 }

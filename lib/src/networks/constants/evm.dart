@@ -1,13 +1,12 @@
-import 'package:blockchain_utils/utils/numbers/utils/bigint_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/networks/types/types/evm.dart';
 
-class SubstratemEVMNetworkUtils {
+class SubstrateEVMNetworkUtils {
   static const erc20TransferSignature =
       "ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
   static void _ensureResponseLength(List<Object> response, int length) {
     if (response.length != length) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "ABI function returned unexpected number of items.",
       );
     }
@@ -30,7 +29,7 @@ class SubstratemEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = response.first;
       if (result is! String) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "ABI function returned invalid type.",
         );
       }
@@ -55,7 +54,7 @@ class SubstratemEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = response.first;
       if (result is! String) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "ABI function returned invalid type.",
         );
       }
@@ -80,7 +79,7 @@ class SubstratemEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = BigintUtils.tryParse(response.first, allowHex: true);
       if (result == null) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "ABI function returned invalid type.",
         );
       }
@@ -107,7 +106,7 @@ class SubstratemEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = BigintUtils.tryParse(response.first, allowHex: true);
       if (result == null) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "ABI function returned invalid type.",
         );
       }

@@ -22,8 +22,7 @@ class MetadataConstant {
 
   static const List<int> supportRuntimeApi = [15, 16];
 
-  /// unsuported template
-  static const List<String> unsuportedTemplatePath = [
+  static const List<String> unsupportedTemplatePath = [
     "RuntimeCall",
     "Instruction",
   ];

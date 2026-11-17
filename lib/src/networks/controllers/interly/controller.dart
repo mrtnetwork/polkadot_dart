@@ -328,7 +328,7 @@ class InterlayNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -357,8 +357,8 @@ class InterlayNetworkController
       useTypeAndThen: false,
       defaultPallet:
           params.isLocalAssets
-              ? SubtrateMetadataPallet.polkadotXcm
-              : SubtrateMetadataPallet.xTokens,
+              ? SubstrateMetadataPallet.polkadotXcm
+              : SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }
@@ -493,7 +493,7 @@ class KintsugiNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.xTokens,
+      pallet: SubstrateMetadataPallet.xTokens,
     );
   }
 
@@ -522,7 +522,7 @@ class KintsugiNetworkController
       provider: provider,
       network: network,
       useTypeAndThen: false,
-      defaultPallet: SubtrateMetadataPallet.xTokens,
+      defaultPallet: SubstrateMetadataPallet.xTokens,
       onControllerRequest: onControllerRequest,
     );
   }

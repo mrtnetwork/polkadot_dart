@@ -1,7 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
@@ -27,13 +26,13 @@ typedef ONREQUESTNETWORKPROVIDER =
 
 /// Internal helper for building XCM transfer calls; do not use directly.
 abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
-  static SubtrateMetadataPallet findXcmPallet(MetadataWithProvider provider) {
+  static SubstrateMetadataPallet findXcmPallet(MetadataWithProvider provider) {
     if (provider.metadata.api.palletExists(
-      SubtrateMetadataPallet.xcmPallet.name,
+      SubstrateMetadataPallet.xcmPallet.name,
     )) {
-      return SubtrateMetadataPallet.xcmPallet;
+      return SubstrateMetadataPallet.xcmPallet;
     }
-    return SubtrateMetadataPallet.polkadotXcm;
+    return SubstrateMetadataPallet.polkadotXcm;
   }
 
   static List<SubstrateCallPalletXCMTransferMethod>
@@ -41,10 +40,10 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     final xcmPallet = findXcmPallet(provider);
     final xcmMethods = provider.metadata.api.getCallMethodNames(xcmPallet.name);
     final xTokenMethod = provider.metadata.api.getCallMethodNames(
-      SubtrateMetadataPallet.xTokens.name,
+      SubstrateMetadataPallet.xTokens.name,
     );
     final xTransfer = provider.metadata.api.getCallMethodNames(
-      SubtrateMetadataPallet.xTransfer.name,
+      SubstrateMetadataPallet.xTransfer.name,
     );
     return [
       ...XCMCallPalletMethod.values.where((e) => xcmMethods.contains(e.method)),
@@ -71,13 +70,13 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       }(),
       final XTokenCallPalletMethod method => () {
         final xTokenMethod = provider.metadata.api.getCallMethodNames(
-          SubtrateMetadataPallet.xTokens.name,
+          SubstrateMetadataPallet.xTokens.name,
         );
         return xTokenMethod.contains(method.method);
       }(),
       final XTransferCallPalletMethod method => () {
         final xTokenMethod = provider.metadata.api.getCallMethodNames(
-          SubtrateMetadataPallet.xTransfer.name,
+          SubstrateMetadataPallet.xTransfer.name,
         );
         return xTokenMethod.contains(method.method);
       }(),
@@ -91,7 +90,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     }
     if (weight != null) {
       if (weight.version != version) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Invalid weight limit version.",
           details: {"expected": version.type, "version": weight.version.type},
         );
@@ -115,7 +114,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       method: SubstrateRuntimeApiXCMPaymentMethods.queryXcmWeight,
       api: provier.metadata.api,
     )) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidState, 
         "XCM payment API method not available.",
       );
     }
@@ -126,7 +125,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           xcm: xcm,
         );
     if (!queryXcmWeight.type.isOk) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Failed to calculate XCM execution weight.",
         details: {
           "error":
@@ -142,7 +141,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       asset: asset.asVersioned(),
     );
     if (!fee.type.isOk) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Failed to calculate XCM fee for given weight.",
         details: {"error": fee.cast<SubstrateDispatchResultError>().error.type},
       );
@@ -189,10 +188,15 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
             )
             .toList();
     if (assetsTypes.toSet().length != 1) {
-      throw DartSubstratePluginException("Multiple reserve not allowed.");
+      if (assetsTypes.isEmpty) {
+        throw BuError(DefaultErrorType.invalidArgument, 
+          "At least one transfer asset is required.",
+        );
+      }
+      throw BuError(DefaultErrorType.invalidArgument, "Multiple reserve not allowed.");
     }
     if (!params.hasRelayAsset) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.unsupported, 
         "This operation is only allowed for transfer relay chain asset.",
       );
     }
@@ -270,14 +274,14 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
   }
 
   static XCMCallPalletMethod _findTeleportMethod({
-    required SubtrateMetadataPallet pallet,
+    required SubstrateMetadataPallet pallet,
     required MetadataWithProvider provider,
     required WeightLimit? weight,
   }) {
     final methods = provider.metadata.api.getCallMethodNames(pallet.name);
     if (weight != null) {
       if (!methods.contains(XCMCallPalletMethod.limitedTeleportAssets.method)) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.unsupported, 
           "${pallet.name} not supported by ${XCMCallPalletMethod.limitedTeleportAssets.method} pallet.",
         );
       }
@@ -289,13 +293,13 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     if (methods.contains(pallet.name)) {
       return XCMCallPalletMethod.teleportAssets;
     }
-    throw DartSubstratePluginException(
+    throw BuError(DefaultErrorType.unsupported, 
       "No teleport asset method available in ${pallet.name} pallet.",
     );
   }
 
   static XCMCallPalletMethod _findReserveTransferMethod({
-    required SubtrateMetadataPallet pallet,
+    required SubstrateMetadataPallet pallet,
     required MetadataWithProvider provider,
     required WeightLimit? weight,
   }) {
@@ -304,7 +308,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       if (!methods.contains(
         XCMCallPalletMethod.limitedReserveTransferAssets.method,
       )) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.unsupported, 
           "${pallet.name} not supported by ${XCMCallPalletMethod.limitedReserveTransferAssets.method} pallet.",
         );
       }
@@ -318,7 +322,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     if (methods.contains(XCMCallPalletMethod.reserveTransferAssets.method)) {
       return XCMCallPalletMethod.reserveTransferAssets;
     }
-    throw DartSubstratePluginException(
+    throw BuError(DefaultErrorType.unsupported, 
       "No teleport asset method available in ${pallet.name} pallet.",
     );
   }
@@ -326,7 +330,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
   static XCMCallPallet _teleportAssets({
     required SubstrateXCMTransferParams params,
     required MetadataWithProvider provider,
-    required SubtrateMetadataPallet pallet,
+    required SubstrateMetadataPallet pallet,
     required BaseSubstrateNetwork network,
   }) {
     final xcmVersion = network.findXcmVersion(params.destinationNetwork);
@@ -390,9 +394,9 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           feeAssetItem: feeItem,
         ),
       _ =>
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Invalid teleport asset method.",
-          details: {"method": method.toString()},
+          details: {"method": method.name},
         ),
     };
   }
@@ -400,7 +404,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
   static XCMCallPallet _reserveTransferAssets({
     required SubstrateXCMTransferParams params,
     required MetadataWithProvider provider,
-    required SubtrateMetadataPallet pallet,
+    required SubstrateMetadataPallet pallet,
     required BaseSubstrateNetwork network,
   }) {
     final xcmVersion = network.findXcmVersion(network);
@@ -465,7 +469,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           feeAssetItem: feeItem,
         ),
       _ =>
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Invalid reserve transfer assets method.",
           details: {"method": method.name},
         ),
@@ -475,7 +479,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
   static XCMCallPallet _transferAssets({
     required SubstrateXCMTransferParams params,
     required MetadataWithProvider provider,
-    required SubtrateMetadataPallet pallet,
+    required SubstrateMetadataPallet pallet,
     required BaseSubstrateNetwork network,
   }) {
     final xcmVersion = network.findXcmVersion(params.destinationNetwork);
@@ -532,7 +536,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     final parents = locations.map((e) => e.parents).toSet();
     final paras = locations.map((e) => e.getParachain()?.id).toSet();
     if (parents.length != 1 || paras.length != 1) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Multiple reserve locations are not allowed.",
       );
     }
@@ -563,7 +567,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     );
   }
 
-  static Future<QueryDeleveriesFeeWithAmount> queryDeliveryFees({
+  static Future<QueryDeliveriesFeeWithAmount> queryDeliveryFees({
     required MetadataWithProvider metadata,
     required BaseSubstrateNetwork network,
     required BaseSubstrateNetworkAsset nativeAsset,
@@ -576,7 +580,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       method: SubstrateRuntimeApiXCMPaymentMethods.queryWeightToAssetFee,
       api: metadata.metadata.api,
     )) {
-      return QueryDeleveriesFeeWithAmount.unsuportedApi();
+      return QueryDeliveriesFeeWithAmount.unsupportedApi();
     }
     final localDeliveryFees = await SubstrateQuickRuntimeApi.xcmPayment
         .queryDeliveryFees(
@@ -588,9 +592,9 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
         );
     final assets = localDeliveryFees.ok?.assets.assets;
     if (assets == null || assets.isEmpty) {
-      return QueryDeleveriesFeeWithAmount(result: localDeliveryFees);
+      return QueryDeliveriesFeeWithAmount(result: localDeliveryFees);
     }
-    final List<QueryDeleveriesFeeAmount> fees = [];
+    final List<QueryDeliveriesFeeAmount> fees = [];
     final supportAssetConversion = SubstrateQuickRuntimeApi.assetConversion
         .methodExists(
           api: metadata.metadata.api,
@@ -602,7 +606,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       final location = i.id.location;
       final amount = i.fun.cast<XCMFungibilityFungible>().units;
       if (location == null) {
-        fees.add(QueryDeleveriesFeeAmount(asset: null, amount: amount));
+        fees.add(QueryDeliveriesFeeAmount(asset: null, amount: amount));
         continue;
       }
       final isNativeAssset = nativeAsset
@@ -614,11 +618,11 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           .isEqual(location);
 
       if (!isNativeAssset) {
-        fees.add(QueryDeleveriesFeeAmount(asset: null, amount: amount));
+        fees.add(QueryDeliveriesFeeAmount(asset: null, amount: amount));
         continue;
       }
       if (fee == null) {
-        fees.add(QueryDeleveriesFeeAmount(asset: nativeAsset, amount: amount));
+        fees.add(QueryDeliveriesFeeAmount(asset: nativeAsset, amount: amount));
         continue;
       }
       final feelocation =
@@ -629,11 +633,11 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
               )
               .location;
       if (feelocation.isEqual(location)) {
-        fees.add(QueryDeleveriesFeeAmount(asset: fee, amount: amount));
+        fees.add(QueryDeliveriesFeeAmount(asset: fee, amount: amount));
         continue;
       }
       if (!supportAssetConversion) {
-        fees.add(QueryDeleveriesFeeAmount(asset: nativeAsset, amount: amount));
+        fees.add(QueryDeliveriesFeeAmount(asset: nativeAsset, amount: amount));
         continue;
       }
       BigInt? nativeAmount = await SubstrateQuickRuntimeApi.assetConversion
@@ -659,12 +663,12 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
             rpc: metadata.provider,
           );
       if (nativeAmount == null) {
-        fees.add(QueryDeleveriesFeeAmount(asset: nativeAsset, amount: amount));
+        fees.add(QueryDeliveriesFeeAmount(asset: nativeAsset, amount: amount));
       } else {
-        fees.add(QueryDeleveriesFeeAmount(asset: fee, amount: nativeAmount));
+        fees.add(QueryDeliveriesFeeAmount(asset: fee, amount: nativeAmount));
       }
     }
-    return QueryDeleveriesFeeWithAmount(
+    return QueryDeliveriesFeeWithAmount(
       result: localDeliveryFees,
       amounts: fees,
     );
@@ -713,8 +717,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       );
     }
     SubstrateTransactionXCMDryRunStatus status =
-        SubstrateTransactionXCMDryRunStatus.unsuportedXcmPaymentApi;
-    List<QueryDeleveriesFeeWithAmount> localDeliveryFees = [];
+        SubstrateTransactionXCMDryRunStatus.unsupportedXcmPaymentApi;
+    List<QueryDeliveriesFeeWithAmount> localDeliveryFees = [];
     if (SubstrateQuickRuntimeApi.xcmPayment.methodExists(
       method: SubstrateRuntimeApiXCMPaymentMethods.queryDeliveryFees,
       api: metadata.metadata.api,
@@ -783,7 +787,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       return [
         SubstrateTransactionXCMDryRunResult.unsupported(
           location,
-          status: SubstrateTransactionXCMDryRunStatus.unsuportedDryRun,
+          status: SubstrateTransactionXCMDryRunStatus.unsupportedDryRun,
         ),
       ];
     }
@@ -808,14 +812,14 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           weightToFee: null,
           network: location,
           status: SubstrateTransactionXCMDryRunStatus.complete,
-          deleveriesFee: [],
+          deliveriesFee: [],
         ),
       ];
     }
     SubstrateTransactionXCMDryRunStatus status =
-        SubstrateTransactionXCMDryRunStatus.unsuportedXcmPaymentApi;
+        SubstrateTransactionXCMDryRunStatus.unsupportedXcmPaymentApi;
     List<SubstrateTransactionXCMDryRunResult> simulates = [];
-    SubstrateDispatchResult<BigInt>? weigthToAssetFee;
+    SubstrateDispatchResult<BigInt>? weightToAssetFee;
     if (SubstrateQuickRuntimeApi.xcmPayment.methodExists(
       method: SubstrateRuntimeApiXCMPaymentMethods.queryWeightToAssetFee,
       api: metadata.metadata.api,
@@ -829,14 +833,14 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
                 version: location.defaultXcmVersion,
               )
               .location;
-      weigthToAssetFee = await queryWeightToAssetFee(
+      weightToAssetFee = await queryWeightToAssetFee(
         provider: metadata,
         weight: weight,
         asset: feeAssetLocation.toAssetId().asVersioned(),
       );
     }
     final forwardXcm = xcmDryRun.ok!.forwardXcms;
-    List<QueryDeleveriesFeeWithAmount> deliveriesFee = [];
+    List<QueryDeliveriesFeeWithAmount> deliveriesFee = [];
     if (forwardXcm.any((e) => e.$2.isNotEmpty)) {
       if (SubstrateQuickRuntimeApi.xcmPayment.methodExists(
         method: SubstrateRuntimeApiXCMPaymentMethods.queryDeliveryFees,
@@ -860,16 +864,16 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           }
         }
       } else {
-        status = SubstrateTransactionXCMDryRunStatus.unsuportedXcmPaymentApi;
+        status = SubstrateTransactionXCMDryRunStatus.unsupportedXcmPaymentApi;
       }
     }
     simulates.add(
       SubstrateTransactionXCMDryRunResult(
         xcmDryRun: xcmDryRun,
-        weightToFee: weigthToAssetFee,
+        weightToFee: weightToAssetFee,
         network: location,
         status: status,
-        deleveriesFee: deliveriesFee,
+        deliveriesFee: deliveriesFee,
       ),
     );
     for (final i in xcmDryRun.ok!.forwardXcms) {
@@ -939,7 +943,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           network: network,
         );
       default:
-        throw DartSubstratePluginException("Unsuported xcm transfer method.");
+        throw BuError(DefaultErrorType.unsupported, "Unsupported XCM transfer method.");
     }
   }
 
@@ -953,7 +957,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     bool hasLocation = assets.every((e) => e.hasLocation());
     bool hasIdentifier = assets.every((e) => e.asset.hasIdentifier);
     if (!hasLocation && !hasIdentifier) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "all transfer assets must have asset or location.",
       );
     }
@@ -1096,7 +1100,12 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
         );
 
     final asset =
-        params.assets.indexed.firstWhere((e) => e.$1 != params.feeIndex).$2;
+        params.assets.indexed
+            .firstWhereNullable((e) => e.$1 != params.feeIndex)
+            ?.$2 ??
+        (throw BuError(DefaultErrorType.notFound, 
+          "Invalid transfer assets: no non-fee asset found for fee index ${params.feeIndex}.",
+        ));
     final fee = params.assets.elementAt(params.feeIndex);
     final weightLimit = _createWeight(
       XCMVersion.v3,
@@ -1206,7 +1215,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           network: network,
         );
       default:
-        throw DartSubstratePluginException("Unsuported xtoken method.");
+        throw BuError(DefaultErrorType.unsupported, "Unsupported XToken method.");
     }
   }
 
@@ -1227,7 +1236,9 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
         );
     final asset = params.assets[0];
     if (params.destinationWeightLimit?.version == XCMVersion.v2) {
-      throw DartSubstratePluginException("Invalid Weight limit xcm version");
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid weight limit XCM version: expected ${xTransferXcmVersion.type}, received ${params.destinationWeightLimit?.version.type}.",
+      );
     }
     return XTransferCallPalletTransfer(
       asset:
@@ -1254,32 +1265,32 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     required MetadataWithProvider provider,
     required BaseSubstrateNetwork network,
     SubstrateCallPalletXCMTransferMethod? method,
-    SubtrateMetadataPallet pallet = SubtrateMetadataPallet.polkadotXcm,
+    SubstrateMetadataPallet pallet = SubstrateMetadataPallet.polkadotXcm,
   }) {
     switch (pallet) {
-      case SubtrateMetadataPallet.xcmPallet:
-      case SubtrateMetadataPallet.polkadotXcm:
+      case SubstrateMetadataPallet.xcmPallet:
+      case SubstrateMetadataPallet.polkadotXcm:
         return createXCMPalletTransfer(
           params: params,
           provider: provider,
           network: network,
           method: method,
         );
-      case SubtrateMetadataPallet.xTokens:
+      case SubstrateMetadataPallet.xTokens:
         return createXCMXTokenTransferInternal(
           params: params,
           provider: provider,
           network: network,
           method: method,
         );
-      case SubtrateMetadataPallet.xTransfer:
+      case SubstrateMetadataPallet.xTransfer:
         return createXCMXTransferTransferInternal(
           params: params,
           provider: provider,
           network: network,
         );
       default:
-        throw DartSubstratePluginException("Unsupported xcm transfer method.");
+        throw BuError(DefaultErrorType.unsupported, "Unsupported XCM transfer method.");
     }
   }
 
@@ -1288,12 +1299,12 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     required SubstrateXCMTransferParams params,
     required MetadataWithProvider provider,
     required BaseSubstrateNetwork network,
-    required SubtrateMetadataPallet defaultPallet,
+    required SubstrateMetadataPallet defaultPallet,
     ONREQUESTNETWORKPROVIDER? onControllerRequest,
     bool useTypeAndThen = true,
   }) async {
     if (!network.role.isPara || !params.destinationNetwork.role.isSystem) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.unsupported, 
         "This operation is only allowed from a parachain to the relay chain.",
       );
     }
@@ -1400,6 +1411,9 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     return filteredLocations.toList();
   }
 
+  /// Builds a deposit-reserve XCM. When [fee] is null it defaults to half of
+  /// [feeAsset] (the remainder is transferred); pass an explicit fee to
+  /// override. Throws if the remainder does not cover the transfer.
   static XCMDepositReserveAsset _depositReserve({
     required List<XCMAsset> transferAssets,
     required XCMAsset feeAsset,
@@ -1431,7 +1445,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     fee ??= assetAmount ~/ BigInt.from(2);
     final amount = assetAmount - fee;
     if (amount <= BigInt.zero) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidState, 
         "Insufficient balance for fee.",
         details: {
           "provided": assetAmount.toString(),
@@ -1464,6 +1478,9 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     );
   }
 
+  /// Builds an initiate-teleport XCM. When [fee] is null it defaults to half
+  /// of [feeAsset] (the remainder is transferred); pass an explicit fee to
+  /// override. Throws if the remainder does not cover the transfer.
   static XCMInitiateTeleport _initiateTeleport({
     required List<XCMAsset> transferAssets,
     required XCMAsset feeAsset,
@@ -1494,7 +1511,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     fee ??= assetAmount ~/ BigInt.from(2);
     final amount = assetAmount - fee;
     if (amount <= BigInt.zero) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidState, 
         "Insufficient balance for fee.",
         details: {
           "provided": assetAmount.toString(),
@@ -1580,7 +1597,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
         return XCMTransferTypeDestinationReserve();
       }
     }
-    throw DartSubstratePluginException("Remote reserve not supported.");
+    throw BuError(DefaultErrorType.unsupported, "Remote reserve not supported.");
   }
 
   static Future<XCMCallPallet> transferAssetsThroughUsingTypeAndThen({
@@ -1594,8 +1611,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     XCMMultiLocation reserveLocation = reserve ?? network.assetHub.location();
     if (!params.hasRelayAsset) {
       if (!params.locations.every((e) => e.isOneParents())) {
-        throw DartSubstratePluginException(
-          "Unsuported asset reserve location.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported asset reserve location.",
         );
       }
       final paras =
@@ -1605,7 +1622,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
               .toList();
       if (paras.toSet().length != 1 ||
           paras.length != params.locations.length) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Multiple reserve chain not allowed.",
         );
       }
@@ -1637,7 +1654,7 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
             .toList()
           ..sort((a, b) => a.$2.compareTo(b.$2));
     if (params.hasRelayAsset && params.assets.length != 1) {
-      throw DartSubstratePluginException("Duplicate asset not allowed.");
+      throw BuError(DefaultErrorType.invalidArgument, "Duplicate asset not allowed.");
     }
     int feeItem = assets.indexWhere(
       (e) => e.$1 == params.assets.elementAt(params.feeIndex),

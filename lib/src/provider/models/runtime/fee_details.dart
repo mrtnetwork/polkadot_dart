@@ -1,4 +1,4 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/numbers/utils/bigint_utils.dart';
 import 'package:polkadot_dart/src/provider/models/runtime/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';

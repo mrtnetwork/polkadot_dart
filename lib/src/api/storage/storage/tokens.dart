@@ -1,12 +1,9 @@
-import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/core/api.dart';
 import 'package:polkadot_dart/src/api/helper/query_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/storage/storage/types/types.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
-import 'package:blockchain_utils/service/service.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
 enum SubstrateStorageTokensMethods {
@@ -69,10 +66,10 @@ class SubstrateStorageTokens extends SubstrateStorageApi {
             },
             onJsonResponse: (response, responseBytes, storageKey) {
               if (response is! T) {
-                throw DartSubstratePluginException(
+                throw BuError(DefaultErrorType.castFailed, 
                   "Failed to cast storage response.",
                   details: {
-                    "excpected": "$T",
+                    "expected": "$T",
                     "response": response.runtimeType.toString(),
                   },
                 );

@@ -1,7 +1,5 @@
-import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/layout/utils/utils.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
+
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/extrinsic/extrinsic.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
@@ -11,7 +9,7 @@ import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 class SubstrateEncodedCallParams {
   final String pallet;
   final String method;
-  final List<int> bytes;
+  final BuBytes bytes;
   SubstrateEncodedCallParams({
     required this.pallet,
     required this.method,
@@ -45,7 +43,7 @@ class SubstrateTransactionSubmitableParams {
   /// Fee payment config if paying in non-native asset.
   final SubstrateTransactionChargeAssetTxPayment? chargeAssetTxPayment;
 
-  final List<int>? metadataHash;
+  final BuBytes? metadataHash;
 
   SubstrateTransactionSubmitableParams({
     required List<SubstrateEncodedCallParams> calls,
@@ -83,9 +81,9 @@ class TransactionBuilderParams {
 }
 
 class SubstrateSubmitableTransactionPayload {
-  final List<int> methodBytes;
-  final List<int>? assetId;
-  final List<int>? metadataHash;
+  final BuBytes methodBytes;
+  final BuBytes? assetId;
+  final BuBytes? metadataHash;
   final int? mode;
   final int specVersion;
   final int transactionVersion;
@@ -93,7 +91,7 @@ class SubstrateSubmitableTransactionPayload {
   final BigInt nonce;
   final TransactionSubmitionBlock block;
   final String genesisHash;
-  final List<int> payloadBytes;
+  final BuBytes payloadBytes;
   final BaseDynamicExtrinsicBuilder builder;
   final BaseSubstrateAddress owner;
 
@@ -114,12 +112,12 @@ class SubstrateSubmitableTransactionPayload {
   }) : methodBytes = methodBytes.asImmutableBytes,
        payloadBytes = payloadBytes.asImmutableBytes,
        assetId = assetId?.asImmutableBytes,
-       metadataHash = metadataHash?.immutable;
+       metadataHash = metadataHash?.asImmutableBytes;
 
-  List<int> serialzeSign() {
+  BuBytes serialzeSign() {
     if (payloadBytes.length >
         TransactionPalyloadConst.requiredHashDigestLength) {
-      return QuickCrypto.blake2b256Hash(payloadBytes);
+      return QuickCrypto.blake2b256Hash(payloadBytes).asImmutableBytes;
     }
     return payloadBytes;
   }
@@ -127,8 +125,8 @@ class SubstrateSubmitableTransactionPayload {
 
 class SubstrateSubmitableTransaction {
   final SubstrateSubmitableTransactionPayload? payload;
-  final List<int>? signature;
-  final List<int> extrinsic;
+  final BuBytes? signature;
+  final BuBytes extrinsic;
   SubstrateSubmitableTransaction({
     this.payload,
     List<int>? signature,
@@ -148,7 +146,7 @@ class SubstrateSubmitableTransaction {
          callBytes: callBytes,
          signature: signature,
        );
-  static List<int> _serialize({
+  static BuBytes _serialize({
     required int extrinsicVersion,
     required List<int> extrinsic,
     required List<int> callBytes,
@@ -164,12 +162,12 @@ class SubstrateSubmitableTransaction {
     return encode.asImmutableBytes;
   }
 
-  List<int> serialize({bool encodeLength = true}) {
+  BuBytes serialize({bool encodeLength = true}) {
     if (encodeLength) {
       final length = LayoutSerializationUtils.encodeLength(
         extrinsic.length.toString(),
       );
-      return [...length, ...extrinsic];
+      return [...length, ...extrinsic].asImmutableBytes;
     }
     return extrinsic;
   }
@@ -197,7 +195,7 @@ class TransactionSubmitionBlock {
   });
 }
 
-enum SubtrateTransactionSubmitionStatus {
+enum SubstrateTransactionSubmitionStatus {
   success,
 
   notFound,
@@ -207,8 +205,8 @@ enum SubtrateTransactionSubmitionStatus {
   bool get isSuccess => this == success;
 }
 
-class SubtrateTransactionSubmitionResult {
-  final SubtrateTransactionSubmitionStatus status;
+class SubstrateTransactionSubmitionResult {
+  final SubstrateTransactionSubmitionStatus status;
 
   /// The extrinsic associated with the transaction.
   final String extrinsic;
@@ -232,16 +230,16 @@ class SubtrateTransactionSubmitionResult {
           .where((e) => e.applyExtrinsic == extrinsicIndex)
           .toList();
 
-  SubtrateTransactionSubmitionResult.notFount({
+  SubstrateTransactionSubmitionResult.notFount({
     required this.extrinsic,
     required this.transactionHash,
   }) : blockEvents = null,
        block = null,
        blockNumber = null,
        extrinsicIndex = null,
-       status = SubtrateTransactionSubmitionStatus.notFound;
+       status = SubstrateTransactionSubmitionStatus.notFound;
 
-  factory SubtrateTransactionSubmitionResult({
+  factory SubstrateTransactionSubmitionResult({
     required SubstrateGroupEvents events,
     required String block,
     required String extrinsic,
@@ -257,7 +255,7 @@ class SubtrateTransactionSubmitionResult {
     final success = systemEvent.every(
       (e) => e.method != SubstrateEventConst.extrinsicFailed,
     );
-    return SubtrateTransactionSubmitionResult._(
+    return SubstrateTransactionSubmitionResult._(
       blockEvents: events,
       block: block,
       extrinsic: extrinsic,
@@ -266,13 +264,13 @@ class SubtrateTransactionSubmitionResult {
       transactionHash: transactionHash,
       status:
           (success
-              ? SubtrateTransactionSubmitionStatus.success
-              : SubtrateTransactionSubmitionStatus.failed),
+              ? SubstrateTransactionSubmitionStatus.success
+              : SubstrateTransactionSubmitionStatus.failed),
     );
   }
 
   /// Constructor for initializing all the fields.
-  SubtrateTransactionSubmitionResult._({
+  SubstrateTransactionSubmitionResult._({
     required SubstrateGroupEvents this.blockEvents,
     required String this.block,
     required this.extrinsic,

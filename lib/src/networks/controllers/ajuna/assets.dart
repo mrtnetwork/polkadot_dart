@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/controllers/asset_hub/asset.dart';
 import 'package:polkadot_dart/src/networks/core/core.dart';
@@ -14,7 +13,7 @@ abstract class BaseAjunaNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
     required super.chargeAssetTxPayment,
   });
   BaseAjunaNetworkAsset.fromJson(super.json) : super.fromJson();
@@ -38,7 +37,7 @@ class AjunaNetworkAsset extends BaseAjunaNetworkAsset {
          decimals: metadata?.decimals,
          isSpendable:
              asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
-         excutionPallet: SubtrateMetadataPallet.assets,
+         executionPallet: SubstrateMetadataPallet.assets,
          minBalance: asset.asset.minBalance,
          name: metadata?.name,
          symbol: metadata?.symbol,
@@ -88,7 +87,7 @@ class AjunaNetworkAsset extends BaseAjunaNetworkAsset {
 
   @override
   Object? get xTokenTransferId =>
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.unsupported, 
         "This asset does not support transfers via the XTokens pallet. ",
       );
 
@@ -118,7 +117,7 @@ class AjunaNetworkNativeAsset extends BaseAjunaNetworkAsset {
     required super.decimals,
     super.minBalance,
   }) : super(
-         excutionPallet: SubtrateMetadataPallet.balances,
+         executionPallet: SubstrateMetadataPallet.balances,
          chargeAssetTxPayment: true,
        );
   AjunaNetworkNativeAsset.fromJson(super.json)

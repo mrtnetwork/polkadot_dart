@@ -1,6 +1,4 @@
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/utils/utils.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
 import 'runtime_version_api.dart';
@@ -76,7 +74,7 @@ class RuntimeVersion extends SubstrateSerialization<Map<String, dynamic>> {
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
-    throw MetadataException("Not implemented.");
+    throw BuError(DefaultErrorType.unsupported, "Not implemented.");
   }
 
   @override

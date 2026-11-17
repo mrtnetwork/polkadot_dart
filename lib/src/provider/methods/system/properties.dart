@@ -18,7 +18,7 @@ class SubstrateRequestSystemProperties
   }
 
   @override
-  ChainProperties onResonse(Map<String, dynamic> result) {
+  ChainProperties onResponse(Map<String, dynamic> result) {
     return ChainProperties.fromJson(result);
   }
 }

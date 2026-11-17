@@ -2,7 +2,6 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_type.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/models/type_info.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_template.dart';
@@ -49,8 +48,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
                   CompareUtils.iterableIsEqual(element.value.type.path, paths),
               orElse:
                   () =>
-                      throw MetadataException(
-                        "lookup id does not found.",
+                      throw BuError(DefaultErrorType.notFound, 
+                        "Lookup id not found.",
                         details: {"path": paths.join(", ")},
                       ),
             )
@@ -66,8 +65,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
                   CompareUtils.iterableIsEqual(element.value.type.path, paths),
               orElse:
                   () =>
-                      throw MetadataException(
-                        "lookup id does not found.",
+                      throw BuError(DefaultErrorType.notFound, 
+                        "Lookup id not found.",
                         details: {"path": paths.join(", ")},
                       ),
             )
@@ -88,7 +87,7 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
     final lookup = types[id];
 
     if (lookup == null) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.notFound, 
         "lookup does not exist.",
         details: {"id": id.toString(), "ids": types.keys.join(", ")},
       );
@@ -134,10 +133,7 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
                 MetadataConstant.eventPath,
               ),
               orElse:
-                  () =>
-                      throw const MetadataException(
-                        "lookup id does not found.",
-                      ),
+                  () => throw BuError(DefaultErrorType.notFound, "Lookup id not found."),
             )
             .value;
     return Si1TypeDefSequence(eventPalle.id);

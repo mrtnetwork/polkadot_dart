@@ -185,6 +185,11 @@ class BifrostAssetVSBond extends BaseBifrostAsset {
   }) : super(type: BifrostAssetType.vsBond);
   factory BifrostAssetVSBond.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(BifrostAssetType.vsBond.type);
+    if (data.length < 4) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid vsBond asset: expected 4 elements, received ${data.length}.",
+      );
+    }
     return BifrostAssetVSBond(
       token: BifrostAssetNativeType.fromJson(data[0]),
       para: IntUtils.parse(data[1], allowHex: false),
@@ -210,6 +215,11 @@ class BifrostAssetLPToken extends BaseBifrostAsset {
   }) : super(type: BifrostAssetType.lpToken);
   factory BifrostAssetLPToken.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(BifrostAssetType.lpToken.type);
+    if (data.length < 4) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid lpToken asset: expected 4 elements, received ${data.length}.",
+      );
+    }
     return BifrostAssetLPToken(
       tokenA: BifrostAssetNativeType.fromJson(data[0]),
       indexA: IntUtils.parse(data[1], allowHex: false),
@@ -271,6 +281,11 @@ class BifrostAssetVSBond2 extends BaseBifrostAsset {
   }) : super(type: BifrostAssetType.vsBond2);
   factory BifrostAssetVSBond2.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(BifrostAssetType.vsBond2.type);
+    if (data.length < 4) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid vsBond2 asset: expected 4 elements, received ${data.length}.",
+      );
+    }
     return BifrostAssetVSBond2(
       a: IntUtils.parse(data[0], allowHex: false),
       b: IntUtils.parse(data[1], allowHex: false),
@@ -353,7 +368,7 @@ abstract class BaseBifrostNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseBifrostNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -374,7 +389,7 @@ class BifrostNetworkAsset extends BaseBifrostNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.tokens,
+         executionPallet: SubstrateMetadataPallet.tokens,
        );
   @override
   int? get decimals => metadata?.decimals;
@@ -432,7 +447,7 @@ class BifrostNetworkNativeAsset extends BaseBifrostNetworkAsset {
         name: metadata?.name,
         symbol: metadata?.symbol,
         decimals: metadata?.decimals,
-        excutionPallet: SubtrateMetadataPallet.tokens,
+        executionPallet: SubstrateMetadataPallet.tokens,
       );
   factory BifrostNetworkNativeAsset.fromJson(Map<String, dynamic> json) {
     final metadata = json.valueTo<BifrostAssetMetadata?, Map<String, dynamic>>(
@@ -452,7 +467,8 @@ class BifrostNetworkNativeAsset extends BaseBifrostNetworkAsset {
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
   @override
-  SubtrateMetadataPallet get excutionPallet => SubtrateMetadataPallet.balances;
+  SubstrateMetadataPallet get executionPallet =>
+      SubstrateMetadataPallet.balances;
 
   @override
   Map<String, dynamic> get identifier => asset.toJson();

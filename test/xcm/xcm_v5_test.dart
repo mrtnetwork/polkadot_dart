@@ -9,7 +9,8 @@ import '../metadata/metadata_kusama_v15.dart';
 import '../metadata/metadata_polkadot_asset_hub_v15.dart';
 import '../metadata/metadata_polkadot_v15.dart';
 
-void main() {
+import '../utils.dart';
+void xcmV5Test() {
   final List<String> metadatas = [
     metadataKusamaV14,
     metadataKusamaV15,
@@ -27,6 +28,11 @@ void main() {
     _xcmPalletSend(metadata.toApi());
   }
 }
+
+void main() {
+  PolkadotDartUtilsTestApi.runTest(xcmV5Test, "Xcm V5");
+}
+
 
 void _xcmPalletSend(MetadataApi metadata, {int loop = 5}) {
   final rand = QuickCrypto.generateRandom();
@@ -794,8 +800,8 @@ class _XCMTestGenerate {
         ),
       ),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 5",
+        throw BuError(SubstrateErrorType.plugin, 
+          "Unsupported XCM instruction by version 5.",
         ),
     };
   }

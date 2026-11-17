@@ -1,10 +1,10 @@
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/provider/core/core/base.dart';
 import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
 /// Perform a call to a builtin on the chain.
 /// https://polkadot.js.org/docs/substrate/rpc/#state
-class SubstrateRequestStateCall extends SubstrateRequest<String, List<int>> {
+class SubstrateRequestStateCall extends SubstrateRequest<String, BuBytes> {
   const SubstrateRequestStateCall({
     required this.method,
     required this.data,
@@ -24,7 +24,7 @@ class SubstrateRequestStateCall extends SubstrateRequest<String, List<int>> {
   }
 
   @override
-  List<int> onResonse(String result) {
-    return BytesUtils.fromHexString(result);
+  BuBytes onResponse(String result) {
+    return BytesUtils.fromHexString(result).asImmutableBytes;
   }
 }

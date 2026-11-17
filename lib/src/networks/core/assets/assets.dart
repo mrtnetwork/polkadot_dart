@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/types/types.dart';
 import 'package:polkadot_dart/src/networks/utils/utils.dart';
@@ -13,7 +12,11 @@ enum SubstrateAssetType {
   static SubstrateAssetType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown SubstrateAssetType name "$name".',
+              ),
     );
   }
 }
@@ -48,7 +51,7 @@ abstract class BaseSubstrateNetworkAsset {
   final int? decimals;
 
   /// Pallet used for executing transactions involving this asset.
-  final SubtrateMetadataPallet excutionPallet;
+  final SubstrateMetadataPallet executionPallet;
 
   /// Whether to charge this asset for transaction fees.
   final bool chargeAssetTxPayment;
@@ -61,7 +64,7 @@ abstract class BaseSubstrateNetworkAsset {
     required this.name,
     required this.symbol,
     required int? decimals,
-    required this.excutionPallet,
+    required this.executionPallet,
     this.chargeAssetTxPayment = false,
   }) : decimals = decimals?.asU8;
 
@@ -74,8 +77,8 @@ abstract class BaseSubstrateNetworkAsset {
       symbol = json.valueAs("symbol"),
       decimals = json.valueAsInt("decimals")?.asU8,
       chargeAssetTxPayment = json.valueAs("charge_asset_tx_payment"),
-      excutionPallet = SubtrateMetadataPallet.fromName(
-        json.valueAs("excution_pallet"),
+      executionPallet = SubstrateMetadataPallet.fromName(
+        json.valueAs("execution_pallet"),
       );
 
   /// Returns the asset type (default: token).
@@ -99,10 +102,10 @@ abstract class BaseSubstrateNetworkAsset {
   /// Casts the identifier to a specific type T, throwing if mismatch.
   T identifierAs<T extends Object>() {
     if (identifier == null) {
-      throw DartSubstratePluginException("Missing asset identifier");
+      throw BuError(DefaultErrorType.invalidArgument, "Missing asset identifier");
     }
     if (identifier is! T) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.cryptoVerifyFailed, 
         "Mismatch asset identifier.",
         details: {
           "expected": "$T",
@@ -116,10 +119,10 @@ abstract class BaseSubstrateNetworkAsset {
   /// Casts the xTokenTransferId to type T, throwing if mismatch.
   T xTokenTransferIdAs<T extends Object>() {
     if (xTokenTransferId == null) {
-      throw DartSubstratePluginException("Missing asset identifier");
+      throw BuError(DefaultErrorType.invalidArgument, "Missing asset identifier");
     }
     if (xTokenTransferId is! T) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.cryptoVerifyFailed, 
         "Mismatch asset identifier.",
         details: {
           "expected": "$T",
@@ -150,7 +153,7 @@ abstract class BaseSubstrateNetworkAsset {
   XCMVersionedLocation getLocation({XCMVersion? version}) {
     final loc = location;
     if (loc == null) {
-      throw DartSubstratePluginException("Missing asset location.");
+      throw BuError(DefaultErrorType.invalidArgument, "Missing asset location.");
     }
     return version != null ? loc.asVersion(version) : loc;
   }
@@ -202,7 +205,7 @@ abstract class BaseSubstrateNetworkAsset {
     "name": name,
     "symbol": symbol,
     "decimals": decimals,
-    "excution_pallet": excutionPallet.name,
+    "execution_pallet": executionPallet.name,
     "charge_asset_tx_payment": chargeAssetTxPayment,
   };
 
@@ -215,7 +218,7 @@ abstract class BaseSubstrateNetworkAsset {
     if (other is! BaseSubstrateNetworkAsset) return false;
     if (other.runtimeType != runtimeType) return false;
     if (type != other.type) return false;
-    if (excutionPallet != other.excutionPallet) return false;
+    if (executionPallet != other.executionPallet) return false;
     if (type.isNative) {
       if (identifier == null) return other.identifier == null;
     }
@@ -223,8 +226,11 @@ abstract class BaseSubstrateNetworkAsset {
   }
 
   @override
-  int get hashCode =>
-      HashCodeGenerator.generateHashCodeNew([type, excutionPallet, identifier]);
+  int get hashCode => HashCodeGenerator.generateDeepHashCode([
+    type,
+    executionPallet,
+    identifier,
+  ]);
 }
 
 class GenericBaseSubstrateNativeAsset extends BaseSubstrateNetworkAsset {
@@ -241,14 +247,14 @@ class GenericBaseSubstrateNativeAsset extends BaseSubstrateNetworkAsset {
     super.isSpendable = true,
     required this.identifier,
     required this.location,
-    required super.excutionPallet,
+    required super.executionPallet,
     super.minBalance,
   });
   GenericBaseSubstrateNativeAsset.withParaLocation({
     required super.name,
     required super.decimals,
     required super.symbol,
-    required super.excutionPallet,
+    required super.executionPallet,
     super.minBalance,
     int? parachain,
     int? parents,

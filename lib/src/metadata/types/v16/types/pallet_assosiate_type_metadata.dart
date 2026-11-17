@@ -1,5 +1,5 @@
 import 'package:blockchain_utils/helper/helper.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 

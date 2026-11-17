@@ -62,7 +62,7 @@ class PolkadotBridgeHubNetworkController
         name: "DOT",
         decimals: 10,
         symbol: "DOT",
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
         version: network.defaultXcmVersion,
         parents: 1,
       );
@@ -99,7 +99,7 @@ class PolkadotBridgeHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }
@@ -115,7 +115,7 @@ class KusamaBridgeHubNetworkController
         decimals: 12,
         symbol: "KSM",
         minBalance: BigInt.parse("33333333"),
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
         version: network.defaultXcmVersion,
         parents: 1,
       );
@@ -153,7 +153,7 @@ class KusamaBridgeHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }
@@ -169,7 +169,7 @@ class WestendBridgeHubNetworkController
         decimals: 12,
         symbol: "WND",
         minBalance: BigInt.parse("10000000000"),
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
         version: network.defaultXcmVersion,
         parents: 1,
       );
@@ -207,7 +207,7 @@ class WestendBridgeHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }
@@ -223,7 +223,7 @@ class PaseoBridgeHubNetworkController
         decimals: 10,
         symbol: "PAS",
         minBalance: BigInt.parse("100000000"),
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
         version: network.defaultXcmVersion,
         parents: 1,
       );
@@ -261,7 +261,7 @@ class PaseoBridgeHubNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

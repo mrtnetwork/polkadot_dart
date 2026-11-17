@@ -10,5 +10,5 @@ export 'types/pallet_storage_metadata_v14.dart';
 export 'types/portable_registry.dart';
 export 'types/portable_type_v14.dart';
 export 'types/signed_extension_metadata_v14.dart';
-export 'types/storage_entery_type_v14.dart';
+export 'types/storage_entry_type_v14.dart';
 export 'types/storage_entry_metadata_v14.dart';

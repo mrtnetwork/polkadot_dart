@@ -1,7 +1,7 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
+
 
 class StorageEntryModifierV9
     extends SubstrateSerialization<Map<String, dynamic>> {
@@ -24,7 +24,11 @@ class StorageEntryModifierV9
   static StorageEntryModifierV9 fromValue(String? value) {
     return values.firstWhere(
       (element) => element.name == value,
-      orElse: () => throw ItemNotFoundException(value: value),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown StorageEntryModifierV9 value "$value".',
+              ),
     );
   }
 

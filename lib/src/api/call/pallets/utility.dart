@@ -3,6 +3,7 @@ import 'package:polkadot_dart/src/api/call/call.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 
+
 enum UtilityCallPalletMethod implements SubstrateCallPalletMethod {
   batch("batch", 0),
   batchAll("batch_all", 2);
@@ -14,14 +15,22 @@ enum UtilityCallPalletMethod implements SubstrateCallPalletMethod {
   static UtilityCallPalletMethod fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown UtilityCallPalletMethod name "$name".',
+              ),
     );
   }
 
   static UtilityCallPalletMethod fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown UtilityCallPalletMethod method "$method".',
+              ),
     );
   }
 }
@@ -30,7 +39,7 @@ abstract class UtilityCallPallet with SubstrateCallPallet {
   const UtilityCallPallet({required this.type, required this.pallet});
   final UtilityCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class UtilityCallPalletBatch extends UtilityCallPallet {
@@ -38,12 +47,12 @@ class UtilityCallPalletBatch extends UtilityCallPallet {
 
   UtilityCallPalletBatch({
     required List<SubstrateCallPallet> calls,
-    super.pallet = SubtrateMetadataPallet.utility,
+    super.pallet = SubstrateMetadataPallet.utility,
   }) : calls = calls.immutable,
        super(type: UtilityCallPalletMethod.batch);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -73,12 +82,12 @@ class UtilityCallPalletBatchAll extends UtilityCallPallet {
 
   UtilityCallPalletBatchAll({
     required List<SubstrateCallPallet> calls,
-    super.pallet = SubtrateMetadataPallet.utility,
+    super.pallet = SubstrateMetadataPallet.utility,
   }) : calls = calls.immutable,
        super(type: UtilityCallPalletMethod.batchAll);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

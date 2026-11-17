@@ -284,7 +284,7 @@ class AcalaNetworkAsset extends BaseSubstrateNetworkAsset {
          name: metadata?.name,
          symbol: metadata?.symbol,
          decimals: metadata?.decimals,
-         excutionPallet: SubtrateMetadataPallet.currencies,
+         executionPallet: SubstrateMetadataPallet.currencies,
        );
   factory AcalaNetworkAsset.fromJson(Map<String, dynamic> json) {
     return AcalaNetworkAsset(
@@ -318,8 +318,8 @@ class AcalaNetworkAsset extends BaseSubstrateNetworkAsset {
   }
 
   @override
-  SubtrateMetadataPallet get excutionPallet =>
-      SubtrateMetadataPallet.currencies;
+  SubstrateMetadataPallet get executionPallet =>
+      SubstrateMetadataPallet.currencies;
 
   @override
   bool identifierEqual(Object? identifier) {
@@ -348,7 +348,7 @@ class AcalaNetworkNativeAsset extends AcalaNetworkAsset {
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
   @override
-  SubtrateMetadataPallet get excutionPallet => SubtrateMetadataPallet.balances;
+  SubstrateMetadataPallet get executionPallet => SubstrateMetadataPallet.balances;
 }
 
 class TokenPalletAccountBalance {

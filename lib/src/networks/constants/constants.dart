@@ -1,4 +1,4 @@
-import 'package:polkadot_dart/src/exception/exception.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/types/types.dart';
 
@@ -22,10 +22,10 @@ class SubstrateNetworkControllerConstants {
     XCMVersion.v3,
   ];
 
-  static const DartSubstratePluginException transferDisabled =
-      DartSubstratePluginException(
-        "XCM transfer is currently disabled for this network.",
-      );
+  static const transferDisabled = BuError(
+    DefaultErrorType.unsupported,
+    "XCM transfer is currently disabled for this network.",
+  );
 
   static const List<BaseSubstrateNetwork> disabledDotReserve = [
     KusamaNetwork.altair,

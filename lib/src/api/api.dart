@@ -7,5 +7,5 @@ export 'helper/rpc_hellper.dart';
 export 'models/models.dart';
 export 'runtime/runtime.dart';
 export 'storage/storage.dart';
-export 'transaction/exception.dart';
+export '../error/substrate_error.dart';
 export 'transaction/transaction.dart';

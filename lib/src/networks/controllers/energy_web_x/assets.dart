@@ -12,7 +12,7 @@ abstract class BaseEnergyWebXNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseEnergyWebXNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -34,7 +34,7 @@ class EnergyWebXNetworkAsset extends BaseEnergyWebXNetworkAsset {
          decimals: metadata?.decimals,
          isSpendable:
              asset.asset.status != BasePolkadotNetworkAssetsStatus.frozen,
-         excutionPallet: SubtrateMetadataPallet.assets,
+         executionPallet: SubstrateMetadataPallet.assets,
          minBalance: asset.asset.minBalance,
          name: metadata?.name,
          symbol: metadata?.symbol,
@@ -93,7 +93,7 @@ class EnergyWebXNetworkNativeAsset extends BaseEnergyWebXNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
   EnergyWebXNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
       super.fromJson();

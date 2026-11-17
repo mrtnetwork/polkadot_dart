@@ -1,9 +1,9 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_type.defs.dart';
-import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entery_type_v14.dart';
-import 'package:polkadot_dart/src/metadata/types/v16/types/depecrated_info.dart';
+import 'package:polkadot_dart/src/metadata/types/v14/types/storage_entry_type_v14.dart';
 import 'package:polkadot_dart/src/metadata/types/v16/types/deprecation_status.dart';
+import 'package:polkadot_dart/src/metadata/types/v16/types/variant_deprecation_info.dart';
 import 'package:polkadot_dart/src/metadata/types/v9/types/storage_entry_modifier.dart';
 import 'package:polkadot_dart/src/metadata/types/v11/types/storage_hasher.dart';
 
@@ -256,7 +256,7 @@ class SubstrateMetadataLayouts {
     return storageHasherV11(property: property);
   }
 
-  static Layout<Map<String, dynamic>> storageEnteryTypeMap({String? property}) {
+  static Layout<Map<String, dynamic>> storageEntryTypeMap({String? property}) {
     return LayoutConst.struct([
       LayoutConst.compactVec(storageHasherV14(), property: "hashers"),
       siLookupTypeId(property: "key"),
@@ -268,7 +268,7 @@ class SubstrateMetadataLayouts {
     return LayoutConst.rustEnum(
       [
         siLookupTypeId(property: StorageEntryTypeV14IndexKeys.plain),
-        storageEnteryTypeMap(property: StorageEntryTypeV14IndexKeys.map),
+        storageEntryTypeMap(property: StorageEntryTypeV14IndexKeys.map),
       ],
       property: property,
       useKeyAndValue: false,
@@ -442,7 +442,7 @@ class SubstrateMetadataLayouts {
   }
 
   ///
-  static StructLayout depecratedV16({String? property}) {
+  static StructLayout deprecatedV16({String? property}) {
     return LayoutConst.struct([
       /// Note explaining the deprecation
       LayoutConst.compactString(property: "note"),
@@ -452,7 +452,7 @@ class SubstrateMetadataLayouts {
     ], property: property);
   }
 
-  static Layout<Map<String, dynamic>> depecratedStatusV16({String? property}) {
+  static Layout<Map<String, dynamic>> deprecatedStatusV16({String? property}) {
     return LayoutConst.rustEnum([
       /// Entry is not deprecated
       LayoutConst.noArgs(property: DeprecationStatusTypes.notDeprecated.name),
@@ -463,7 +463,7 @@ class SubstrateMetadataLayouts {
       ),
 
       /// Entry is deprecated with an note and an optional `since` field.
-      depecratedV16(property: DeprecationStatusTypes.deprecated.name),
+      deprecatedV16(property: DeprecationStatusTypes.deprecated.name),
     ], property: property);
   }
 
@@ -474,7 +474,7 @@ class SubstrateMetadataLayouts {
       storageEntryTypeV14(property: "type"),
       LayoutConst.bytes(property: "fallback"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info'),
+      deprecatedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
@@ -500,54 +500,56 @@ class SubstrateMetadataLayouts {
         palletAssociatedTypeMetadata(),
         property: "associated_types",
       ),
+      LayoutConst.compactVec(
+        palletViewFunctionMetadata(),
+        property: "view_functions",
+      ),
       LayoutConst.u8(property: "index"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info'),
+      deprecatedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
-  static Layout<Map<String, dynamic>> itemDeprecated({String? property}) {
-    return LayoutConst.struct([
-      depecratedStatusV16(property: "status"),
-    ], property: property);
-  }
-
-  static StructLayout variantsDeprecated({String? property}) {
-    return LayoutConst.struct([
-      LayoutConst.compactMap<dynamic, dynamic>(
-        LayoutConst.u8(),
-        depecratedStatusV16(),
-        property: "depecreatedVariants",
+  /// Variant is deprecated without a note (codec index 1, aligned with Item).
+  /// Variant is deprecated with note + optional since (codec index 2).
+  static Layout<Map<String, dynamic>> variantDeprecationInfoV16({
+    String? property,
+  }) {
+    return LayoutConst.lazyEnum([
+      LazyVariantModel(
+        layout: ({property}) => LayoutConst.noArgs(property: property),
+        property: VariantDeprecationInfoTypes.deprecatedWithoutNote.name,
+        index: 1,
+      ),
+      LazyVariantModel(
+        layout: ({property}) => deprecatedV16(property: property),
+        property: VariantDeprecationInfoTypes.deprecated.name,
+        index: 2,
       ),
     ], property: property);
   }
 
-  static Layout<Map<String, dynamic>> depecratedInfo({String? property}) {
-    return LayoutConst.rustEnum([
-      /// Type is not deprecated
-      LayoutConst.noArgs(property: DeprecationInfoTypes.notDeprecated.name),
-
-      /// Entry is fully deprecated.
-      itemDeprecated(property: DeprecationInfoTypes.itemDeprecated.name),
-
-      /// Entry is partially deprecated.
-      variantsDeprecated(
-        property: DeprecationInfoTypes.variantsDeprecated.name,
-      ),
-    ], property: property);
+  static CustomLayout<Map<String, dynamic>, Map<int, Map<String, dynamic>>>
+  enumDeprecationInfoV16({String? property}) {
+    return LayoutConst.compactMap<int, Map<String, dynamic>>(
+          LayoutConst.u8(),
+          variantDeprecationInfoV16(),
+          property: property,
+        )
+        as CustomLayout<Map<String, dynamic>, Map<int, Map<String, dynamic>>>;
   }
 
   static StructLayout palletCallMetadataV16({String? property}) {
     return LayoutConst.struct([
       siLookupTypeId(property: "type"),
-      depecratedInfo(property: 'deprecation_info'),
+      enumDeprecationInfoV16(property: 'deprecation_info'),
     ], property: property);
   }
 
   static StructLayout palletEventMetadataV16({String? property}) {
     return LayoutConst.struct([
       siLookupTypeId(property: "type"),
-      depecratedInfo(property: 'deprecation_info'),
+      enumDeprecationInfoV16(property: 'deprecation_info'),
     ], property: property);
   }
 
@@ -557,14 +559,28 @@ class SubstrateMetadataLayouts {
       siLookupTypeId(property: "type"),
       LayoutConst.bytes(property: "value"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info'),
+      deprecatedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
   static StructLayout palletErrorMetadataV16({String? property}) {
     return LayoutConst.struct([
       siLookupTypeId(property: "type"),
-      depecratedInfo(property: 'deprecation_info'),
+      enumDeprecationInfoV16(property: 'deprecation_info'),
+    ], property: property);
+  }
+
+  static StructLayout palletViewFunctionMetadata({String? property}) {
+    return LayoutConst.struct([
+      LayoutConst.fixedBlob32(property: "id"),
+      LayoutConst.compactString(property: "name"),
+      LayoutConst.compactVec(
+        runtimeApiMethodParamMetadataV15(),
+        property: "inputs",
+      ),
+      siLookupTypeId(property: "output"),
+      LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
+      deprecatedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
@@ -588,10 +604,11 @@ class SubstrateMetadataLayouts {
     return LayoutConst.struct([
       LayoutConst.compactVec(LayoutConst.u8(), property: "versions"),
       siLookupTypeId(property: "addressType"),
+      siLookupTypeId(property: "callType"),
       siLookupTypeId(property: "signatureType"),
       LayoutConst.compactMap<dynamic, dynamic>(
         LayoutConst.u8(),
-        LayoutConst.compactVec(LayoutConst.u32()),
+        LayoutConst.compactVec(LayoutConst.compactIntU32()),
         property: "transaction_extensions_by_version",
       ),
       LayoutConst.compactVec(
@@ -610,7 +627,7 @@ class SubstrateMetadataLayouts {
       ),
       si1LookupTypeId(property: "output"),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedStatusV16(property: 'deprecation_info'),
+      deprecatedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 
@@ -622,7 +639,8 @@ class SubstrateMetadataLayouts {
         property: "methods",
       ),
       LayoutConst.compactVec(LayoutConst.compactString(), property: "docs"),
-      depecratedInfo(property: 'deprecation_info'),
+      LayoutConst.compactIntU32(property: "version"),
+      deprecatedStatusV16(property: 'deprecation_info'),
     ], property: property);
   }
 

@@ -1,11 +1,10 @@
-import 'package:blockchain_utils/layout/constant/constant.dart';
-import 'package:blockchain_utils/utils/binary/utils.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
+import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 import 'package:polkadot_dart/src/provider/core/core/base.dart';
 import 'package:polkadot_dart/src/provider/core/core/methods.dart';
 
-/// Returns the metadata at a given version
-/// https://polkadot.js.org/docs/substrate/runtime/#metadata
+/// Converts a weight to its fee (TransactionPaymentApi `query_weight_to_fee`).
 class SubstrateRequestRuntimeTransactionPaymentApiQueryWeightToFee
     extends SubstrateRequest<String, BigInt> {
   final SubstrateWeightV2 weigth;
@@ -29,7 +28,7 @@ class SubstrateRequestRuntimeTransactionPaymentApiQueryWeightToFee
   }
 
   @override
-  BigInt onResonse(String result) {
+  BigInt onResponse(String result) {
     return LayoutConst.u128()
         .deserialize(BytesUtils.fromHexString(result))
         .value;

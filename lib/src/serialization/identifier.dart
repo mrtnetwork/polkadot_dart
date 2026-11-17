@@ -1,8 +1,7 @@
-import 'package:blockchain_utils/cbor/serialization/cbor/tag.dart';
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 
 enum PolkadotSerializationIdentifiers implements SerializationIdentifier {
-  plokadotPluginError(21001),
+  polkadotPluginError(21001),
   metadataError(21002);
 
   @override
@@ -14,9 +13,7 @@ enum PolkadotSerializationIdentifiers implements SerializationIdentifier {
       (e) => e.id == value,
       orElse:
           () =>
-              throw ItemNotFoundException(
-                name: "PolkadotSerializationIdentifiers",
-              ),
+              throw BuError(DefaultErrorType.notFound, "No matching PolkadotSerializationIdentifiers found for the given value. null"),
     );
   }
 

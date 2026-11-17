@@ -5,7 +5,8 @@ import 'package:test/test.dart';
 
 import 'v14_metadata_hex.dart';
 
-void main() {
+import '../utils.dart';
+void metadataLookupTest() {
   final metadataBytesV14 = BytesUtils.fromHexString(metadataV14).sublist(5);
   final metadata = MetadataV14.fromBytes(metadataBytesV14);
 
@@ -13,6 +14,11 @@ void main() {
     _encodeDecode(metadata);
   });
 }
+
+void main() {
+  PolkadotDartUtilsTestApi.runTest(metadataLookupTest, "Metadata Lookup");
+}
+
 
 void _encodeDecode(MetadataV14 api) {
   test("lockup-16", () {

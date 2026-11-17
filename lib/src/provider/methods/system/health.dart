@@ -18,7 +18,7 @@ class SubstrateRequestSystemHealth
   }
 
   @override
-  SystemHealthResppnse onResonse(Map<String, dynamic> result) {
+  SystemHealthResppnse onResponse(Map<String, dynamic> result) {
     return SystemHealthResppnse.fromJson(result);
   }
 }

@@ -1,7 +1,7 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
+
 
 enum DeprecationStatusTypes {
   notDeprecated,
@@ -11,7 +11,11 @@ enum DeprecationStatusTypes {
   static DeprecationStatusTypes fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown DeprecationStatusTypes name "$name".',
+              ),
     );
   }
 }
@@ -40,7 +44,7 @@ abstract class DeprecationStatus extends SubstrateVariantSerialization {
     }
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
-    return SubstrateMetadataLayouts.depecratedStatusV16(property: property);
+    return SubstrateMetadataLayouts.deprecatedStatusV16(property: property);
   }
 
   @override
@@ -67,7 +71,7 @@ class MetadataStatusDeprecated extends DeprecationStatus {
 
   @override
   Layout<Map<String, dynamic>> layout({String? property}) {
-    return SubstrateMetadataLayouts.depecratedV16(property: property);
+    return SubstrateMetadataLayouts.deprecatedV16(property: property);
   }
 
   @override

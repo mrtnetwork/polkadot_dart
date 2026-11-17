@@ -1,5 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/helper/helper.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/generic/types/type_def_primitive.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si.dart';
 
@@ -68,7 +67,11 @@ abstract class MetadataTypeInfo<T> {
 
   E cast<E extends MetadataTypeInfo>() {
     if (this is! E) {
-      throw CastFailedException<E>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "E", "value": runtimeType.toString()},
+      );
     }
     return this as E;
   }

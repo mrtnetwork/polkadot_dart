@@ -1,10 +1,10 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/helper/helper.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/address_utils.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/generic/models/weight.dart';
 import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
 import 'package:polkadot_dart/src/models/xcm/core/xcm.dart';
@@ -414,8 +414,8 @@ abstract class XCMInstructionV4 extends SubstrateVariantSerialization
       XCMInstructionType.unpaidExecution =>
         XCMV4UnpaidExecution.deserializeJson(decode.value),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 4.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 4.",
           details: {"type": type.name},
         ),
     };
@@ -490,8 +490,8 @@ abstract class XCMInstructionV4 extends SubstrateVariantSerialization
       XCMInstructionType.aliasOrigin => XCMV4AliasOrigin.fromJson(json),
       XCMInstructionType.unpaidExecution => XCMV4UnpaidExecution.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsuported xcm instruction by version 4.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 4.",
           details: {"type": type.name},
         ),
     };
@@ -821,7 +821,7 @@ class XCMV4Transact extends XCMInstructionV4 with XCMTransact {
   final XCMV3OriginKind originKind;
   final SubstrateWeightV2 requireWeightAtMost;
   @override
-  final List<int> call;
+  final BuBytes call;
 
   XCMV4Transact({
     required this.originKind,
@@ -2052,7 +2052,7 @@ class XCMV4ExpectTransactStatus extends XCMInstructionV4
 
 class XCMV4QueryPallet extends XCMInstructionV4 with XCMQueryPallet {
   @override
-  final List<int> moduleName;
+  final BuBytes moduleName;
   final XCMV4QueryResponseInfo responseInfo;
 
   XCMV4QueryPallet({required List<int> moduleName, required this.responseInfo})
@@ -2116,9 +2116,9 @@ class XCMV4ExpectPallet extends XCMInstructionV4 with XCMExpectPallet {
   @override
   final int index;
   @override
-  final List<int> name;
+  final BuBytes name;
   @override
-  final List<int> moduleName;
+  final BuBytes moduleName;
   @override
   final int crateMajor;
   @override
@@ -2557,7 +2557,7 @@ class XCMV4SetFeesMode extends XCMInstructionV4 with XCMSetFeesMode {
 
 class XCMV4SetTopic extends XCMInstructionV4 with XCMSetTopic {
   @override
-  final List<int> topic;
+  final BuBytes topic;
   XCMV4SetTopic({required List<int> topic})
     : topic =
           topic
@@ -2703,14 +2703,22 @@ enum XCMV4ResponseType {
   static XCMV4ResponseType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV4ResponseType type "$type".',
+              ),
     );
   }
 
   static XCMV4ResponseType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV4ResponseType name "$name".',
+              ),
     );
   }
 }

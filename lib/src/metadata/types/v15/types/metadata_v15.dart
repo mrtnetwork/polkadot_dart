@@ -1,8 +1,7 @@
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
 import 'package:polkadot_dart/src/metadata/core/metadata.dart';
 import 'package:polkadot_dart/src/metadata/core/portable_registry.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 import 'package:polkadot_dart/src/metadata/imp/metadata_interface.dart';
 import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
@@ -101,7 +100,7 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
       orElse:
           () =>
-              throw MetadataException(
+              throw BuError(DefaultErrorType.notFound, 
                 "Api does not eixst.",
                 details: {"apis": getRuntimeApis().join(", ")},
               ),
@@ -117,7 +116,7 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
       orElse:
           () =>
-              throw MetadataException(
+              throw BuError(DefaultErrorType.notFound, 
                 "Api does not eixst.",
                 details: {"apis": getRuntimeApis().join(", ")},
               ),
@@ -126,7 +125,7 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == methodName.toLowerCase(),
       orElse:
           () =>
-              throw MetadataException(
+              throw BuError(DefaultErrorType.notFound, 
                 "Method does not eixst.",
                 details: {
                   "Api": api.name,
@@ -143,7 +142,7 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
       orElse:
           () =>
-              throw MetadataException(
+              throw BuError(DefaultErrorType.notFound, 
                 "Api does not eixst.",
                 details: {"apis": getRuntimeApis().join(", ")},
               ),
@@ -181,7 +180,7 @@ class MetadataV15 extends SubstrateMetadata<Map<String, dynamic>>
         );
       }
       return true;
-    } on MetadataException {
+    } on BuError {
       return false;
     }
   }

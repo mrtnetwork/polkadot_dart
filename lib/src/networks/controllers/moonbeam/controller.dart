@@ -1,7 +1,6 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/models/xcm/xcm.dart';
 import 'package:polkadot_dart/src/networks/constants/constants.dart';
 import 'package:polkadot_dart/src/networks/constants/evm.dart';
@@ -77,7 +76,7 @@ abstract class BaseMoonbeamNetworkController<
     if (remainAssets.isNotEmpty) {
       final evmParams = params.evmParams;
       if (evmParams == null) {
-        throw DartSubstratePluginException("Missing evm network parameters.");
+        throw BuError(DefaultErrorType.invalidArgument, "Missing evm network parameters.");
       }
 
       final response = await Future.wait(
@@ -88,17 +87,17 @@ abstract class BaseMoonbeamNetworkController<
           final name = await evmParams.ethCall(
             provider: provider,
             contract: address,
-            function: SubstratemEVMNetworkUtils.nameAbi,
+            function: SubstrateEVMNetworkUtils.nameAbi,
           );
           final symbol = await evmParams.ethCall(
             provider: provider,
             contract: address,
-            function: SubstratemEVMNetworkUtils.symbolAbi,
+            function: SubstrateEVMNetworkUtils.symbolAbi,
           );
           final decimals = await evmParams.ethCall(
             provider: provider,
             contract: address,
-            function: SubstratemEVMNetworkUtils.decimalsAbi,
+            function: SubstrateEVMNetworkUtils.decimalsAbi,
           );
           return MoonbeamForeignAsset(
             assetId: e.key.toString(),
@@ -114,8 +113,7 @@ abstract class BaseMoonbeamNetworkController<
         }).toList(),
       );
       for (final i in response) {
-        // if (i == null) continue;
-        contantAssets[BigInt.parse(i.assetId)] = i;
+        contantAssets[BigintUtils.parse(i.assetId)] = i;
       }
     }
     return {for (final i in contantAssets.entries) i.value.location: i.value};
@@ -136,7 +134,7 @@ abstract class BaseMoonbeamNetworkController<
             .toList();
     final evmParams = params.evmParams;
     if (evmParams == null) {
-      throw DartSubstratePluginException("Missing evm network parameters.");
+      throw BuError(DefaultErrorType.invalidArgument, "Missing evm network parameters.");
     }
     if (allAssets.isNotEmpty) {
       final provider = await metadata();
@@ -144,7 +142,7 @@ abstract class BaseMoonbeamNetworkController<
         allAssets.map((e) async {
           final balance = await evmParams.ethCall(
             provider: provider,
-            function: SubstratemEVMNetworkUtils.balanceOfAbi,
+            function: SubstrateEVMNetworkUtils.balanceOfAbi,
             contract: e.asset.evmAddress(),
             params: [address.address],
           );
@@ -213,6 +211,9 @@ abstract class BaseMoonbeamNetworkController<
   }
 }
 
+@Deprecated(
+  'Moonbeam retired its Polkadot parachain (Jul 2026). Historical queries only.',
+)
 class MoonbeamNetworkController
     extends BaseMoonbeamNetworkController<PolkadotNetwork> {
   MoonbeamNetworkController({required super.params});
@@ -384,7 +385,7 @@ class MoonbeamNetworkController
       params: params,
       provider: provider,
       network: network,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
       method: XCMCallPalletMethod.transferAssets,
     );
   }
@@ -400,7 +401,7 @@ class MoonbeamNetworkController
         params: params,
         provider: provider,
         network: network,
-        defaultPallet: SubtrateMetadataPallet.xcmPallet,
+        defaultPallet: SubstrateMetadataPallet.xcmPallet,
         onControllerRequest: onControllerRequest,
       );
     }
@@ -409,11 +410,12 @@ class MoonbeamNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.transferAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }
 
+@Deprecated('Moonriver liveness unverified. Historical queries only.')
 class MoonriverNetworkController
     extends BaseMoonbeamNetworkController<KusamaNetwork> {
   MoonriverNetworkController({required super.params});
@@ -477,7 +479,7 @@ class MoonriverNetworkController
         params: params,
         provider: provider,
         network: network,
-        defaultPallet: SubtrateMetadataPallet.polkadotXcm,
+        defaultPallet: SubstrateMetadataPallet.polkadotXcm,
         onControllerRequest: onControllerRequest,
       );
     }
@@ -486,7 +488,7 @@ class MoonriverNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.transferAssets,
-      pallet: SubtrateMetadataPallet.polkadotXcm,
+      pallet: SubstrateMetadataPallet.polkadotXcm,
     );
   }
 }

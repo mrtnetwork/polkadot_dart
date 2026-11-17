@@ -2,7 +2,8 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
+
 
 enum XTransferCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   transfer("transfer", 0),
@@ -15,14 +16,22 @@ enum XTransferCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   static XTransferCallPalletMethod fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XTransferCallPalletMethod name "$name".',
+              ),
     );
   }
 
   static XTransferCallPalletMethod fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XTransferCallPalletMethod method "$method".',
+              ),
     );
   }
 }
@@ -34,7 +43,7 @@ abstract class XTransferCallPallet
   @override
   final XTransferCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class XTransferCallPalletTransfer extends XTransferCallPallet {
@@ -48,19 +57,21 @@ class XTransferCallPalletTransfer extends XTransferCallPallet {
     required this.asset,
     required this.dest,
     required this.destWeight,
-    super.pallet = SubtrateMetadataPallet.xTransfer,
+    super.pallet = SubstrateMetadataPallet.xTransfer,
   }) : super(type: XTransferCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
   }) {
-    return extrinsic.api.encodeCall(
-      palletNameOrIndex: pallet ?? this.pallet.name,
-      value: toJson(method: method),
-    );
+    return extrinsic.api
+        .encodeCall(
+          palletNameOrIndex: pallet ?? this.pallet.name,
+          value: toJson(method: method),
+        )
+        .asImmutableBytes;
   }
 
   @override
@@ -76,7 +87,7 @@ class XTransferCallPalletTransfer extends XTransferCallPallet {
 }
 
 class XTransferCallPalletTransferGeneric extends XTransferCallPallet {
-  final List<int> data;
+  final BuBytes data;
   final XCMV3MultiLocation dest;
   final SubstrateWeightV2? destWeight;
   @override
@@ -86,20 +97,22 @@ class XTransferCallPalletTransferGeneric extends XTransferCallPallet {
     required List<int> data,
     required this.dest,
     required this.destWeight,
-    super.pallet = SubtrateMetadataPallet.xTransfer,
+    super.pallet = SubstrateMetadataPallet.xTransfer,
   }) : data = data.asImmutableBytes,
        super(type: XTransferCallPalletMethod.transferGeneric);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
   }) {
-    return extrinsic.api.encodeCall(
-      palletNameOrIndex: pallet ?? this.pallet.name,
-      value: toJson(method: method),
-    );
+    return extrinsic.api
+        .encodeCall(
+          palletNameOrIndex: pallet ?? this.pallet.name,
+          value: toJson(method: method),
+        )
+        .asImmutableBytes;
   }
 
   @override

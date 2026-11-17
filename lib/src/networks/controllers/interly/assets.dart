@@ -1,7 +1,7 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 import 'package:polkadot_dart/src/networks/core/assets/assets.dart';
 import 'package:polkadot_dart/src/networks/utils/utils.dart';
 
@@ -241,7 +241,7 @@ abstract class BaseInterlayNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
 
   BaseInterlayNetworkAsset.fromJson(super.json) : super.fromJson();
@@ -268,7 +268,7 @@ class InterlayNetworkAsset extends BaseInterlayNetworkAsset {
          minBalance: metadata?.existentialDeposit,
          name: metadata?.name,
          symbol: metadata?.symbol,
-         excutionPallet: SubtrateMetadataPallet.tokens,
+         executionPallet: SubstrateMetadataPallet.tokens,
        );
 
   factory InterlayNetworkAsset.fromJson(Map<String, dynamic> json) {
@@ -330,7 +330,7 @@ class InterlayNetworkNativeAsset extends BaseInterlayNetworkAsset {
          minBalance: metadata?.existentialDeposit,
          name: metadata?.name,
          symbol: metadata?.symbol,
-         excutionPallet: SubtrateMetadataPallet.tokens,
+         executionPallet: SubstrateMetadataPallet.tokens,
        );
 
   factory InterlayNetworkNativeAsset.fromJson(Map<String, dynamic> json) {

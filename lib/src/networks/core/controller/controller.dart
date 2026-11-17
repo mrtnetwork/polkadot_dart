@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/substrate.dart';
 import 'package:polkadot_dart/src/api/api.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/signer.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 import 'package:polkadot_dart/src/networks/constants/constants.dart';
@@ -104,7 +103,7 @@ abstract mixin class BaseSubstrateNetworkController<
         provider: provider,
         network: network,
         method: XCMCallPalletMethod.limitedTeleportAssets,
-        pallet: SubtrateMetadataPallet.polkadotXcm,
+        pallet: SubstrateMetadataPallet.polkadotXcm,
       );
     }
     return SubstrateNetworkControllerXCMTransferBuilder.transferAssetsThroughUsingTypeAndThen(
@@ -182,22 +181,22 @@ abstract mixin class BaseSubstrateNetworkController<
   }) async {
     final provider = await metadata();
     if (params.destinationNetwork.relaySystem != network.relaySystem) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "XCM transfer not allowed between chains using different relay systems.",
       );
     }
     if (params.destinationNetwork == network) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "XCM transfer not allowed within the same network.",
       );
     }
     try {
       params.assets.cast<ASSET>();
     } catch (_) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid network assets.",
         details: {
-          "excpected": "$ASSET",
+          "expected": "$ASSET",
           "assets": params.assets.map((e) => e.runtimeType).join(","),
         },
       );
@@ -235,7 +234,7 @@ abstract mixin class BaseSubstrateNetworkController<
     required SubstrateLocalTransferAssetParams params,
   }) async {
     if (!network.allowLocalTransfer) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.unsupported, 
         "Local asset transfers are currently disabled on this network.",
         details: {"network": network.networkName},
       );
@@ -273,13 +272,13 @@ abstract mixin class BaseSubstrateNetworkController<
   /// - [signer]: Signer to sign the transaction.
   /// - [onTransactionSubmited]: Callback when transaction is submitted on the current network.
   /// - [onUpdateTransactionStatus]: Callback when transaction is included in a block on the current network.
-  /// - [chargeAssetTxPaymentAssetId]: Pay excution fee by asset. only work if network support paying fee by asset. otherwise failed.
+  /// - [chargeAssetTxPaymentAssetId]: Pay execution fee by asset. only work if network support paying fee by asset. otherwise failed.
   Future<Future<Stream<void>>> createSignAndSubmitNativeTransfer({
     required SubstrateNativeAssetTransferParams params,
     required BaseSubstrateAddress owner,
     required SubstrateTransactionSigner signer,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
-    void Function(SubtrateTransactionSubmitionResult? event)?
+    void Function(SubstrateTransactionSubmitionResult? event)?
     onUpdateTransactionStatus,
     ASSET? chargeAssetTxPaymentAssetId,
   }) async {
@@ -303,13 +302,13 @@ abstract mixin class BaseSubstrateNetworkController<
   /// - [signer]: Signer to sign the transaction.
   /// - [onTransactionSubmited]: Callback when transaction is submitted on the current network.
   /// - [onUpdateTransactionStatus]: Callback when transaction is included in a block on the current network.
-  /// - [chargeAssetTxPaymentAssetId]: Pay excution fee by asset. only work if network support paying fee by asset. otherwise failed.
+  /// - [chargeAssetTxPaymentAssetId]: Pay execution fee by asset. only work if network support paying fee by asset. otherwise failed.
   Future<Future<Stream<void>>> createSignAndSubmitAssetTransfer({
     required SubstrateLocalTransferAssetParams params,
     required BaseSubstrateAddress owner,
     required SubstrateTransactionSigner signer,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
-    void Function(SubtrateTransactionSubmitionResult? event)?
+    void Function(SubstrateTransactionSubmitionResult? event)?
     onUpdateTransactionStatus,
     ASSET? chargeAssetTxPaymentAssetId,
   }) async {
@@ -333,13 +332,13 @@ abstract mixin class BaseSubstrateNetworkController<
   /// - [signer]: Signer to sign the transaction.
   /// - [onTransactionSubmited]: Callback when transaction is submitted on the current network.
   /// - [onUpdateTransactionStatus]: Callback when transaction is included in a block on the current network.
-  /// - [chargeAssetTxPaymentAssetId]: Pay excution fee by asset. only work if network support paying fee by asset. otherwise failed.
+  /// - [chargeAssetTxPaymentAssetId]: Pay execution fee by asset. only work if network support paying fee by asset. otherwise failed.
   Future<Future<Stream<void>>> createSignAndSubmitXcmTransfer({
     required SubstrateXCMTransferParams params,
     required BaseSubstrateAddress owner,
     required SubstrateTransactionSigner signer,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
-    void Function(SubtrateTransactionSubmitionResult? event)?
+    void Function(SubstrateTransactionSubmitionResult? event)?
     onUpdateTransactionStatus,
     ASSET? chargeAssetTxPaymentAssetId,
     BaseSubstrateNetworkController? destinationChainController,
@@ -366,7 +365,7 @@ abstract mixin class BaseSubstrateNetworkController<
       version: network.defaultXcmVersion,
     );
     if (identifier == null) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Cannot pay transaction fee using the provided asset.",
       );
     }
@@ -401,7 +400,7 @@ abstract mixin class BaseSubstrateNetworkController<
   /// - [onTransactionSubmited]: Callback when transaction is submitted on the current network.
   /// - [onUpdateTransactionStatus]: Callback when transaction is included in a block on the current network.
   /// - [onDestinationChainEvent]: Callback for events on the destination chain if [destinationChainController] is provided.
-  /// - [chargeAssetTxPaymentAssetId]: Pay excution fee by asset. only work if network support paying fee by asset. otherwise failed.
+  /// - [chargeAssetTxPaymentAssetId]: Pay execution fee by asset. only work if network support paying fee by asset. otherwise failed.
   Future<Stream<void>> submitXCMTransaction({
     required BaseSubstrateAddress owner,
     required SubstrateXCMTransferEncodedParams params,
@@ -410,7 +409,7 @@ abstract mixin class BaseSubstrateNetworkController<
     BaseSubstrateNetworkController? destinationChainController,
     ASSET? chargeAssetTxPaymentAssetId,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
-    void Function(SubtrateTransactionSubmitionResult event)?
+    void Function(SubstrateTransactionSubmitionResult event)?
     onUpdateTransactionStatus,
     void Function(SubstrateXCMTransctionTrackerResult event)?
     onDestinationChainEvent,
@@ -419,7 +418,7 @@ abstract mixin class BaseSubstrateNetworkController<
     final provider = await metadata();
     if (transaction == null) {
       if (signer == null) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidState, 
           "Failed to sign transaction. missing signer.",
         );
       }
@@ -465,7 +464,7 @@ abstract mixin class BaseSubstrateNetworkController<
       if (!controller.isClosed) controller.close();
     }
 
-    void stratTracking() {
+    void startTracking() {
       stream.listen(
         (result) {
           final callBack = onUpdateTransactionStatus;
@@ -555,7 +554,7 @@ abstract mixin class BaseSubstrateNetworkController<
       );
     }
 
-    controller.onListen = stratTracking;
+    controller.onListen = startTracking;
     return controller.stream.asBroadcastStream(
       onCancel: (subscription) => close(),
     );
@@ -571,7 +570,7 @@ abstract mixin class BaseSubstrateNetworkController<
   /// - [signer]: Signer to sign the transaction if [transaction] is not provided.
   /// - [onTransactionSubmited]: Callback when transaction is submitted on the current network.
   /// - [onUpdateTransactionStatus]: Callback when transaction is included in a block on the current network.
-  /// - [chargeAssetTxPaymentAssetId]: Pay excution fee by asset. only work if network support paying fee by asset. otherwise failed.
+  /// - [chargeAssetTxPaymentAssetId]: Pay execution fee by asset. only work if network support paying fee by asset. otherwise failed.
   Future<Stream<void>> submitTransaction({
     required BaseSubstrateAddress owner,
     required SubstrateEncodedCallParams params,
@@ -579,14 +578,14 @@ abstract mixin class BaseSubstrateNetworkController<
     SubstrateTransactionSigner? signer,
     ASSET? chargeAssetTxPaymentAssetId,
     void Function(String txId, int blockNumber)? onTransactionSubmited,
-    void Function(SubtrateTransactionSubmitionResult event)?
+    void Function(SubstrateTransactionSubmitionResult event)?
     onUpdateTransactionStatus,
   }) async {
     final StreamController<void> controller = StreamController();
     final provider = await metadata();
     if (transaction == null) {
       if (signer == null) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidState, 
           "Failed to sign transaction. missing signer.",
         );
       }
@@ -610,14 +609,14 @@ abstract mixin class BaseSubstrateNetworkController<
           provider: provider,
           onSubmitxtrinsic: onTransactionSubmited,
         );
-    StreamSubscription<SubtrateTransactionSubmitionResult>? sub;
+    StreamSubscription<SubstrateTransactionSubmitionResult>? sub;
     void close() {
       if (!controller.isClosed) controller.close();
       sub?.cancel();
       sub = null;
     }
 
-    void stratTracking() {
+    void startTracking() {
       sub = stream.listen(
         (result) {
           final callBack = onUpdateTransactionStatus;
@@ -633,7 +632,7 @@ abstract mixin class BaseSubstrateNetworkController<
       );
     }
 
-    controller.onListen = stratTracking;
+    controller.onListen = startTracking;
     return controller.stream.asBroadcastStream(
       onCancel: (subscription) => close(),
     );

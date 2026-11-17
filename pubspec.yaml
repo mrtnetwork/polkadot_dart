@@ -1,6 +1,6 @@
 name: polkadot_dart
 description: "This package facilitates Substrate interactions: create, sign, send transactions (ECDSA, ED25519, SR25519), query, runtime calls, JSON-RPC for seamless Substrate operations."
-version: 5.3.0
+version: 6.0.0
 homepage: "https://github.com/mrtnetwork/polkadot_dart"
 repository: "https://github.com/mrtnetwork/polkadot_dart"
 Author: mrhaydari.t@gmail.com
@@ -16,7 +16,10 @@ environment:
 
 
 dependencies:
-  blockchain_utils: ^7.1.0
+  blockchain_utils:
+    git:
+      url: https://github.com/mrtnetwork/blockchain_utils
+
 
 
 dev_dependencies:
@@ -24,6 +27,9 @@ dev_dependencies:
   test: ^1.26.3
   flutter_lints: ^6.0.0
   http: ^1.1.0
+  blockchain_utils_connector:
+    git:
+      url: https://github.com/mrtnetwork/blockchain_utils_connector
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

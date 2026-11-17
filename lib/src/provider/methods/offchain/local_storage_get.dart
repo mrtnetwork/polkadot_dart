@@ -22,4 +22,4 @@ class SubstrateRequestOffChainLocalStorageGet
   }
 }
 
-//localStorageGet(kind: StorageKind, key: Bytes): Option<Bytes>
+//localStorageGet(kind: StorageKind, key: BuBytes): Option<BuBytes>

@@ -22,7 +22,7 @@ class MetadataWithProvider {
   const MetadataWithProvider({required this.provider, required this.metadata});
 }
 
-enum SubtrateMetadataUtilityMethods {
+enum SubstrateMetadataUtilityMethods {
   batch("batch"),
   asDerivative("as_derivative"),
   batchAll("batch_all"),
@@ -33,5 +33,5 @@ enum SubtrateMetadataUtilityMethods {
   dispatchAsFallible("dispatch_as_fallible");
 
   final String name;
-  const SubtrateMetadataUtilityMethods(this.name);
+  const SubstrateMetadataUtilityMethods(this.name);
 }

@@ -1,18 +1,16 @@
-import 'package:blockchain_utils/crypto/quick_crypto.dart';
-import 'package:blockchain_utils/layout/layout.dart';
-import 'package:blockchain_utils/utils/utils.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/extrinsic/v4/generic_extrinsic_signature.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
 class Extrinsic extends SubstrateSerialization<Map<String, dynamic>> {
   final BaseExtrinsicSignature? signature;
-  final List<int> methodBytes;
-  const Extrinsic({
+  final BuBytes methodBytes;
+  Extrinsic({
     required this.signature,
-    required this.methodBytes,
+    required List<int> methodBytes,
     this.version = 4,
-  });
+  }) : methodBytes = methodBytes.asImmutableBytes;
 
   final int version;
 
@@ -24,15 +22,15 @@ class Extrinsic extends SubstrateSerialization<Map<String, dynamic>> {
   }
 
   @override
-  List<int> serialize({String? property, bool encodeLength = true}) {
+  BuBytes serialize({String? property, bool encodeLength = true}) {
     final encode = [...super.serialize(), ...methodBytes];
     if (encodeLength) {
       return [
         ...LayoutSerializationUtils.encodeLength(encode.length.toString()),
         ...encode,
-      ];
+      ].asImmutableBytes;
     }
-    return encode;
+    return encode.asImmutableBytes;
   }
 
   @override

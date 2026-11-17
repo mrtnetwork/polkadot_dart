@@ -7,12 +7,10 @@ import 'package:polkadot_dart/src/api/helper/event_helper.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/api/runtime/runtime.dart';
 import 'package:polkadot_dart/src/api/storage/storage/api.dart';
-import 'package:polkadot_dart/src/api/transaction/exception.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/keypair/core/keypair.dart';
 import 'package:polkadot_dart/src/keypair/core/signer.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
-import 'package:polkadot_dart/src/models/modesl.dart';
+import 'package:polkadot_dart/src/models/models.dart';
 import 'package:polkadot_dart/src/networks/types/types/transaction.dart';
 import 'package:polkadot_dart/src/provider/provider.dart';
 
@@ -25,7 +23,7 @@ typedef CbOnBlockEvent<T extends Object> =
     );
 
 final class SubstrateTransactionBuilder {
-  static List<int> _getCallBytes({
+  static BuBytes _getCallBytes({
     required SubstrateTransactionSubmitableParams calls,
     required MetadataWithProvider provider,
   }) {
@@ -33,15 +31,15 @@ final class SubstrateTransactionBuilder {
       return calls.calls.first.bytes;
     }
     if (!provider.metadata.api.metadata.callMethodExists(
-      SubtrateMetadataPallet.utility.name,
-      SubtrateMetadataUtilityMethods.batch.name,
+      SubstrateMetadataPallet.utility.name,
+      SubstrateMetadataUtilityMethods.batch.name,
     )) {
-      throw DartSubstratePluginException("Unsuported batch transaction.");
+      throw BuError(DefaultErrorType.unsupported, "Unsupported batch transaction.");
     }
     return provider.metadata.api.encodeCall(
-      palletNameOrIndex: SubtrateMetadataPallet.utility.name,
+      palletNameOrIndex: SubstrateMetadataPallet.utility.name,
       value: {
-        SubtrateMetadataUtilityMethods.batch.name:
+        SubstrateMetadataUtilityMethods.batch.name:
             calls.calls.map((e) => LookupRawParam(bytes: e.bytes)).toList(),
       },
     );
@@ -57,12 +55,12 @@ final class SubstrateTransactionBuilder {
   }) async {
     if (calls.chargeAssetTxPayment != null &&
         !provider.metadata.extrinsic.chargeAssetTxPayment) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.unsupported, 
         "Network does not support ChargeAssetTxPayment fee.",
       );
     }
     if (calls.calls.isEmpty) {
-      throw DartSubstratePluginException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "At least one call required for create transaction.",
       );
     }
@@ -77,7 +75,7 @@ final class SubstrateTransactionBuilder {
         const SubstrateRequestChainGetBlockHash<String?>(number: 0),
       );
       if (genesisHash == null) {
-        throw DartSubstratePluginException(
+        throw BuError(DefaultErrorType.invalidArgument, 
           "Unexpected null response when fetching genesis block hash.",
         );
       }
@@ -169,7 +167,7 @@ final class SubstrateTransactionBuilder {
 
     final feeInfo = await provider.provider.request(
       SubstrateRequestRuntimeTransactionPaymentApiQueryInfo.fromExtrinsic(
-        exirceBytes: extrinsic.serialize(),
+        extrinsicBytes: extrinsic.serialize(),
       ),
     );
     SubstrateDispatchResult<CallDryRunEffects>? dryRun;
@@ -218,7 +216,7 @@ final class SubstrateTransactionBuilder {
     );
   }
 
-  /// Builds and sign Substrate transaction payload;.
+  /// Builds and signs a full Substrate transaction (payload plus signature).
   static Future<SubstrateSubmitableTransaction> buildAndSignTransactionStatic({
     required BaseSubstrateAddress owner,
     TransactionBuilderParams params =
@@ -270,11 +268,19 @@ final class SubstrateTransactionBuilder {
     final algorithm =
         signer?.algorithm ??
         fakeSignatureAlgorithm ??
-        payload.builder.metadataFields.crypto.cryptoAlgoritms.firstWhere(
-          (e) => e == SubstrateKeyAlgorithm.ecdsa,
-          orElse:
-              () => payload.builder.metadataFields.crypto.cryptoAlgoritms.first,
-        );
+        (() {
+          final algorithms =
+              payload.builder.metadataFields.crypto.cryptoAlgorithms;
+          if (algorithms.isEmpty) {
+            throw BuError(DefaultErrorType.notFound, 
+              "No crypto algorithms found in metadata.",
+            );
+          }
+          return algorithms.firstWhere(
+            (e) => e == SubstrateKeyAlgorithm.ecdsa,
+            orElse: () => algorithms.first,
+          );
+        })();
     signature ??= List<int>.filled(algorithm.signatureLength, 1);
     return payload.builder.createFinalExtrinsic(
       callBytes: payload.methodBytes,
@@ -313,7 +319,7 @@ final class SubstrateTransactionBuilder {
   }
 
   /// Builds, signs, and submits a Substrate transaction while streaming status updates.
-  static Future<Stream<SubtrateTransactionSubmitionResult>>
+  static Future<Stream<SubstrateTransactionSubmitionResult>>
   buildSignAndWatchTransactionStatic({
     required BaseSubstrateAddress owner,
     required SubstrateTransactionSigner signer,
@@ -341,7 +347,7 @@ final class SubstrateTransactionBuilder {
   }
 
   /// Builds, signs, and submits a Substrate transaction, returning the final async result.
-  static Future<SubtrateTransactionSubmitionResult>
+  static Future<SubstrateTransactionSubmitionResult>
   buildSignAndWatchTransactionStaticAsync({
     required BaseSubstrateAddress owner,
     required SubstrateTransactionSigner signer,
@@ -377,7 +383,7 @@ final class SubstrateTransactionBuilder {
   }
 
   /// Submits a signed extrinsic and streams its submission status with optional callbacks and retry logic.
-  static Future<Stream<SubtrateTransactionSubmitionResult>>
+  static Future<Stream<SubstrateTransactionSubmitionResult>>
   submitExtrinsicAndWatchStatic({
     required SubstrateSubmitableTransaction extrinsic,
     required MetadataWithProvider provider,
@@ -415,7 +421,7 @@ final class SubstrateTransactionBuilder {
   }
 
   /// Submits a signed extrinsic and returns the final submission result asynchronously.
-  static Future<SubtrateTransactionSubmitionResult>
+  static Future<SubstrateTransactionSubmitionResult>
   submitExtrinsicAndWatchStaticAsync({
     required SubstrateSubmitableTransaction extrinsic,
     required MetadataWithProvider provider,
@@ -425,7 +431,8 @@ final class SubstrateTransactionBuilder {
     int Function()? onLookupMoreBlock,
     Duration requestTimeout = const Duration(milliseconds: 200),
   }) async {
-    final Completer<SubtrateTransactionSubmitionResult> completer = Completer();
+    final Completer<SubstrateTransactionSubmitionResult> completer =
+        Completer();
     final stream = await submitExtrinsicAndWatchStatic(
       extrinsic: extrinsic,
       provider: provider,
@@ -446,7 +453,7 @@ final class SubstrateTransactionBuilder {
   }
 
   /// Streams submission results of a specific extrinsic in a given block, with retry support.
-  static Stream<SubtrateTransactionSubmitionResult> findEextrinsic({
+  static Stream<SubstrateTransactionSubmitionResult> findEextrinsic({
     required String txId,
     required String extrinsic,
     required int blockId,
@@ -470,7 +477,7 @@ final class SubstrateTransactionBuilder {
         if (index == null) {
           return null;
         }
-        return SubtrateTransactionSubmitionResult(
+        return SubstrateTransactionSubmitionResult(
           events: events,
           block: blockHash,
           extrinsic: extrinsic,
@@ -480,7 +487,7 @@ final class SubstrateTransactionBuilder {
         );
       },
     ).handleError((_) {
-      return SubtrateTransactionSubmitionResult.notFount(
+      return SubstrateTransactionSubmitionResult.notFount(
         extrinsic: extrinsic,
         transactionHash: txId,
       );
@@ -513,7 +520,6 @@ final class SubstrateTransactionBuilder {
     blockHash ??= await provider.provider.request(
       SubstrateRequestChainGetBlockHash<String>(number: blockId),
     );
-    assert(blockHash != null);
     if (blockHash == null) {
       throw SubstrateLookupBlockExceptionConst.blockNotFound;
     }
@@ -534,8 +540,13 @@ final class SubstrateTransactionBuilder {
       return _LookupBlock(finalizeBlock, result);
     } on RPCError catch (_) {
       rethrow;
+    } on BuError {
+      rethrow;
     } catch (e) {
-      throw DartSubstratePluginException(e.toString());
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Failed to lookup block.",
+        details: {"error": e is BuError ? e.message : e.toString()},
+      );
     }
   }
 
@@ -594,7 +605,7 @@ final class SubstrateTransactionBuilder {
             }
             await Future.delayed(requestTimeout);
           }
-        } on BaseDartSubstratePluginException catch (e) {
+        } on BuError catch (e) {
           if (e == SubstrateLookupBlockExceptionConst.blockNotFound) {
             retry--;
             if (retry <= 0) {

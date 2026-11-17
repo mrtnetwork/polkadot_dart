@@ -1,9 +1,9 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
-import 'package:blockchain_utils/layout/layout.dart';
+import 'package:blockchain_utils/helper/helper.dart';
+import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:polkadot_dart/src/address/substrate_address/address_utils.dart';
-import 'package:polkadot_dart/src/exception/exception.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/generic/generic.dart';
 import 'package:polkadot_dart/src/models/xcm/core/versioned.dart';
@@ -446,8 +446,8 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsupported xcm instruction by version 5.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 5.",
           details: {"type": type.type},
         ),
     };
@@ -530,8 +530,8 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
       ),
       XCMInstructionType.setHints => XCMV5SetHints.fromJson(json),
       _ =>
-        throw DartSubstratePluginException(
-          "Unsupported xcm instruction by version 5.",
+        throw BuError(DefaultErrorType.unsupported, 
+          "Unsupported XCM instruction by version 5.",
           details: {"type": type.type},
         ),
     };
@@ -861,7 +861,7 @@ class XCMV5Transact extends XCMInstructionV5 with XCMTransact {
   final XCMV3OriginKind originKind;
   final SubstrateWeightV2? fallBackMaxWeight;
   @override
-  final List<int> call;
+  final BuBytes call;
   XCMV5Transact({
     required this.originKind,
     required this.fallBackMaxWeight,
@@ -2099,7 +2099,7 @@ class XCMV5ExpectTransactStatus extends XCMInstructionV5
 
 class XCMV5QueryPallet extends XCMInstructionV5 with XCMQueryPallet {
   @override
-  final List<int> moduleName;
+  final BuBytes moduleName;
   final XCMV5QueryResponseInfo responseInfo;
 
   XCMV5QueryPallet({required List<int> moduleName, required this.responseInfo})
@@ -2162,9 +2162,9 @@ class XCMV5ExpectPallet extends XCMInstructionV5 with XCMExpectPallet {
   @override
   final int index;
   @override
-  final List<int> name;
+  final BuBytes name;
   @override
-  final List<int> moduleName;
+  final BuBytes moduleName;
   @override
   final int crateMajor;
   @override
@@ -2602,7 +2602,7 @@ class XCMV5SetFeesMode extends XCMInstructionV5 with XCMSetFeesMode {
 
 class XCMV5SetTopic extends XCMInstructionV5 with XCMSetTopic {
   @override
-  final List<int> topic;
+  final BuBytes topic;
   XCMV5SetTopic({required List<int> topic})
     : topic =
           topic
@@ -2774,14 +2774,22 @@ enum XCMV5AssetTransferFilterType {
   static XCMV5AssetTransferFilterType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5AssetTransferFilterType name "$name".',
+              ),
     );
   }
 
   static XCMV5AssetTransferFilterType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5AssetTransferFilterType type "$type".',
+              ),
     );
   }
 }
@@ -3240,14 +3248,22 @@ enum XCMV5HintType {
   static XCMV5HintType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5HintType type "$type".',
+              ),
     );
   }
 
   static XCMV5HintType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5HintType name "$name".',
+              ),
     );
   }
 }
@@ -3355,14 +3371,22 @@ enum XCMV5ResponseType {
   static XCMV5ResponseType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5ResponseType type "$type".',
+              ),
     );
   }
 
   static XCMV5ResponseType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5ResponseType name "$name".',
+              ),
     );
   }
 }
@@ -3851,14 +3875,22 @@ enum XCMV5ErrorType {
   static XCMV5ErrorType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5ErrorType type "$type".',
+              ),
     );
   }
 
   static XCMV5ErrorType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown XCMV5ErrorType name "$name".',
+              ),
     );
   }
 }

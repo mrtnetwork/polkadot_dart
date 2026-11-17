@@ -1,7 +1,8 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
+
 
 enum TokensCallPalletMethod implements SubstrateCallPalletTransferMethod {
   transfer("transfer", 0),
@@ -13,7 +14,11 @@ enum TokensCallPalletMethod implements SubstrateCallPalletTransferMethod {
   factory TokensCallPalletMethod.fromMethod(String? method) {
     return values.firstWhere(
       (e) => e.method == method,
-      orElse: () => throw ItemNotFoundException(value: method),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown TokensCallPalletMethod value "$method".',
+              ),
     );
   }
   @override
@@ -32,7 +37,7 @@ abstract class TokensCallPallet
   @override
   final TokensCallPalletMethod type;
   @override
-  final SubtrateMetadataPallet pallet;
+  final SubstrateMetadataPallet pallet;
 }
 
 class TokensCallPalletTransfer extends TokensCallPallet {
@@ -44,11 +49,11 @@ class TokensCallPalletTransfer extends TokensCallPallet {
     required this.dest,
     required this.currencyId,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.tokens,
+    super.pallet = SubstrateMetadataPallet.tokens,
   }) : super(type: TokensCallPalletMethod.transfer);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -86,11 +91,11 @@ class TokensCallPalletTransferKeepAlive extends TokensCallPallet {
     required this.dest,
     required this.currencyId,
     required this.amount,
-    super.pallet = SubtrateMetadataPallet.tokens,
+    super.pallet = SubstrateMetadataPallet.tokens,
   }) : super(type: TokensCallPalletMethod.transferKeepAlive);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,
@@ -128,11 +133,11 @@ class TokensCallPalletTransferAll extends TokensCallPallet {
     required this.dest,
     required this.currencyId,
     required this.keepAlive,
-    super.pallet = SubtrateMetadataPallet.tokens,
+    super.pallet = SubstrateMetadataPallet.tokens,
   }) : super(type: TokensCallPalletMethod.transferAll);
 
   @override
-  List<int> encodeCall({
+  BuBytes encodeCall({
     required MetadataWithExtrinsic extrinsic,
     String? pallet,
     String? method,

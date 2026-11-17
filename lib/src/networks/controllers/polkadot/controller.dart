@@ -66,7 +66,7 @@ class PolkadotNetworkController
         symbol: "DOT",
         version: network.defaultXcmVersion,
         parents: 0,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
 
   @override
@@ -147,7 +147,7 @@ class PolkadotNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.xcmPallet,
+      pallet: SubstrateMetadataPallet.xcmPallet,
     );
   }
 }
@@ -167,7 +167,7 @@ class KusamaNetworkController
         version: network.defaultXcmVersion,
         minBalance: BigInt.parse("333333333"),
         parents: 0,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
   @override
   Future<List<R>>
@@ -240,7 +240,7 @@ class KusamaNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.xcmPallet,
+      pallet: SubstrateMetadataPallet.xcmPallet,
     );
   }
 }
@@ -260,7 +260,7 @@ class WestendNetworkController
         minBalance: BigInt.parse("10000000000"),
         version: network.defaultXcmVersion,
         parents: 0,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
   @override
   Future<List<R>>
@@ -333,7 +333,7 @@ class WestendNetworkController
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.xcmPallet,
+      pallet: SubstrateMetadataPallet.xcmPallet,
     );
   }
 }
@@ -352,7 +352,7 @@ class PaseoNetworkController extends BaseRelayNetworkController<PaseoNetwork> {
         minBalance: BigInt.parse("10000000000"),
         version: network.defaultXcmVersion,
         parents: 0,
-        excutionPallet: SubtrateMetadataPallet.balances,
+        executionPallet: SubstrateMetadataPallet.balances,
       );
   @override
   Future<List<R>>
@@ -425,7 +425,7 @@ class PaseoNetworkController extends BaseRelayNetworkController<PaseoNetwork> {
       provider: provider,
       network: network,
       method: XCMCallPalletMethod.limitedTeleportAssets,
-      pallet: SubtrateMetadataPallet.xcmPallet,
+      pallet: SubstrateMetadataPallet.xcmPallet,
     );
   }
 }

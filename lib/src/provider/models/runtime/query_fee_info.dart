@@ -1,6 +1,4 @@
-import 'package:blockchain_utils/layout/constant/constant.dart';
-import 'package:blockchain_utils/layout/core/core/core.dart';
-import 'package:blockchain_utils/utils/numbers/numbers.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/provider/models/models.dart';
 import 'package:polkadot_dart/src/provider/models/runtime/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
@@ -24,6 +22,11 @@ class QueryFeeDetails extends SubstrateSerialization<Map<String, dynamic>> {
               adjustedWeightFee: value["inclusionFee"]["adjustedWeightFee"],
             );
     if (bytes.length > data.consumed) {
+      if (bytes.length - data.consumed < 16) {
+        throw BuError(DefaultErrorType.invalidLength, 
+          "Invalid fee details bytes: trailing tip must be 16 bytes.",
+        );
+      }
       final tip = LayoutConst.u128().deserialize(bytes.sublist(data.consumed));
       return QueryFeeDetails(inclusionFee: fee, tip: tip.value);
     }

@@ -1,6 +1,5 @@
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/constant/constant.dart';
-import 'package:polkadot_dart/src/metadata/exception/metadata_exception.dart';
 
 typedef CbOnParseOption<T extends Object, V extends Object> = T Function(V v);
 
@@ -22,8 +21,8 @@ class MetadataUtils {
       if (parse == null) return val as T;
       return parse(val);
     } catch (_) {
-      throw MetadataException(
-        "Unexpected optionial type.",
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Unexpected optional type.",
         details: {"expected": "$T", "value": json.runtimeType.toString()},
       );
     }
@@ -53,7 +52,7 @@ class MetadataUtils {
 
   static List isList(dynamic value, {String? info}) {
     if (value is! List) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid provided list.",
         details: {"info": info, "value": value.runtimeType.toString()},
       );
@@ -63,7 +62,7 @@ class MetadataUtils {
 
   static List<Object> asList(Object? value, {String? info}) {
     if (value == null) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid provided list.",
         details: {"info": info, "value": value.runtimeType.toString()},
       );
@@ -74,8 +73,8 @@ class MetadataUtils {
 
   static void hasLen(List list, int len, {String? info}) {
     if (list.length != len) {
-      throw MetadataException(
-        "Invalid list len.",
+      throw BuError(DefaultErrorType.invalidLength, 
+        "Invalid list length: expected $len, received ${list.length}.",
         details: {
           "expected": len.toString(),
           "length": list.length.toString(),
@@ -89,7 +88,7 @@ class MetadataUtils {
     try {
       return value.cast<T>();
     } catch (e) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid list provided for casting.",
         details: {
           "info": info,
@@ -105,7 +104,7 @@ class MetadataUtils {
     try {
       return value! as T;
     } catch (e) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid $T provided for casting.",
         details: {
           "info": info,
@@ -118,14 +117,18 @@ class MetadataUtils {
 
   static bool validateOptionBytes(List<int> bytes) {
     try {
+      if (bytes.isEmpty) {
+        throw BuError(DefaultErrorType.invalidArgument, "Invalid Metadata option bytes.");
+      }
       final decode = LayoutConst.u8().deserialize(bytes.sublist(0, 1)).value;
       if (decode == 0 || decode == 1) {
         return decode == 1;
       }
       // ignore: empty_catches
     } catch (e) {}
-    throw MetadataException(
-      "Invalid Metadata option bytes.",
+
+    throw BuError(DefaultErrorType.invalidArgument, 
+      "Invalid Metadata optional type.",
       details: {"expected": "0, 1"},
     );
   }
@@ -155,18 +158,18 @@ class MetadataUtils {
     required List<int> prefixHash,
   }) {
     if (queryBytes.length < _queryMethodPrefixLength) {
-      throw MetadataException(
+      throw BuError(DefaultErrorType.invalidArgument, 
         "Invalid query bytes. Query bytes must be at least $_queryMethodPrefixLength bytes",
         details: {"length": queryBytes.length.toString()},
       );
     }
 
     final queryPrefix = queryBytes.sublist(0, _queryMethodPrefixLength);
-    if (!BytesUtils.bytesEqual(queryBytes, prefixHash)) {
-      throw MetadataException(
-        "Invalid query bytes. Query bytes does not related to this storage",
+    if (!BytesUtils.bytesEqual(queryPrefix, prefixHash)) {
+      throw BuError(DefaultErrorType.invalidArgument, 
+        "Invalid query bytes. Query bytes are not related to this storage.",
         details: {
-          "exceptedPrefix": BytesUtils.toHexString(prefixHash),
+          "expectedPrefix": BytesUtils.toHexString(prefixHash),
           "prefix": BytesUtils.toHexString(queryPrefix),
         },
       );
@@ -176,6 +179,6 @@ class MetadataUtils {
 
   static bool supportedTemplate(List<String> path) {
     if (path.isEmpty) return true;
-    return !MetadataConstant.unsuportedTemplatePath.contains(path.last);
+    return !MetadataConstant.unsupportedTemplatePath.contains(path.last);
   }
 }

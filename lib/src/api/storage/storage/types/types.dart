@@ -105,7 +105,7 @@ class SubstrateDefaultAccount
   }
 }
 
-/// at most network support this template for account data
+/// Most networks support this template for account data.
 class SubstrateAccountData {
   final BigInt free;
   final BigInt? reserved;
@@ -181,7 +181,7 @@ class SubstrateMultisig {
 
 class SubstrateMultisigWithCallhash {
   final SubstrateMultisig multisig;
-  final List<int> callHash;
+  final BuBytes callHash;
   final String callHashHex;
   SubstrateMultisigWithCallhash({
     required this.multisig,

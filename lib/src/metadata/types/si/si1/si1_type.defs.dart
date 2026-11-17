@@ -1,5 +1,4 @@
-import 'package:blockchain_utils/exception/exceptions.dart';
-import 'package:blockchain_utils/utils/json/extension/json.dart';
+import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/core/scale_versioned.dart';
 import 'package:polkadot_dart/src/metadata/types/si/si1/si1_historic_meta_compat.dart';
 
@@ -11,6 +10,7 @@ import 'si1_type_def_primitive.dart';
 import 'si1_type_def_sequence.dart';
 import 'si1_type_def_tuple.dart';
 import 'si1_type_def_variant.dart';
+
 
 class Si1TypeDefsIndexesConst {
   final String name;
@@ -56,7 +56,11 @@ class Si1TypeDefsIndexesConst {
   static Si1TypeDefsIndexesConst fromValue(String? name) {
     return values.firstWhere(
       (element) => element.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(DefaultErrorType.invalidArgument, 
+                'Unknown Si1TypeDefsIndexesConst value "$name".',
+              ),
     );
   }
 

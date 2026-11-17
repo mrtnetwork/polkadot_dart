@@ -54,7 +54,7 @@ class SubstrateProvider<SERVICE extends IServiceProvider>
       request,
       timeout: timeout,
     );
-    return request.onResonse(r);
+    return request.onResponse(r);
   }
 
   /// Sends a request to the substract network using the specified [request] parameter.
@@ -66,7 +66,7 @@ class SubstrateProvider<SERVICE extends IServiceProvider>
     IServiceRequest<RESULT, SERVICERESPONSE, SubstrateRequestDetails> request, {
     Duration? timeout,
   }) async {
-    final params = request.buildRequest(_id++);
+    final params = await request.buildRequest(_id++);
     final response = await service.doRequest(params, timeout: timeout);
     return _findError<SERVICERESPONSE>(params: params, response: response);
   }

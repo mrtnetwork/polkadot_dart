@@ -75,9 +75,11 @@ class SubstrateRequestDetails extends BaseServiceRequestParams {
   }
 
   @override
-  List<int>? encodeBody({ServiceProtocol protocol = ServiceProtocol.http}) {
-    assert(!protocol.isGrpc, "Unsupported protocol.");
-    return super.encodeBody(protocol: protocol);
+  BuBytes? encodeBody({ServiceProtocol protocol = ServiceProtocol.http}) {
+    if (protocol.isGrpc) {
+      throw BuError(DefaultErrorType.unsupported, "Unsupported protocol: gRPC.");
+    }
+    return super.encodeBody(protocol: protocol)?.asImmutableBytes;
   }
 
   @override
@@ -119,7 +121,7 @@ class SubstrateRequestDetails extends BaseServiceRequestParams {
   ];
 }
 
-/// An abstract class representing Ethereum JSON-RPC requests with generic response types.
+/// An abstract class representing Substrate JSON-RPC requests with generic response types.
 abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
     extends
         BaseServiceRequest<SERVICERESPONSE, RESULT, SubstrateRequestDetails> {
@@ -140,13 +142,13 @@ abstract class SubstrateRequest<RESULT, SERVICERESPONSE>
   /// Converts a dynamic response to a BigInt, handling hexadecimal conversion.
   static BigInt onBigintResponse(dynamic result) {
     if (result == "0x") return BigInt.zero;
-    return BigInt.parse(StringUtils.strip0x(result), radix: 16);
+    return BigintUtils.parse(result);
   }
 
   /// Converts a dynamic response to an integer, handling hexadecimal conversion.
   static int onIntResponse(dynamic result) {
     if (result == "0x") return 0;
-    return int.parse(StringUtils.strip0x(result), radix: 16);
+    return IntUtils.parse(result);
   }
 
   /// Converts the request parameters to a [SubstrateRequestDetails] object.

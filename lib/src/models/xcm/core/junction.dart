@@ -27,14 +27,24 @@ enum XCMJunctionType implements Comparable<XCMJunctionType> {
   static XCMJunctionType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCM junction type "$type".',
+              ),
     );
   }
 
   static XCMJunctionType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCM junction name "$name".',
+              ),
     );
   }
 
@@ -54,7 +64,11 @@ abstract mixin class XCMJunction
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }
@@ -360,7 +374,13 @@ abstract mixin class XCMJunctionGeneralKey implements XCMJunction {
   }) {
     return switch (version) {
       XCMVersion.v2 => XCMV2JunctionGeneralKey(
-        data: data.sublist(0, length),
+        data:
+            (length <= data.length
+                ? data.sublist(0, length)
+                : throw BuError(
+                  DefaultErrorType.invalidArgument,
+                  "Invalid GeneralKey: length $length exceeds data length ${data.length}.",
+                )),
         length: length,
       ),
       XCMVersion.v3 => XCMV3JunctionGeneralKey(data: data, length: length),
@@ -536,21 +556,36 @@ enum XCMJunctionsType implements Comparable<XCMJunctionsType> {
   static XCMJunctionsType fromName(String? name) {
     return values.firstWhere(
       (e) => e.name == name,
-      orElse: () => throw ItemNotFoundException(value: name),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMJunctionsType name "$name".',
+              ),
     );
   }
 
   static XCMJunctionsType fromLength(int length) {
     return values.firstWhere(
       (e) => e.junctionsLength == length,
-      orElse: () => throw ItemNotFoundException(value: length),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMJunctionsType value "$length".',
+              ),
     );
   }
 
   static XCMJunctionsType fromType(String? type) {
     return values.firstWhere(
       (e) => e.type == type,
-      orElse: () => throw ItemNotFoundException(value: type),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown XCMJunctionsType type "$type".',
+              ),
     );
   }
 
@@ -570,7 +605,11 @@ abstract class XCMJunctions<JUNCTION extends XCMJunction>
   @override
   T cast<T extends XCMComponent>() {
     if (this is! T) {
-      throw CastFailedException<T>(value: this);
+      throw BuError(
+        DefaultErrorType.castFailed,
+        "Failed to cast value",
+        details: {"expected": "T", "value": runtimeType.toString()},
+      );
     }
     return this as T;
   }

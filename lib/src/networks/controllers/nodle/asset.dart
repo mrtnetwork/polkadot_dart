@@ -11,7 +11,7 @@ abstract class BaseNodleNetworkAsset extends BaseSubstrateNetworkAsset {
     required super.name,
     required super.symbol,
     required super.decimals,
-    required super.excutionPallet,
+    required super.executionPallet,
   });
   BaseNodleNetworkAsset.fromJson(super.json) : super.fromJson();
 }
@@ -29,7 +29,7 @@ class NodlenetNetworkNativeAsset extends BaseNodleNetworkAsset {
     required super.symbol,
     required super.decimals,
     super.minBalance,
-  }) : super(excutionPallet: SubtrateMetadataPallet.balances);
+  }) : super(executionPallet: SubstrateMetadataPallet.balances);
   NodlenetNetworkNativeAsset.fromJson(super.json)
     : location = XCMVersionedLocation.fromJson(json.valueAs("location")),
       super.fromJson();
