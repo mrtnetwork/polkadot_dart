@@ -22,10 +22,7 @@ class HttpSubstrateService with SubstrateServiceProvider {
     final resp = await req.close().timeout(
       timeout ?? const Duration(seconds: 300),
     );
-    final bytes = await resp.fold<List<int>>(
-      [],
-      (p, e) => p..addAll(e),
-    );
+    final bytes = await resp.fold<List<int>>([], (p, e) => p..addAll(e));
     return params.toResponse(bytes, statusCode: resp.statusCode);
   }
 }
@@ -34,10 +31,10 @@ BaseSubstratePrivateKey _key(BaseSubstrateNetwork n, int idx) {
   const m =
       'link stand brass velvet hobby jelly hundred auto soap certain way kingdom';
   final seed = Bip39SeedGenerator(Mnemonic.fromString(m)).generate();
-  final w = Bip44.fromSeed(seed, Bip44Coins.polkadotEd25519Slip).purpose.coin
-      .account(0)
-      .change(Bip44Changes.chainExt)
-      .addressIndex(idx);
+  final w = Bip44.fromSeed(
+    seed,
+    Bip44Coins.polkadotEd25519Slip,
+  ).purpose.coin.account(0).change(Bip44Changes.chainExt).addressIndex(idx);
   return SubstratePrivateKey.fromPrivateKey(
     keyBytes: w.privateKey.toBytes(),
     algorithm: SubstrateKeyAlgorithm.ed25519,
@@ -55,17 +52,29 @@ Future<void> main(List<String> args) async {
   );
   SubstrateNetworkControllerParams mk(int p) =>
       SubstrateNetworkApiDefaultParams(
-        (n) async => SubstrateProvider(HttpSubstrateService('http://localhost:$p')),
+        (n) async =>
+            SubstrateProvider(HttpSubstrateService('http://localhost:$p')),
       );
-  final t = SubstrateNetworkControllerFinder.buildApi(network: network, params: mk(port));
-  final hub = SubstrateNetworkControllerFinder.buildApi(network: network.assetHub, params: mk(hubPort));
-  final relay = SubstrateNetworkControllerFinder.buildApi(network: network.relayChain, params: mk(relayPort));
-  final hubA0 = _key(network.assetHub, 0).toAddress() as SubstrateAddress;
-  final a0 = (_key(network, 0).toAddress() as SubstrateAddress).toSS58(network.ss58);
-
-  final hubAccts = await hub.getAccountAssets(address: hubA0).timeout(
-    const Duration(seconds: 420),
+  final t = SubstrateNetworkControllerFinder.buildApi(
+    network: network,
+    params: mk(port),
   );
+  final hub = SubstrateNetworkControllerFinder.buildApi(
+    network: network.assetHub,
+    params: mk(hubPort),
+  );
+  final relay = SubstrateNetworkControllerFinder.buildApi(
+    network: network.relayChain,
+    params: mk(relayPort),
+  );
+  final hubA0 = _key(network.assetHub, 0).toAddress() as SubstrateAddress;
+  final a0 = (_key(network, 0).toAddress() as SubstrateAddress).toSS58(
+    network.ss58,
+  );
+
+  final hubAccts = await hub
+      .getAccountAssets(address: hubA0)
+      .timeout(const Duration(seconds: 420));
   final chainAssets = await t.getAssets().timeout(const Duration(seconds: 420));
   final shared = hubAccts.findShareAssets(chainAssets);
   print('shared=${shared.length}');
@@ -105,12 +114,16 @@ Future<void> main(List<String> args) async {
     owner: hubA0,
     encodedParams: enc,
     creationParams: p,
-    onRequestController: (n) async => switch (n) {
-      _ when n == network.assetHub => hub,
-      _ when n == network => t,
-      _ when n == network.relayChain => relay,
-      _ => SubstrateNetworkControllerFinder.buildApi(network: n, params: mk(hubPort)),
-    },
+    onRequestController:
+        (n) async => switch (n) {
+          _ when n == network.assetHub => hub,
+          _ when n == network => t,
+          _ when n == network.relayChain => relay,
+          _ => SubstrateNetworkControllerFinder.buildApi(
+            network: n,
+            params: mk(hubPort),
+          ),
+        },
   );
   print('dry=${sim?.dryRun.success}');
   await (await hub.submitXCMTransaction(
@@ -119,16 +132,20 @@ Future<void> main(List<String> args) async {
     destinationChainController: t,
     signer: _key(network.assetHub, 0),
     onTransactionSubmited: (id, b) => print('tx $id@$b'),
-    onDestinationChainEvent: (e) => print(
-      'dest ${e.status} ${e.deposits.map((d) => d.toJson()).toList()}',
-    ),
+    onDestinationChainEvent:
+        (e) => print(
+          'dest ${e.status} ${e.deposits.map((d) => d.toJson()).toList()}',
+        ),
   )).toList();
-  final chainAccts = await t.getAccountAssets(address: a0).timeout(
-    const Duration(seconds: 420),
-  );
+  final chainAccts = await t
+      .getAccountAssets(address: a0)
+      .timeout(const Duration(seconds: 420));
   for (final b in chainAccts.balances) {
-    if ('${b.asset.identifier}' == assetSel || (assetSel == 'DOT' && b.asset.symbol == 'DOT')) {
-      print('arrived ${b.asset.symbol} id=${b.asset.identifier} free=${b.free}');
+    if ('${b.asset.identifier}' == assetSel ||
+        (assetSel == 'DOT' && b.asset.symbol == 'DOT')) {
+      print(
+        'arrived ${b.asset.symbol} id=${b.asset.identifier} free=${b.free}',
+      );
     }
   }
   print('DONE');

@@ -107,35 +107,40 @@ class MetadataV14 extends SubstrateMetadata<Map<String, dynamic>>
 
   @override
   List<String> getRuntimeApis() {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
     );
   }
 
   @override
   List<String> getRuntimeApiMethods(String apiName) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
     );
   }
 
   @override
   String generateRuntimeApiMethod(String apiName, String methodName) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
     );
   }
 
   @override
   List<int> getRutimeApiInputLookupIds(String apiName, String methodName) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
     );
   }
 
   @override
   int getRutimeOutputLookupId(String apiName, String methodName) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "Runtime api only work with metadatas ${MetadataConstant.supportRuntimeApi.join(", ")}",
     );
   }

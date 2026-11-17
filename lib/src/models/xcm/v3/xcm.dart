@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/encoding/layout/layout.dart';
@@ -528,7 +529,8 @@ abstract class XCMInstructionV3 extends SubstrateVariantSerialization
       XCMInstructionType.unpaidExecution =>
         XCMV3UnpaidExecution.deserializeJson(decode.value),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 3",
           details: {"type": type.name},
         ),
@@ -601,7 +603,8 @@ abstract class XCMInstructionV3 extends SubstrateVariantSerialization
       XCMInstructionType.aliasOrigin => XCMV3AliasOrigin.fromJson(json),
       XCMInstructionType.unpaidExecution => XCMV3UnpaidExecution.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 3",
           details: {"type": type.name},
         ),
@@ -941,7 +944,8 @@ enum XCMV3OriginKindType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3OriginKindType type "$type".',
               ),
     );
@@ -952,7 +956,8 @@ enum XCMV3OriginKindType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3OriginKindType name "$name".',
               ),
     );
@@ -3002,7 +3007,8 @@ enum XCMV3ErrorType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3ErrorType type "$type".',
               ),
     );
@@ -3013,7 +3019,8 @@ enum XCMV3ErrorType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3ErrorType name "$name".',
               ),
     );
@@ -3832,7 +3839,8 @@ enum XCMV3ResponseType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3ResponseType type "$type".',
               ),
     );
@@ -3843,7 +3851,8 @@ enum XCMV3ResponseType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3ResponseType name "$name".',
               ),
     );
@@ -4017,7 +4026,8 @@ class XCMV3ResponseExecutionResult extends XCMV3Response {
     : index = index?.asU32 {
     if (!((index == null && error == null) ||
         (index != null && error != null))) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid execution result: index and error must both be null (incomplete) or both set (complete).",
       );
     }
@@ -4200,7 +4210,8 @@ enum XCMV3MaybeErrorCodeType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3MaybeErrorCodeType type "$type".',
               ),
     );
@@ -4211,7 +4222,8 @@ enum XCMV3MaybeErrorCodeType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3MaybeErrorCodeType name "$name".',
               ),
     );

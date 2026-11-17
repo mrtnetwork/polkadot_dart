@@ -48,7 +48,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
                   CompareUtils.iterableIsEqual(element.value.type.path, paths),
               orElse:
                   () =>
-                      throw BuError(DefaultErrorType.notFound, 
+                      throw BuError(
+                        DefaultErrorType.notFound,
                         "Lookup id not found.",
                         details: {"path": paths.join(", ")},
                       ),
@@ -65,7 +66,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
                   CompareUtils.iterableIsEqual(element.value.type.path, paths),
               orElse:
                   () =>
-                      throw BuError(DefaultErrorType.notFound, 
+                      throw BuError(
+                        DefaultErrorType.notFound,
                         "Lookup id not found.",
                         details: {"path": paths.join(", ")},
                       ),
@@ -87,7 +89,8 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
     final lookup = types[id];
 
     if (lookup == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "lookup does not exist.",
         details: {"id": id.toString(), "ids": types.keys.join(", ")},
       );
@@ -133,7 +136,11 @@ class PortableRegistryV14 extends SubstrateSerialization<Map<String, dynamic>>
                 MetadataConstant.eventPath,
               ),
               orElse:
-                  () => throw BuError(DefaultErrorType.notFound, "Lookup id not found."),
+                  () =>
+                      throw BuError(
+                        DefaultErrorType.notFound,
+                        "Lookup id not found.",
+                      ),
             )
             .value;
     return Si1TypeDefSequence(eventPalle.id);

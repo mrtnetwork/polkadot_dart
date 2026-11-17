@@ -3,7 +3,6 @@ import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 
-
 enum TokensCallPalletMethod implements SubstrateCallPalletTransferMethod {
   transfer("transfer", 0),
   transferAll("transfer_all", 1),
@@ -16,7 +15,8 @@ enum TokensCallPalletMethod implements SubstrateCallPalletTransferMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown TokensCallPalletMethod value "$method".',
               ),
     );

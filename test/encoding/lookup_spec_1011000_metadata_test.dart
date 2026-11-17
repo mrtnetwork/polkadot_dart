@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 import '../repository/westend_v14.dart';
 
 import '../utils.dart';
+
 extension _ToHex on List<int> {
   String toHex() => BytesUtils.toHexString(this);
 }
@@ -18,9 +19,11 @@ void lookupSpec1011000MetadataTest() {
 }
 
 void main() {
-  PolkadotDartUtilsTestApi.runTest(lookupSpec1011000MetadataTest, "Lookup Spec 1011000 Metadata");
+  PolkadotDartUtilsTestApi.runTest(
+    lookupSpec1011000MetadataTest,
+    "Lookup Spec 1011000 Metadata",
+  );
 }
-
 
 void _test(MetadataV15 api) {
   test("ID-200", () {

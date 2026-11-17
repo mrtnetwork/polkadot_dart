@@ -23,7 +23,8 @@ class QueryFeeDetails extends SubstrateSerialization<Map<String, dynamic>> {
             );
     if (bytes.length > data.consumed) {
       if (bytes.length - data.consumed < 16) {
-        throw BuError(DefaultErrorType.invalidLength, 
+        throw BuError(
+          DefaultErrorType.invalidLength,
           "Invalid fee details bytes: trailing tip must be 16 bytes.",
         );
       }

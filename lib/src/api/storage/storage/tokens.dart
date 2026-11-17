@@ -66,7 +66,8 @@ class SubstrateStorageTokens extends SubstrateStorageApi {
             },
             onJsonResponse: (response, responseBytes, storageKey) {
               if (response is! T) {
-                throw BuError(DefaultErrorType.castFailed, 
+                throw BuError(
+                  DefaultErrorType.castFailed,
                   "Failed to cast storage response.",
                   details: {
                     "expected": "$T",

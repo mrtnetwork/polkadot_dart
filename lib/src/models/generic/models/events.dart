@@ -76,14 +76,16 @@ class SubstrateEvent {
       event = json.valueEnsureAsMap<String, dynamic>("event");
     }
     if (event.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid event json: missing pallet key.",
       );
     }
     final pallet = event.keys.first;
     event = event.valueEnsureAsMap<String, dynamic>(pallet);
     if (event.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid event json: missing method key for pallet $pallet.",
       );
     }
@@ -138,7 +140,8 @@ class SubstrateEvent {
     try {
       return JsonParser.valueAs<T>(input);
     } catch (_) {
-      throw BuError(DefaultErrorType.castFailed,
+      throw BuError(
+        DefaultErrorType.castFailed,
         "Failed to cast event input.",
         details: {"expected": "$T", "input": input.runtimeType.toString()},
       );

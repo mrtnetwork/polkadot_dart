@@ -85,7 +85,8 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
         final mapValue = MetadataCastingUtils.isMap<String, dynamic>(data);
 
         if (mapValue.length != 1) {
-          throw BuError(DefaultErrorType.invalidArgument, 
+          throw BuError(
+            DefaultErrorType.invalidArgument,
             "The provided map for enum must contain exactly one key",
             details: {
               "value": value?.toString(),
@@ -102,7 +103,8 @@ class Si1TypeDefVariant extends Si1TypeDef<Map<String, dynamic>> {
       (element) => element.name == key,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.notFound, 
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Unable to find the current enum variant $key.",
                 details: {
                   "key": key,

@@ -3,6 +3,7 @@ import 'package:polkadot_dart/src/substrate.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
+
 void addressTest() {
   test('IAddress encoding', () {
     final addr = SubstrateAddress.fromBytes(
@@ -28,4 +29,3 @@ void addressTest() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(addressTest, "Address");
 }
-

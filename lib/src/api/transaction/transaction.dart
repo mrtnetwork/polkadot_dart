@@ -34,7 +34,10 @@ final class SubstrateTransactionBuilder {
       SubstrateMetadataPallet.utility.name,
       SubstrateMetadataUtilityMethods.batch.name,
     )) {
-      throw BuError(DefaultErrorType.unsupported, "Unsupported batch transaction.");
+      throw BuError(
+        DefaultErrorType.unsupported,
+        "Unsupported batch transaction.",
+      );
     }
     return provider.metadata.api.encodeCall(
       palletNameOrIndex: SubstrateMetadataPallet.utility.name,
@@ -55,12 +58,14 @@ final class SubstrateTransactionBuilder {
   }) async {
     if (calls.chargeAssetTxPayment != null &&
         !provider.metadata.extrinsic.chargeAssetTxPayment) {
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "Network does not support ChargeAssetTxPayment fee.",
       );
     }
     if (calls.calls.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "At least one call required for create transaction.",
       );
     }
@@ -75,7 +80,8 @@ final class SubstrateTransactionBuilder {
         const SubstrateRequestChainGetBlockHash<String?>(number: 0),
       );
       if (genesisHash == null) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Unexpected null response when fetching genesis block hash.",
         );
       }
@@ -272,7 +278,8 @@ final class SubstrateTransactionBuilder {
           final algorithms =
               payload.builder.metadataFields.crypto.cryptoAlgorithms;
           if (algorithms.isEmpty) {
-            throw BuError(DefaultErrorType.notFound, 
+            throw BuError(
+              DefaultErrorType.notFound,
               "No crypto algorithms found in metadata.",
             );
           }
@@ -543,7 +550,8 @@ final class SubstrateTransactionBuilder {
     } on BuError {
       rethrow;
     } catch (e) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to lookup block.",
         details: {"error": e is BuError ? e.message : e.toString()},
       );

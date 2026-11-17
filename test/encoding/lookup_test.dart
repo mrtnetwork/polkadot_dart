@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import '../metadata/v15_metadata_hex.dart';
 
 import '../utils.dart';
+
 extension _ToHex on List<int> {
   String toHex() => BytesUtils.toHexString(this);
 }
@@ -19,7 +20,6 @@ void lookupTest() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(lookupTest, "Lookup");
 }
-
 
 void _test(MetadataV15 api) {
   test("ID-1", () {

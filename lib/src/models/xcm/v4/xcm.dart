@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/encoding/layout/layout.dart';
@@ -414,7 +415,8 @@ abstract class XCMInstructionV4 extends SubstrateVariantSerialization
       XCMInstructionType.unpaidExecution =>
         XCMV4UnpaidExecution.deserializeJson(decode.value),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 4.",
           details: {"type": type.name},
         ),
@@ -490,7 +492,8 @@ abstract class XCMInstructionV4 extends SubstrateVariantSerialization
       XCMInstructionType.aliasOrigin => XCMV4AliasOrigin.fromJson(json),
       XCMInstructionType.unpaidExecution => XCMV4UnpaidExecution.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 4.",
           details: {"type": type.name},
         ),
@@ -2705,7 +2708,8 @@ enum XCMV4ResponseType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV4ResponseType type "$type".',
               ),
     );
@@ -2716,7 +2720,8 @@ enum XCMV4ResponseType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV4ResponseType name "$name".',
               ),
     );

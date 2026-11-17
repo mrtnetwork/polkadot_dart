@@ -822,6 +822,9 @@ abstract mixin class SubstrateNetworkControllerAssetQueryHelper {
     try {
       return ids.map((e) => JsonParser.valueAs<IDENTIFIER>(e)).toList();
     } catch (_) {}
-    throw BuError(DefaultErrorType.notFound, "Failed to cast asset id as $IDENTIFIER.");
+    throw BuError(
+      DefaultErrorType.notFound,
+      "Failed to cast asset id as $IDENTIFIER.",
+    );
   }
 }

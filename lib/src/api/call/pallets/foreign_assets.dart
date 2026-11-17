@@ -4,7 +4,6 @@ import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 import 'package:polkadot_dart/src/models/models.dart';
 
-
 enum ForeignAssetsCallPalletMethod
     implements SubstrateCallPalletTransferMethod {
   transfer("transfer", 8),
@@ -26,7 +25,8 @@ enum ForeignAssetsCallPalletMethod
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown ForeignAssetsCallPalletMethod value "$method".',
               ),
     );

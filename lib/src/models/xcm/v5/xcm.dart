@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/encoding/layout/layout.dart';
@@ -446,7 +447,8 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 5.",
           details: {"type": type.type},
         ),
@@ -530,7 +532,8 @@ abstract class XCMInstructionV5 extends SubstrateVariantSerialization
       ),
       XCMInstructionType.setHints => XCMV5SetHints.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 5.",
           details: {"type": type.type},
         ),
@@ -2776,7 +2779,8 @@ enum XCMV5AssetTransferFilterType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5AssetTransferFilterType name "$name".',
               ),
     );
@@ -2787,7 +2791,8 @@ enum XCMV5AssetTransferFilterType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5AssetTransferFilterType type "$type".',
               ),
     );
@@ -3250,7 +3255,8 @@ enum XCMV5HintType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5HintType type "$type".',
               ),
     );
@@ -3261,7 +3267,8 @@ enum XCMV5HintType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5HintType name "$name".',
               ),
     );
@@ -3373,7 +3380,8 @@ enum XCMV5ResponseType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5ResponseType type "$type".',
               ),
     );
@@ -3384,7 +3392,8 @@ enum XCMV5ResponseType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5ResponseType name "$name".',
               ),
     );
@@ -3877,7 +3886,8 @@ enum XCMV5ErrorType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5ErrorType type "$type".',
               ),
     );
@@ -3888,7 +3898,8 @@ enum XCMV5ErrorType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV5ErrorType name "$name".',
               ),
     );

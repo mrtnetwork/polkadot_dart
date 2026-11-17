@@ -18,7 +18,8 @@ class SubstrateEthereumPublicKey
       final pubKey = Secp256k1PublicKey.fromBytes(keyBytes);
       return SubstrateEthereumPublicKey(pubKey);
     } catch (e) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid ethereum public key.",
         details: {"input": BytesUtils.toHexString(keyBytes)},
       );

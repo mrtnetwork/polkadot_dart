@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import 'v14_metadata_hex.dart';
 
 import '../utils.dart';
+
 void metadataCallTest() {
   final metadataBytesV14 = BytesUtils.fromHexString(metadataV14).sublist(5);
   final metadata = MetadataApi(MetadataV14.fromBytes(metadataBytesV14));
@@ -16,7 +17,6 @@ void metadataCallTest() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(metadataCallTest, "Metadata Call");
 }
-
 
 void _encodeDecode(MetadataApi api) {
   test("transfer_allow_death", () {

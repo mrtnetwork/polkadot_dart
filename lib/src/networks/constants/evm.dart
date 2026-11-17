@@ -6,7 +6,8 @@ class SubstrateEVMNetworkUtils {
       "ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
   static void _ensureResponseLength(List<Object> response, int length) {
     if (response.length != length) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "ABI function returned unexpected number of items.",
       );
     }
@@ -29,7 +30,8 @@ class SubstrateEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = response.first;
       if (result is! String) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "ABI function returned invalid type.",
         );
       }
@@ -54,7 +56,8 @@ class SubstrateEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = response.first;
       if (result is! String) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "ABI function returned invalid type.",
         );
       }
@@ -79,7 +82,8 @@ class SubstrateEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = BigintUtils.tryParse(response.first, allowHex: true);
       if (result == null) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "ABI function returned invalid type.",
         );
       }
@@ -106,7 +110,8 @@ class SubstrateEVMNetworkUtils {
       _ensureResponseLength(response, 1);
       final result = BigintUtils.tryParse(response.first, allowHex: true);
       if (result == null) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "ABI function returned invalid type.",
         );
       }

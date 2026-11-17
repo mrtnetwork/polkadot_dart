@@ -448,13 +448,15 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
     int? feeIndex,
   }) {
     if (assets.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "At least one asset required for transfer.",
       );
     }
     if (feeIndex != null &&
         (feeIndex.isNegative || feeIndex >= assets.length)) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Fee index out of range: index $feeIndex, ${assets.length} assets.",
       );
     }
@@ -463,7 +465,8 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
     List<XCMMultiLocation> locations = [];
     for (final i in assets) {
       if (!i.hasLocation()) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Asset location is missing.",
           details: {"asset": i.asset.name ?? i.asset.symbol},
         );
@@ -476,12 +479,14 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
       );
     }
     if (locations.toSet().length != locations.length) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Duplicate asset not allowed. Multiple assets share the same location.",
       );
     }
     if (locations.any((e) => e.isExternalLocation())) {
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "External asset transfers are not supported in this version.",
       );
     }
@@ -489,7 +494,8 @@ class SubstrateXCMTransferParams extends SubstrateTransferParams {
     final parents = locations.map((e) => e.parents).toSet();
     final paras = locations.map((e) => e.getParachain()?.id).toSet();
     if (parents.length != 1 || paras.length != 1) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "All assets in a transfer must share the same reserve location.",
       );
     }
@@ -1153,7 +1159,8 @@ class SubstrateCommonItemCreatedEvent implements SubstrateAssetDepositEvent {
         address: address,
       );
     } catch (_) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid Substrate Common ItemCreated event object.",
       );
     }

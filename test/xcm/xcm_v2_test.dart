@@ -6,6 +6,7 @@ import '../metadata/metadata_acala_v15.dart';
 import '../metadata/metadata_basilisk_v15.dart';
 
 import '../utils.dart';
+
 void xcmV2Test() {
   final List<String> metadatas = [metadataBasiliskV15, metadataAcalaV15];
   for (final i in metadatas) {
@@ -21,7 +22,6 @@ void xcmV2Test() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(xcmV2Test, "Xcm V2");
 }
-
 
 void _xcmPalletSend(MetadataApi metadata) {
   final rand = QuickCrypto.generateRandom();
@@ -442,7 +442,8 @@ class _XCMTestGenerate {
       ),
       XCMInstructionType.unsubscribeVersion => XCMV2UnsubscribeVersion(),
       _ =>
-        throw BuError(SubstrateErrorType.plugin, 
+        throw BuError(
+          SubstrateErrorType.plugin,
           "Unsupported XCM instruction by version 2 ${type.type}.",
         ),
     };

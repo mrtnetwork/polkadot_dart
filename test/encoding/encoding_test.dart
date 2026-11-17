@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 import '../repository/westend_v14.dart';
 
 import '../utils.dart';
+
 void encodingTest() {
   final metadata =
       VersionedMetadata<MetadataV15>.fromBytes(
@@ -19,7 +20,6 @@ void encodingTest() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(encodingTest, "Encoding");
 }
-
 
 void _test(MetadataApi api) {
   test("Balances-transfer_allow_death", () {

@@ -7,6 +7,7 @@ import 'v15_metadata_hex.dart';
 import 'v16_metadata_hex.dart';
 
 import '../utils.dart';
+
 void metadataTest() {
   group("Metadata", () {
     _encodeDecode();
@@ -16,7 +17,6 @@ void metadataTest() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(metadataTest, "Metadata");
 }
-
 
 void _encodeDecode() {
   test("V16 Encode and Decode", () {

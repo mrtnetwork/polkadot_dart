@@ -24,7 +24,8 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadot => XCMV2Polkadot(),
       XCMNetworkIdType.kusama => XCMV2Kusama(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 2.",
         ),
     };
@@ -39,7 +40,8 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadot => XCMV2Polkadot.deserializeJson(decode.value),
       XCMNetworkIdType.kusama => XCMV2Kusama.deserializeJson(decode.value),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 2.",
         ),
     };
@@ -52,7 +54,8 @@ abstract class XCMV2NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadot => XCMV2Polkadot.fromJson(json),
       XCMNetworkIdType.kusama => XCMV2Kusama.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 2.",
         ),
     };
@@ -171,7 +174,10 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, "Unsupported body id by version 2."),
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported body id by version 2.",
+        ),
     };
   }
   factory XCMV2BodyId.fromJson(Map<String, dynamic> json) {
@@ -188,7 +194,10 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV2BodyIdAdministration.fromJson(json),
       XCMBodyIdType.treasury => XCMV2BodyIdTreasury.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, "Unsupported body id by version 2."),
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported body id by version 2.",
+        ),
     };
   }
 
@@ -211,7 +220,10 @@ abstract class XCMV2BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV2BodyIdAdministration(),
       XCMBodyIdType.treasury => XCMV2BodyIdTreasury(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, "Unsupported body id by version 2."),
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported body id by version 2.",
+        ),
     };
   }
   static Layout<Map<String, dynamic>> layout_({String? property}) {
@@ -667,7 +679,8 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported V2 Junction type.",
           details: {"type": decode.variantName},
         ),
@@ -690,7 +703,8 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
       XCMJunctionType.onlyChild => XCMV2JunctionOnlyChild.fromJson(json),
       XCMJunctionType.plurality => XCMV2JunctionPlurality.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported V2 Junction type.",
           details: {"type": type.name},
         ),
@@ -799,7 +813,8 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
           data:
               (account.length <= account.data.length
                   ? account.data.sublist(0, account.length)
-                  : throw BuError(DefaultErrorType.invalidArgument, 
+                  : throw BuError(
+                    DefaultErrorType.invalidArgument,
                     "Invalid GeneralKey: length ${account.length} exceeds data length ${account.data.length}.",
                   )),
           length: account.length,
@@ -814,7 +829,8 @@ abstract class XCMV2Junction extends SubstrateVariantSerialization
         );
       }(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported junction by version 2.",
           details: {"type": junction.type.type},
         ),
@@ -1379,7 +1395,8 @@ class XCMV2JunctionsX1 extends XCMV2Junctions {
   @override
   Map<String, dynamic> toJson() {
     if (junctions.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid X1 junctions: expected exactly one junction.",
       );
     }
@@ -1994,7 +2011,8 @@ enum XCMV2AssetIdType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2AssetIdType name "$name".',
               ),
     );
@@ -2005,7 +2023,8 @@ enum XCMV2AssetIdType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2AssetIdType type "$type".',
               ),
     );
@@ -2266,7 +2285,8 @@ abstract class XCMV2WildMultiAsset extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCMWildAssetType by version 2.",
           details: {"type": type.name},
         ),
@@ -2278,7 +2298,8 @@ abstract class XCMV2WildMultiAsset extends SubstrateVariantSerialization
       XCMWildAssetType.all => XCMV2WildMultiAssetAll.fromJson(json),
       XCMWildAssetType.allOf => XCMV2WildMultiAssetAllOf.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCMWildAssetType by version 2.",
           details: {"type": type.name},
         ),

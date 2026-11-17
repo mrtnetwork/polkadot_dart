@@ -127,7 +127,8 @@ class HydrationAssetTypePoolShare extends BaseHydrationAssetType {
   factory HydrationAssetTypePoolShare.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList<int>(HydrationAssetType.poolShare.type);
     if (data.length < 2) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid pool share asset: expected 2 elements, received ${data.length}.",
       );
     }

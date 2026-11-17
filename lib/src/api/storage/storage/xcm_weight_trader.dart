@@ -37,7 +37,8 @@ class SubstrateStorageXCMWeightTrader extends SubstrateStorageApi {
               response: (response.elementAt(0), response.elementAt(1)),
             );
           } catch (_) {
-            throw BuError(DefaultErrorType.invalidArgument, 
+            throw BuError(
+              DefaultErrorType.invalidArgument,
               "Unxpected xcmWeightTrader supported assets response",
             );
           }

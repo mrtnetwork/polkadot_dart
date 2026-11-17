@@ -94,13 +94,15 @@ class SubstrateNetworkControllerUtils {
     if (network != null) {
       final chainType = network.chainType;
       if (chainType.isEthereum != address.type.isEthereum) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid ${network.networkName} address.",
         );
       }
       if (address is SubstrateAddress) {
         if (address.ss58Format != network.ss58) {
-          throw BuError(DefaultErrorType.invalidAddress, 
+          throw BuError(
+            DefaultErrorType.invalidAddress,
             "Invalid ${network.networkName} address: SS58 format mismatch (expected ${network.ss58}, received ${address.ss58Format}).",
             details: {"address": address.address},
           );
@@ -173,7 +175,8 @@ class SubstrateNetworkControllerUtils {
     }
     final paraId = reserveLocation.getParachain()?.id;
     if (paraId == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid reserve location: missing parachain ID junction.",
       );
     }
@@ -206,7 +209,8 @@ class SubstrateNetworkControllerUtils {
     required XCMVersion version,
   }) {
     if (reserveNetwork == null && reserveLocation == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Localizing location requires a reserve network or reserve location.",
       );
     }
@@ -228,12 +232,14 @@ class SubstrateNetworkControllerUtils {
     BaseSubstrateAddress? address,
   }) {
     if (origin == null && originlocation == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Origin network or location required for creating destination location.",
       );
     }
     if (destination == null && destinationLocation == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Destination network or location required for creating destination location.",
       );
     }
@@ -318,7 +324,8 @@ class SubstrateNetworkControllerUtils {
       return location;
     }
     if (location.getParachain() != null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid location: foreign location must not contain a parachain junction.",
       );
     }

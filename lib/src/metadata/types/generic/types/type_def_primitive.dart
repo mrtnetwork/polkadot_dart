@@ -39,7 +39,12 @@ class PrimitiveTypes {
   static PrimitiveTypes fromValue(String? value) {
     return values.firstWhere(
       (element) => element.name == value,
-      orElse: () => throw BuError(DefaultErrorType.invalidArgument, 'Unknown primitive type "$value".'),
+      orElse:
+          () =>
+              throw BuError(
+                DefaultErrorType.invalidArgument,
+                'Unknown primitive type "$value".',
+              ),
     );
   }
 

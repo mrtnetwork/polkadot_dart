@@ -21,7 +21,8 @@ class MetadataUtils {
       if (parse == null) return val as T;
       return parse(val);
     } catch (_) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Unexpected optional type.",
         details: {"expected": "$T", "value": json.runtimeType.toString()},
       );
@@ -52,7 +53,8 @@ class MetadataUtils {
 
   static List isList(dynamic value, {String? info}) {
     if (value is! List) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid provided list.",
         details: {"info": info, "value": value.runtimeType.toString()},
       );
@@ -62,7 +64,8 @@ class MetadataUtils {
 
   static List<Object> asList(Object? value, {String? info}) {
     if (value == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid provided list.",
         details: {"info": info, "value": value.runtimeType.toString()},
       );
@@ -73,7 +76,8 @@ class MetadataUtils {
 
   static void hasLen(List list, int len, {String? info}) {
     if (list.length != len) {
-      throw BuError(DefaultErrorType.invalidLength, 
+      throw BuError(
+        DefaultErrorType.invalidLength,
         "Invalid list length: expected $len, received ${list.length}.",
         details: {
           "expected": len.toString(),
@@ -88,7 +92,8 @@ class MetadataUtils {
     try {
       return value.cast<T>();
     } catch (e) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid list provided for casting.",
         details: {
           "info": info,
@@ -104,7 +109,8 @@ class MetadataUtils {
     try {
       return value! as T;
     } catch (e) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid $T provided for casting.",
         details: {
           "info": info,
@@ -118,7 +124,10 @@ class MetadataUtils {
   static bool validateOptionBytes(List<int> bytes) {
     try {
       if (bytes.isEmpty) {
-        throw BuError(DefaultErrorType.invalidArgument, "Invalid Metadata option bytes.");
+        throw BuError(
+          DefaultErrorType.invalidArgument,
+          "Invalid Metadata option bytes.",
+        );
       }
       final decode = LayoutConst.u8().deserialize(bytes.sublist(0, 1)).value;
       if (decode == 0 || decode == 1) {
@@ -127,7 +136,8 @@ class MetadataUtils {
       // ignore: empty_catches
     } catch (e) {}
 
-    throw BuError(DefaultErrorType.invalidArgument, 
+    throw BuError(
+      DefaultErrorType.invalidArgument,
       "Invalid Metadata optional type.",
       details: {"expected": "0, 1"},
     );
@@ -158,7 +168,8 @@ class MetadataUtils {
     required List<int> prefixHash,
   }) {
     if (queryBytes.length < _queryMethodPrefixLength) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid query bytes. Query bytes must be at least $_queryMethodPrefixLength bytes",
         details: {"length": queryBytes.length.toString()},
       );
@@ -166,7 +177,8 @@ class MetadataUtils {
 
     final queryPrefix = queryBytes.sublist(0, _queryMethodPrefixLength);
     if (!BytesUtils.bytesEqual(queryPrefix, prefixHash)) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid query bytes. Query bytes are not related to this storage.",
         details: {
           "expectedPrefix": BytesUtils.toHexString(prefixHash),

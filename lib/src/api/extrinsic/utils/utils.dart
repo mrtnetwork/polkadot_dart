@@ -32,7 +32,8 @@ class ExtrinsicBuilderUtils {
           e.signatureType != null,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.unsupported, 
+              throw BuError(
+                DefaultErrorType.unsupported,
                 'Unsupported metadata extrinsic.',
               ),
     );
@@ -46,12 +47,14 @@ class ExtrinsicBuilderUtils {
     List<MetadataTypeInfo> payloadTypes = [];
     List<MetadataTypeInfo> extrinsicTypes = [];
     if (extrinsic.addressType == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to find metadata address type.",
       );
     }
     if (extrinsic.signatureType == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to find metadata signature type.",
       );
     }
@@ -261,7 +264,8 @@ class ExtrinsicBuilderUtils {
       extrinsic: extrinsic,
     );
     if (addressType == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Unknown metadata address type for extrinsic.',
       );
     }
@@ -270,7 +274,8 @@ class ExtrinsicBuilderUtils {
       extrinsic: extrinsic,
     );
     if (cryptoAlgorithms == null || cryptoAlgorithms.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Unknown metadata crypto type: no crypto algorithm found.',
       );
     }
@@ -294,7 +299,10 @@ class ExtrinsicBuilderUtils {
       case CryptoKeyType.sr25519:
         return {"Sr25519": signature};
       default:
-        throw BuError(DefaultErrorType.invalidArgument, "invalid substrate curve type");
+        throw BuError(
+          DefaultErrorType.invalidArgument,
+          "invalid substrate curve type",
+        );
     }
   }
 
@@ -311,6 +319,9 @@ class ExtrinsicBuilderUtils {
         return bytes.asImmutableBytes;
       }
     } catch (_) {}
-    throw BuError(DefaultErrorType.invalidArgument, "Failed to extract signature part.");
+    throw BuError(
+      DefaultErrorType.invalidArgument,
+      "Failed to extract signature part.",
+    );
   }
 }

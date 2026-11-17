@@ -25,7 +25,10 @@ class SubstrateMultiAddress
         account = SubstrateAccount20(json.valueEnsureAsList<int>(key!));
         break;
       default:
-        throw BuError(DefaultErrorType.invalidArgument, 'Unknown multi address key "$key".');
+        throw BuError(
+          DefaultErrorType.invalidArgument,
+          'Unknown multi address key "$key".',
+        );
     }
     return SubstrateMultiAddress(account);
   }

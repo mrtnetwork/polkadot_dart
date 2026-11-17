@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/equatable/equatable.dart';
@@ -37,7 +38,8 @@ abstract class XCMV4NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadotBulletIn => XCMV4PolkadotBulletIn.fromJson(json),
       XCMNetworkIdType.westend => XCMV4Westend.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 4.",
           details: {"type": type.name},
         ),
@@ -67,7 +69,8 @@ abstract class XCMV4NetworkId extends SubstrateVariantSerialization
         XCMV4PolkadotBulletIn.deserializeJson(decode.value),
       XCMNetworkIdType.westend => XCMV4Westend.deserializeJson(decode.value),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 4.",
           details: {"type": type.name},
         ),
@@ -100,7 +103,8 @@ abstract class XCMV4NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.bitcoinCore => XCMV4BitcoinCore(),
       XCMNetworkIdType.polkadotBulletIn => XCMV4PolkadotBulletIn(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network type by version 4.",
           details: {"type": type.name},
         ),
@@ -760,7 +764,8 @@ class XCMV4JunctionGeneralKey extends XCMV4Junction with XCMJunctionGeneralKey {
     if (data.length < length ||
         length > SubstrateConstant.accountIdLengthInBytes ||
         data.length > SubstrateConstant.accountIdLengthInBytes) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid V4 Junction GeneralKey bytes.",
       );
     }
@@ -1735,7 +1740,8 @@ class XCMV4AssetId extends SubstrateSerialization<Map<String, dynamic>>
       final XCMV4AssetId assetId => assetId,
       final XCMV2AssetId assetId => switch (assetId.type) {
         XCMV2AssetIdType.abstract =>
-          throw BuError(DefaultErrorType.unsupported, 
+          throw BuError(
+            DefaultErrorType.unsupported,
             "Unsupported AssetId v2 ${XCMV2AssetIdType.abstract.type} by version 4",
           ),
         XCMV2AssetIdType.concrete => XCMV4AssetId(
@@ -1746,7 +1752,8 @@ class XCMV4AssetId extends SubstrateSerialization<Map<String, dynamic>>
       },
       final XCMV3AssetId assetId => switch (assetId.type) {
         XCMV3AssetIdType.abstract =>
-          throw BuError(DefaultErrorType.unsupported, 
+          throw BuError(
+            DefaultErrorType.unsupported,
             "Unsupported AssetId v3 ${XCMV3AssetIdType.abstract.type} by version 4",
           ),
         XCMV3AssetIdType.concrete => XCMV4AssetId(

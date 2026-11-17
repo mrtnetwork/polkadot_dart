@@ -29,8 +29,8 @@ final BigInt transferAmount = oneUnit ~/ BigInt.from(100);
 /// An HTTP service for the local Chopsticks node.
 class PolkadotHttpService with SubstrateServiceProvider {
   PolkadotHttpService({String url = polkadotRpcUrl, Duration? timeout})
-    : _url = url,
-      _timeout = timeout ?? const Duration(seconds: 30);
+      : _url = url,
+        _timeout = timeout ?? const Duration(seconds: 30);
 
   final String _url;
   final Duration _timeout;
@@ -187,9 +187,8 @@ Future<BigInt> freeBalance(
 String formatUnits(BigInt amount) {
   final digits = amount.toString().padLeft(13, '0');
   final whole = digits.substring(0, digits.length - 12);
-  final fraction = digits
-      .substring(digits.length - 12)
-      .replaceFirst(RegExp(r'0+$'), '');
+  final fraction =
+      digits.substring(digits.length - 12).replaceFirst(RegExp(r'0+$'), '');
   return fraction.isEmpty ? whole : '$whole.$fraction';
 }
 
@@ -222,13 +221,13 @@ Future<SubstrateTransactionSubmitionResult?> send(
   required SubstrateTransactionSigner signer,
   required SubstrateEncodedCallParams call,
 }) async {
-  final result = await SubstrateTransactionBuilder
-      .buildSignAndWatchTransactionStaticAsync(
-        owner: owner,
-        signer: signer,
-        calls: SubstrateTransactionSubmitableParams(calls: [call]),
-        provider: meta,
-      );
+  final result =
+      await SubstrateTransactionBuilder.buildSignAndWatchTransactionStaticAsync(
+    owner: owner,
+    signer: signer,
+    calls: SubstrateTransactionSubmitableParams(calls: [call]),
+    provider: meta,
+  );
   return result.status.isSuccess ? result : null;
 }
 

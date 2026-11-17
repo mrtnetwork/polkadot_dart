@@ -34,7 +34,8 @@ abstract class ScaleTypeDef<T> extends SubstrateSerialization<T> {
 
   TYPE cast<TYPE extends ScaleTypeDef>() {
     if (this is! TYPE) {
-      throw BuError(DefaultErrorType.castFailed, 
+      throw BuError(
+        DefaultErrorType.castFailed,
         "Type defination casting failed.",
         details: {"expected": "$Type", "type": typeName.name},
       );

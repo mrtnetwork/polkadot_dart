@@ -3,7 +3,6 @@ import 'package:polkadot_dart/src/address/address.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 
-
 enum BalancesCallPalletMethod implements SubstrateCallPalletTransferMethod {
   transferAllowDeath("transfer_allow_death", 0),
   transferKeepAlive("transfer_keep_alive", 2),
@@ -23,7 +22,8 @@ enum BalancesCallPalletMethod implements SubstrateCallPalletTransferMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown BalancesCallPalletMethod value "$method".',
               ),
     );

@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
@@ -65,7 +66,8 @@ class SubstrateMultiSignature
         bytesValue,
       ),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported signature type.",
           details: {"variant": variant.variantName},
         ),

@@ -135,7 +135,8 @@ class SubstrateNetworkControllerFinder {
             params: params,
           ),
           _ =>
-            throw BuError(DefaultErrorType.notFound, 
+            throw BuError(
+              DefaultErrorType.notFound,
               "Network controller not found for '${network.networkName}'.",
             ),
         }

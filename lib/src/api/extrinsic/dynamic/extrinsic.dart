@@ -62,7 +62,8 @@ class ExtrinsicLookupField {
     }
     final type = extrinsicInfo.signatureType;
     if (type == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Missing extrinsic signature lookup id.",
       );
     }
@@ -73,7 +74,8 @@ class ExtrinsicLookupField {
             .asImmutableBytes;
       default:
         if (algorithm == null) {
-          throw BuError(DefaultErrorType.invalidArgument, 
+          throw BuError(
+            DefaultErrorType.invalidArgument,
             "Signature algorithm missing for encode signature.",
           );
         }
@@ -97,7 +99,8 @@ class ExtrinsicLookupField {
   }) {
     final type = extrinsicInfo.addressType;
     if (type == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Missing extrinsic address lookup id.",
       );
     }
@@ -129,7 +132,8 @@ class ExtrinsicLookupField {
   }) {
     final type = extrinsicInfo.signatureType;
     if (type == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Missing extrinsic signature lookup id.",
       );
     }
@@ -176,7 +180,8 @@ enum SubstrateChainType {
       (e) => e.value == value,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown SubstrateChainType value "$value".',
               ),
     );
@@ -221,7 +226,8 @@ enum SubstrateAddressEncodingType {
       (e) => e.value == value,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown SubstrateAddressEncodingType value "$value".',
               ),
     );
@@ -247,7 +253,8 @@ enum SubstrateSignatureEncodingType {
       (e) => e.value == value,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown SubstrateSignatureEncodingType value "$value".',
               ),
     );
@@ -404,7 +411,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
     final immutableGenesis = genesis.asImmutableBytes;
     final immutableMortality = mortality.asImmutableBytes;
     if (chargeAssetTxPaymentBytes != null && chargeAssetTxPayment != null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Only one payment configuration should be provided `chargeAssetTxPaymentBytes` or `chargeAssetTxPayment`.",
       );
     }
@@ -468,7 +476,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       }
     }
     if (typeId == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Extrinsic era type not found: no Era/CheckMortality extension.",
       );
     }
@@ -489,7 +498,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Extrinsic nonce type not found: no T::Nonce/CheckNonce/nonce extension.",
       );
     }
@@ -508,7 +518,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Extrinsic tip type not found: no tip extension.",
       );
     }
@@ -527,7 +538,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Extrinsic spec version type not found: no CheckSpecVersion extension.",
       );
     }
@@ -546,7 +558,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Extrinsic asset id type not found: no asset_id extension.",
       );
     }
@@ -582,7 +595,8 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
       if (typeId != null) break;
     }
     if (typeId == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Extrinsic transaction version type not found: no CheckTxVersion extension.",
       );
     }
@@ -739,13 +753,15 @@ class DynamicExtrinsicBuilder implements BaseDynamicExtrinsicBuilder {
 
               break;
             default:
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 "Unknown extrinsic field name.",
                 details: {"name": n},
               );
           }
         } catch (e) {
-          throw BuError(DefaultErrorType.invalidArgument, 
+          throw BuError(
+            DefaultErrorType.invalidArgument,
             'Failed to encode extrinsic field.',
             details: {"name": n, "error": e.toString()},
           );

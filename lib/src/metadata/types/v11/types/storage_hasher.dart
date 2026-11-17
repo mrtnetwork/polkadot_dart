@@ -52,7 +52,8 @@ class StorageHasherV11Options implements StorageHasher {
       (element) => element.name == value,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown StorageHasherV11Options value "$value".',
               ),
     );
@@ -77,7 +78,8 @@ class StorageHasherV11Options implements StorageHasher {
       case StorageHasherV11Options.twox64Concat:
         return [...QuickCrypto.twoX64(toBytes), ...toBytes];
       default:
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid hasher option for v11.",
           details: {"hasher": name},
         );

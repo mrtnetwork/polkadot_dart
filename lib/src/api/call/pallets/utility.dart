@@ -3,7 +3,6 @@ import 'package:polkadot_dart/src/api/call/call.dart';
 import 'package:polkadot_dart/src/api/models/models.dart';
 import 'package:polkadot_dart/src/metadata/metadata.dart';
 
-
 enum UtilityCallPalletMethod implements SubstrateCallPalletMethod {
   batch("batch", 0),
   batchAll("batch_all", 2);
@@ -17,7 +16,8 @@ enum UtilityCallPalletMethod implements SubstrateCallPalletMethod {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown UtilityCallPalletMethod name "$name".',
               ),
     );
@@ -28,7 +28,8 @@ enum UtilityCallPalletMethod implements SubstrateCallPalletMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown UtilityCallPalletMethod method "$method".',
               ),
     );

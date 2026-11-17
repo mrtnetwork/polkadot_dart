@@ -2,7 +2,6 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
-
 enum VariantDeprecationInfoTypes {
   deprecatedWithoutNote,
   deprecated;
@@ -12,7 +11,8 @@ enum VariantDeprecationInfoTypes {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown VariantDeprecationInfoTypes name "$name".',
               ),
     );

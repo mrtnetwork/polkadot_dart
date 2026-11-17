@@ -29,7 +29,9 @@ void browserWasmTest() {
         ss58Format: SS58Const.acala,
       );
       expect(
-        BaseSubstrateAddress.deserializeIAddress(bytes: addr.encodeAsIAddress()),
+        BaseSubstrateAddress.deserializeIAddress(
+          bytes: addr.encodeAsIAddress(),
+        ),
         addr,
       );
     });

@@ -7,7 +7,6 @@
 ///   dart run lib/examples/polkadot/assets.dart
 library;
 
-
 import 'package:polkadot_dart/polkadot_dart.dart';
 
 import 'node.dart';
@@ -71,7 +70,8 @@ Future<void> main() async {
       'amount': mintAmount,
     },
   );
-  final mintResult = await send(meta, owner: ownerAddr, signer: owner, call: mint);
+  final mintResult =
+      await send(meta, owner: ownerAddr, signer: owner, call: mint);
   if (mintResult == null) {
     print('mint failed');
     return;

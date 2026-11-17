@@ -32,7 +32,8 @@ abstract class XCMV3NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadotBulletIn => XCMV3PolkadotBulletIn.fromJson(json),
       XCMNetworkIdType.westend => XCMV3Westend.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 3.",
           details: {"type": type.name},
         ),
@@ -62,7 +63,8 @@ abstract class XCMV3NetworkId extends SubstrateVariantSerialization
         XCMV3PolkadotBulletIn.deserializeJson(decode.value),
       XCMNetworkIdType.westend => XCMV3Westend.deserializeJson(decode.value),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 3.",
           details: {"type": type.name},
         ),
@@ -95,7 +97,8 @@ abstract class XCMV3NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.bitcoinCore => XCMV3BitcoinCore(),
       XCMNetworkIdType.polkadotBulletIn => XCMV3PolkadotBulletIn(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network type by version 3.",
           details: {"type": type.name},
         ),
@@ -405,7 +408,8 @@ abstract class XCMV3BodyId extends SubstrateVariantSerialization
         decode.value,
       ),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported body id by version 3.",
           details: {"type": type.name},
         ),
@@ -426,7 +430,8 @@ abstract class XCMV3BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV3BodyIdAdministration.fromJson(json),
       XCMBodyIdType.treasury => XCMV3BodyIdTreasury.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported body id by version 3.",
           details: {"type": type.name},
         ),
@@ -451,7 +456,8 @@ abstract class XCMV3BodyId extends SubstrateVariantSerialization
       XCMBodyIdType.administration => XCMV3BodyIdAdministration(),
       XCMBodyIdType.treasury => XCMV3BodyIdTreasury(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported body id by version 3.",
           details: {"type": type.name},
         ),
@@ -1317,7 +1323,8 @@ class XCMV3JunctionGeneralKey extends XCMV3Junction with XCMJunctionGeneralKey {
     if (data.length < length ||
         length > SubstrateConstant.accountIdLengthInBytes ||
         data.length > SubstrateConstant.accountIdLengthInBytes) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid V3 Junction GeneralKey bytes.",
       );
     }
@@ -1675,7 +1682,8 @@ class XCMV3JunctionsX1 extends XCMV3Junctions {
   @override
   Map<String, dynamic> toJson() {
     if (junctions.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid X1 junctions: expected exactly one junction.",
       );
     }
@@ -2274,7 +2282,8 @@ enum XCMV3AssetIdType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3AssetIdType name "$name".',
               ),
     );
@@ -2285,7 +2294,8 @@ enum XCMV3AssetIdType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV3AssetIdType type "$type".',
               ),
     );

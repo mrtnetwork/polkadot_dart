@@ -77,7 +77,10 @@ class SubstrateRequestDetails extends BaseServiceRequestParams {
   @override
   BuBytes? encodeBody({ServiceProtocol protocol = ServiceProtocol.http}) {
     if (protocol.isGrpc) {
-      throw BuError(DefaultErrorType.unsupported, "Unsupported protocol: gRPC.");
+      throw BuError(
+        DefaultErrorType.unsupported,
+        "Unsupported protocol: gRPC.",
+      );
     }
     return super.encodeBody(protocol: protocol)?.asImmutableBytes;
   }

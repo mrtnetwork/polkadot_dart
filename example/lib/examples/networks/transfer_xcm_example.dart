@@ -1,4 +1,3 @@
-
 import 'package:blockchain_utils/utils/utils.dart';
 import 'package:example/examples/networks/helpers.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';

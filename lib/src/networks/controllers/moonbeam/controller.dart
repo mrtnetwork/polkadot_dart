@@ -76,7 +76,10 @@ abstract class BaseMoonbeamNetworkController<
     if (remainAssets.isNotEmpty) {
       final evmParams = params.evmParams;
       if (evmParams == null) {
-        throw BuError(DefaultErrorType.invalidArgument, "Missing evm network parameters.");
+        throw BuError(
+          DefaultErrorType.invalidArgument,
+          "Missing evm network parameters.",
+        );
       }
 
       final response = await Future.wait(
@@ -134,7 +137,10 @@ abstract class BaseMoonbeamNetworkController<
             .toList();
     final evmParams = params.evmParams;
     if (evmParams == null) {
-      throw BuError(DefaultErrorType.invalidArgument, "Missing evm network parameters.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Missing evm network parameters.",
+      );
     }
     if (allAssets.isNotEmpty) {
       final provider = await metadata();

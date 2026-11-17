@@ -10,6 +10,7 @@ import '../metadata/metadata_polkadot_asset_hub_v15.dart';
 import '../metadata/metadata_polkadot_v15.dart';
 
 import '../utils.dart';
+
 void xcmV4Test() {
   final List<String> metadatas = [
     metadataKusamaV14,
@@ -32,7 +33,6 @@ void xcmV4Test() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(xcmV4Test, "Xcm V4");
 }
-
 
 void _xcmPalletSend(MetadataApi metadata) {
   final rand = QuickCrypto.generateRandom();
@@ -599,7 +599,8 @@ class _XCMTestGenerator {
         weightLimit: createWeightLimit(),
       ),
       _ =>
-        throw BuError(SubstrateErrorType.plugin, 
+        throw BuError(
+          SubstrateErrorType.plugin,
           "Unsupported XCM instruction by version 4.",
         ),
     };

@@ -104,7 +104,8 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
       orElse:
           () =>
-              throw BuError(DefaultErrorType.notFound, 
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Api does not eixst.",
                 details: {"apis": getRuntimeApis().join(", ")},
               ),
@@ -120,7 +121,8 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
       orElse:
           () =>
-              throw BuError(DefaultErrorType.notFound, 
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Api does not eixst.",
                 details: {"apis": getRuntimeApis().join(", ")},
               ),
@@ -129,7 +131,8 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == methodName.toLowerCase(),
       orElse:
           () =>
-              throw BuError(DefaultErrorType.notFound, 
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Method does not eixst.",
                 details: {
                   "Api": api.name,
@@ -146,7 +149,8 @@ class MetadataV16 extends SubstrateMetadata<Map<String, dynamic>>
       (element) => element.name.toLowerCase() == apiName.toLowerCase(),
       orElse:
           () =>
-              throw BuError(DefaultErrorType.notFound, 
+              throw BuError(
+                DefaultErrorType.notFound,
                 "Api does not eixst.",
                 details: {"apis": getRuntimeApis().join(", ")},
               ),

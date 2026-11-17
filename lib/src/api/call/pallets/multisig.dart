@@ -8,7 +8,6 @@ import 'package:polkadot_dart/src/metadata/models/call.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/models.dart';
 
-
 enum MultisigCallPalletMethod implements SubstrateCallPalletMethod {
   asMultiThreshold1("as_multi_threshold_1", 0),
   asMulti("as_multi", 1),
@@ -25,7 +24,8 @@ enum MultisigCallPalletMethod implements SubstrateCallPalletMethod {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown MultisigCallPalletMethod name "$name".',
               ),
     );
@@ -36,7 +36,8 @@ enum MultisigCallPalletMethod implements SubstrateCallPalletMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown MultisigCallPalletMethod method "$method".',
               ),
     );

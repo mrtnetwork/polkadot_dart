@@ -65,9 +65,9 @@ Future<void> main() async {
       print('${e.key}: version=$v bytes=${bytes.length}');
       if (v == 14) {
         final md = vm.metadata as MetadataV14;
-        File('$outDir/${e.value}.json').writeAsStringSync(
-          jsonEncode(md.serializeJson()),
-        );
+        File(
+          '$outDir/${e.value}.json',
+        ).writeAsStringSync(jsonEncode(md.serializeJson()));
         manifest['${e.value}.json'] = {'version': 14, 'network': e.key};
       }
     } catch (err) {
@@ -86,9 +86,9 @@ Future<void> main() async {
     print('mythos hex: $err');
   }
   manifest['mt_mythos.json'] = {'version': 14, 'network': 'mythos'};
-  File('$outDir/mt_manifest.json').writeAsStringSync(
-    const JsonEncoder.withIndent('  ').convert(manifest),
-  );
+  File(
+    '$outDir/mt_manifest.json',
+  ).writeAsStringSync(const JsonEncoder.withIndent('  ').convert(manifest));
   print('manifest: ${manifest.length} entries');
   exit(0);
 }

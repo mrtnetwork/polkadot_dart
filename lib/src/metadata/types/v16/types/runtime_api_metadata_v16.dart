@@ -3,7 +3,6 @@ import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/types.dart';
 
-
 class RuntimeApiMetadataV16
     extends RuntimeApiMetadata<RuntimeApiMethodMetadataV16> {
   @override

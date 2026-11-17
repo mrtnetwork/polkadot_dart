@@ -3,7 +3,6 @@ import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/metadata/types/v11/types/storage_hasher.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
-
 class StorageEntryTypeV14IndexKeys {
   static const String map = "Map";
   static const String plain = "Plain";
@@ -25,7 +24,10 @@ abstract class StorageEntryTypeV14<T> extends SubstrateSerialization<T> {
         val = StorageEntryTypeV14Plain(json.valueAs(key!));
         break;
       default:
-        throw BuError(DefaultErrorType.invalidArgument, 'Unknown StorageEntryTypeV14 value "$key".');
+        throw BuError(
+          DefaultErrorType.invalidArgument,
+          'Unknown StorageEntryTypeV14 value "$key".',
+        );
     }
     return val as StorageEntryTypeV14<T>;
   }

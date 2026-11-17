@@ -181,19 +181,22 @@ abstract mixin class BaseSubstrateNetworkController<
   }) async {
     final provider = await metadata();
     if (params.destinationNetwork.relaySystem != network.relaySystem) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "XCM transfer not allowed between chains using different relay systems.",
       );
     }
     if (params.destinationNetwork == network) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "XCM transfer not allowed within the same network.",
       );
     }
     try {
       params.assets.cast<ASSET>();
     } catch (_) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid network assets.",
         details: {
           "expected": "$ASSET",
@@ -234,7 +237,8 @@ abstract mixin class BaseSubstrateNetworkController<
     required SubstrateLocalTransferAssetParams params,
   }) async {
     if (!network.allowLocalTransfer) {
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "Local asset transfers are currently disabled on this network.",
         details: {"network": network.networkName},
       );
@@ -365,7 +369,8 @@ abstract mixin class BaseSubstrateNetworkController<
       version: network.defaultXcmVersion,
     );
     if (identifier == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Cannot pay transaction fee using the provided asset.",
       );
     }
@@ -418,7 +423,8 @@ abstract mixin class BaseSubstrateNetworkController<
     final provider = await metadata();
     if (transaction == null) {
       if (signer == null) {
-        throw BuError(DefaultErrorType.invalidState, 
+        throw BuError(
+          DefaultErrorType.invalidState,
           "Failed to sign transaction. missing signer.",
         );
       }
@@ -585,7 +591,8 @@ abstract mixin class BaseSubstrateNetworkController<
     final provider = await metadata();
     if (transaction == null) {
       if (signer == null) {
-        throw BuError(DefaultErrorType.invalidState, 
+        throw BuError(
+          DefaultErrorType.invalidState,
           "Failed to sign transaction. missing signer.",
         );
       }

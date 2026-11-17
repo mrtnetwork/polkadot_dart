@@ -2,7 +2,6 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 
-
 enum SystemCallPalletMethod implements SubstrateCallPalletMethod {
   remark("remark", 0);
 
@@ -15,7 +14,8 @@ enum SystemCallPalletMethod implements SubstrateCallPalletMethod {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown SystemCallPalletMethod name "$name".',
               ),
     );
@@ -26,7 +26,8 @@ enum SystemCallPalletMethod implements SubstrateCallPalletMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown SystemCallPalletMethod method "$method".',
               ),
     );

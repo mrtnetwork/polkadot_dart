@@ -21,20 +21,21 @@ class HttpSubstrateService with SubstrateServiceProvider {
     final resp = await req.close().timeout(
       timeout ?? const Duration(seconds: 120),
     );
-    final bytes = await resp.fold<List<int>>(
-      [],
-      (p, e) => p..addAll(e),
-    );
+    final bytes = await resp.fold<List<int>>([], (p, e) => p..addAll(e));
     return params.toResponse(bytes, statusCode: resp.statusCode);
   }
 }
 
 Future<void> main() async {
-  for (final e in [(PolkadotNetwork.polkadotAssetHub, 8021), (PolkadotNetwork.astar, 8010)]) {
+  for (final e in [
+    (PolkadotNetwork.polkadotAssetHub, 8021),
+    (PolkadotNetwork.astar, 8010),
+  ]) {
     final network = e.$1;
     final port = e.$2;
     final params = SubstrateNetworkApiDefaultParams(
-      (n) async => SubstrateProvider(HttpSubstrateService('http://localhost:$port')),
+      (n) async =>
+          SubstrateProvider(HttpSubstrateService('http://localhost:$port')),
     );
     try {
       final p = await params.loadMetadata(network);
@@ -42,7 +43,9 @@ Future<void> main() async {
         api: p.metadata.api,
         rpc: p.provider,
       );
-      print('${network.networkName}: safeXcmVersion=$v defaultXcm=${network.defaultXcmVersion}');
+      print(
+        '${network.networkName}: safeXcmVersion=$v defaultXcm=${network.defaultXcmVersion}',
+      );
     } catch (err) {
       print('${network.networkName}: FAIL ${'$err'.split('\n').first}');
     }

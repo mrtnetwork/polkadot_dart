@@ -348,7 +348,8 @@ class AcalaNetworkNativeAsset extends AcalaNetworkAsset {
   @override
   SubstrateAssetType get type => SubstrateAssetType.native;
   @override
-  SubstrateMetadataPallet get executionPallet => SubstrateMetadataPallet.balances;
+  SubstrateMetadataPallet get executionPallet =>
+      SubstrateMetadataPallet.balances;
 }
 
 class TokenPalletAccountBalance {

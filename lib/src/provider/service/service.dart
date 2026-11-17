@@ -39,7 +39,8 @@ mixin SubstrateServiceProvider
     request,
     Duration? timeout,
   }) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "Subscription requests are not supported by this service.",
     );
   }
@@ -49,7 +50,8 @@ mixin SubstrateServiceProvider
     BaseGRPCServiceRequestParams params, {
     Duration? timeout,
   }) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "gRPC requests are not supported by this service.",
     );
   }
@@ -59,7 +61,8 @@ mixin SubstrateServiceProvider
     BaseGRPCServiceRequestParams params, {
     Duration? timeout,
   }) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "gRPC requests are not supported by this service.",
     );
   }
@@ -69,7 +72,8 @@ mixin SubstrateServiceProvider
     BaseGRPCServiceRequestParams params, {
     Duration? timeout,
   }) {
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "gRPC requests are not supported by this service.",
     );
   }

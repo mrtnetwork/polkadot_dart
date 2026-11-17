@@ -2,7 +2,6 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/core/serialization.dart';
 
-
 enum DeprecationStatusTypes {
   notDeprecated,
   deprecatedWithoutNote,
@@ -13,7 +12,8 @@ enum DeprecationStatusTypes {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown DeprecationStatusTypes name "$name".',
               ),
     );

@@ -55,7 +55,8 @@ abstract class SubstrateBaseEra
       key?.replaceFirst(_SubstrateEraConst.mortal, '') ?? '',
     );
     if (eraIndex == null || eraIndex > 255 || eraIndex < 0) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid provided era json.",
         details: {"value": key},
       );

@@ -27,7 +27,8 @@ class StorageChangeStateResponse {
         Map<String, String?>.fromEntries(
           changes.map((e) {
             if (e.length != 2 || e[0] == null) {
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 "Invalid StorageChangeState response. Response must be a list of two string objects.",
                 details: {
                   "length": e.length.toString(),
@@ -58,7 +59,8 @@ class QueryStorageRequestBlock {
           (element) => element.request.identifier == identifier,
           orElse:
               () =>
-                  throw BuError(DefaultErrorType.notFound, 
+                  throw BuError(
+                    DefaultErrorType.notFound,
                     "An identifier does not exist.",
                     details: {
                       "identifier": identifier.toString(),
@@ -104,7 +106,8 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
       if (onNullResponse != null) {
         return onNullResponse!(storageKey);
       }
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Unexpected response type.',
         details: {"expected": "$RESPONSE", "value": 'Null'},
       );
@@ -114,7 +117,8 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
     final json = decode();
     if (json == null) {
       if (null is RESPONSE) return null as RESPONSE;
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Unexpected response type.',
         details: {"expected": "$RESPONSE", "value": 'Null'},
       );
@@ -125,7 +129,8 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
       try {
         data = JsonParser.valueAs<JSON>(json);
       } catch (_) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           'Unexpected response type.',
           details: {"expected": "$JSON", "value": json.runtimeType.toString()},
         );
@@ -136,7 +141,8 @@ abstract class StorageRequest<RESPONSE extends Object?, JSON extends Object> {
     try {
       data = JsonParser.valueAs<RESPONSE>(json);
     } catch (_) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Unexpected response type.',
         details: {
           "expected": "$RESPONSE",
@@ -208,14 +214,16 @@ class GetStorageEntriesRequest<RESPONSE extends Object?, JSON extends Object>
     CbOnStorageResponseJson<RESPONSE, JSON>? onJsonResponse,
   }) {
     if (count <= 0) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid paged request count: must be greater than zero.",
       );
     }
     if (!((storageKey == null && inputs == null) ||
         (storageKey != null && inputs == null) ||
         (storageKey == null && inputs != null))) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid paged request: provide either inputs or storageKey (not both) to build the key, or neither to generate it from pallet and method name.",
       );
     }
@@ -274,7 +282,8 @@ class QueryStorageResponses<T extends Object?> {
     int index,
   ) {
     if (index >= results.length) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Index out of range: index $index, ${results.length} results.',
       );
     }
@@ -284,7 +293,8 @@ class QueryStorageResponses<T extends Object?> {
     try {
       response = result as RESPONSE;
     } catch (_) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Unexpected response type.',
         details: {
           "expected": "$RESPONSE",
@@ -348,7 +358,8 @@ class StorageKey {
 
   void _checkIndex(int index) {
     if (index >= inputs.length) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid storage input index $index: only ${inputs.length} inputs.",
       );
     }
@@ -361,7 +372,8 @@ class StorageKey {
       allowHex: false,
     );
     if (result == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to cast input as BigInt.",
         details: {
           "input": inputs.elementAt(index).input.runtimeType.toString(),
@@ -375,7 +387,8 @@ class StorageKey {
     _checkIndex(index);
     final result = inputs.elementAt(index).input;
     if (result is! T) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to cast storage input $index as $T.",
         details: {"expected": "$T", "input": result.runtimeType.toString()},
       );
@@ -390,7 +403,8 @@ class StorageKey {
       allowHex: false,
     );
     if (result == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to cast input as Int.",
         details: {
           "input": inputs.elementAt(index).input.runtimeType.toString(),
@@ -404,7 +418,8 @@ class StorageKey {
     _checkIndex(index);
     final result = inputs.elementAt(index).encodedInput;
     if (result == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Missing encoded storage input $index.",
       );
     }
@@ -418,7 +433,8 @@ class StorageKey {
     try {
       return Map<K, V>.from(input as Map);
     } catch (_) {}
-    throw BuError(DefaultErrorType.invalidArgument, 
+    throw BuError(
+      DefaultErrorType.invalidArgument,
       "Failed to cast storage input $index as Map<$K, $V>.",
       details: {"input": inputs.elementAt(index).input.runtimeType.toString()},
     );

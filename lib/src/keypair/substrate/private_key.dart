@@ -165,7 +165,8 @@ class SubstratePrivateKey
         substrateSignature = SubstrateSr25519Signature(signature);
         break;
       default:
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid algorithm ${algorithm.name}: expected ed25519, sr25519 or ecdsa.",
           details: {"algorithm": algorithm.name},
         );

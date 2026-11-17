@@ -33,9 +33,7 @@ mixin SubstrateQuickClientApi {
 
   /// Hash of the highest finalized block.
   Future<String> getFinalizedHead() {
-    return provider.request(
-      const SubstrateRequestChainChainGetFinalizedHead(),
-    );
+    return provider.request(const SubstrateRequestChainChainGetFinalizedHead());
   }
 
   /// Header at [atBlockHash], or latest when omitted.
@@ -94,8 +92,6 @@ mixin SubstrateQuickClientApi {
 
   /// Supported metadata versions (for metadata negotiation).
   Future<List<int>> metadataVersions() {
-    return provider.request(
-      const SubstrateRequestRuntimeMetadataGetVersions(),
-    );
+    return provider.request(const SubstrateRequestRuntimeMetadataGetVersions());
   }
 }

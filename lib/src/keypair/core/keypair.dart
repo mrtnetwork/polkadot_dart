@@ -16,7 +16,8 @@ enum SubstrateKeyAlgorithm {
       (e) => e.value == value,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown SubstrateKeyAlgorithm value "$value".',
               ),
     );
@@ -48,7 +49,8 @@ enum SubstrateKeyAlgorithm {
 
   SubstrateCoins get substrateCoinInfo {
     if (this == SubstrateKeyAlgorithm.ethereum) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Please use SubstrateEthereumPrivateKey or SubstrateEthereumPublicKey for Ethereum coin info.",
       );
     }

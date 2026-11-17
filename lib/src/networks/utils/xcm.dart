@@ -90,7 +90,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     }
     if (weight != null) {
       if (weight.version != version) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid weight limit version.",
           details: {"expected": version.type, "version": weight.version.type},
         );
@@ -114,7 +115,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       method: SubstrateRuntimeApiXCMPaymentMethods.queryXcmWeight,
       api: provier.metadata.api,
     )) {
-      throw BuError(DefaultErrorType.invalidState, 
+      throw BuError(
+        DefaultErrorType.invalidState,
         "XCM payment API method not available.",
       );
     }
@@ -125,7 +127,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           xcm: xcm,
         );
     if (!queryXcmWeight.type.isOk) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to calculate XCM execution weight.",
         details: {
           "error":
@@ -141,7 +144,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       asset: asset.asVersioned(),
     );
     if (!fee.type.isOk) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Failed to calculate XCM fee for given weight.",
         details: {"error": fee.cast<SubstrateDispatchResultError>().error.type},
       );
@@ -189,14 +193,19 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
             .toList();
     if (assetsTypes.toSet().length != 1) {
       if (assetsTypes.isEmpty) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "At least one transfer asset is required.",
         );
       }
-      throw BuError(DefaultErrorType.invalidArgument, "Multiple reserve not allowed.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Multiple reserve not allowed.",
+      );
     }
     if (!params.hasRelayAsset) {
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "This operation is only allowed for transfer relay chain asset.",
       );
     }
@@ -281,7 +290,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     final methods = provider.metadata.api.getCallMethodNames(pallet.name);
     if (weight != null) {
       if (!methods.contains(XCMCallPalletMethod.limitedTeleportAssets.method)) {
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "${pallet.name} not supported by ${XCMCallPalletMethod.limitedTeleportAssets.method} pallet.",
         );
       }
@@ -293,7 +303,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     if (methods.contains(pallet.name)) {
       return XCMCallPalletMethod.teleportAssets;
     }
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "No teleport asset method available in ${pallet.name} pallet.",
     );
   }
@@ -308,7 +319,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
       if (!methods.contains(
         XCMCallPalletMethod.limitedReserveTransferAssets.method,
       )) {
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "${pallet.name} not supported by ${XCMCallPalletMethod.limitedReserveTransferAssets.method} pallet.",
         );
       }
@@ -322,7 +334,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     if (methods.contains(XCMCallPalletMethod.reserveTransferAssets.method)) {
       return XCMCallPalletMethod.reserveTransferAssets;
     }
-    throw BuError(DefaultErrorType.unsupported, 
+    throw BuError(
+      DefaultErrorType.unsupported,
       "No teleport asset method available in ${pallet.name} pallet.",
     );
   }
@@ -394,7 +407,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           feeAssetItem: feeItem,
         ),
       _ =>
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid teleport asset method.",
           details: {"method": method.name},
         ),
@@ -469,7 +483,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           feeAssetItem: feeItem,
         ),
       _ =>
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid reserve transfer assets method.",
           details: {"method": method.name},
         ),
@@ -536,7 +551,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     final parents = locations.map((e) => e.parents).toSet();
     final paras = locations.map((e) => e.getParachain()?.id).toSet();
     if (parents.length != 1 || paras.length != 1) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Multiple reserve locations are not allowed.",
       );
     }
@@ -943,7 +959,10 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           network: network,
         );
       default:
-        throw BuError(DefaultErrorType.unsupported, "Unsupported XCM transfer method.");
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported XCM transfer method.",
+        );
     }
   }
 
@@ -957,7 +976,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     bool hasLocation = assets.every((e) => e.hasLocation());
     bool hasIdentifier = assets.every((e) => e.asset.hasIdentifier);
     if (!hasLocation && !hasIdentifier) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "all transfer assets must have asset or location.",
       );
     }
@@ -1103,7 +1123,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
         params.assets.indexed
             .firstWhereNullable((e) => e.$1 != params.feeIndex)
             ?.$2 ??
-        (throw BuError(DefaultErrorType.notFound, 
+        (throw BuError(
+          DefaultErrorType.notFound,
           "Invalid transfer assets: no non-fee asset found for fee index ${params.feeIndex}.",
         ));
     final fee = params.assets.elementAt(params.feeIndex);
@@ -1215,7 +1236,10 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           network: network,
         );
       default:
-        throw BuError(DefaultErrorType.unsupported, "Unsupported XToken method.");
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported XToken method.",
+        );
     }
   }
 
@@ -1236,7 +1260,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
         );
     final asset = params.assets[0];
     if (params.destinationWeightLimit?.version == XCMVersion.v2) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid weight limit XCM version: expected ${xTransferXcmVersion.type}, received ${params.destinationWeightLimit?.version.type}.",
       );
     }
@@ -1290,7 +1315,10 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
           network: network,
         );
       default:
-        throw BuError(DefaultErrorType.unsupported, "Unsupported XCM transfer method.");
+        throw BuError(
+          DefaultErrorType.unsupported,
+          "Unsupported XCM transfer method.",
+        );
     }
   }
 
@@ -1304,7 +1332,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     bool useTypeAndThen = true,
   }) async {
     if (!network.role.isPara || !params.destinationNetwork.role.isSystem) {
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "This operation is only allowed from a parachain to the relay chain.",
       );
     }
@@ -1445,7 +1474,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     fee ??= assetAmount ~/ BigInt.from(2);
     final amount = assetAmount - fee;
     if (amount <= BigInt.zero) {
-      throw BuError(DefaultErrorType.invalidState, 
+      throw BuError(
+        DefaultErrorType.invalidState,
         "Insufficient balance for fee.",
         details: {
           "provided": assetAmount.toString(),
@@ -1511,7 +1541,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     fee ??= assetAmount ~/ BigInt.from(2);
     final amount = assetAmount - fee;
     if (amount <= BigInt.zero) {
-      throw BuError(DefaultErrorType.invalidState, 
+      throw BuError(
+        DefaultErrorType.invalidState,
         "Insufficient balance for fee.",
         details: {
           "provided": assetAmount.toString(),
@@ -1597,7 +1628,10 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
         return XCMTransferTypeDestinationReserve();
       }
     }
-    throw BuError(DefaultErrorType.unsupported, "Remote reserve not supported.");
+    throw BuError(
+      DefaultErrorType.unsupported,
+      "Remote reserve not supported.",
+    );
   }
 
   static Future<XCMCallPallet> transferAssetsThroughUsingTypeAndThen({
@@ -1611,7 +1645,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
     XCMMultiLocation reserveLocation = reserve ?? network.assetHub.location();
     if (!params.hasRelayAsset) {
       if (!params.locations.every((e) => e.isOneParents())) {
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported asset reserve location.",
         );
       }
@@ -1622,7 +1657,8 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
               .toList();
       if (paras.toSet().length != 1 ||
           paras.length != params.locations.length) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Multiple reserve chain not allowed.",
         );
       }
@@ -1654,7 +1690,10 @@ abstract mixin class SubstrateNetworkControllerXCMTransferBuilder {
             .toList()
           ..sort((a, b) => a.$2.compareTo(b.$2));
     if (params.hasRelayAsset && params.assets.length != 1) {
-      throw BuError(DefaultErrorType.invalidArgument, "Duplicate asset not allowed.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Duplicate asset not allowed.",
+      );
     }
     int feeItem = assets.indexWhere(
       (e) => e.$1 == params.assets.elementAt(params.feeIndex),

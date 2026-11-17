@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:polkadot_dart/src/constant/constant.dart';
@@ -69,7 +70,8 @@ class SubstrateAccountIndex extends SubstrateBaseAccountId<int> {
 
   @override
   BuBytes accountBytes() {
-    throw BuError(DefaultErrorType.invalidArgument, 
+    throw BuError(
+      DefaultErrorType.invalidArgument,
       "Cannot access account bytes from account index.",
     );
   }

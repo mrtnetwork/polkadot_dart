@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/extensions/extensions.dart';
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/encoding/layout/layout.dart';
@@ -358,7 +359,8 @@ abstract class XCMInstructionV2 extends SubstrateVariantSerialization
         XCMV2SubscribeVersion.deserializeJson(decode.value),
       XCMInstructionType.unsubscribeVersion => XCMV2UnsubscribeVersion(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 2.",
           details: {"type": type.type},
         ),
@@ -366,7 +368,8 @@ abstract class XCMInstructionV2 extends SubstrateVariantSerialization
   }
   factory XCMInstructionV2.fromJson(Map<String, dynamic> json) {
     if (json.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid XCM instruction json: missing type key.",
       );
     }
@@ -414,7 +417,8 @@ abstract class XCMInstructionV2 extends SubstrateVariantSerialization
       ),
       XCMInstructionType.unsubscribeVersion => XCMV2UnsubscribeVersion(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported XCM instruction by version 2.",
           details: {"type": type.name},
         ),
@@ -743,7 +747,8 @@ enum XCMV2OriginKindType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2OriginKindType type "$type".',
               ),
     );
@@ -754,7 +759,8 @@ enum XCMV2OriginKindType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2OriginKindType name "$name".',
               ),
     );
@@ -1926,7 +1932,8 @@ enum XCMV2ResponseType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2ResponseType type "$type".',
               ),
     );
@@ -1937,7 +1944,8 @@ enum XCMV2ResponseType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2ResponseType name "$name".',
               ),
     );
@@ -1981,7 +1989,8 @@ enum XCMV2ErrorType {
       (e) => e.type == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2ErrorType type "$type".',
               ),
     );
@@ -1992,7 +2001,8 @@ enum XCMV2ErrorType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMV2ErrorType name "$name".',
               ),
     );

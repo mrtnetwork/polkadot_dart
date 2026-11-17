@@ -6,7 +6,6 @@ import 'package:polkadot_dart/src/networks/core/core.dart';
 import 'package:polkadot_dart/src/networks/types/types/config.dart';
 import 'package:polkadot_dart/src/networks/utils/utils.dart';
 
-
 enum PolkadotAssetBalanceStatus {
   liquid('Liquid'),
   frozen('Frozen'),
@@ -181,7 +180,8 @@ enum BasePolkadotNetworkAssetsStatus {
       (e) => e.status == status,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown BasePolkadotNetworkAssetsStatus value "$status".',
               ),
     );

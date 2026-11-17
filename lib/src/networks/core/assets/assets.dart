@@ -14,7 +14,8 @@ enum SubstrateAssetType {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown SubstrateAssetType name "$name".',
               ),
     );
@@ -102,10 +103,14 @@ abstract class BaseSubstrateNetworkAsset {
   /// Casts the identifier to a specific type T, throwing if mismatch.
   T identifierAs<T extends Object>() {
     if (identifier == null) {
-      throw BuError(DefaultErrorType.invalidArgument, "Missing asset identifier");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Missing asset identifier",
+      );
     }
     if (identifier is! T) {
-      throw BuError(DefaultErrorType.cryptoVerifyFailed, 
+      throw BuError(
+        DefaultErrorType.cryptoVerifyFailed,
         "Mismatch asset identifier.",
         details: {
           "expected": "$T",
@@ -119,10 +124,14 @@ abstract class BaseSubstrateNetworkAsset {
   /// Casts the xTokenTransferId to type T, throwing if mismatch.
   T xTokenTransferIdAs<T extends Object>() {
     if (xTokenTransferId == null) {
-      throw BuError(DefaultErrorType.invalidArgument, "Missing asset identifier");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Missing asset identifier",
+      );
     }
     if (xTokenTransferId is! T) {
-      throw BuError(DefaultErrorType.cryptoVerifyFailed, 
+      throw BuError(
+        DefaultErrorType.cryptoVerifyFailed,
         "Mismatch asset identifier.",
         details: {
           "expected": "$T",
@@ -153,7 +162,10 @@ abstract class BaseSubstrateNetworkAsset {
   XCMVersionedLocation getLocation({XCMVersion? version}) {
     final loc = location;
     if (loc == null) {
-      throw BuError(DefaultErrorType.invalidArgument, "Missing asset location.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Missing asset location.",
+      );
     }
     return version != null ? loc.asVersion(version) : loc;
   }

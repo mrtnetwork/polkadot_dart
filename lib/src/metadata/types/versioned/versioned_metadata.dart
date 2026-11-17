@@ -25,7 +25,8 @@ class VersionedMetadata<T extends SubstrateMetadata>
   }
   factory VersionedMetadata.fromBytes(List<int> bytes) {
     if (bytes.length < MetadataConstant.metadataMagicNumberAndVersionLength) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid metadata bytes: length ${bytes.length}, expected at least ${MetadataConstant.metadataMagicNumberAndVersionLength}.",
       );
     }
@@ -58,14 +59,16 @@ class VersionedMetadata<T extends SubstrateMetadata>
           metadata = MetadataV16.fromBytes(metadataBytes);
           break;
         default:
-          throw BuError(DefaultErrorType.unsupported, 
+          throw BuError(
+            DefaultErrorType.unsupported,
             "Unsupported metadata version.",
             details: {"version": "$version"},
           );
       }
     }
     if (metadata is! T) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Incorrect metadata version.",
         details: {"expected": "$T", "version": "$version"},
       );
@@ -100,7 +103,8 @@ class VersionedMetadata<T extends SubstrateMetadata>
 
   MetadataApi toApi() {
     if (!supportedByApi) {
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "Metadata is not supported by API.",
         details: {
           "version": version.toString(),

@@ -9,7 +9,6 @@
 ///   dart run lib/examples/polkadot/multisig.dart
 library;
 
-
 import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/polkadot_dart.dart';
 
@@ -25,9 +24,8 @@ Future<void> main() async {
 
   // Three signers; any two must approve a spend from the multisig.
   final signers = [polkadotAccount(0), polkadotAccount(1), polkadotAccount(2)];
-  final signerAddrs = signers
-      .map((e) => e.toAddress(ss58Format: polkadotSs58))
-      .toList();
+  final signerAddrs =
+      signers.map((e) => e.toAddress(ss58Format: polkadotSs58)).toList();
   const threshold = 2;
   final multisig = BaseSubstrateAddress.createMultiSigAddress(
     addresses: signerAddrs,
@@ -137,5 +135,6 @@ Future<void> main() async {
 
   final recipientAfter = await freeBalance(meta, recipient);
   print(field('recipient after', '${formatUnits(recipientAfter)} WND'));
-  print(field('received', '${formatUnits(recipientAfter - recipientBefore)} WND'));
+  print(field(
+      'received', '${formatUnits(recipientAfter - recipientBefore)} WND'));
 }

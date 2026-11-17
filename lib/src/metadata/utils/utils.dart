@@ -16,7 +16,8 @@ class MetadataTemplateBuilder {
 
   static String _getArrayType(List<TypeTemlate> children, int? length) {
     if (!((children.isEmpty || children.length == 1) && length != null)) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Array types must accept exactly one element with a length.",
       );
     }
@@ -33,7 +34,8 @@ class MetadataTemplateBuilder {
 
   static String _getSequanceType(TypeTemlate template) {
     if (!(template.children.length == 1 && template.length == null)) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Sequence type must have exactly one child and no length.",
       );
     }
@@ -64,7 +66,8 @@ class MetadataTemplateBuilder {
 
   static Map<String, dynamic> _createVariantStruct(List<TypeTemlate> children) {
     if (children.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Variant struct must have at least one child.",
       );
     }
@@ -105,7 +108,8 @@ class MetadataTemplateBuilder {
     TypeTemlate template,
   ) {
     if (template.children.length != 1) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Array/sequence value must have exactly one child.",
       );
     }
@@ -122,7 +126,8 @@ class MetadataTemplateBuilder {
 
   static String _compactType(List<TypeTemlate> children) {
     if (children.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Compact type must have exactly one child.",
       );
     }
@@ -191,7 +196,8 @@ class MetadataTemplateBuilder {
   static String _getArrayStringType(TypeTemlate template) {
     if (!((template.children.isEmpty || template.children.length == 1) &&
         template.length != null)) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Array must have at most one child and a length.",
       );
     }
@@ -202,7 +208,8 @@ class MetadataTemplateBuilder {
 
   static String _getSequanceStringType(TypeTemlate template) {
     if (!(template.children.length == 1 && template.length == null)) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Sequence should have exactly one child and no length.",
       );
     }
@@ -213,7 +220,8 @@ class MetadataTemplateBuilder {
 
   static String _compactStringType(TypeTemlate template) {
     if (template.children.length != 1) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Compact type must have exactly one child.",
       );
     }

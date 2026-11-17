@@ -217,7 +217,8 @@ extension ExtQueryHelper on MetadataApi {
           return null as RESPONSE;
         }
 
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           'Unexpected response type.',
           details: {"expected": "$RESPONSE", "value": 'Null'},
         );
@@ -233,7 +234,8 @@ extension ExtQueryHelper on MetadataApi {
 
       if (json == null) {
         if (null is RESPONSE) return null as RESPONSE;
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           'Unexpected response type.',
           details: {"expected": "$RESPONSE", "value": 'Null'},
         );
@@ -244,7 +246,8 @@ extension ExtQueryHelper on MetadataApi {
         try {
           data = json as DECODEDRESPONSE;
         } catch (_) {
-          throw BuError(DefaultErrorType.invalidArgument, 
+          throw BuError(
+            DefaultErrorType.invalidArgument,
             'Unexpected response type.',
             details: {
               "expected": "$DECODEDRESPONSE",
@@ -259,7 +262,8 @@ extension ExtQueryHelper on MetadataApi {
       try {
         data = json as RESPONSE;
       } catch (_) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           'Unexpected response type.',
           details: {
             "expected": "$RESPONSE",
@@ -526,7 +530,8 @@ extension ExtQueryHelper on MetadataApi {
       if (max == null) return request.count;
       final r = max - total;
       if (r <= 0) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid paged storage query: fetched total exceeds requested maximum.",
         );
       }

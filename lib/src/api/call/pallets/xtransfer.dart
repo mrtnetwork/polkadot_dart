@@ -4,7 +4,6 @@ import 'package:polkadot_dart/src/api/models/models/types.dart';
 import 'package:polkadot_dart/src/metadata/utils/metadata_utils.dart';
 import 'package:polkadot_dart/src/models/models.dart';
 
-
 enum XTransferCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
   transfer("transfer", 0),
   transferGeneric("transfer_generic", 1);
@@ -18,7 +17,8 @@ enum XTransferCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XTransferCallPalletMethod name "$name".',
               ),
     );
@@ -29,7 +29,8 @@ enum XTransferCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XTransferCallPalletMethod method "$method".',
               ),
     );

@@ -69,7 +69,8 @@ abstract class SubstrateVariantSerialization
     Map<String, dynamic> json,
   ) {
     if (json['key'] is! String || !json.containsKey('value')) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.',
       );
     }
@@ -82,7 +83,8 @@ abstract class SubstrateVariantSerialization
   }) {
     final json = layout.deserialize(bytes).value;
     if (json['key'] is! String || !json.containsKey('value')) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         'Invalid variant layout. only use enum layout to deserialize with `SubstrateVariantSerialization.deserialize` method.',
       );
     }

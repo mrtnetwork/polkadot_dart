@@ -186,7 +186,8 @@ class BifrostAssetVSBond extends BaseBifrostAsset {
   factory BifrostAssetVSBond.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(BifrostAssetType.vsBond.type);
     if (data.length < 4) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid vsBond asset: expected 4 elements, received ${data.length}.",
       );
     }
@@ -216,7 +217,8 @@ class BifrostAssetLPToken extends BaseBifrostAsset {
   factory BifrostAssetLPToken.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(BifrostAssetType.lpToken.type);
     if (data.length < 4) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid lpToken asset: expected 4 elements, received ${data.length}.",
       );
     }
@@ -282,7 +284,8 @@ class BifrostAssetVSBond2 extends BaseBifrostAsset {
   factory BifrostAssetVSBond2.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(BifrostAssetType.vsBond2.type);
     if (data.length < 4) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid vsBond2 asset: expected 4 elements, received ${data.length}.",
       );
     }

@@ -11,7 +11,6 @@ import 'si1_type_def_sequence.dart';
 import 'si1_type_def_tuple.dart';
 import 'si1_type_def_variant.dart';
 
-
 class Si1TypeDefsIndexesConst {
   final String name;
   const Si1TypeDefsIndexesConst._(this.name);
@@ -58,7 +57,8 @@ class Si1TypeDefsIndexesConst {
       (element) => element.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown Si1TypeDefsIndexesConst value "$name".',
               ),
     );

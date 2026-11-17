@@ -5,9 +5,7 @@ import '../utils.dart';
 
 /// Offline tests for [SubstrateQuickClientApi] (fake provider, no network).
 void quickClientTest() {
-  SubstrateQuickClientApi quickWith(
-    Map<Type, dynamic Function()> handlers,
-  ) {
+  SubstrateQuickClientApi quickWith(Map<Type, dynamic Function()> handlers) {
     return _Quick(_FakeProvider(handlers));
   }
 
@@ -17,9 +15,7 @@ void quickClientTest() {
     });
     expect(await quick.getBlockHash(atNumber: 1), 'ab' * 32);
 
-    final missing = quickWith({
-      SubstrateRequestChainGetBlockHash: () => null,
-    });
+    final missing = quickWith({SubstrateRequestChainGetBlockHash: () => null});
     expect(await missing.getBlockHash(atNumber: 999999999), isNull);
   });
 
@@ -32,8 +28,8 @@ void quickClientTest() {
 
   test('getBlockHeader reads the header', () async {
     final quick = quickWith({
-      SubstrateRequestChainChainGetHeader: () =>
-          SubstrateHeaderResponse(
+      SubstrateRequestChainChainGetHeader:
+          () => SubstrateHeaderResponse(
             parentHash: '00' * 32,
             number: 100,
             stateRoot: '11' * 32,
@@ -47,11 +43,12 @@ void quickClientTest() {
 
   test('systemProperties and systemChain pass through', () async {
     final quick = quickWith({
-      SubstrateRequestSystemProperties: () => ChainProperties.fromJson({
-        'tokenSymbol': 'DOT',
-        'tokenDecimals': 10,
-        'ss58Format': 0,
-      }),
+      SubstrateRequestSystemProperties:
+          () => ChainProperties.fromJson({
+            'tokenSymbol': 'DOT',
+            'tokenDecimals': 10,
+            'ss58Format': 0,
+          }),
       SubstrateRequestSystemChain: () => 'Polkadot',
     });
     final props = await quick.systemProperties();
@@ -68,9 +65,10 @@ void quickClientTest() {
 
   test('fee queries pass through', () async {
     final quick = quickWith({
-      SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails: () => QueryFeeDetails(tip: BigInt.zero),
-      SubstrateRequestRuntimeTransactionPaymentApiQueryInfo: () =>
-          QueryFeeInfo(
+      SubstrateRequestRuntimeTransactionPaymentApiQueryFeeDetails:
+          () => QueryFeeDetails(tip: BigInt.zero),
+      SubstrateRequestRuntimeTransactionPaymentApiQueryInfo:
+          () => QueryFeeInfo(
             weight: SubstrateWeightV2(
               refTime: BigInt.zero,
               proofSize: BigInt.zero,
@@ -87,8 +85,8 @@ void quickClientTest() {
 
   test('rpcMethods and metadataVersions pass through', () async {
     final quick = quickWith({
-      SubstrateRequestRpcMethods: () =>
-          RpcMethods(version: 1, methods: const ['chain_getBlockHash']),
+      SubstrateRequestRpcMethods:
+          () => RpcMethods(version: 1, methods: const ['chain_getBlockHash']),
       SubstrateRequestRuntimeMetadataGetVersions: () => [14],
     });
     expect((await quick.rpcMethods()).methods, ['chain_getBlockHash']);

@@ -110,7 +110,8 @@ class Si1Variant extends SubstrateSerialization<Map<String, dynamic>> {
   }) {
     if (fields.isEmpty) {
       if (value != null) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Value must be null for a variant without fields.",
           details: {"value": value.toString(), "variant": name},
         );

@@ -2,7 +2,6 @@ import 'package:blockchain_utils/blockchain_utils.dart';
 import 'package:polkadot_dart/src/metadata/types/layouts/layouts.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
-
 class StorageEntryModifierV9
     extends SubstrateSerialization<Map<String, dynamic>> {
   final String name;
@@ -26,7 +25,8 @@ class StorageEntryModifierV9
       (element) => element.name == value,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown StorageEntryModifierV9 value "$value".',
               ),
     );

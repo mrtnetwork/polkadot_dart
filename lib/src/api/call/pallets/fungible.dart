@@ -4,7 +4,6 @@ import 'package:polkadot_dart/src/api/call/types/types.dart';
 import 'package:polkadot_dart/src/api/models/models/types.dart';
 import 'package:polkadot_dart/src/models/models.dart';
 
-
 enum FungiblesCallPalletMethod implements SubstrateCallPalletTransferMethod {
   transfer("transfer", 8),
   transferKeepAlive("transfer_keep_alive", 9),
@@ -25,7 +24,8 @@ enum FungiblesCallPalletMethod implements SubstrateCallPalletTransferMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown FungiblesCallPalletMethod value "$method".',
               ),
     );

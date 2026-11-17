@@ -223,7 +223,8 @@ class PendulumAssetZenlinkLPToken extends BasePendulumAsset {
       PendulumAssetType.zenlinkLPToken.type,
     );
     if (data.length < 4) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid zenlink LP token asset: expected 4 elements, received ${data.length}.",
       );
     }

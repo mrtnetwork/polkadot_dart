@@ -4,7 +4,6 @@ import 'package:polkadot_dart/src/api/models/models/types.dart';
 import 'package:polkadot_dart/src/models/models.dart';
 import 'package:polkadot_dart/src/serialization/serialization.dart';
 
-
 enum XCMTransferTypeType implements SubstrateCallPalletXCMTransferMethod {
   teleport("Teleport", 0),
   localReserve("LocalReserve", 1),
@@ -21,7 +20,8 @@ enum XCMTransferTypeType implements SubstrateCallPalletXCMTransferMethod {
       (e) => e.method == type,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMTransferTypeType method "$type".',
               ),
     );
@@ -32,7 +32,8 @@ enum XCMTransferTypeType implements SubstrateCallPalletXCMTransferMethod {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMTransferTypeType name "$name".',
               ),
     );
@@ -228,7 +229,8 @@ enum XCMCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
       (e) => e.name == name,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMCallPalletMethod name "$name".',
               ),
     );
@@ -239,7 +241,8 @@ enum XCMCallPalletMethod implements SubstrateCallPalletXCMTransferMethod {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.invalidArgument, 
+              throw BuError(
+                DefaultErrorType.invalidArgument,
                 'Unknown XCMCallPalletMethod method "$method".',
               ),
     );

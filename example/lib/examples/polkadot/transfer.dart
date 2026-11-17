@@ -6,7 +6,6 @@
 ///   dart run lib/examples/polkadot/transfer.dart
 library;
 
-
 import 'package:polkadot_dart/polkadot_dart.dart';
 
 import 'node.dart';
@@ -27,7 +26,8 @@ Future<void> main() async {
 
   // Fund the owner so it can pay for the transfer and its fee.
   await ensureFunded(meta, ownerAddr, minimum: oneUnit * BigInt.from(1000));
-  print(field('owner balance', '${formatUnits(await freeBalance(meta, ownerAddr))} WND'));
+  print(field('owner balance',
+      '${formatUnits(await freeBalance(meta, ownerAddr))} WND'));
 
   final destBefore = await freeBalance(meta, destination);
   print(field('dest before', '${formatUnits(destBefore)} WND'));
@@ -61,14 +61,14 @@ Future<void> main() async {
   // Sign and submit, waiting for the transaction to be included in a block.
   final result =
       await SubstrateTransactionBuilder.buildSignAndWatchTransactionStaticAsync(
-        owner: ownerAddr,
-        signer: owner,
-        calls: calls,
-        provider: meta,
-        onSubmitxtrinsic: (txId, blockNumber) {
-          print(field('submitted', txId));
-        },
-      );
+    owner: ownerAddr,
+    signer: owner,
+    calls: calls,
+    provider: meta,
+    onSubmitxtrinsic: (txId, blockNumber) {
+      print(field('submitted', txId));
+    },
+  );
 
   if (!result.status.isSuccess) {
     print('Transfer failed: ${result.status.name}');

@@ -25,7 +25,8 @@ class SubstrateEthereumPrivateKey
       final Secp256k1PrivateKey key = Secp256k1PrivateKey.fromBytes(keyBytes);
       return SubstrateEthereumPrivateKey(key);
     } catch (e) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid ECDSA private key.",
         details: {"keyBytes": BytesUtils.tryToHexString(keyBytes)},
       );

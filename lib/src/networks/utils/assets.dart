@@ -16,13 +16,15 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     bool? keepAlive,
   }) {
     if (assetId == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Missing transfer asset: asset id is required.",
         details: {"method": method.method},
       );
     }
     if (method != AssetsCallPalletMethod.transferAll && amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required unless using ${AssetsCallPalletMethod.transferAll.method}.",
       );
     }
@@ -57,18 +59,21 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
   }) {
     final location = asset?.location?.location;
     if (method != ForeignAssetsCallPalletMethod.transferAll && amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required unless using ${ForeignAssetsCallPalletMethod.transferAll.method}.",
       );
     }
     if (location == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid foreign asset: missing asset location.",
         details: {"asset": asset?.name ?? asset?.symbol},
       );
     }
     if (location.isZeroParents()) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid asset location: foreign asset must not be Here.",
         details: {"asset": asset?.name ?? asset?.symbol},
       );
@@ -103,13 +108,15 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     bool? keepAlive,
   }) {
     if (method != FungiblesCallPalletMethod.transferAll && amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required unless using ${FungiblesCallPalletMethod.transferAll.method}.",
       );
     }
     final location = asset?.location?.location;
     if (location == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid foreign asset: missing asset location.",
         details: {"asset": asset?.name ?? asset?.symbol},
       );
@@ -144,13 +151,15 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
   }) {
     final assetId = asset?.identifierAs();
     if (assetId == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Missing transfer asset: asset id is required.",
         details: {"method": method.method},
       );
     }
     if (method != TokensCallPalletMethod.transferAll && amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required unless using ${TokensCallPalletMethod.transferAll.method}.",
       );
     }
@@ -183,18 +192,23 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     required BaseSubstrateNetworkAsset? asset,
   }) {
     if (amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required for transfer asset.",
       );
     }
     if (method == AssetManagerCallPalletMethod.transfer &&
         asset?.identifier == null) {
-      throw BuError(DefaultErrorType.invalidArgument, "Missing asset identifier.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Missing asset identifier.",
+      );
     }
     if (method == AssetManagerCallPalletMethod.transfernativeCurrency &&
         asset != null &&
         !asset.type.isNative) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Mismatch between transfer method and asset type.",
       );
     }
@@ -220,18 +234,23 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     required CurrenciesCallPalletMethod method,
   }) {
     if (amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required for transfer asset.",
       );
     }
     if (method == CurrenciesCallPalletMethod.transfer &&
         asset?.identifier == null) {
-      throw BuError(DefaultErrorType.invalidArgument, "Missing asset identifier.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Missing asset identifier.",
+      );
     }
     if (method == CurrenciesCallPalletMethod.transfernativeCurrency &&
         asset != null &&
         !asset.type.isNative) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Mismatch between transfer method and asset type.",
       );
     }
@@ -305,12 +324,14 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     bool? keepAlive,
   }) {
     if (method != BalancesCallPalletMethod.transferAll && amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required unless using ${BalancesCallPalletMethod.transferAll.method}.",
       );
     }
     if (method == BalancesCallPalletMethod.transferAll && amount != null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "${BalancesCallPalletMethod.transferAll.method} does not accept an amount. amount must be null.",
       );
     }
@@ -356,7 +377,8 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
       executionPallet = SubstrateMetadataPallet.assetManager;
     }
     if (executionPallet == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Unable to find asset transfer pallet.",
       );
     }
@@ -430,7 +452,8 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     final methods = transferMethods(metadata: metadata, asset: params.asset);
     final keepAlive = params.keepAlive;
     if (methods.isEmpty) {
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "No transfer method available in ${source.name} pallet.",
       );
     }
@@ -480,7 +503,8 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
       (e) => e.method == method,
       orElse:
           () =>
-              throw BuError(DefaultErrorType.unsupported, 
+              throw BuError(
+                DefaultErrorType.unsupported,
                 "$method not supported by ${source.name} pallet.",
               ),
     );
@@ -499,19 +523,22 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
     if (!transferMethod.isTransferAll &&
         keepAlive != null &&
         keepAlive != transferMethod.keepAlive) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "keepAlive parameter does not match the selected transfer method.",
       );
     }
     if (!transferMethod.isTransferAll && params.amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "An amount is required unless using ${BalancesCallPalletMethod.transferAll.method}.",
       );
     }
     if (transferMethod.isTransferAll &&
         params.method == null &&
         params.amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "No amount specified — please use ${BalancesCallPalletMethod.transferAll.method} method explicitly.",
       );
     }
@@ -573,7 +600,8 @@ abstract mixin class SubstrateNetworkControllerLocalAssetTransferBuilder {
         assetId: params.asset?.identifierAs<BigInt>(),
       ),
       _ =>
-        throw BuError(DefaultErrorType.notFound, 
+        throw BuError(
+          DefaultErrorType.notFound,
           "Unable to find asset transfer pallet.",
         ),
     };

@@ -97,7 +97,8 @@ class CentrifugeAssetTranche extends BaseCentrifugeAsset {
   factory CentrifugeAssetTranche.fromJson(Map<String, dynamic> json) {
     final data = json.valueEnsureAsList(CentrifugeAssetType.tranche.type);
     if (data.length < 2) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid tranche asset: expected 2 elements, received ${data.length}.",
       );
     }

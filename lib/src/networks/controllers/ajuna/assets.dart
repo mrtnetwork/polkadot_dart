@@ -87,7 +87,8 @@ class AjunaNetworkAsset extends BaseAjunaNetworkAsset {
 
   @override
   Object? get xTokenTransferId =>
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "This asset does not support transfers via the XTokens pallet. ",
       );
 

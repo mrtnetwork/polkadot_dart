@@ -98,7 +98,10 @@ class MetadataApi with MetadataApiInterface {
     LookupDecodeParams params = const LookupDecodeParams(),
   }) {
     if (bytes.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, "Invalid encoded call bytes.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Invalid encoded call bytes.",
+      );
     }
     final palletIndex = bytes[0];
     final palletName = getPalletNameByIndex(palletIndex);
@@ -231,7 +234,8 @@ class MetadataApi with MetadataApiInterface {
     if (hashers.length > 1) {
       final lookup = metadata.getLookup(lookupId);
       if (lookup.typeName != Si1TypeDefsIndexesConst.tuple) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid lookup type. Method with multiple arguments must be tuple.",
         );
       }
@@ -333,7 +337,8 @@ class MetadataApi with MetadataApiInterface {
     try {
       keyBytes = BytesUtils.fromHexString(storageKey);
     } catch (_) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid storage key: not valid hex.",
         details: {"key": storageKey},
       );
@@ -343,7 +348,8 @@ class MetadataApi with MetadataApiInterface {
           keyBytes.sublist(0, prefixHash.keyBytes.length),
           prefixHash.keyBytes,
         )) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid storage key: missing storage prefix.",
         details: {
           "key": storageKey,
@@ -358,7 +364,8 @@ class MetadataApi with MetadataApiInterface {
     final lookup = metadata.getLookup(lookupId);
     if (hashers.length > 1) {
       if (lookup.typeName != Si1TypeDefsIndexesConst.tuple) {
-        throw BuError(DefaultErrorType.invalidArgument, 
+        throw BuError(
+          DefaultErrorType.invalidArgument,
           "Invalid lookup type. Method with multiple arguments must be tuple.",
         );
       }
@@ -389,7 +396,8 @@ class MetadataApi with MetadataApiInterface {
       if (hasher?.isConcat ?? true) {
         final hashLength = hasher?.hashLength ?? 0;
         if (keyBytes.length < hashLength) {
-          throw BuError(DefaultErrorType.invalidArgument, 
+          throw BuError(
+            DefaultErrorType.invalidArgument,
             "Invalid storage key: shorter than hasher length $hashLength.",
             details: {"key": storageKey},
           );
@@ -522,7 +530,8 @@ class MetadataApi with MetadataApiInterface {
     final method = generateRuntimeApiMethod(apiName, methodName);
     final inputs = getRuntimeApiInputLookupIds(apiName, methodName);
     if (inputs.length != params.length) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid params length.",
         details: {
           "method": method,
@@ -642,7 +651,8 @@ class MetadataApi with MetadataApiInterface {
       property: property,
     );
     if (layout == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Type layout not found.",
         details: {"name": name},
       );
@@ -662,7 +672,8 @@ class MetadataApi with MetadataApiInterface {
       property: property,
     );
     if (layout == null) {
-      throw BuError(DefaultErrorType.notFound, 
+      throw BuError(
+        DefaultErrorType.notFound,
         "Path tail layout not found.",
         details: {"name": name},
       );

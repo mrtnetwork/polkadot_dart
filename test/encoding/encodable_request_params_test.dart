@@ -3,6 +3,7 @@ import 'package:polkadot_dart/polkadot_dart.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
+
 void encodableRequestParamsTest() {
   test('encodable provider params', () {
     final param = SubstrateRequestGrandpaProveFinality(2);
@@ -20,6 +21,8 @@ void encodableRequestParamsTest() {
 }
 
 void main() {
-  PolkadotDartUtilsTestApi.runTest(encodableRequestParamsTest, "Encodable Request Params");
+  PolkadotDartUtilsTestApi.runTest(
+    encodableRequestParamsTest,
+    "Encodable Request Params",
+  );
 }
-

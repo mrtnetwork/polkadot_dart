@@ -81,7 +81,8 @@ class IntegriteeNetworkAsset extends BaseIntegriteeNetworkAsset {
 
   @override
   Object? get xTokenTransferId =>
-      throw BuError(DefaultErrorType.unsupported, 
+      throw BuError(
+        DefaultErrorType.unsupported,
         "This asset does not support transfers via the XTokens pallet. ",
       );
 }

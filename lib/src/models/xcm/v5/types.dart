@@ -1,4 +1,5 @@
-import 'package:blockchain_utils/blockchain_utils.dart' show BuBytes, BuError, DefaultErrorType;
+import 'package:blockchain_utils/blockchain_utils.dart'
+    show BuBytes, BuError, DefaultErrorType;
 import 'package:blockchain_utils/helper/helper.dart';
 import 'package:blockchain_utils/encoding/layout/layout.dart';
 import 'package:blockchain_utils/utils/equatable/equatable.dart';
@@ -41,7 +42,8 @@ abstract class XCMV5NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.polkadotBulletIn =>
         XCMV5PolkadotBulletIn.deserializeJson(decode.value),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 5.",
           details: {"type": type.name},
         ),
@@ -49,7 +51,8 @@ abstract class XCMV5NetworkId extends SubstrateVariantSerialization
   }
   factory XCMV5NetworkId.fromJson(Map<String, dynamic> json) {
     if (json.isEmpty) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid XCM network id json: missing type key.",
       );
     }
@@ -64,7 +67,8 @@ abstract class XCMV5NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.bitcoinCore => XCMV5BitcoinCore.fromJson(json),
       XCMNetworkIdType.polkadotBulletIn => XCMV5PolkadotBulletIn.fromJson(json),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network id by version 5.",
           details: {"type": type.name},
         ),
@@ -94,7 +98,8 @@ abstract class XCMV5NetworkId extends SubstrateVariantSerialization
       XCMNetworkIdType.bitcoinCore => XCMV5BitcoinCore(),
       XCMNetworkIdType.polkadotBulletIn => XCMV5PolkadotBulletIn(),
       _ =>
-        throw BuError(DefaultErrorType.unsupported, 
+        throw BuError(
+          DefaultErrorType.unsupported,
           "Unsupported network type by version 5.",
           details: {"type": type.name},
         ),
@@ -904,7 +909,8 @@ class XCMV5JunctionGeneralKey extends XCMV5Junction with XCMJunctionGeneralKey {
     if (data.length < length ||
         length > SubstrateConstant.accountIdLengthInBytes ||
         data.length > SubstrateConstant.accountIdLengthInBytes) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid V5 Junction GeneralKey bytes.",
       );
     }
@@ -1687,7 +1693,8 @@ class XCMV5AssetId extends SubstrateSerialization<Map<String, dynamic>>
       final XCMV5AssetId assetId => assetId,
       final XCMV2AssetId assetId => switch (assetId.type) {
         XCMV2AssetIdType.abstract =>
-          throw BuError(DefaultErrorType.unsupported, 
+          throw BuError(
+            DefaultErrorType.unsupported,
             "Unsupported AssetId v2 ${XCMV2AssetIdType.abstract.type} by version 5",
           ),
         XCMV2AssetIdType.concrete => XCMV5AssetId(
@@ -1698,7 +1705,8 @@ class XCMV5AssetId extends SubstrateSerialization<Map<String, dynamic>>
       },
       final XCMV3AssetId assetId => switch (assetId.type) {
         XCMV3AssetIdType.abstract =>
-          throw BuError(DefaultErrorType.unsupported, 
+          throw BuError(
+            DefaultErrorType.unsupported,
             "Unsupported AssetId v3 ${XCMV3AssetIdType.abstract.type} by version 5",
           ),
         XCMV3AssetIdType.concrete => XCMV5AssetId(

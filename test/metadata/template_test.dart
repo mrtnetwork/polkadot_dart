@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 import 'v14_metadata_hex.dart';
 
 import '../utils.dart';
+
 void templateTest() {
   final VersionedMetadata<MetadataV14> metadata = VersionedMetadata.fromBytes(
     BytesUtils.fromHexString(metadataV14),
@@ -18,7 +19,6 @@ void templateTest() {
 void main() {
   PolkadotDartUtilsTestApi.runTest(templateTest, "Template");
 }
-
 
 void _test(PortableRegistry registry) {
   test("loookup-8", () {

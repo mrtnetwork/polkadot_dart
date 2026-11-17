@@ -282,7 +282,8 @@ class ZeitgeistNetworkController
     }
 
     if (asset is! ZeitgeistNetworkAsset) {
-      throw BuError(DefaultErrorType.invalidArgument, 
+      throw BuError(
+        DefaultErrorType.invalidArgument,
         "Invalid ${network.networkName} asset.",
         details: {
           "expected": "ZeitgeistNetworkAsset",
@@ -294,7 +295,10 @@ class ZeitgeistNetworkController
     final asBase = asset.metadata?.additional?.allowAsBaseAsset ?? false;
     final amount = params.amount;
     if (amount == null) {
-      throw BuError(DefaultErrorType.invalidArgument, "Amount required for transfer asset.");
+      throw BuError(
+        DefaultErrorType.invalidArgument,
+        "Amount required for transfer asset.",
+      );
     }
     if (decimals == null || !asBase) return super.assetTransfer(params: params);
     final cAmount = AmountConverterUtils.convertDecimals(
