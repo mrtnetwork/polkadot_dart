@@ -8,7 +8,6 @@ import 'v16_metadata_hex.dart';
 
 import '../utils.dart';
 void metadataTest() {
-  blockchainUtils.setDartApi();
   group("Metadata", () {
     _encodeDecode();
   });
