@@ -16,6 +16,10 @@ Dart by default, optional Rust backend (FFI on native, WASM on web). When set
 through Rust. Rust core:
 [mrtnetwork/blockchain-utils](https://github.com/mrtnetwork/blockchain-utils).
 
+## Breaking changes
+
+- **All legacy exception classes removed — every error is `BuError`.** Failures throw `BuError` with a `SubstrateErrorType` taxonomy value (`domain: 'substrate'`: plugin, metadata, block lookup / not found). Thrown block-lookup failures are `const` instances (`SubstrateLookupBlockExceptionConst`), so identity checks keep working — update `catch` clauses and `on` filters to `BuError`.
+
 ## Supported networks
 
 | Ecosystem | Networks |
